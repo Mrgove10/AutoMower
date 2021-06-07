@@ -1,6 +1,6 @@
 
 #include <Arduino.h>
-#include <definitions.h>
+#include <pin_definitions.h>
 #include <NewPing.h>
 #include <Wire.h>
 #include <Adafruit_MCP23017.h>
