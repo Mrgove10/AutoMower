@@ -1,6 +1,3 @@
-#define SONAR_NUM 3      // Number of sensors.
-#define MAX_DISTANCE 250 // Maximum distance (in cm) to ping.
-
 // Extender pins
 #define PIN_MCP_KEYPAD_1 1
 #define PIN_MCP_KEYPAD_2 2
@@ -18,10 +15,6 @@
 #define PIN_MCP_MOTOR_LEFT_LN2 14
 #define PIN_MCP_MOTOR_RIGHT_LN1 15
 #define PIN_MCP_MOTOR_RIGHT_LN2 16
-
-// Screen
-#define SCREEN_COL 20
-#define SCREEN_LINES 4
 
 // ESP pins
 #define PIN_ESP_SONAR_CENTER 18

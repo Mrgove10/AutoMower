@@ -1,0 +1,3 @@
+#define SCREEN_I2C_ADDRESS 0x27
+#define SCREEN_COL 20
+#define SCREEN_LINES 4
