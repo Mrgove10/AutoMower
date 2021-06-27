@@ -1,0 +1,1 @@
+void MQTTInit(void);

@@ -1,0 +1,37 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"files.associations": {
+			"*.h": "cpp",
+			"*.ino": "cpp",
+			"array": "cpp",
+			"functional": "cpp",
+			"istream": "cpp",
+			"tuple": "cpp",
+			"utility": "cpp",
+			"string": "cpp",
+			"*.tcc": "cpp",
+			"initializer_list": "cpp",
+			"deque": "cpp",
+			"list": "cpp",
+			"unordered_map": "cpp",
+			"unordered_set": "cpp",
+			"vector": "cpp",
+			"random": "cpp",
+			"limits": "cpp",
+			"system_error": "cpp",
+			"type_traits": "cpp",
+			"exception": "cpp",
+			"fstream": "cpp",
+			"iosfwd": "cpp",
+			"new": "cpp",
+			"ostream": "cpp",
+			"sstream": "cpp",
+			"streambuf": "cpp"
+		}
+	}
+}

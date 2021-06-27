@@ -1,1 +1,0 @@
-#define MONMDPTRESSECRET "<my mdp>"
