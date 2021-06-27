@@ -12,6 +12,5 @@ void MQTTInit(void) {
   MQTTclient.setCallback(MQTTCallback);
 
   MQTTReconnect();
-
 }
 

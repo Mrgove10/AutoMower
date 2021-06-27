@@ -59,16 +59,16 @@ void setup()
 void loop()
 {
 
-  SerialAndTelnet.handle();
-
   DebugPrintln("loop Always", DBG_ALWAYS, true);
-  DebugPrintln("loop error", DBG_ERROR, true);
-  DebugPrintln("loop warning", DBG_WARNING, true);
-  DebugPrintln("loop info", DBG_INFO, true);
+  DebugPrintln("loop Error", DBG_ERROR, true);
+  DebugPrintln("loop Warning", DBG_WARNING, true);
+  DebugPrintln("loop Info", DBG_INFO, true);
   DebugPrintln("loop Debug", DBG_DEBUG, true);
   DebugPrintln("loop Verbose", DBG_VERBOSE, true);
 
   MQTTclient.loop();
+
+  SerialAndTelnet.handle();
 
   delay(5000);
 
