@@ -4,16 +4,21 @@
 #include "MQTT/MQTTSubscribe.h"
 #include "Framework/Utils.h"
 
-void MQTTReconnect() {
+void MQTTReconnect()
+{
   // Loop until we're reconnected
-  if (!MQTTclient.connected()) {
+  if (!MQTTclient.connected())
+  {
     DebugPrint("Attempting MQTT connection...", DBG_ALWAYS, true);
     // Attempt to connect
-    if (MQTTclient.connect(ESPHOSTNAME)) {
+    if (MQTTclient.connect(ESPHOSTNAME))
+    {
       DebugPrintln("connected");
       // Subscribe
       MQTTSubscribe();
-    } else {
+    }
+    else
+    {
       DebugPrint("failed, rc=", DBG_ERROR, true);
       DebugPrint(String(MQTTclient.state()));
       DebugPrintln(" try again in 5 seconds");

@@ -3,8 +3,8 @@
 #include "MQTT/MQTTReconnect.h"
 #include "MQTT/MQTTCallback.h"
 
-
-void MQTTInit(void) {
+void MQTTInit(void)
+{
   MQTTclient.setServer(MQTT_SERVER, MQTT_PORT);
 
   MQTTclient.setBufferSize(512);
@@ -13,4 +13,3 @@ void MQTTInit(void) {
 
   MQTTReconnect();
 }
-

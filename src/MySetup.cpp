@@ -9,24 +9,26 @@
 #include "Framework/OTA.h"
 #include "MQTT/MQTTInit.h"
 
-
-
-void MySetup(void){
+void MySetup(void)
+{
 
   Serial.begin(SERIAL_BAUD);
 
-// Setup pins
+  // Setup pins
 
-//  adcAttachPin(BatteryPin);
-//  adcAttachPin(MainBatteryPin);
+  //  adcAttachPin(BatteryPin);
+  //  adcAttachPin(MainBatteryPin);
 
-// Setup Telnet Debug Management
+  // Setup Telnet Debug Management
 
   InitTelnet();
 
   DebugPrintln("");
   DebugPrintln(" Program Start.............");
-  DebugPrint("Sketch compiled: "); DebugPrint(__DATE__); DebugPrint(" "); DebugPrintln(__TIME__);
+  DebugPrint("Sketch compiled: ");
+  DebugPrint(__DATE__);
+  DebugPrint(" ");
+  DebugPrintln(__TIME__);
   DebugPrintln("Free sketch space: " + String(ESP.getFreeSketchSpace()));
   String Resetreason = "Reset core 1:" + String(char_reset_reason(0)) + " core 2:" + String(char_reset_reason(1)) + " - Sketch compiled: " + String(__DATE__) + " " + String(__TIME__);
   DebugPrintln(Resetreason);
@@ -40,11 +42,10 @@ void MySetup(void){
 
   IPAddress ip = WiFi.localIP();
   char outBuf[18];
-  sprintf(outBuf,"%u.%u.%u.%u",ip[0],ip[1],ip[2],ip[3]);
+  sprintf(outBuf, "%u.%u.%u.%u", ip[0], ip[1], ip[2], ip[3]);
   DebugPrint("SSID:" + String(WiFi.SSID()));
   DebugPrint(" IP:" + String(outBuf));
-  DebugPrintln(" RSSI:" + String(WiFi.RSSI()) + " dBm" );
+  DebugPrintln(" RSSI:" + String(WiFi.RSSI()) + " dBm");
 
   MQTTInit();
-
 }

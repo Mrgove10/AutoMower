@@ -13,4 +13,3 @@
 #define SERIAL_BAUD 115200
 
 #define TELNET_BAUD 115200
-

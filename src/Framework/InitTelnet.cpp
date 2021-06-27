@@ -3,7 +3,8 @@
 #include "Framework/InitTelnet.h"
 #include "Framework/Utils.h"
 
-void InitTelnet() {
+void InitTelnet()
+{
   MySERIAL.setWelcomeMsg("TelnetSpy console started for ");
   MySERIAL.setRejectMsg("Sorry, TelnetSpy console already connected to ");
   MySERIAL.setCallbackOnConnect(telnetConnected);
@@ -17,15 +18,17 @@ void InitTelnet() {
 
   MySERIAL.setDebugOutput(false);
 }
-void telnetConnected() {
+void telnetConnected()
+{
   char ipoutBuf[18];
 
   IPAddress ip = WiFi.localIP();
-	sprintf(ipoutBuf,"%u.%u.%u.%u",ip[0],ip[1],ip[2],ip[3]);
+  sprintf(ipoutBuf, "%u.%u.%u.%u", ip[0], ip[1], ip[2], ip[3]);
   MySERIAL.println(myTime.dateTime("H:i:s.v:") + "Telnet connection established on " + String(ipoutBuf));
-//  MySERIAL.println("Telnet connection established on " + String(ipoutBuf));
+  //  MySERIAL.println("Telnet connection established on " + String(ipoutBuf));
 }
 
-void telnetDisconnected() {
+void telnetDisconnected()
+{
   MySERIAL.println(" Telnet connection closed.");
 }

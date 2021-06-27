@@ -33,4 +33,3 @@ void DebugPrint(String message, int Level = DBG_ALWAYS, boolean time = false);
  * @param time boolean       True to print current time on message.
  */
 void DebugPrintln(String message, int Level = DBG_ALWAYS, boolean time = false);
-

@@ -52,8 +52,8 @@ void lcdSetup()
 void setup()
 {
   MySetup();
-//  Serial.begin(115200);
-//  multiplexSetup();
+  //  Serial.begin(115200);
+  //  multiplexSetup();
 }
 
 void loop()

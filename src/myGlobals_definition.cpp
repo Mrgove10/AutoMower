@@ -8,7 +8,7 @@ WiFiClient espClient;
 
 /************************* MQTT *********************************/
 
-PubSubClient MQTTclient (espClient);
+PubSubClient MQTTclient(espClient);
 
 /************************* Debug management using TelnetSpy *********************************/
 
@@ -29,4 +29,4 @@ unsigned long OTAelapsed = 0;
 /************************* Eztime *********************************/
 // do not place before EEprom definition section or causes conflict !!
 Timezone myTime;
-const int NTPRefresh = 60*60;
+const int NTPRefresh = 60 * 60;

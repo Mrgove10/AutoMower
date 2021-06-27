@@ -8,13 +8,14 @@
 #include "MQTT/MQTTSubscribe.h"
 #include "MQTT/MQTTUnSubscribe.h"
 
-void MQTTCallback(char* topic, byte* message, unsigned int length) {
+void MQTTCallback(char *topic, byte *message, unsigned int length)
+{
 
-  static String lastCommand; 
+  static String lastCommand;
 
   DebugPrintln("Start of MQTTCallback...", DBG_VERBOSE, true);
-  
-/*
+
+  /*
   display.clear();
   display.drawCircle(0,0,3);
   display.display();
@@ -34,43 +35,48 @@ void MQTTCallback(char* topic, byte* message, unsigned int length) {
   DebugPrint("Message arrived on topic: ", DBG_INFO, true);
   DebugPrint(topic);
   DebugPrint(". Message: ");
-  
-  for (unsigned int i = 0; i < length; i++) {
+
+  for (unsigned int i = 0; i < length; i++)
+  {
     DebugPrint(String((char)message[i]));
     messageTemp += (char)message[i];
   }
   DebugPrintln("");
 
-  if (String(topic) == String(MQTT_COMMAND_CHANNEL)) {
+  if (String(topic) == String(MQTT_COMMAND_CHANNEL))
+  {
 
     if (String(messageTemp) == "OTA" &&
         String(messageTemp) != lastCommand &&
-        lastCommand != ""){
+        lastCommand != "")
+    {
       DebugPrintln("                        OTA Requested", DBG_INFO, true);
       lastCommand = String(messageTemp);
       otaFlag = true;
       OTAHandle();
-    }  
-    
-    else if(String(messageTemp) == lastCommand ){
+    }
+
+    else if (String(messageTemp) == lastCommand)
+    {
       DebugPrintln(" ...... Nothing (same command) !!!!", DBG_DEBUG, true);
     }
-    
-    else {
-      DebugPrintln( " ...... MQTTcommand not recognised !!!!", DBG_WARNING, true);
+
+    else
+    {
+      DebugPrintln(" ...... MQTTcommand not recognised !!!!", DBG_WARNING, true);
     }
   }
 
-/* other channel */
+  /* other channel */
 
-/*
+  /*
   if (String(topic) == String(XXXXXXXXX)) {
 
 // do something
 
   }
 */
-/*
+  /*
   if (String(topic) == String(MQTTLinkyChan)) {
       String Payload_String;
       FirebaseJson JSONDataPayload;
@@ -96,5 +102,4 @@ void MQTTCallback(char* topic, byte* message, unsigned int length) {
 */
 
   DebugPrintln("End of MQTTCallback...", DBG_VERBOSE, true);
-
 }
