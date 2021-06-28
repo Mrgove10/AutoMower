@@ -7,7 +7,7 @@
 /**
  * Checks to see if rain sensor is connected (and hopefully functionning)
  * 
- *  * * @return true if rain sensor check is ok
+ * @return true if rain sensor check is ok
  */
 bool RainSensorCheck(void);
 

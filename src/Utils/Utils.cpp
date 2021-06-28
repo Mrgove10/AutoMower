@@ -61,6 +61,45 @@ String char_reset_reason(byte reason)
   }
 }
 
+/**
+ * return a character depending on debug level
+ * 
+ * @param level     int        Debug message level.
+ * @return String based on level
+ */
+String DebugLevelChar(const int level){
+    switch (level)
+  {
+  case DBG_ALWAYS:
+    return DBG_ALWAYS_TEXT;
+    break;
+
+  case DBG_ERROR:
+    return DBG_ERROR_TEXT;
+    break;
+
+  case DBG_WARNING:
+    return DBG_WARNING_TEXT;
+    break;
+
+  case DBG_INFO:
+    return DBG_INFO_TEXT;
+    break;
+
+  case DBG_DEBUG:
+    return DBG_DEBUG_TEXT;
+    break;
+
+  case DBG_VERBOSE:
+    return DBG_VERBOSE_TEXT;
+    break;
+
+  default:
+    return "";
+  }
+
+}
+
 void DebugPrint(String message, int level, boolean time)
 {
 
@@ -72,35 +111,7 @@ void DebugPrint(String message, int level, boolean time)
     timeStr = myTime.dateTime("H:i:s");
   }
 
-  switch (level)
-  {
-  case DBG_ALWAYS:
-    debugLevelStr = String(DBG_ALWAYS_TEXT);
-    break;
-
-  case DBG_ERROR:
-    debugLevelStr = String(DBG_ERROR_TEXT);
-    break;
-
-  case DBG_WARNING:
-    debugLevelStr = String(DBG_WARNING_TEXT);
-    break;
-
-  case DBG_INFO:
-    debugLevelStr = String(DBG_INFO_TEXT);
-    break;
-
-  case DBG_DEBUG:
-    debugLevelStr = String(DBG_DEBUG_TEXT);
-    break;
-
-  case DBG_VERBOSE:
-    debugLevelStr = String(DBG_VERBOSE_TEXT);
-    break;
-
-  default:
-    debugLevelStr = "";
-  }
+  debugLevelStr = String(DebugLevelChar(level));
 
   /*
   Serial.print ("Level:"+String(Level));
@@ -129,7 +140,7 @@ void DebugPrintln(String message, int level, boolean time)
 void LogPrintln(const String message, const String tags, const int level)
 {
   String timeStr = myTime.dateTime("H:i:s");
-  String messageStr = timeStr + " - " + message; 
+  String messageStr = timeStr + " -" + DebugLevelChar(level) + "- " + message; 
   DebugPrintln(messageStr, level, false);
   MQTTSendLogMessage(MQTT_LOG_CHANNEL, messageStr.c_str(), tags.c_str(), level);
 }

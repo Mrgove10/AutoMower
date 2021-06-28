@@ -20,6 +20,14 @@ String char_reset_reason(byte reason);
 #define DBG_VERBOSE_TEXT "V"
 
 /**
+ * return a character depending on debug level
+ * 
+ * @param level     int        Debug message level.
+ * @return String based on level
+ */
+String DebugLevelChar(const int level);
+
+/**
  * Prints a debug message on Telnet and USB serial connection with no new line
  * 
  * @param message   String     Message to print
