@@ -15,15 +15,11 @@ int MQTTErrorCount = 0;
 /************************* Debug management using TelnetSpy *********************************/
 
 TelnetSpy SerialAndTelnet;
-const int tcpPort = 1000;
-WiFiServer tcpServer(tcpPort);
+WiFiServer tcpServer(TCP_PORT);
 
 int debugLevel = DBG_VERBOSE;
 
 /************************* OTA *********************************/
-
-const int OTAPort = 3232;
-const unsigned long OTATimeout = 180000;
 
 bool otaFlag = false;
 unsigned long OTAelapsed = 0;
@@ -31,4 +27,3 @@ unsigned long OTAelapsed = 0;
 /************************* Eztime *********************************/
 // do not place before EEprom definition section or causes conflict !!
 Timezone myTime;
-const int NTPRefresh = 60 * 60;

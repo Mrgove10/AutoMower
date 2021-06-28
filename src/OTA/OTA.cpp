@@ -10,7 +10,7 @@
 void OTASetup(void)
 {
 
-  ArduinoOTA.setPort(OTAPort);
+  ArduinoOTA.setPort(OTA_PORT);
 
   ArduinoOTA.setHostname(ESPHOSTNAME);
 
@@ -100,7 +100,7 @@ void OTAHandle(void)
     DebugPrintln("Waiting for OTA upload ", DBG_ALWAYS, true);
     SerialAndTelnet.handle();
     MQTTUnSubscribe();  // no MQTT update to avoid any interruption during upload
-    while (OTAelapsed < OTATimeout)
+    while (OTAelapsed < OTA_TIMEOUT)
     {
       ArduinoOTA.handle();
       OTAelapsed = millis() - otaStart;
@@ -114,6 +114,6 @@ void OTAHandle(void)
 
     otaFlag = false;
 
-    setInterval(NTPRefresh); // NTP updates back on
+    setInterval(NTP_REFRESH); // NTP updates back on
   }
 }

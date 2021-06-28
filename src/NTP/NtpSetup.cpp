@@ -7,7 +7,7 @@ void NtpSetup(void)
 
   setDebug(INFO, MySERIAL);
 
-  setInterval(NTPRefresh); // in seconds - Default is 10 minutes
+  setInterval(NTP_REFRESH); // in seconds - Default is 10 minutes
                            // myTime.setLocation("Europe/Paris");
   myTime.setPosix(POSIXTZ);
 

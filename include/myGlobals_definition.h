@@ -9,7 +9,7 @@ extern int MQTTErrorCount;
 /************************* Debug management using TelnetSpy *********************************/
 #include <TelnetSpy.h>
 #define MySERIAL SerialAndTelnet
-extern const int tcpPort;
+#define TCP_PORT 1000
 extern WiFiServer tcpServer;
 extern TelnetSpy SerialAndTelnet;
 
@@ -18,8 +18,8 @@ extern int debugLevel;
 /************************* OTA *********************************/
 #include <ArduinoOTA.h>
 
-extern const int OTAPort;
-extern const unsigned long OTATimeout;
+#define OTA_PORT 3232
+#define OTA_TIMEOUT 180000
 
 extern bool otaFlag;
 extern unsigned long OTAelapsed;
@@ -28,5 +28,5 @@ extern unsigned long OTAelapsed;
 // do not place before EEprom definition section or causes conflict !!
 #include <ezTime.h>
 extern Timezone myTime;
-extern const int NTPRefresh;
+#define NTP_REFRESH 3600
 #define POSIXTZ "CET-1CEST,M3.5.0,M10.5.0/3"
