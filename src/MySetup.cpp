@@ -9,6 +9,7 @@
 #include "MQTT/MQTT.h"
 #include "EEPROM/EEPROM.h"
 #include "Bumper/Bumper.h"
+#include "Tilt/Tilt.h"
 #include "StartupChecks.h"
 
 void MySetup(void)
@@ -57,6 +58,8 @@ void MySetup(void)
   LogPrintln(Resetreason, TAG_RESET, DBG_WARNING);
 
   BumperSetup();
+
+  TiltSetup();
   
   bool startupChecksOk = StartupChecks();
 

@@ -80,7 +80,7 @@ bool TiltSensorCheck(int tilt)
   
   DebugPrintln(tiltStr + " tilt input value: " + String(raw), DBG_VERBOSE, true);
   
-  if (!raw) {
+  if (raw) {
     DebugPrintln(tiltStr + " tilt sensor Ok", DBG_INFO, true);
     return true;
   }
