@@ -44,8 +44,13 @@ extern Timezone myTime;
 
 /************************* Bumper variables *********************************/
 
-extern bool LeftBumpertriggered;
-extern bool RightBumpertriggered;
+extern bool LeftBumperTriggered;
+extern bool RightBumperTriggered;
+
+/************************* Tilt variables *********************************/
+
+extern bool HorizontalTiltTriggered;
+extern bool VerticalTiltTriggered;
 
 /************************* Program variables *********************************/
 

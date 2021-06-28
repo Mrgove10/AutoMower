@@ -27,15 +27,8 @@ void BumperSetup(void);
 /**
  * Checks to see if bumper sensor is connected (and hopefully functionning)
  * @param bumper int    bumper number
- * @return boolean true if rain sensor check is ok
+ * @return boolean true if sensor check is ok
  */
 bool BumperSensorCheck(int bumper);
-
-/**
- * Function to know if it is raining
- * 
- * * @return true if rain is detected
- */
-//bool isRaining(void);
 
 #endif

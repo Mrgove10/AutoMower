@@ -3,6 +3,7 @@
 #include "Utils/Utils.h"
 #include "Rain/Rain.h"
 #include "Bumper/Bumper.h"
+#include "Tilt/Tilt.h"
 
 /**
  * Runs all Mower checks on Startup
@@ -17,6 +18,8 @@ bool StartupChecks(void)
   DebugPrintln("Starting AutoMower startup checks.....", DBG_INFO, true);
   DebugPrintln("");
 
+  if (!TiltSensorCheck(TILT_HORIZONTAL)) {allChecks = false;};
+  if (!TiltSensorCheck(TILT_VERTICAL)) {allChecks = false;};
 
   if (!BumperSensorCheck(BUMPER_LEFT)) {allChecks = false;};
   if (!BumperSensorCheck(BUMPER_RIGHT)) {allChecks = false;};

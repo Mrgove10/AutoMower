@@ -39,8 +39,13 @@ Timezone myTime;
 
 /************************* Bumper variables *********************************/
 
-bool LeftBumpertriggered = false;
-bool RightBumpertriggered = false;
+bool LeftBumperTriggered = false;
+bool RightBumperTriggered = false;
+
+/************************* Tilt variables *********************************/
+
+bool HorizontalTiltTriggered = false;
+bool VerticalTiltTriggered = false;
 
 /************************* Program variables *********************************/
 

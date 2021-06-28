@@ -17,7 +17,7 @@ ICACHE_RAM_ATTR void LeftBumperISR(void)
   LastLeftBumperStatus = !LastLeftBumperStatus;  // Capture every status change
 
   if (millis() - LastLeftBumperChange > BUMPER_DEBOUNCE_TIMEOUT) {
-    LeftBumpertriggered = (LastLeftBumperStatus == HIGH);
+    LeftBumperTriggered = (LastLeftBumperStatus == HIGH);
     LastLeftBumperChange = millis();
   }
 }
@@ -34,7 +34,7 @@ ICACHE_RAM_ATTR void RightBumperISR(void)
   LastRightBumperStatus = !LastRightBumperStatus;  // Capture every status change
 
   if (millis() - LastRightBumperChange > BUMPER_DEBOUNCE_TIMEOUT) {
-    RightBumpertriggered = (LastRightBumperStatus == HIGH);
+    RightBumperTriggered = (LastRightBumperStatus == HIGH);
     LastRightBumperChange = millis();
   }
 }
@@ -86,7 +86,7 @@ bool BumperSensorCheck(int bumper)
   }
   else
   {
-    LogPrintln(bumperStr + " bumper not found or triggered", TAG_CHECK, DBG_ERROR);
+    LogPrintln(bumperStr + " bumper not found or is triggered", TAG_CHECK, DBG_ERROR);
 //    DebugPrintln(bumperStr + " bumper not found or triggered", DBG_ERROR, true);
     return false;
   }

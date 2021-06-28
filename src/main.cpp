@@ -77,13 +77,23 @@ void loop()
 */
   EEPROMSave(false);
 
-  if (RightBumpertriggered) {
+  if (RightBumperTriggered) {
     DebugPrintln("Right Bumper Triggered !", DBG_INFO, true);
-    RightBumpertriggered = false;
+    RightBumperTriggered = false;
   }
-  if (LeftBumpertriggered) {
+  if (LeftBumperTriggered) {
     DebugPrintln("Left Bumper Triggered !", DBG_INFO, true);
-    LeftBumpertriggered = false;
+    LeftBumperTriggered = false;
+  }
+  
+  if (HorizontalTiltTriggered) {
+    DebugPrintln("Horizontal Tilt sensor Triggered !", DBG_INFO, true);
+    HorizontalTiltTriggered = false;
+  }
+
+  if (VerticalTiltTriggered) {
+    DebugPrintln("Vertical Tilt sensor Triggered !", DBG_INFO, true);
+    VerticalTiltTriggered = false;
   }
 
   MQTTclient.loop();

@@ -17,8 +17,8 @@
 #define PIN_MCP_SPARE_3 15
 
 // ESP pins
-#define PIN_ESP_TILT_1 4
-#define PIN_ESP_TILT_2 5
+#define PIN_ESP_TILT_HORIZONTAL 4
+#define PIN_ESP_TILT_VERTICAL 5
 
 #define PIN_ESP_MOTOR_CUT_RELAY 12
 
