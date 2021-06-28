@@ -15,6 +15,7 @@
 // -------------------- Tags ------------------------
 #define TAG_RESET "RESET"
 #define TAG_OTA "OTA"
+#define TAG_CHECK "CHECK"
 
 // -------------------- Serial communications ------------------------
 #define SERIAL_BAUD 115200

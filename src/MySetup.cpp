@@ -8,6 +8,7 @@
 #include "OTA/OTA.h"
 #include "MQTT/MQTT.h"
 #include "EEPROM/EEPROM.h"
+#include "StartupChecks.h"
 
 void MySetup(void)
 {
@@ -53,4 +54,7 @@ void MySetup(void)
   MQTTInit();
 
   LogPrintln(Resetreason, TAG_RESET, DBG_WARNING);
+
+  StartupChecks();
+  
 }
