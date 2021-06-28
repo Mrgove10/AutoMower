@@ -24,9 +24,27 @@ extern int debugLevel;
 extern bool otaFlag;
 extern unsigned long OTAelapsed;
 
+/************************* EEPROM Management *********************************/
+
+#include "EEPROM.h"
+#include "EEPROM/EEPROM_Struct.h"
+
+extern EEPROMLoadStruct EEPROMLoad;
+extern bool EEPROMValid;
+extern bool EEPROMUpdate;
+
+extern unsigned long LastEepromWriteTime;
+
 /************************* Eztime *********************************/
 // do not place before EEprom definition section or causes conflict !!
 #include <ezTime.h>
 extern Timezone myTime;
 #define NTP_REFRESH 3600
 #define POSIXTZ "CET-1CEST,M3.5.0,M10.5.0/3"
+
+/************************* Program variables *********************************/
+
+extern byte TestVal1;
+extern byte TestVal2;
+extern byte TestVal3;
+extern int TestVal4;

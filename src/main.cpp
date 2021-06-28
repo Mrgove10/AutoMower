@@ -3,6 +3,7 @@
 #include "myGlobals_definition.h"
 #include "mySetup.h"
 #include "Utils/Utils.h"
+#include "EEPROM/EEPROM.h"
 #include <pin_definitions.h>
 
 #include <NewPing.h>
@@ -59,12 +60,24 @@ void setup()
 void loop()
 {
 
-  DebugPrintln("loop Always", DBG_ALWAYS, true);
+/*  DebugPrintln("loop Always", DBG_ALWAYS, true);
   DebugPrintln("loop Error", DBG_ERROR, true);
   DebugPrintln("loop Warning", DBG_WARNING, true);
   DebugPrintln("loop Info", DBG_INFO, true);
   DebugPrintln("loop Debug", DBG_DEBUG, true);
   DebugPrintln("loop Verbose", DBG_VERBOSE, true);
+*/
+  TestVal1 = TestVal1 + 1;
+  TestVal2 = TestVal2 + 2;
+  TestVal3 = TestVal3 + 3;
+  TestVal4 = TestVal4 + 4;
+  
+  DebugPrint("TestVal1=" + String(TestVal1), DBG_INFO, true);
+  DebugPrint(" Val2=" + String(TestVal2));
+  DebugPrint(" Val3=" + String(TestVal3));
+  DebugPrintln(" Val4=" + String(TestVal4));
+
+  EEPROMSave(false);
 
   MQTTclient.loop();
 

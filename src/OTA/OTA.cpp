@@ -97,7 +97,7 @@ void OTAHandle(void)
 
     setInterval(0); // no NTP update to avoid any interruption during upload
 
-    DebugPrintln("Waiting for OTA upload ", DBG_ALWAYS, true);
+    DebugPrintln("Waiting for OTA upload ", DBG_INFO, true);
     SerialAndTelnet.handle();
     MQTTUnSubscribe();  // no MQTT update to avoid any interruption during upload
     while (OTAelapsed < OTA_TIMEOUT)

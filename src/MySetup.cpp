@@ -7,11 +7,13 @@
 #include "Utils/Utils.h"
 #include "OTA/OTA.h"
 #include "MQTT/MQTT.h"
+#include "EEPROM/EEPROM.h"
 
 void MySetup(void)
 {
 
   Serial.begin(SERIAL_BAUD);
+  delay(500);
 
   // Setup pins
 
@@ -33,6 +35,8 @@ void MySetup(void)
   DebugPrintln(Resetreason,true);
   DebugPrintln("Serial Baud:" + String(Serial.baudRate()));
 
+  EEPROMSetup();
+  
   setup_wifi();
 
   OTASetup();

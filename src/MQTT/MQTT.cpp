@@ -41,7 +41,7 @@ void MQTTSendLogMessage(const char *MQTTTopic, const char *Message, const char *
 
     MQTTclient.loop();
 
-    DebugPrint("Sending to :[" + String(MQTTTopic) + "] " + String(MQTTpayload) + " => " + String(result), DBG_VERBOSE, true);
+    DebugPrintln("Sending to :[" + String(MQTTTopic) + "] " + String(MQTTpayload) + " => " + String(result), DBG_VERBOSE, true);
 }
 
 void MQTTCallback(char *topic, byte *message, unsigned int length)
