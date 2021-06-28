@@ -53,8 +53,6 @@ void lcdSetup()
 void setup()
 {
   MySetup();
-  //  Serial.begin(115200);
-  //  multiplexSetup();
 }
 
 void loop()
@@ -66,7 +64,7 @@ void loop()
   DebugPrintln("loop Info", DBG_INFO, true);
   DebugPrintln("loop Debug", DBG_DEBUG, true);
   DebugPrintln("loop Verbose", DBG_VERBOSE, true);
-*/
+
   TestVal1 = TestVal1 + 1;
   TestVal2 = TestVal2 + 2;
   TestVal3 = TestVal3 + 3;
@@ -76,14 +74,23 @@ void loop()
   DebugPrint(" Val2=" + String(TestVal2));
   DebugPrint(" Val3=" + String(TestVal3));
   DebugPrintln(" Val4=" + String(TestVal4));
-
+*/
   EEPROMSave(false);
+
+  if (RightBumpertriggered) {
+    DebugPrintln("Right Bumper Triggered !", DBG_INFO, true);
+    RightBumpertriggered = false;
+  }
+  if (LeftBumpertriggered) {
+    DebugPrintln("Left Bumper Triggered !", DBG_INFO, true);
+    LeftBumpertriggered = false;
+  }
 
   MQTTclient.loop();
 
   SerialAndTelnet.handle();
 
-  delay(5000);
+  delay(500);
 
   /*
   for (uint8_t i = 0; i < SONAR_NUM; i++)

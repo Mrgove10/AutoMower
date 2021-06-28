@@ -24,8 +24,8 @@
 
 #define PIN_ESP_SONAR_LEFT 13
 
-#define PIN_ESP_BUMPER_1 14
-#define PIN_ESP_BUMPER_2 15
+#define PIN_ESP_BUMPER_LEFT 14
+#define PIN_ESP_BUMPER_RIGHT 15
 
 #define PIN_ESP_GPS_RX 16
 #define PIN_ESP_GPS_TX 17

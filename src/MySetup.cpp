@@ -8,6 +8,7 @@
 #include "OTA/OTA.h"
 #include "MQTT/MQTT.h"
 #include "EEPROM/EEPROM.h"
+#include "Bumper/Bumper.h"
 #include "StartupChecks.h"
 
 void MySetup(void)
@@ -55,6 +56,9 @@ void MySetup(void)
 
   LogPrintln(Resetreason, TAG_RESET, DBG_WARNING);
 
-  StartupChecks();
+  BumperSetup();
   
+  bool startupChecksOk = StartupChecks();
+
+  DebugPrintln("End of Setup()", DBG_VERBOSE, true);
 }

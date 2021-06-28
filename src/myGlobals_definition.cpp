@@ -37,6 +37,10 @@ unsigned long LastEepromWriteTime = 0;
 // do not place before EEprom definition section or causes conflict !!
 Timezone myTime;
 
+/************************* Bumper variables *********************************/
+
+bool LeftBumpertriggered = false;
+bool RightBumpertriggered = false;
 
 /************************* Program variables *********************************/
 

@@ -42,7 +42,13 @@ extern Timezone myTime;
 #define NTP_REFRESH 3600
 #define POSIXTZ "CET-1CEST,M3.5.0,M10.5.0/3"
 
+/************************* Bumper variables *********************************/
+
+extern bool LeftBumpertriggered;
+extern bool RightBumpertriggered;
+
 /************************* Program variables *********************************/
+
 
 extern byte TestVal1;
 extern byte TestVal2;

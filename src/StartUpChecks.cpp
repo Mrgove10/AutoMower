@@ -2,6 +2,8 @@
 #include "StartupChecks.h"
 #include "Utils/Utils.h"
 #include "Rain/Rain.h"
+#include "Bumper/Bumper.h"
+
 /**
  * Runs all Mower checks on Startup
  * 
@@ -14,9 +16,12 @@ bool StartupChecks(void)
   DebugPrintln("");
   DebugPrintln("Starting AutoMower startup checks.....", DBG_INFO, true);
   DebugPrintln("");
-  
+
+  allChecks = allChecks && BumperSensorCheck(BUMPER_LEFT);
+  allChecks = allChecks && BumperSensorCheck(BUMPER_RIGHT);
+ 
   allChecks = allChecks && RainSensorCheck();
-   
+  
    // insert here all other startup checks
 
   if (allChecks) 
