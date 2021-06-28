@@ -17,11 +17,12 @@ bool StartupChecks(void)
   DebugPrintln("Starting AutoMower startup checks.....", DBG_INFO, true);
   DebugPrintln("");
 
-  allChecks = allChecks && BumperSensorCheck(BUMPER_LEFT);
-  allChecks = allChecks && BumperSensorCheck(BUMPER_RIGHT);
+
+  if (!BumperSensorCheck(BUMPER_LEFT)) {allChecks = false;};
+  if (!BumperSensorCheck(BUMPER_RIGHT)) {allChecks = false;};
  
-  allChecks = allChecks && RainSensorCheck();
-  
+  if (!RainSensorCheck()) {allChecks = false;};
+
    // insert here all other startup checks
 
   if (allChecks) 

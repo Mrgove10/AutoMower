@@ -86,8 +86,8 @@ bool BumperSensorCheck(int bumper)
   }
   else
   {
-//    LogPrintln(bumperStr + " bumper not found or triggered", TAG_CHECK, DBG_ERROR);
-    DebugPrintln(bumperStr + " bumper not found or triggered", DBG_ERROR, true);
+    LogPrintln(bumperStr + " bumper not found or triggered", TAG_CHECK, DBG_ERROR);
+//    DebugPrintln(bumperStr + " bumper not found or triggered", DBG_ERROR, true);
     return false;
   }
 }

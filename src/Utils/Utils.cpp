@@ -125,7 +125,7 @@ void DebugPrint(String message, int level, boolean time)
     }
     else
     {
-      MySERIAL.print(timeStr + "-" + debugLevelStr + "- " + message);
+      MySERIAL.print(timeStr + "-" + debugLevelStr + "-" + message);
     }
   }
 }
