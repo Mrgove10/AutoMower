@@ -36,7 +36,7 @@ void MQTTSendLogMessage(const char *MQTTTopic, const char *Message, const char *
     bool result = MQTTclient.publish(MQTTTopic, MQTTpayload);
     if (result != 1)
     {
-        MQTTErrorCount = MQTTErrorCount + 1;
+      MQTTErrorCount = MQTTErrorCount + 1;
     }
 
     MQTTclient.loop();

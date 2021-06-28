@@ -97,12 +97,10 @@ String DebugLevelChar(const int level){
   default:
     return "";
   }
-
 }
 
 void DebugPrint(String message, int level, boolean time)
 {
-
   String timeStr = "";
   String debugLevelStr = "";
 
@@ -140,7 +138,7 @@ void DebugPrintln(String message, int level, boolean time)
 void LogPrintln(const String message, const String tags, const int level)
 {
   String timeStr = myTime.dateTime("H:i:s");
-  String messageStr = timeStr + " -" + DebugLevelChar(level) + "- " + message; 
-  DebugPrintln(messageStr, level, false);
+  String messageStr = timeStr + "-" + DebugLevelChar(level) + "-" + message; 
+  DebugPrintln(messageStr, false);
   MQTTSendLogMessage(MQTT_LOG_CHANNEL, messageStr.c_str(), tags.c_str(), level);
 }
