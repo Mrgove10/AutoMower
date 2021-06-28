@@ -17,7 +17,7 @@ ICACHE_RAM_ATTR void LeftBumperISR(void)
   LastLeftBumperStatus = !LastLeftBumperStatus;  // Capture every status change
 
   if (millis() - LastLeftBumperChange > BUMPER_DEBOUNCE_TIMEOUT) {
-    LeftBumpertriggered = LastLeftBumperStatus;
+    LeftBumpertriggered = (LastLeftBumperStatus == HIGH);
     LastLeftBumperChange = millis();
   }
 }
@@ -34,7 +34,7 @@ ICACHE_RAM_ATTR void RightBumperISR(void)
   LastRightBumperStatus = !LastRightBumperStatus;  // Capture every status change
 
   if (millis() - LastRightBumperChange > BUMPER_DEBOUNCE_TIMEOUT) {
-    RightBumpertriggered = LastRightBumperStatus;
+    RightBumpertriggered = (LastRightBumperStatus == HIGH);
     LastRightBumperChange = millis();
   }
 }
