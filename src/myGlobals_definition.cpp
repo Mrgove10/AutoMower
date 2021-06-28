@@ -10,6 +10,8 @@ WiFiClient espClient;
 
 PubSubClient MQTTclient(espClient);
 
+int MQTTErrorCount = 0;
+
 /************************* Debug management using TelnetSpy *********************************/
 
 TelnetSpy SerialAndTelnet;
@@ -20,7 +22,7 @@ int debugLevel = DBG_VERBOSE;
 
 /************************* OTA *********************************/
 
-const int OTAPort = 8266;
+const int OTAPort = 3232;
 const unsigned long OTATimeout = 180000;
 
 bool otaFlag = false;

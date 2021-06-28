@@ -23,6 +23,7 @@ void MQTTReconnect()
       DebugPrint(String(MQTTclient.state()));
       DebugPrintln(" try again in 5 seconds");
       // Wait 5 seconds before retrying
+      MQTTErrorCount = MQTTErrorCount + 1;
       delay(5000);
     }
   }

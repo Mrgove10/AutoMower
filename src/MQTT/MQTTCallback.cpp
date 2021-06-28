@@ -47,10 +47,9 @@ void MQTTCallback(char *topic, byte *message, unsigned int length)
   {
 
     if (String(messageTemp) == "OTA" &&
-        String(messageTemp) != lastCommand &&
-        lastCommand != "")
+        String(messageTemp) != lastCommand)
     {
-      DebugPrintln("                        OTA Requested", DBG_INFO, true);
+      LogPrintln("Request for OTA update", TAG_OTA, DBG_INFO);
       lastCommand = String(messageTemp);
       otaFlag = true;
       OTAHandle();

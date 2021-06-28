@@ -19,17 +19,26 @@ String char_reset_reason(byte reason);
 /**
  * Prints a debug message on Telnet and USB serial connection with no new line
  * 
- * @param message String     Message to print
- * @param Level int          Debug message level.
- * @param time boolean       True to print current time on message.
+ * @param message   String     Message to print
+ * @param level     int        Debug message level.
+ * @param time      boolean    True to print current time on message.
  */
-void DebugPrint(String message, int Level = DBG_ALWAYS, boolean time = false);
+void DebugPrint(const String message, const int level = DBG_ALWAYS, const boolean time = false);
 
 /**
  * Prints a debug message on Telnet and USB serial connection with new line
  * 
- * @param message String     Message to print
- * @param Level int          Debug message level. 
- * @param time boolean       True to print current time on message.
+ * @param message   String     Message to print
+ * @param level     int        Debug message level. 
+ * @param time      boolean    True to print current time on message.
  */
-void DebugPrintln(String message, int Level = DBG_ALWAYS, boolean time = false);
+void DebugPrintln(const String message, const int level = DBG_ALWAYS, const boolean time = false);
+
+/**
+ * Logs a message to server message log and prints a debug message on Telnet and USB serial connection (new line)
+ *  * 
+ * @param message   String     Message to print
+ * @param tags      String     List of tags (comma separated)
+ * @param level     int        Debug message level. 
+ */
+void LogPrintln(const String message, const String tags, const int level = DBG_ALWAYS);

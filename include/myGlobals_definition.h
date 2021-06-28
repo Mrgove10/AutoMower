@@ -4,6 +4,7 @@
 #include <PubSubClient.h>
 
 extern PubSubClient MQTTclient;
+extern int MQTTErrorCount;
 
 /************************* Debug management using TelnetSpy *********************************/
 #include <TelnetSpy.h>

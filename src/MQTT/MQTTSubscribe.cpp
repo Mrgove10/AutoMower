@@ -6,5 +6,5 @@ void MQTTSubscribe()
 {
   bool SubStatus;
   SubStatus = MQTTclient.subscribe(MQTT_COMMAND_CHANNEL);
-  DebugPrintln(String("SubStatus ") + MQTT_COMMAND_CHANNEL + String("=") + String(SubStatus));
+  DebugPrintln(String("SubscribeStatus ") + MQTT_COMMAND_CHANNEL + String("=") + String(SubStatus));
 };

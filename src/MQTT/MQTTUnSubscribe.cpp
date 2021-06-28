@@ -5,5 +5,5 @@
 void MQTTUnSubscribe()
 {
   boolean SubStatus = MQTTclient.unsubscribe(MQTT_COMMAND_CHANNEL);
-  DebugPrintln(String("SubStatus ") + MQTT_COMMAND_CHANNEL + String("=") + String(SubStatus));
+  DebugPrintln(String("UnSubscribeStatus ") + MQTT_COMMAND_CHANNEL + String("=") + String(SubStatus));
 };

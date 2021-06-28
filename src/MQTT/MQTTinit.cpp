@@ -7,7 +7,7 @@ void MQTTInit(void)
 {
   MQTTclient.setServer(MQTT_SERVER, MQTT_PORT);
 
-  MQTTclient.setBufferSize(512);
+  MQTTclient.setBufferSize(MQTT_MAX_PAYLOAD);
 
   MQTTclient.setCallback(MQTTCallback);
 

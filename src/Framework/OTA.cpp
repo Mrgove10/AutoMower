@@ -3,6 +3,9 @@
 #include "Environment_definitions.h"
 #include "Framework/OTA.h"
 #include "Framework/Utils.h"
+#include "MQTT/MQTTReconnect.h"
+#include "MQTT/MQTTSubscribe.h"
+#include "MQTT/MQTTUnSubscribe.h"
 
 /* OTA init procedure */
 
@@ -96,9 +99,9 @@ void OTAHandle(void)
 
     setInterval(0); // no NTP update to avoid any interruption during upload
 
-    DebugPrintln("Uploading ", DBG_ALWAYS, true);
+    DebugPrintln("Waiting for OTA upload ", DBG_ALWAYS, true);
     SerialAndTelnet.handle();
-    //    MQTTclient.unsubscribe(LinkyDataChan);  // no MQTT update to avoid any interruption during upload
+    MQTTUnSubscribe();  // no MQTT update to avoid any interruption during upload
     while (OTAelapsed < OTATimeout)
     {
       ArduinoOTA.handle();
@@ -106,12 +109,10 @@ void OTAHandle(void)
       delay(250);
     }
     DebugPrintln("Upload timeout", DBG_ERROR, true);
-    //    reconnect();
-    String msg = myTime.dateTime("H:i:s ") + "OTA upload request timeout";
-    //    MQTTSendNote(CarPlugNoteChan, msg.c_str(), "OTA");
-    //    MQTTclient.loop();
-    //    MQTTclient.setCallback(MQTTcallback);
-    //    MQTTclient.subscribe(LinkyDataChan);
+    MQTTReconnect();
+
+    MQTTSubscribe();
+    LogPrintln("OTA upload request timeout", TAG_OTA, DBG_WARNING);
 
     otaFlag = false;
 

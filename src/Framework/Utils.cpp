@@ -1,6 +1,8 @@
 #include <rom/rtc.h>
 #include "myGlobals_definition.h"
+#include "Environment_definitions.h"
 #include "Framework/Utils.h"
+#include "MQTT/MQTTSendLogMessage.h"
 
 // ESP32 Reset reason codes
 
@@ -59,7 +61,7 @@ String char_reset_reason(byte reason)
   }
 }
 
-void DebugPrint(String message, int Level, boolean time)
+void DebugPrint(String message, int level, boolean time)
 {
 
   String timeStr = "";
@@ -70,7 +72,7 @@ void DebugPrint(String message, int Level, boolean time)
     timeStr = myTime.dateTime("H:i:s");
   }
 
-  switch (Level)
+  switch (level)
   {
   case DBG_ALWAYS:
     debugLevelStr = String(DBG_ALWAYS_TEXT);
@@ -106,7 +108,7 @@ void DebugPrint(String message, int Level, boolean time)
   Serial.print (" | debugLevelStr:<"+debugLevelStr+">");
   Serial.println (" | timeStr:<"+timeStr+">");
 */
-  if (Level <= debugLevel)
+  if (level <= debugLevel)
   {
     if (debugLevelStr == " " && timeStr == "")
     {
@@ -119,7 +121,15 @@ void DebugPrint(String message, int Level, boolean time)
   }
 }
 
-void DebugPrintln(String message, int Level, boolean time)
+void DebugPrintln(String message, int level, boolean time)
 {
-  DebugPrint(message + String("\r\n"), Level, time);
+  DebugPrint(message + String("\r\n"), level, time);
+}
+
+void LogPrintln(const String message, const String tags, const int level)
+{
+  String timeStr = myTime.dateTime("H:i:s");
+  String messageStr = timeStr + " - " + message; 
+  DebugPrintln(messageStr, level, false);
+  MQTTSendLogMessage(MQTT_LOG_CHANNEL, messageStr.c_str(), tags.c_str(), level);
 }
