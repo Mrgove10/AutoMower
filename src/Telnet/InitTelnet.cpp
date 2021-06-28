@@ -5,8 +5,11 @@
 
 void InitTelnet()
 {
-  MySERIAL.setWelcomeMsg("TelnetSpy console started for ");
-  MySERIAL.setRejectMsg("Sorry, TelnetSpy console already connected to ");
+  char text[50];
+  sprintf(text, "TelnetSpy console started for ");
+  MySERIAL.setWelcomeMsg(text);
+  sprintf(text, "Sorry, TelnetSpy console already connected to ");
+  MySERIAL.setRejectMsg(text);
   MySERIAL.setCallbackOnConnect(telnetConnected);
   MySERIAL.setCallbackOnDisconnect(telnetDisconnected);
   MySERIAL.setBufferSize(2048);
