@@ -2,7 +2,7 @@
     This file contains the definition of all global variables
 */
 #include "myGlobals_definition.h"
-#include "Framework/Utils.h"
+#include "Utils/Utils.h"
 
 WiFiClient espClient;
 

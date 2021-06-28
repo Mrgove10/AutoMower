@@ -1,8 +1,8 @@
 #include <rom/rtc.h>
 #include "myGlobals_definition.h"
 #include "Environment_definitions.h"
-#include "Framework/Utils.h"
-#include "MQTT/MQTTSendLogMessage.h"
+#include "Utils/Utils.h"
+#include "MQTT/MQTT.h"
 
 // ESP32 Reset reason codes
 

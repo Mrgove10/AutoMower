@@ -1,7 +1,7 @@
 #include "myGlobals_definition.h"
 #include "Environment_definitions.h"
-#include "Framework/InitTelnet.h"
-#include "Framework/Utils.h"
+#include "Telnet/InitTelnet.h"
+#include "Utils/Utils.h"
 
 void InitTelnet()
 {

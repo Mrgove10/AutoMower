@@ -1,3 +1,6 @@
+#ifndef utils_h
+#define utils_h
+
 #include <Arduino.h>
 String char_reset_reason(byte reason);
 
@@ -42,3 +45,5 @@ void DebugPrintln(const String message, const int level = DBG_ALWAYS, const bool
  * @param level     int        Debug message level. 
  */
 void LogPrintln(const String message, const String tags, const int level = DBG_ALWAYS);
+
+#endif

@@ -1,13 +1,12 @@
 #include "myGlobals_definition.h"
 #include "Environment_definitions.h"
 #include "mySetup.h"
-#include "Framework/setup_wifi.h"
-#include "Framework/NtpSetup.h"
-#include "Framework/InitTelnet.h"
-#include "Framework/setup_wifi.h"
-#include "Framework/Utils.h"
-#include "Framework/OTA.h"
-#include "MQTT/MQTTInit.h"
+#include "Wifi/setup_wifi.h"
+#include "NTP/NtpSetup.h"
+#include "Telnet/InitTelnet.h"
+#include "Utils/Utils.h"
+#include "OTA/OTA.h"
+#include "MQTT/MQTT.h"
 
 void MySetup(void)
 {

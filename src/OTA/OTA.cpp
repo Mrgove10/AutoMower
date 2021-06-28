@@ -1,11 +1,9 @@
 //#include "reconnect.h"
 #include "myGlobals_definition.h"
 #include "Environment_definitions.h"
-#include "Framework/OTA.h"
-#include "Framework/Utils.h"
-#include "MQTT/MQTTReconnect.h"
-#include "MQTT/MQTTSubscribe.h"
-#include "MQTT/MQTTUnSubscribe.h"
+#include "OTA/OTA.h"
+#include "Utils/Utils.h"
+#include "MQTT/MQTT.h"
 
 /* OTA init procedure */
 
