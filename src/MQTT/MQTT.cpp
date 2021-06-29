@@ -166,6 +166,9 @@ void MQTTReconnect()
 
 void MQTTInit(void)
 {
+    lcd.setCursor(0, 2);
+    lcd.print(F("Server link ..."));
+
     MQTTclient.setServer(MQTT_SERVER, MQTT_PORT);
 
     MQTTclient.setBufferSize(MQTT_MAX_PAYLOAD);
@@ -173,4 +176,17 @@ void MQTTInit(void)
     MQTTclient.setCallback(MQTTCallback);
 
     MQTTReconnect();
+
+    lcd.setCursor(2, 3);
+
+    if (MQTTclient.connect(ESPHOSTNAME))
+    {
+      lcd.print(F("ESTABLISHED"));
+    }
+    else
+    {
+      lcd.print(F("FAILED"));
+      delay(TEST_SEQ_STEP_ERROR_WAIT);
+    }
+    delay(TEST_SEQ_STEP_WAIT);
 }

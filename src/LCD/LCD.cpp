@@ -20,11 +20,7 @@ void LCDSetup(void)
   
   DebugPrintln("LCD setup Done", DBG_VERBOSE, true);
 
-  lcd.print(F("LCD OK...")); 
-  delay(2000);
-
   lcd.clear();
-
   lcd.setCursor(0, 0);
   lcd.print(F("AutoMower")); 
   lcd.setCursor(6, 1);
@@ -33,6 +29,6 @@ void LCDSetup(void)
   lcd.print(__DATE__);
   lcd.print(F(" "));
   lcd.print(__TIME__);
-  delay(3000);
+  delay(2000);
 
 }

@@ -27,6 +27,11 @@ void OTASetup(void)
                        { // U_SPIFFS
                          type = "filesystem";
                        }
+                       lcd.clear();
+                       lcd.setCursor(0,0);
+                       lcd.print(F("OTA Update"));
+                       lcd.setCursor(0,2);
+                       lcd.print(F("In Progress ..."));
 
                        // NOTE: if updating SPIFFS this would be the place to unmount SPIFFS using SPIFFS.end()
                        //    MySERIAL.println("Start updating " + type);
@@ -37,15 +42,9 @@ void OTASetup(void)
 
   ArduinoOTA.onProgress([](unsigned int progress, unsigned int total)
                         {
-                          //    display.clear();
-                          //    display.drawProgressBar(4, 32, 120, 10, progress / (total / 100));
-
-                          // draw the percentage as String
-                          //    display.setTextAlignment(TEXT_ALIGN_CENTER);
-                          //    display.drawString(64,15,String(progress / (total / 100)) + "%");
-                          //    display.display();
-
-                          //    MySERIAL.printf("Progress: %u%%\r", (progress / (total / 100)));
+                          lcd.setCursor(16,2);
+                          lcd.print((progress*100) / total);
+                          lcd.print(F("%"));
                         });
 
   ArduinoOTA.onError([](ota_error_t error)
@@ -85,16 +84,16 @@ void OTAHandle(void)
     OTAelapsed = 0;
     IPAddress ip = WiFi.localIP();
 
-    //    char outBuf[18];
-    //    sprintf(outBuf,"%u.%u.%u.%u",ip[0],ip[1],ip[2],ip[3]);
-    //    display.clear();
-    //    display.setBrightness(Mybrightness);
-    //    display.setTextAlignment(TEXT_ALIGN_CENTER);
-    //    display.setFont(ArialMT_Plain_16);
-    //    display.drawString(64, 15, String("OTA Pending"));
-    //    display.drawString(64, 35, String(outBuf));
-    //    display.display();
-
+    char outBuf[18];
+    sprintf(outBuf,"%u.%u.%u.%u",ip[0],ip[1],ip[2],ip[3]);
+    lcd.clear();
+    lcd.setCursor(0,0);
+    lcd.print(F("OTA Update"));
+    lcd.setCursor(2,1);
+    lcd.print(F("Pending..."));
+    lcd.setCursor(2,3);
+    lcd.print(outBuf);
+    
     setInterval(0); // no NTP update to avoid any interruption during upload
 
     DebugPrintln("Waiting for OTA upload ", DBG_INFO, true);
@@ -107,6 +106,10 @@ void OTAHandle(void)
       delay(250);
     }
     DebugPrintln("Upload timeout", DBG_ERROR, true);
+    lcd.setCursor(2,3);
+    lcd.print(F("   Timeout !    "));
+    delay(TEST_SEQ_STEP_WAIT + TEST_SEQ_STEP_ERROR_WAIT);
+    
     MQTTReconnect();
 
     MQTTSubscribe();

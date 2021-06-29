@@ -57,8 +57,11 @@ extern bool RightBumperTriggered;
 extern bool HorizontalTiltTriggered;
 extern bool VerticalTiltTriggered;
 
-/************************* Program variables *********************************/
+/************************* Test sequence variables *********************************/
+#define TEST_SEQ_STEP_WAIT 1000
+#define TEST_SEQ_STEP_ERROR_WAIT 2000
 
+/************************* Program variables *********************************/
 
 extern byte TestVal1;
 extern byte TestVal2;

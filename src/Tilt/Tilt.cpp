@@ -4,6 +4,7 @@
 #include "myGlobals_definition.h"
 #include "Tilt/Tilt.h"
 #include "Utils/Utils.h"
+#include "LCD/LCD.h"
 
 /**
  * Horizontal Tilt sensor ISR function
@@ -61,17 +62,26 @@ void TiltSetup(void)
  */
 bool TiltSensorCheck(int tilt)
 {
-  DebugPrintln("TiltSensorCheck start " + String(tilt), DBG_VERBOSE, true);
-
   int tiltPin = 0;
   String tiltStr = "";
+  
+  DebugPrintln("TiltSensorCheck start " + String(tilt), DBG_VERBOSE, true);
 
+  if (tilt == 1) 
+  {
+    lcd.clear();
+  }
+  lcd.setCursor(0, 0);
+  lcd.print(F("Tilt Tests"));
+  
   if (tilt == TILT_HORIZONTAL) 
   {
     tiltPin = PIN_ESP_TILT_HORIZONTAL;
     tiltStr = "Horizontal ";
   }
-  if (tilt == TILT_VERTICAL) {
+
+  if (tilt == TILT_VERTICAL)
+  {
     tiltPin = PIN_ESP_TILT_VERTICAL;
     tiltStr = "Vertical";
   }
@@ -80,13 +90,20 @@ bool TiltSensorCheck(int tilt)
   
   DebugPrintln(tiltStr + " tilt input value: " + String(raw), DBG_VERBOSE, true);
   
+  lcd.setCursor(2, 1+tilt);
+
   if (raw) {
     DebugPrintln(tiltStr + " tilt sensor Ok", DBG_INFO, true);
+    lcd.print(tiltStr + " OK");
+    delay(TEST_SEQ_STEP_WAIT);
     return true;
   }
   else
   {
     LogPrintln(tiltStr + " tilt sensor is triggered", TAG_CHECK, DBG_ERROR);
+    lcd.print(tiltStr + " ACTIVE");
+    delay(TEST_SEQ_STEP_WAIT + TEST_SEQ_STEP_ERROR_WAIT);
     return false;
   }
+
 }

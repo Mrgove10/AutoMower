@@ -4,6 +4,7 @@
 #include "myGlobals_definition.h"
 #include "Bumper/Bumper.h"
 #include "Utils/Utils.h"
+#include "LCD/LCD.h"
 
 /**
  * Left Bumper ISR function
@@ -61,17 +62,25 @@ void BumperSetup(void)
  */
 bool BumperSensorCheck(int bumper)
 {
-  DebugPrintln("BumperSensorCheck start " + String(bumper), DBG_VERBOSE, true);
-
   int bumperPin = 0;
   String bumperStr = "";
+
+  DebugPrintln("BumperSensorCheck start " + String(bumper), DBG_VERBOSE, true);
+  if (bumper == 1) 
+  {
+    lcd.clear();
+  }
+  lcd.setCursor(0, 0);
+  lcd.print(F("Bumper Tests"));
 
   if (bumper == BUMPER_LEFT) 
   {
     bumperPin = PIN_ESP_BUMPER_LEFT;
     bumperStr = "Left";
   }
-  if (bumper == BUMPER_RIGHT) {
+
+  if (bumper == BUMPER_RIGHT)
+  {
     bumperPin = PIN_ESP_BUMPER_RIGHT;
     bumperStr = "Right";
   }
@@ -80,14 +89,21 @@ bool BumperSensorCheck(int bumper)
   
   DebugPrintln(bumperStr + " bumper input value: " + String(raw), DBG_VERBOSE, true);
   
-  if (!raw) {
+  lcd.setCursor(2, 1+bumper);
+
+  if (!raw)
+  {
     DebugPrintln(bumperStr + " bumper Ok", DBG_INFO, true);
+    lcd.print(bumperStr + " OK");
+    delay(TEST_SEQ_STEP_WAIT);
     return true;
   }
   else
   {
     LogPrintln(bumperStr + " bumper not found or is triggered", TAG_CHECK, DBG_ERROR);
-//    DebugPrintln(bumperStr + " bumper not found or triggered", DBG_ERROR, true);
+    lcd.print(bumperStr + " ERROR");
+    delay(TEST_SEQ_STEP_WAIT + TEST_SEQ_STEP_ERROR_WAIT);
     return false;
   }
+
 }
