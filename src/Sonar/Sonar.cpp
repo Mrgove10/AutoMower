@@ -1,25 +1,19 @@
 #include "myGlobals_definition.h"
 #include "Environment_definitions.h"
-#include "Temperature/Temperature.h"
+#include "Sonar/Sonar.h"
 #include "Utils/Utils.h"
 
 /**
- * Temperature sensor setup function
+ * Sonar sensor setup function
  * 
- * @return true if Temperature sensor check is ok
  */
-void TemperatureSensorSetup(void)
+void SonarSensorSetup(void)
 {
-  DebugPrintln("Temperature Sensor Setup start", DBG_VERBOSE, true);
+  DebugPrintln("Sonar Sensor Setup start", DBG_VERBOSE, true);
 
-  TemperatureSensors.begin();
+/*  TemperatureSensors.begin();
   delay(1500);
   
-  #ifdef TEMPERATURE_SENSOR_ADDRESS_UNKNOWN
-  if (!TemperatureSensors.getAddress(temp_1_RedSensor, 0)) DebugPrintln("Unable to find address for Device 0", DBG_VERBOSE, true);
-  if (!TemperatureSensors.getAddress(temp_2_BlueSensor, 1)) DebugPrintln("Unable to find address for Device 1", DBG_VERBOSE, true);
-  #endif
-
   TemperatureOneWire.reset_search();
 
   DebugPrintln("Device 1-Red Address: " + TempSensorAddress(temp_1_RedSensor), DBG_VERBOSE, true); 
@@ -61,84 +55,61 @@ void TemperatureSensorSetup(void)
 
   TemperatureSensors.requestTemperatures();
   delay(1000);
+  */
 }
 
 /**
- * Temperature sensor device address formating function
- * @param device DeviceAddress to format
- * @return String displaying a formated device address
+ * Checks to see if Sonar sensor is connected and functionning
+ * @param sensor int Sonar to check
+ * @return true if sensor check is ok
  */
-String TempSensorAddress(DeviceAddress device) {
-  String returnStr = "";
-  for (uint8_t i = 0; i < 8; i++)
-  {
-    // zero pad the address if necessary
-    if (device[i] < 16) {returnStr = returnStr + "0";}
-    returnStr = returnStr + String(device[i], HEX);
-  }
-  return returnStr;
-}
-/**
- * Checks to see if Temperature sensor is connected and functionning
- * @param sensor int functional sensor to check
- * @return true if Temperature sensor check is ok
- */
-bool TemperatureSensorCheck(int sensor)
+bool SonarSensorCheck(int sensor)
 {
   bool sensorCheck = false;
-  String sensorStr = "";
-  float temperature = UNKNOWN_FLOAT;
-  TemperatureSensors.requestTemperatures();
+  String sensorStr[SONAR_COUNT] = {"Front", "Left","Right" } ;
+  unsigned int Distance = UNKNOWN_INT;
 
-  DebugPrintln("TemperatureSensorCheck start " + String(sensor), DBG_VERBOSE, true);
+  DebugPrintln("SonarSensorCheck start #" + String(sensor), DBG_VERBOSE, true);
   if (sensor == 1) 
   {
     lcd.clear();
   }
   lcd.setCursor(0, 0);
-  lcd.print(F("Temperature Tests"));
+  lcd.print(F("Sonar Tests"));
 
-  if (sensor == TEMPERATURE_1_RED)
+  Distance = sonar[sensor-1].ping_cm(SONAR_MAX_DISTANCE);
+  sensorCheck = Distance != 0;
+
+  lcd.setCursor(2, 0+sensor);
+
+  DebugPrintln(sensorStr[sensor-1] + " Distance " + String(Distance), DBG_INFO, true);
+
+  if (sensorCheck) 
   {
-    sensorCheck = TemperatureSensors.isConnected(temp_1_RedSensor);
-    if (sensorCheck) {temperature = TemperatureRead(TEMPERATURE_1_RED);}
-    sensorStr = "1-Red";
-  }
-  if (sensor == TEMPERATURE_2_BLUE)
-  {
-    sensorCheck = TemperatureSensors.isConnected(temp_2_BlueSensor);
-    if (sensorCheck) {temperature = TemperatureRead(TEMPERATURE_2_BLUE);}
-    sensorStr = "2-Blue";
-  }
-
-  lcd.setCursor(2, 1+sensor);
-
-  DebugPrintln(sensorStr + " Temperature  " + String(temperature,2), DBG_INFO, true);
-
-  if (sensorCheck && temperature != UNKNOWN_FLOAT) 
-  {
-    DebugPrintln(sensorStr + " Temperature sensor Ok : " + String(temperature,2), DBG_INFO, true);
-    lcd.print(sensorStr + " OK ");
-    lcd.print(temperature,1);
+    DebugPrintln(sensorStr[sensor-1] + " Sonar sensor Ok : " + String(Distance), DBG_INFO, true);
+    lcd.print(sensorStr[sensor-1] + " OK ");
+    lcd.print(Distance);
+    lcd.print(F(" cm"));
     delay(TEST_SEQ_STEP_WAIT);
     return true;
   }
   else
   {
-    LogPrintln(sensorStr + " Temperature sensor not found or invalid value", TAG_CHECK, DBG_ERROR);
-    lcd.print(sensorStr + " ERROR");
+    LogPrintln(sensorStr[sensor-1] + " No sensor echo", TAG_CHECK, DBG_WARNING);
+    lcd.print(sensorStr[sensor-1] + " NO ECHO");
     delay(TEST_SEQ_STEP_WAIT + TEST_SEQ_STEP_ERROR_WAIT);
     return false;
   }
 }
 
 /**
- * Function to read temperature
- * @param device int functional sensor to read temperature from
- * @return float sensor temperature
+ * Function to read distance
+ * @param sensor int functional sensor to read distance from
+ * @return float sensor distance
  */
-float TemperatureRead(int sensor)
+float SonarRead(int sensor)
 {
+  /*
   float tempC = UNKNOWN_FLOAT;
 
   if (sensor == TEMPERATURE_1_RED)
@@ -163,4 +134,7 @@ float TemperatureRead(int sensor)
     if (sensor == TEMPERATURE_2_BLUE) {Temp2ErrorCount = Temp2ErrorCount + 1;}
     return UNKNOWN_FLOAT;
   }
+*/
+  return UNKNOWN_FLOAT;
+
 }

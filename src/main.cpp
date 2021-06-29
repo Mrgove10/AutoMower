@@ -4,35 +4,16 @@
 #include "mySetup.h"
 #include "Utils/Utils.h"
 #include "Temperature/Temperature.h"
+#include "Sonar/Sonar.h"
 #include "EEPROM/EEPROM.h"
 #include <pin_definitions.h>
 
-#include <NewPing.h>
-#include <Wire.h>
 #include <Adafruit_MCP23017.h>
-#include <LiquidCrystal_I2C.h>
 #include <OneWire.h>
 
 // multiplexer
 Adafruit_MCP23017 mcp;
 
-// Ultrasonic sensors
-/*
-NewPing sonar[SONAR_NUM] = {                                           // Sensor object array.
-    NewPing(PIN_ESP_SONAR_CENTER, PIN_ESP_SONAR_CENTER, MAX_DISTANCE), // Each sensor's trigger pin, echo pin, and max distance to ping.
-    NewPing(PIN_ESP_SONAR_LEFT, PIN_ESP_SONAR_LEFT, MAX_DISTANCE),
-    NewPing(PIN_ESP_SONAR_RIGHT, PIN_ESP_SONAR_RIGHT, MAX_DISTANCE)};
-*/
-
-/*
-// Temperature sensors
-OneWire ds(PIN_ESP_TEMP);
-*/
-
-/*
-// screen
-LiquidCrystal_I2C lcd(0x38);
-*/
 
 /*
 void multiplexSetup()
@@ -43,13 +24,6 @@ void multiplexSetup()
 }
 */
 
-/*
-void lcdSetup()
-{
-  lcd.begin(SCREEN_COL, SCREEN_LINES); // columns, lines
-  lcd.clear();
-}
-*/
 
 void setup()
 {
@@ -97,10 +71,20 @@ void loop()
     VerticalTiltTriggered = false;
   }
 
-  DebugPrintln("Temp 1: " + String(temperatureRead(TEMPERATURE_1_RED),1) + " | Err1: " + String(Temp1ErrorCount) + " | Temp 2: " + String(temperatureRead(TEMPERATURE_2_BLUE),1) + " | Err2: " + String(Temp2ErrorCount), DBG_INFO, true);
+  DebugPrint("Temp 1: " + String(TemperatureRead(TEMPERATURE_1_RED),1) + " | Err1: " + String(Temp1ErrorCount) + " | Temp 2: " + String(TemperatureRead(TEMPERATURE_2_BLUE),1) + " | Err2: " + String(Temp2ErrorCount), DBG_INFO, true);
 //  lcd.clear();
   lcd.setCursor(0,1);
-  lcd.print("T1: " + String(temperatureRead(TEMPERATURE_1_RED),1) + " | T2: " + String(temperatureRead(TEMPERATURE_2_BLUE),1));
+  lcd.print("T1: " + String(TemperatureRead(TEMPERATURE_1_RED),1) + " T2: " + String(TemperatureRead(TEMPERATURE_2_BLUE),1));
+
+  lcd.setCursor(0,2);
+  for (uint8_t i = 0; i < SONAR_COUNT; i++)
+  {            // Loop through each sensor and display results.
+    delay(50); // Wait 50ms between pings (about 20 pings/sec). 29ms should be the shortest delay between pings.
+    unsigned int distance = sonar[i].ping_cm(SONAR_MAX_DISTANCE);
+    DebugPrint(" Sonar " + String(i+1) + ":" + String(distance) + " |");
+    lcd.print("S" + String(i+1) + ":" + String(distance) + " ");
+  }
+  DebugPrintln("");
 
   MQTTclient.loop();
 
@@ -110,14 +94,4 @@ void loop()
 
   delay(500);
 
-  /*
-  for (uint8_t i = 0; i < SONAR_NUM; i++)
-  {            // Loop through each sensor and display results.
-    delay(50); // Wait 50ms between pings (about 20 pings/sec). 29ms should be the shortest delay between pings.
-    Serial.print(i);
-    Serial.print("=");
-    Serial.print(sonar[i].ping_cm());
-    Serial.print("cm ");
-  }
-  */
 }

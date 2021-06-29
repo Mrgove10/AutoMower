@@ -10,7 +10,6 @@
 /**
  * Temperature sensor setup function
  * 
- * @return true if Temperature sensor check is ok
  */
 void TemperatureSensorSetup(void);
 
@@ -26,13 +25,13 @@ bool TemperatureSensorCheck(int sensor);
  * @param device int functional sensor to read temperature from
  * @return float sensor temperature
  */
-float temperatureRead(int sensor);
+float TemperatureRead(int sensor);
 
 /**
- * Temperature sensor setup function
+ * Temperature sensor device address formating function
  * @param device DeviceAddress to format
  * @return String displaying a formated device address
  */
-String TempSesorAddress(DeviceAddress device);
+String TempSensorAddress(DeviceAddress device);
 
 #endif

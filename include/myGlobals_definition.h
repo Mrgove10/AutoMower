@@ -57,6 +57,19 @@ extern DeviceAddress temp_2_BlueSensor;
 extern int Temp1ErrorCount;
 extern int Temp2ErrorCount;
 
+/************************* HC-SR04 Sonar sensor variables *********************************/
+#include <Wire.h>
+#include <NewPing.h>
+
+#define SONAR_COUNT 3         // Number of sensors.
+#define SONAR_MAX_DISTANCE 200      // Maximum distance (in cm) to ping.
+
+#define SONAR_FRONT 1
+#define SONAR_LEFT 2
+#define SONAR_RIGHT 3
+
+extern NewPing sonar[SONAR_COUNT];
+
 /************************* Bumper variables *********************************/
 
 extern bool LeftBumperTriggered;
@@ -74,6 +87,7 @@ extern bool VerticalTiltTriggered;
 /************************* Program variables *********************************/
 
 #define UNKNOWN_FLOAT -999.99F
+#define UNKNOWN_INT -999
 
 extern byte TestVal1;
 extern byte TestVal2;

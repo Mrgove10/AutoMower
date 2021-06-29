@@ -6,6 +6,7 @@
 #include "Bumper/Bumper.h"
 #include "Tilt/Tilt.h"
 #include "Temperature/Temperature.h"
+#include "Sonar/Sonar.h"
 
 /**
  * Runs all Mower checks on Startup
@@ -36,6 +37,10 @@ bool StartupChecks(void)
 
   if (!TemperatureSensorCheck(TEMPERATURE_1_RED)) {allChecks = false;};
   if (!TemperatureSensorCheck(TEMPERATURE_2_BLUE)) {allChecks = false;};
+
+  if (!SonarSensorCheck(SONAR_FRONT)) {allChecks = false;};
+  if (!SonarSensorCheck(SONAR_LEFT)) {allChecks = false;};
+  if (!SonarSensorCheck(SONAR_RIGHT)) {allChecks = false;};
 
    // insert here all other startup checks
 

@@ -63,6 +63,14 @@ DeviceAddress temp_2_BlueSensor = {0x28, 0xD7, 0x3C, 0x95, 0xF0, 0x01, 0x3C, 0xC
 int Temp1ErrorCount = 0;
 int Temp2ErrorCount = 0;
 
+/************************* HC-SR04 Sonar sensor variables *********************************/
+#include <Wire.h>
+
+NewPing sonar[SONAR_COUNT] = {                                           // Sensor object array.
+    NewPing(PIN_ESP_SONAR_CENTER, PIN_ESP_SONAR_CENTER, SONAR_MAX_DISTANCE), // Each sensor's trigger pin, echo pin, and max distance to ping.
+    NewPing(PIN_ESP_SONAR_LEFT, PIN_ESP_SONAR_LEFT, SONAR_MAX_DISTANCE),
+    NewPing(PIN_ESP_SONAR_RIGHT, PIN_ESP_SONAR_RIGHT, SONAR_MAX_DISTANCE)};
+
 /************************* Bumper variables *********************************/
 
 bool LeftBumperTriggered = false;

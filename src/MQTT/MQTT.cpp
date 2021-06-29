@@ -181,7 +181,7 @@ void MQTTInit(void)
 
     if (MQTTclient.connect(ESPHOSTNAME))
     {
-      lcd.print(F("ESTABLISHED"));
+      lcd.print(F("Connected"));
     }
     else
     {
