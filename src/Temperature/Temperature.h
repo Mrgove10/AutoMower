@@ -23,10 +23,10 @@ bool TemperatureSensorCheck(int sensor);
 
 /**
  * Function to read temperature
- * @param sensor DeviceAddress to read temperature from
+ * @param device int functional sensor to read temperature from
  * @return float sensor temperature
  */
-float temperatureRead(DeviceAddress sensor);
+float temperatureRead(int sensor);
 
 /**
  * Temperature sensor setup function

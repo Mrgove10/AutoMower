@@ -48,10 +48,20 @@ LiquidCrystal_I2C lcd(PCF8574_ADDR_A21_A11_A01, 4, 5, 6, 16, 11, 12, 13, 14, POS
 OneWire TemperatureOneWire(PIN_ESP_TEMP);
 
 DallasTemperature TemperatureSensors(&TemperatureOneWire);
+
+// If you do not know your temperature sensor device addresses :
+// 1- Uncomment the TEMPERATURE_SENSOR_ADDRESS_UNKNOWN definition below
+// 2- Compile and run the programm
+// 3- Get the device addresses shown in the startup log and replace the addresses below
+// 4- Re-comment the definition below
+
+// #define TEMPERATURE_SENSOR_ADDRESS_UNKNOWN
+
 DeviceAddress temp_1_RedSensor = {0x28, 0xC9, 0xD0, 0x95, 0xF0, 0x01, 0x3C, 0x7D};
 DeviceAddress temp_2_BlueSensor = {0x28, 0xD7, 0x3C, 0x95, 0xF0, 0x01, 0x3C, 0xCE};
 
-#define TEMPERATURE_SENSOR_ADDRESS_UNKNOWN
+int Temp1ErrorCount = 0;
+int Temp2ErrorCount = 0;
 
 /************************* Bumper variables *********************************/
 

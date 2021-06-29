@@ -97,8 +97,10 @@ void loop()
     VerticalTiltTriggered = false;
   }
 
-  DebugPrintln("Temp 1: " + String(temperatureRead(temp_1_RedSensor),1), DBG_INFO, true);
-  DebugPrintln("Temp 2: " + String(temperatureRead(temp_2_BlueSensor),1), DBG_INFO, true);
+  DebugPrintln("Temp 1: " + String(temperatureRead(TEMPERATURE_1_RED),1) + " | Err1: " + String(Temp1ErrorCount) + " | Temp 2: " + String(temperatureRead(TEMPERATURE_2_BLUE),1) + " | Err2: " + String(Temp2ErrorCount), DBG_INFO, true);
+//  lcd.clear();
+  lcd.setCursor(0,1);
+  lcd.print("T1: " + String(temperatureRead(TEMPERATURE_1_RED),1) + " | T2: " + String(temperatureRead(TEMPERATURE_2_BLUE),1));
 
   MQTTclient.loop();
 

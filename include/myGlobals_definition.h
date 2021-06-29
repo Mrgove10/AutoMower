@@ -54,6 +54,9 @@ extern DallasTemperature TemperatureSensors;
 extern DeviceAddress temp_1_RedSensor;
 extern DeviceAddress temp_2_BlueSensor;
 
+extern int Temp1ErrorCount;
+extern int Temp2ErrorCount;
+
 /************************* Bumper variables *********************************/
 
 extern bool LeftBumperTriggered;

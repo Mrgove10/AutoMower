@@ -101,13 +101,13 @@ bool TemperatureSensorCheck(int sensor)
   if (sensor == TEMPERATURE_1_RED)
   {
     sensorCheck = TemperatureSensors.isConnected(temp_1_RedSensor);
-    if (sensorCheck) {temperature = temperatureRead(temp_1_RedSensor);}
+    if (sensorCheck) {temperature = temperatureRead(TEMPERATURE_1_RED);}
     sensorStr = "1-Red";
   }
   if (sensor == TEMPERATURE_2_BLUE)
   {
     sensorCheck = TemperatureSensors.isConnected(temp_2_BlueSensor);
-    if (sensorCheck) {temperature = temperatureRead(temp_2_BlueSensor);}
+    if (sensorCheck) {temperature = temperatureRead(TEMPERATURE_2_BLUE);}
     sensorStr = "2-Blue";
   }
 
@@ -134,13 +134,23 @@ bool TemperatureSensorCheck(int sensor)
 
 /**
  * Function to read temperature
- * @param device DeviceAddress to read temperature from
+ * @param device int functional sensor to read temperature from
  * @return float sensor temperature
  */
-float temperatureRead(DeviceAddress sensor)
+float temperatureRead(int sensor)
 {
-  TemperatureSensors.requestTemperaturesByAddress(sensor);
-  float tempC = TemperatureSensors.getTempC(sensor);
+  float tempC = UNKNOWN_FLOAT;
+
+  if (sensor == TEMPERATURE_1_RED)
+  {
+    TemperatureSensors.requestTemperaturesByAddress(temp_1_RedSensor);
+    tempC = TemperatureSensors.getTempC(temp_1_RedSensor);
+  }
+  if (sensor == TEMPERATURE_2_BLUE)
+  {
+    TemperatureSensors.requestTemperaturesByAddress(temp_2_BlueSensor);
+    tempC = TemperatureSensors.getTempC(temp_2_BlueSensor);
+  }
 
 //  DebugPrintln("TemperatureRead value " + String(tempC,2), DBG_VERBOSE, true);
 
@@ -149,6 +159,8 @@ float temperatureRead(DeviceAddress sensor)
   }
   else
   {
+    if (sensor == TEMPERATURE_1_RED) {Temp1ErrorCount = Temp1ErrorCount + 1;}
+    if (sensor == TEMPERATURE_2_BLUE) {Temp2ErrorCount = Temp2ErrorCount + 1;}
     return UNKNOWN_FLOAT;
   }
 }
