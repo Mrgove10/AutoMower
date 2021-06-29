@@ -47,6 +47,11 @@ extern Timezone myTime;
 
 extern LiquidCrystal_I2C lcd;
 
+/************************* MCP23017 I2C IO Extender variables *********************************/
+#include <Adafruit_MCP23017.h>
+
+extern Adafruit_MCP23017 IOExtend;
+
 /************************* DS18D20 temperature sensor variables *********************************/
 #include <DallasTemperature.h>
 extern OneWire TemperatureOneWire;

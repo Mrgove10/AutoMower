@@ -6,24 +6,8 @@
 #include "Temperature/Temperature.h"
 #include "Sonar/Sonar.h"
 #include "EEPROM/EEPROM.h"
+#include "IOExtender/IOExtender.h"
 #include <pin_definitions.h>
-
-#include <Adafruit_MCP23017.h>
-#include <OneWire.h>
-
-// multiplexer
-Adafruit_MCP23017 mcp;
-
-
-/*
-void multiplexSetup()
-{
-  mcp.begin();
-  mcp.pinMode(0, INPUT);
-  mcp.pullUp(0, HIGH); // turn on a 100K pullup internally
-}
-*/
-
 
 void setup()
 {
@@ -86,6 +70,14 @@ void loop()
   }
   DebugPrintln("");
 
+  lcd.setCursor(0,3);
+
+  for (uint8_t i = 8; i < 12; i++){
+    int key = IOExtend.digitalRead(i);
+    if (!key) {DebugPrintln("Keypad key" + String(i-7) + " pressed", DBG_INFO, true);}
+    lcd.print("K" + String(i-7) + ":" + String(key) + " ");
+  }
+
   MQTTclient.loop();
 
   SerialAndTelnet.handle();
@@ -93,5 +85,4 @@ void loop()
   events();   // eztime refresh
 
   delay(500);
-
 }

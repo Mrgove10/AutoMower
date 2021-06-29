@@ -11,6 +11,8 @@
 #include "Bumper/Bumper.h"
 #include "Tilt/Tilt.h"
 #include "LCD/LCD.h"
+#include "IOExtender/IOExtender.h"
+#include "Keypad/Keypad.h"
 #include "Temperature/Temperature.h"
 #include "StartupChecks.h"
 
@@ -20,6 +22,10 @@ void MySetup(void)
   delay(500);
 
   LCDSetup();
+
+  IOExtendSetup();
+
+  KeypadSetup();
 
   // Setup pins
 

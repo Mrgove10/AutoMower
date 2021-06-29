@@ -42,6 +42,11 @@ Timezone myTime;
 
 LiquidCrystal_I2C lcd(PCF8574_ADDR_A21_A11_A01, 4, 5, 6, 16, 11, 12, 13, 14, POSITIVE);   // Uses Defaut Address
 
+/************************* MCP23017 I2C IO Extender variables *********************************/
+#include <Adafruit_MCP23017.h>
+
+Adafruit_MCP23017 IOExtend;
+
 /************************* DS18D20 temperature sensor variables *********************************/
 #include <DallasTemperature.h>
 
