@@ -5,7 +5,7 @@
 #include "Rain/Rain.h"
 #include "Bumper/Bumper.h"
 #include "Tilt/Tilt.h"
-
+#include "Temperature/Temperature.h"
 
 /**
  * Runs all Mower checks on Startup
@@ -24,6 +24,8 @@ bool StartupChecks(void)
   lcd.print(F("Startup Checks..."));
   delay(TEST_SEQ_STEP_WAIT);
 
+  SerialAndTelnet.handle();
+
   if (!TiltSensorCheck(TILT_HORIZONTAL)) {allChecks = false;};
   if (!TiltSensorCheck(TILT_VERTICAL)) {allChecks = false;};
 
@@ -32,6 +34,9 @@ bool StartupChecks(void)
  
   if (!RainSensorCheck()) {allChecks = false;};
 
+  if (!TemperatureSensorCheck(TEMPERATURE_1_RED)) {allChecks = false;};
+  if (!TemperatureSensorCheck(TEMPERATURE_2_BLUE)) {allChecks = false;};
+
    // insert here all other startup checks
 
   if (allChecks) 
@@ -39,6 +44,8 @@ bool StartupChecks(void)
       LogPrintln("All checks Ok", TAG_CHECK, DBG_ALWAYS);
   }
   DebugPrintln("");
+
+  SerialAndTelnet.handle();
 
   return allChecks;
 }

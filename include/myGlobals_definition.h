@@ -47,6 +47,13 @@ extern Timezone myTime;
 
 extern LiquidCrystal_I2C lcd;
 
+/************************* DS18D20 temperature sensor variables *********************************/
+#include <DallasTemperature.h>
+extern OneWire TemperatureOneWire;
+extern DallasTemperature TemperatureSensors;
+extern DeviceAddress temp_1_RedSensor;
+extern DeviceAddress temp_2_BlueSensor;
+
 /************************* Bumper variables *********************************/
 
 extern bool LeftBumperTriggered;
@@ -62,6 +69,8 @@ extern bool VerticalTiltTriggered;
 #define TEST_SEQ_STEP_ERROR_WAIT 2000
 
 /************************* Program variables *********************************/
+
+#define UNKNOWN_FLOAT -999.99F
 
 extern byte TestVal1;
 extern byte TestVal2;

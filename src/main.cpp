@@ -3,6 +3,7 @@
 #include "myGlobals_definition.h"
 #include "mySetup.h"
 #include "Utils/Utils.h"
+#include "Temperature/Temperature.h"
 #include "EEPROM/EEPROM.h"
 #include <pin_definitions.h>
 
@@ -96,9 +97,14 @@ void loop()
     VerticalTiltTriggered = false;
   }
 
+  DebugPrintln("Temp 1: " + String(temperatureRead(temp_1_RedSensor),1), DBG_INFO, true);
+  DebugPrintln("Temp 2: " + String(temperatureRead(temp_2_BlueSensor),1), DBG_INFO, true);
+
   MQTTclient.loop();
 
   SerialAndTelnet.handle();
+
+  events();   // eztime refresh
 
   delay(500);
 

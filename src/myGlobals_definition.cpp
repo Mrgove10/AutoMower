@@ -2,6 +2,7 @@
     This file contains the definition of all global variables
 */
 #include "myGlobals_definition.h"
+#include "pin_definitions.h"
 #include "Utils/Utils.h"
 
 WiFiClient espClient;
@@ -40,6 +41,17 @@ Timezone myTime;
 /************************* LCD variables *********************************/
 
 LiquidCrystal_I2C lcd(PCF8574_ADDR_A21_A11_A01, 4, 5, 6, 16, 11, 12, 13, 14, POSITIVE);   // Uses Defaut Address
+
+/************************* DS18D20 temperature sensor variables *********************************/
+#include <DallasTemperature.h>
+
+OneWire TemperatureOneWire(PIN_ESP_TEMP);
+
+DallasTemperature TemperatureSensors(&TemperatureOneWire);
+DeviceAddress temp_1_RedSensor = {0x28, 0xC9, 0xD0, 0x95, 0xF0, 0x01, 0x3C, 0x7D};
+DeviceAddress temp_2_BlueSensor = {0x28, 0xD7, 0x3C, 0x95, 0xF0, 0x01, 0x3C, 0xCE};
+
+#define TEMPERATURE_SENSOR_ADDRESS_UNKNOWN
 
 /************************* Bumper variables *********************************/
 

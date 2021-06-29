@@ -11,6 +11,7 @@
 #include "Bumper/Bumper.h"
 #include "Tilt/Tilt.h"
 #include "LCD/LCD.h"
+#include "Temperature/Temperature.h"
 #include "StartupChecks.h"
 
 void MySetup(void)
@@ -57,12 +58,16 @@ void MySetup(void)
 
   MQTTInit();
 
+  SerialAndTelnet.handle();
+
   LogPrintln(Resetreason, TAG_RESET, DBG_WARNING);
+
+  TemperatureSensorSetup();
 
   BumperSetup();
 
   TiltSetup();
-  
+
   bool startupChecksOk = StartupChecks();
 
   DebugPrintln("End of Setup()", DBG_VERBOSE, true);
