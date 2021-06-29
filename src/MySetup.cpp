@@ -10,13 +10,15 @@
 #include "EEPROM/EEPROM.h"
 #include "Bumper/Bumper.h"
 #include "Tilt/Tilt.h"
+#include "LCD/LCD.h"
 #include "StartupChecks.h"
 
 void MySetup(void)
 {
-
   Serial.begin(SERIAL_BAUD);
   delay(500);
+
+  LCDSetup();
 
   // Setup pins
 

@@ -42,6 +42,11 @@ extern Timezone myTime;
 #define NTP_REFRESH 3600
 #define POSIXTZ "CET-1CEST,M3.5.0,M10.5.0/3"
 
+/************************* LCD variables *********************************/
+#include <LiquidCrystal_I2C.h>
+
+extern LiquidCrystal_I2C lcd;
+
 /************************* Bumper variables *********************************/
 
 extern bool LeftBumperTriggered;

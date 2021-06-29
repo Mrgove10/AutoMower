@@ -37,6 +37,10 @@ unsigned long LastEepromWriteTime = 0;
 // do not place before EEprom definition section or causes conflict !!
 Timezone myTime;
 
+/************************* LCD variables *********************************/
+
+LiquidCrystal_I2C lcd(PCF8574_ADDR_A21_A11_A01, 4, 5, 6, 16, 11, 12, 13, 14, POSITIVE);   // Uses Defaut Address
+
 /************************* Bumper variables *********************************/
 
 bool LeftBumperTriggered = false;
