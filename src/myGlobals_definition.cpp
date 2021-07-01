@@ -13,6 +13,12 @@ WiFiClient espClient;
 PubSubClient MQTTclient(espClient);
 
 int MQTTErrorCount = 0;
+char MQTTpayload[MQTT_MAX_PAYLOAD];
+
+/************************* JSON *********************************/
+
+FirebaseJson JSONDataPayload;
+String JSONDataPayloadStr;
 
 /************************* Debug management using TelnetSpy *********************************/
 

@@ -7,7 +7,6 @@
 #define MQTT_TELEMETRY_CHANNEL "AutoMower/Telemetry"
 #define MQTT_SERVER "192.168.1.3"
 #define MQTT_PORT 1883
-#define MQTT_MAX_PAYLOAD 512
 
 // -------------------- Network  ------------------------
 #define ESPHOSTNAME "MyMower"
@@ -16,6 +15,7 @@
 #define TAG_RESET "RESET"
 #define TAG_OTA "OTA"
 #define TAG_CHECK "CHECK"
+#define TAG_ERROR "ERROR"
 
 // -------------------- Serial communications ------------------------
 #define SERIAL_BAUD 115200

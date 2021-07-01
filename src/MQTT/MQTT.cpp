@@ -3,6 +3,7 @@
 #include "Environment_definitions.h"
 #include "Utils/Utils.h"
 #include "OTA/OTA.h"
+#include "Temperature/Temperature.h"
 
 void MQTTSubscribe()
 {
@@ -189,4 +190,48 @@ void MQTTInit(void)
       delay(TEST_SEQ_STEP_ERROR_WAIT);
     }
     delay(TEST_SEQ_STEP_WAIT);
+}
+
+void MQTTSendTelemetry()
+{
+  static unsigned long LastTelemetryDataSent = 0;
+
+  if ((millis() - LastTelemetryDataSent > MQTT_TELEMETRY_SEND_INTERVAL)) 
+  {
+    unsigned long StartSend = millis();
+
+    byte publ = 0;
+
+    JSONDataPayload.clear();
+
+    JSONDataPayload.add("BatteryVoltage",           String(float(BatteryVotlage/1000.0f),2));
+    JSONDataPayload.add("BatteryChargeCurrent",     String(BatteryChargeCurrent,2));
+
+    JSONDataPayload.add("DriveMotorTemperature",    String(TemperatureRead(TEMPERATURE_1_RED),1));
+    JSONDataPayload.add("RightMotorCurrent",        String(MotorCurrent[MOTOR_CURRENT_RIGHT],2));
+    JSONDataPayload.add("LeftMotorCurrent",         String(MotorCurrent[MOTOR_CURRENT_LEFT],2));
+    
+    JSONDataPayload.add("CutMotorTemperature",      String(TemperatureRead(TEMPERATURE_2_BLUE),1));
+    JSONDataPayload.add("CutMotorCurrent",          String(MotorCurrent[MOTOR_CURRENT_CUT],2));
+    
+    JSONDataPayload.add("FrontSonarDistance",       String(sonar[SONAR_FRONT].ping_cm(SONAR_MAX_DISTANCE)));
+    JSONDataPayload.add("RightSonarDistance",       String(sonar[SONAR_RIGHT].ping_cm(SONAR_MAX_DISTANCE)));
+    JSONDataPayload.add("LeftSonarDistance",       String(sonar[SONAR_LEFT].ping_cm(SONAR_MAX_DISTANCE)));
+    
+    JSONDataPayload.toString(JSONDataPayloadStr, false);
+    JSONDataPayloadStr.toCharArray(MQTTpayload, JSONDataPayloadStr.length()+1);
+
+    DebugPrintln(MQTTpayload + String(JSONDataPayloadStr.length()) + "=> " + String(publ) + " in " + String(millis() - StartSend) + " ms", DBG_VERBOSE, true); 
+
+    if (JSONDataPayloadStr.length() < MQTT_MAX_PAYLOAD)
+    {
+      publ = MQTTclient.publish(MQTT_TELEMETRY_CHANNEL, MQTTpayload);
+      LastTelemetryDataSent = millis();
+    }
+    else 
+    {
+      LogPrintln("MQTT payload larger than buffer !!!!!!", TAG_ERROR, DBG_ERROR);
+    }
+    LastTelemetryDataSent = millis();
+  }
 }

@@ -6,6 +6,17 @@
 extern PubSubClient MQTTclient;
 extern int MQTTErrorCount;
 
+#define MQTT_TELEMETRY_SEND_INTERVAL 30000          // in ms
+#define MQTT_MAX_PAYLOAD 512
+
+extern char MQTTpayload[MQTT_MAX_PAYLOAD];
+
+/************************* JSON *********************************/
+#include <FirebaseJson.h>
+
+extern FirebaseJson JSONDataPayload;
+extern String JSONDataPayloadStr;
+
 /************************* Debug management using TelnetSpy *********************************/
 #include <TelnetSpy.h>
 #define MySERIAL SerialAndTelnet

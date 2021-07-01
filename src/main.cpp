@@ -3,6 +3,7 @@
 #include "myGlobals_definition.h"
 #include "mySetup.h"
 #include "Utils/Utils.h"
+#include "MQTT/MQTT.h"
 #include "Temperature/Temperature.h"
 #include "Current/Current.h"
 #include "Voltage/Voltage.h"
@@ -59,6 +60,8 @@ void loop()
 
   BatteryChargeCurrentRead();
   MotorCurrentRead(MOTOR_CURRENT_RIGHT);
+  MotorCurrentRead(MOTOR_CURRENT_LEFT);
+  MotorCurrentRead(MOTOR_CURRENT_CUT);
 
   BatteryVoltageRead();
   
@@ -95,6 +98,8 @@ void loop()
   lcd.print("R:" + String(MotorCurrent[MOTOR_CURRENT_RIGHT],0) + " ");
   lcd.print("L:" + String(MotorCurrent[MOTOR_CURRENT_LEFT],0) + " ");
 //  lcd.print("C:" + String(MotorCurrent[MOTOR_CURRENT_CUT],0) + " ");
+
+  MQTTSendTelemetry();
 
   MQTTclient.loop();
 

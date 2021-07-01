@@ -7,5 +7,6 @@ void MQTTSendLogMessage(const char* MQTTTopic, const char* Message, const char* 
 void MQTTSubscribe();
 void MQTTUnSubscribe();
 void MQTTReconnect();
+void MQTTSendTelemetry();
 
 #endif
