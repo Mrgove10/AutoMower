@@ -8,6 +8,7 @@
 #include "Temperature/Temperature.h"
 #include "Sonar/Sonar.h"
 #include "Current/Current.h"
+#include "Voltage/Voltage.h"
 
 /**
  * Runs all Mower checks on Startup
@@ -25,6 +26,10 @@ bool StartupChecks(void)
   lcd.setCursor(0, 1);
   lcd.print(F("Startup Checks..."));
   delay(TEST_SEQ_STEP_WAIT);
+
+  SerialAndTelnet.handle();
+
+  if (!BatteryVoltageCheck()) {allChecks = false;};
 
   SerialAndTelnet.handle();
 
@@ -64,6 +69,10 @@ bool StartupChecks(void)
   {
       LogPrintln("All checks Ok", TAG_CHECK, DBG_ALWAYS);
   }
+  DebugPrintln("");
+
+  DebugPrintln("");
+  DebugPrintln("End of AutoMower startup checks.....", DBG_INFO, true);
   DebugPrintln("");
 
   SerialAndTelnet.handle();

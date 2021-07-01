@@ -78,6 +78,17 @@ extern Adafruit_INA219 MotorCurrentSensor[MOTOR_CURRENT_COUNT];
 
 extern float MotorCurrent[MOTOR_CURRENT_COUNT];
 
+/************************* Voltage variables *********************************/
+
+#define VOLTAGE_RANGE_MAX 17000     // in mV
+
+#define BATTERY_VOLTAGE_OK 0                // if above VOLTAGE_NORMAL_THRESHOLD
+#define BATTERY_VOLTAGE_MEDIUM 1            // if above BATTERY_VOLTAGE_MEDIUM_THRESHOLD and below VOLTAGE_NORMAL_THRESHOLD
+#define BATTERY_VOLTAGE_LOW 2               // if above BATTERY_VOLTAGE_LOW_THRESHOLD  and below BATTERY_VOLTAGE_MEDIUM_THRESHOLD
+#define BATTERY_VOLTAGE_CRITICAL 3           // if below BATTERY_VOLTAGE_LOW_THRESHOLD
+
+extern float BatteryVotlage;
+
 /************************* HC-SR04 Sonar sensor variables *********************************/
 #include <Wire.h>
 #include <NewPing.h>

@@ -5,6 +5,7 @@
 #include "Utils/Utils.h"
 #include "Temperature/Temperature.h"
 #include "Current/Current.h"
+#include "Voltage/Voltage.h"
 #include "Sonar/Sonar.h"
 #include "EEPROM/EEPROM.h"
 #include "IOExtender/IOExtender.h"
@@ -59,14 +60,13 @@ void loop()
   BatteryChargeCurrentRead();
   MotorCurrentRead(MOTOR_CURRENT_RIGHT);
 
-  int voltraw = analogRead(PIN_ESP_BAT_VOLT);     // TEST!
-  int volt = map(voltraw, 0, 4095, 0, 17000);     // TEST!
-
+  BatteryVoltageRead();
+  
   DebugPrint("Temp 1: " + String(TemperatureRead(TEMPERATURE_1_RED),1) + // " | Err1: " + String(Temp1ErrorCount) + 
              " | Temp 2: " + String(TemperatureRead(TEMPERATURE_2_BLUE),1) + //" | Err2: " + String(Temp2ErrorCount) + 
              " | Charge: " + String(BatteryChargeCurrent,2) + 
              " | MotorR: " + String(MotorCurrent[MOTOR_CURRENT_RIGHT],2) + 
-             " | Volt: " + String(float(volt)/1000.0f,2), DBG_INFO, true);
+             " | Volt: " + String(float(BatteryVotlage)/1000.0f,2), DBG_INFO, true);
              
 //  lcd.clear();
   lcd.setCursor(0,0);

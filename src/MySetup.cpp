@@ -80,5 +80,6 @@ void MySetup(void)
   bool startupChecksOk = StartupChecks();
 
   DebugPrintln("End of Setup()", DBG_VERBOSE, true);
+
   lcd.clear();
 }

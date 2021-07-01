@@ -81,6 +81,10 @@ Adafruit_INA219 MotorCurrentSensor[MOTOR_CURRENT_COUNT] = {Adafruit_INA219(MOTOR
 
 float MotorCurrent[MOTOR_CURRENT_COUNT] = {0, 0, 0};
 
+/************************* Voltage variables *********************************/
+
+float BatteryVotlage = 0;
+
 /************************* HC-SR04 Sonar sensor variables *********************************/
 #include <Wire.h>
 
