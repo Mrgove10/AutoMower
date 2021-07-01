@@ -62,7 +62,7 @@ bool MotorCurrentSensorCheck(int sensor)
     LogPrintln(sensorStr[sensor] + " Motor Current Sensor not found", TAG_CHECK, DBG_ERROR);
     lcd.print(sensorStr[sensor]);
     lcd.setCursor(8, sensor + 1);
-    lcd.print(F(" ERROR"));
+    lcd.print(F("ERROR"));
     delay(TEST_SEQ_STEP_WAIT + TEST_SEQ_STEP_ERROR_WAIT);
     return false;
   }
@@ -98,7 +98,6 @@ bool MotorCurrentRead(int sensor)
   
   return true;
 }
-
 
 /**
  * Checks to see if Battery ACS712 current sensor is connected (and hopefully functionning)
@@ -144,7 +143,7 @@ bool BatteryChargeCurrentRead(void)
   int raw3 = analogRead(PIN_ESP_AMP_CHARGE);
   int raw = (raw1 + raw2 + raw3) / 3;
 
-  DebugPrintln("Raw Charge current value: " + String(raw), DBG_VERBOSE, true);
+//  DebugPrintln("Raw Charge current value: " + String(raw), DBG_VERBOSE, true);
 
   if (raw > CHARGE_CURRENT_CHECK_THRESHOLD)
   {

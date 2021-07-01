@@ -31,17 +31,27 @@ bool StartupChecks(void)
   if (!TiltSensorCheck(TILT_HORIZONTAL)) {allChecks = false;};
   if (!TiltSensorCheck(TILT_VERTICAL)) {allChecks = false;};
 
+    SerialAndTelnet.handle();
+
   if (!BumperSensorCheck(BUMPER_LEFT)) {allChecks = false;};
   if (!BumperSensorCheck(BUMPER_RIGHT)) {allChecks = false;};
- 
+
+  SerialAndTelnet.handle();
+
   if (!RainSensorCheck()) {allChecks = false;};
+
+  SerialAndTelnet.handle();
 
   if (!TemperatureSensorCheck(TEMPERATURE_1_RED)) {allChecks = false;};
   if (!TemperatureSensorCheck(TEMPERATURE_2_BLUE)) {allChecks = false;};
 
+  SerialAndTelnet.handle();
+
   if (!SonarSensorCheck(SONAR_FRONT)) {allChecks = false;};
   if (!SonarSensorCheck(SONAR_LEFT)) {allChecks = false;};
   if (!SonarSensorCheck(SONAR_RIGHT)) {allChecks = false;};
+
+  SerialAndTelnet.handle();
 
   if (!BatteryCurrentSensorCheck()) {allChecks = false;};
   if (!MotorCurrentSensorCheck(MOTOR_CURRENT_RIGHT)) {allChecks = false;}; 
