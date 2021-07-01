@@ -62,6 +62,22 @@ extern DeviceAddress temp_2_BlueSensor;
 extern int Temp1ErrorCount;
 extern int Temp2ErrorCount;
 
+/************************* ACS712 Battery Charge current sensor variables *********************************/
+extern float BatteryChargeCurrent;
+
+/************************* INA219 I2C Curent sensor variables *********************************/
+#include <Adafruit_INA219.h>
+
+#define MOTOR_CURRENT_COUNT 3         // Number of motor current sensors.
+
+extern Adafruit_INA219 MotorCurrentSensor[MOTOR_CURRENT_COUNT];
+
+#define MOTOR_CURRENT_RIGHT 0
+#define MOTOR_CURRENT_LEFT 1
+#define MOTOR_CURRENT_CUT 2
+
+extern float MotorCurrent[MOTOR_CURRENT_COUNT];
+
 /************************* HC-SR04 Sonar sensor variables *********************************/
 #include <Wire.h>
 #include <NewPing.h>

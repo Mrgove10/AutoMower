@@ -7,6 +7,7 @@
 #include "Tilt/Tilt.h"
 #include "Temperature/Temperature.h"
 #include "Sonar/Sonar.h"
+#include "Current/Current.h"
 
 /**
  * Runs all Mower checks on Startup
@@ -41,6 +42,11 @@ bool StartupChecks(void)
   if (!SonarSensorCheck(SONAR_FRONT)) {allChecks = false;};
   if (!SonarSensorCheck(SONAR_LEFT)) {allChecks = false;};
   if (!SonarSensorCheck(SONAR_RIGHT)) {allChecks = false;};
+
+  if (!BatteryCurrentSensorCheck()) {allChecks = false;};
+  if (!MotorCurrentSensorCheck(MOTOR_CURRENT_RIGHT)) {allChecks = false;}; 
+  if (!MotorCurrentSensorCheck(MOTOR_CURRENT_LEFT)) {allChecks = false;}; 
+  if (!MotorCurrentSensorCheck(MOTOR_CURRENT_CUT)) {allChecks = false;}; 
 
    // insert here all other startup checks
 

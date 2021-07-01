@@ -27,7 +27,7 @@ bool RainSensorCheck(void)
     lcd.print(F("Rain OK"));
     if (raw > RAIN_SENSOR_RAINING_THRESHOLD)
     {
-      lcd.print(F("Rain present"));
+      lcd.print(F(" + rain"));
     }
     delay(TEST_SEQ_STEP_WAIT);
 

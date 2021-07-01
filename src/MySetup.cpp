@@ -14,6 +14,7 @@
 #include "IOExtender/IOExtender.h"
 #include "Keypad/Keypad.h"
 #include "Temperature/Temperature.h"
+#include "Current/Current.h"
 #include "StartupChecks.h"
 
 void MySetup(void)
@@ -24,6 +25,8 @@ void MySetup(void)
   LCDSetup();
 
   IOExtendSetup();
+
+  MotorCurrentSensorSetup();
 
   KeypadSetup();
 

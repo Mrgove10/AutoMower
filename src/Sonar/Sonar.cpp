@@ -73,21 +73,23 @@ bool SonarSensorCheck(int sensor)
   if (sensor == 1) 
   {
     lcd.clear();
+    lcd.setCursor(0, 0);
+    lcd.print(F("Sonar Tests"));
   }
-  lcd.setCursor(0, 0);
-  lcd.print(F("Sonar Tests"));
 
   Distance = sonar[sensor-1].ping_cm(SONAR_MAX_DISTANCE);
   sensorCheck = Distance != 0;
 
-  lcd.setCursor(2, 0+sensor);
+  lcd.setCursor(2, sensor);
 
   DebugPrintln(sensorStr[sensor-1] + " Distance " + String(Distance), DBG_INFO, true);
 
   if (sensorCheck) 
   {
     DebugPrintln(sensorStr[sensor-1] + " Sonar sensor Ok : " + String(Distance), DBG_INFO, true);
-    lcd.print(sensorStr[sensor-1] + " OK ");
+    lcd.print(sensorStr[sensor-1]);
+    lcd.setCursor(8, sensor);
+    lcd.print(F("OK "));
     lcd.print(Distance);
     lcd.print(F(" cm"));
     delay(TEST_SEQ_STEP_WAIT);
@@ -96,7 +98,9 @@ bool SonarSensorCheck(int sensor)
   else
   {
     LogPrintln(sensorStr[sensor-1] + " No sensor echo", TAG_CHECK, DBG_WARNING);
-    lcd.print(sensorStr[sensor-1] + " NO ECHO");
+    lcd.print(sensorStr[sensor-1]);
+    lcd.setCursor(8, sensor);
+    lcd.print(F("NO ECHO"));
     delay(TEST_SEQ_STEP_WAIT + TEST_SEQ_STEP_ERROR_WAIT);
     return false;
   }

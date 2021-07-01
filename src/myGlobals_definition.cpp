@@ -3,6 +3,7 @@
 */
 #include "myGlobals_definition.h"
 #include "pin_definitions.h"
+#include "i2c_definitions.h"
 #include "Utils/Utils.h"
 
 WiFiClient espClient;
@@ -67,6 +68,18 @@ DeviceAddress temp_2_BlueSensor = {0x28, 0xD7, 0x3C, 0x95, 0xF0, 0x01, 0x3C, 0xC
 
 int Temp1ErrorCount = 0;
 int Temp2ErrorCount = 0;
+
+/************************* ACS712 Battery Charge current sensor variables *********************************/
+float BatteryChargeCurrent = 0;
+
+/************************* INA219 I2C Curent sensor variables *********************************/
+#include <Adafruit_INA219.h>
+
+Adafruit_INA219 MotorCurrentSensor[MOTOR_CURRENT_COUNT] = {Adafruit_INA219(MOTOR_RIGHT_INA219_I2C_ADDRESS), 
+                                                           Adafruit_INA219(MOTOR_LEFT_INA219_I2C_ADDRESS), 
+                                                           Adafruit_INA219(MOTOR_CUT_INA219_I2C_ADDRESS) };
+
+float MotorCurrent[MOTOR_CURRENT_COUNT] = {0, 0, 0};
 
 /************************* HC-SR04 Sonar sensor variables *********************************/
 #include <Wire.h>
