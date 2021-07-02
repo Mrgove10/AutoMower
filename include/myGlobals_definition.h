@@ -83,7 +83,7 @@ extern DeviceAddress temp_2_BlueSensor;
 #define TEMPERATURE_COUNT 2         // Number of temperature sensors
 #define TEMPERATURE_1_RED 0
 #define TEMPERATURE_2_BLUE 1
-#define TEMPERATURE_READ_INTERVAL 15000          // in ms
+#define TEMPERATURE_READ_INTERVAL 5000          // in ms
 
 extern int TempErrorCount[TEMPERATURE_COUNT];
 extern float Temperature[TEMPERATURE_COUNT];
@@ -103,7 +103,7 @@ extern Adafruit_INA219 MotorCurrentSensor[MOTOR_CURRENT_COUNT];
 #define MOTOR_CURRENT_RIGHT 0
 #define MOTOR_CURRENT_LEFT 1
 #define MOTOR_CURRENT_CUT 2
-#define MOTOR_CURRENT_READ_INTERVAL 1000                // in ms
+#define MOTOR_CURRENT_READ_INTERVAL 500                // in ms
 extern float MotorCurrent[MOTOR_CURRENT_COUNT];
 
 /************************* Voltage variables *********************************/
@@ -159,7 +159,7 @@ extern bool FanOn[FAN_COUNT];
 
 /************************* Test sequence variables *********************************/
 #define TEST_SEQ_STEP_WAIT 1000
-#define TEST_SEQ_STEP_ERROR_WAIT 2000
+#define TEST_SEQ_STEP_ERROR_WAIT 1000
 
 /************************* Program variables *********************************/
 

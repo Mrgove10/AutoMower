@@ -124,8 +124,9 @@ bool BatteryCurrentSensorCheck(void)
   {
     DebugPrintln("Charge Sensor , Value: " + String(BatteryChargeCurrent,3), DBG_INFO, true);
     lcd.print(F("Charge OK: "));
-    lcd.print(BatteryChargeCurrent,1);
-    lcd.print(F(" A"));
+    lcd.setCursor(7, 3);
+    lcd.print(BatteryChargeCurrent,0);
+    lcd.print(F(" mA"));
     delay(TEST_SEQ_STEP_WAIT);
     return true;
   }
@@ -169,7 +170,7 @@ bool BatteryChargeCurrentRead(const bool Now)
         current = 0;
       }
       
-      BatteryChargeCurrent = current;
+      BatteryChargeCurrent = current * 1000;          //  to convert to mA
       LastBatteryChargeCurrentRead = millis();
 
   //    DebugPrintln("Charge current value: " + String(BatteryChargeCurrent,3), DBG_VERBOSE, true);

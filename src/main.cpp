@@ -66,8 +66,8 @@ void loop()
 //  MotorCurrentRead(MOTOR_CURRENT_CUT);
   KeypadRead();
   
-  TemperatureRead(TEMPERATURE_1_RED);
-  TemperatureRead(TEMPERATURE_2_BLUE);
+//  TemperatureRead(TEMPERATURE_1_RED);   // not needed : Done by FanCheck()
+//  TemperatureRead(TEMPERATURE_2_BLUE);   // not needed : Done by FanCheck()
 
   SonarRead(SONAR_FRONT);
   SonarRead(SONAR_LEFT);
@@ -83,7 +83,7 @@ void loop()
   {
     DebugPrint("Temp 1: " + String(Temperature[TEMPERATURE_1_RED],1) + // " | Err1: " + String(Temp1ErrorCount) + 
               " | Temp 2: " + String(Temperature[TEMPERATURE_2_BLUE],1) + //" | Err2: " + String(Temp2ErrorCount) + 
-              " | Charge: " + String(BatteryChargeCurrent,2) + 
+              " | Charge: " + String(BatteryChargeCurrent,0) + 
               " | MotorR: " + String(MotorCurrent[MOTOR_CURRENT_RIGHT],2) + 
               " | Volt: " + String(float(BatteryVotlage)/1000.0f,2), DBG_INFO, true);
               
@@ -116,7 +116,7 @@ void loop()
 */
 
   lcd.setCursor(0,3);
-  lcd.print("B:" + String(BatteryChargeCurrent,1) + " ");
+  lcd.print("B:" + String(BatteryChargeCurrent,0) + " ");
   lcd.print("R:" + String(MotorCurrent[MOTOR_CURRENT_RIGHT],0) + " ");
   lcd.print("L:" + String(MotorCurrent[MOTOR_CURRENT_LEFT],0) + " ");
 //  lcd.print("C:" + String(MotorCurrent[MOTOR_CURRENT_CUT],0) + " ");

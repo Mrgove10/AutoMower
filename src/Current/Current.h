@@ -5,7 +5,7 @@
 #define CHARGE_CURRENT_OFFSET 140                         // in raw AnalogRead 
 #define CHARGE_CURRENT_MV_PER_AMP 100.0F                   // From ACS712-20A datasheet
 #define CHARGE_CURRENT_ZERO_VOLTAGE 2500                // in mv
-#define CHARGE_CURRENT_DEADBAND 0.250F                         // in A 
+#define CHARGE_CURRENT_DEADBAND 250                         // in mA 
 
 /**
  * I2C INA219 Current Sensor Setup function
