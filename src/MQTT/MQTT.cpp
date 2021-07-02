@@ -210,10 +210,12 @@ void MQTTSendTelemetry()
     JSONDataPayload.add("DriveMotorTemperature",    String(Temperature[TEMPERATURE_1_RED],1));
     JSONDataPayload.add("RightMotorCurrent",        String(MotorCurrent[MOTOR_CURRENT_RIGHT],2));
     JSONDataPayload.add("LeftMotorCurrent",         String(MotorCurrent[MOTOR_CURRENT_LEFT],2));
+    JSONDataPayload.add("DriveMotorFan",            String(FanOn[FAN_1_RED]));
     
     JSONDataPayload.add("CutMotorTemperature",      String(Temperature[TEMPERATURE_2_BLUE],1));
     JSONDataPayload.add("CutMotorCurrent",          String(MotorCurrent[MOTOR_CURRENT_CUT],2));
-    
+    JSONDataPayload.add("CutMotorFan",              String(FanOn[FAN_2_BLUE]));
+
     JSONDataPayload.add("FrontSonarDistance",       String(SonarDistance[SONAR_FRONT]));
     JSONDataPayload.add("RightSonarDistance",       String(SonarDistance[SONAR_RIGHT]));
     JSONDataPayload.add("LeftSonarDistance",        String(SonarDistance[SONAR_LEFT]));

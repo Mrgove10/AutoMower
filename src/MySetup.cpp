@@ -15,6 +15,7 @@
 #include "Keypad/Keypad.h"
 #include "Temperature/Temperature.h"
 #include "Current/Current.h"
+#include "Fan/Fan.h"
 #include "StartupChecks.h"
 
 void MySetup(void)
@@ -29,6 +30,8 @@ void MySetup(void)
   MotorCurrentSensorSetup();
 
   KeypadSetup();
+
+  FanSetup();
 
   // Setup pins
 

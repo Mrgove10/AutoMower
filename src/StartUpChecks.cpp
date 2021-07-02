@@ -9,6 +9,7 @@
 #include "Sonar/Sonar.h"
 #include "Current/Current.h"
 #include "Voltage/Voltage.h"
+#include "Fan/Fan.h"
 
 /**
  * Runs all Mower checks on Startup
@@ -62,6 +63,9 @@ bool StartupChecks(void)
   if (!MotorCurrentSensorCheck(MOTOR_CURRENT_RIGHT)) {allChecks = false;}; 
   if (!MotorCurrentSensorCheck(MOTOR_CURRENT_LEFT)) {allChecks = false;}; 
   if (!MotorCurrentSensorCheck(MOTOR_CURRENT_CUT)) {allChecks = false;}; 
+
+  FanTest(FAN_1_RED);
+  FanTest(FAN_2_BLUE);
 
    // insert here all other startup checks
 

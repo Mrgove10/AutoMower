@@ -117,6 +117,7 @@ extern float MotorCurrent[MOTOR_CURRENT_COUNT];
 #define BATTERY_VOLTAGE_READ_INTERVAL 5000          // in ms
 
 extern float BatteryVotlage;
+extern int BatteryStatus;
 
 /************************* HC-SR04 Sonar sensor variables *********************************/
 #include <Wire.h>
@@ -142,6 +143,19 @@ extern bool RightBumperTriggered;
 
 extern bool HorizontalTiltTriggered;
 extern bool VerticalTiltTriggered;
+
+/************************* Fan variables *********************************/
+
+#define FAN_COUNT 2         // Number of Fans
+#define FAN_1_RED 0
+#define FAN_2_BLUE 1
+#define FAN_UPDATE_INTERVAL 15000          // in ms
+#define FAN_START_THRESHOLD 27.5f           // in deg C
+#define FAN_STOP_THRESHOLD 26.0f           // in deg C
+#define FAN_TEST_DURATION 5000              // in ms
+
+extern const int FanPin[FAN_COUNT];
+extern bool FanOn[FAN_COUNT];
 
 /************************* Test sequence variables *********************************/
 #define TEST_SEQ_STEP_WAIT 1000

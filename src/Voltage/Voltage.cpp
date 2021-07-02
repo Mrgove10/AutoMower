@@ -61,19 +61,24 @@ int BatteryVoltageRead(const bool Now)
 
     if (volt < BATTERY_VOLTAGE_LOW_THRESHOLD) 
     {
+      BatteryStatus = BATTERY_VOLTAGE_CRITICAL;
       return BATTERY_VOLTAGE_CRITICAL;
     }
     else if (volt < BATTERY_VOLTAGE_MEDIUM_THRESHOLD)
     {
+      BatteryStatus = BATTERY_VOLTAGE_LOW;
       return BATTERY_VOLTAGE_LOW;
     }
     else if (volt < VOLTAGE_NORMAL_THRESHOLD)
     {
+      BatteryStatus = BATTERY_VOLTAGE_MEDIUM;
       return BATTERY_VOLTAGE_MEDIUM;
     }
     else 
     {
+      BatteryStatus = BATTERY_VOLTAGE_OK;
       return BATTERY_VOLTAGE_OK;
     }
   }
+  return BatteryStatus;
 }

@@ -10,6 +10,7 @@
 #include "Sonar/Sonar.h"
 #include "EEPROM/EEPROM.h"
 #include "Keypad/Keypad.h"
+#include "Fan/Fan.h"
 #include "IOExtender/IOExtender.h"
 #include <pin_definitions.h>
 
@@ -73,6 +74,9 @@ void loop()
   SonarRead(SONAR_RIGHT);
   
   BatteryVoltageRead();
+  FanCheck(FAN_1_RED);
+  FanCheck(FAN_2_BLUE);
+  
   static unsigned long LastRefresh = 0;
 
   if ((millis() - LastRefresh > 500)) 

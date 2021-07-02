@@ -96,6 +96,7 @@ float MotorCurrent[MOTOR_CURRENT_COUNT] = {0, 0, 0};
 /************************* Voltage variables *********************************/
 
 float BatteryVotlage = 0;
+int BatteryStatus = BATTERY_VOLTAGE_OK;
 
 /************************* HC-SR04 Sonar sensor variables *********************************/
 #include <Wire.h>
@@ -116,6 +117,11 @@ bool RightBumperTriggered = false;
 
 bool HorizontalTiltTriggered = false;
 bool VerticalTiltTriggered = false;
+
+/************************* Fan variables *********************************/
+
+const int FanPin[FAN_COUNT] = {PIN_MCP_FAN_1, PIN_MCP_FAN_2};
+bool FanOn[FAN_COUNT] = {false, false};
 
 /************************* Program variables *********************************/
 
