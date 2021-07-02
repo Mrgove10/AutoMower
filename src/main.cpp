@@ -9,6 +9,7 @@
 #include "Voltage/Voltage.h"
 #include "Sonar/Sonar.h"
 #include "EEPROM/EEPROM.h"
+#include "Keypad/Keypad.h"
 #include "IOExtender/IOExtender.h"
 #include <pin_definitions.h>
 
@@ -58,46 +59,64 @@ void loop()
     VerticalTiltTriggered = false;
   }
 
-  BatteryChargeCurrentRead();
+  BatteryChargeCurrentRead(false);
   MotorCurrentRead(MOTOR_CURRENT_RIGHT);
-  MotorCurrentRead(MOTOR_CURRENT_LEFT);
-  MotorCurrentRead(MOTOR_CURRENT_CUT);
-
-  BatteryVoltageRead();
+//  MotorCurrentRead(MOTOR_CURRENT_LEFT);
+//  MotorCurrentRead(MOTOR_CURRENT_CUT);
+  KeypadRead();
   
-  DebugPrint("Temp 1: " + String(TemperatureRead(TEMPERATURE_1_RED),1) + // " | Err1: " + String(Temp1ErrorCount) + 
-             " | Temp 2: " + String(TemperatureRead(TEMPERATURE_2_BLUE),1) + //" | Err2: " + String(Temp2ErrorCount) + 
-             " | Charge: " + String(BatteryChargeCurrent,2) + 
-             " | MotorR: " + String(MotorCurrent[MOTOR_CURRENT_RIGHT],2) + 
-             " | Volt: " + String(float(BatteryVotlage)/1000.0f,2), DBG_INFO, true);
-             
-//  lcd.clear();
-  lcd.setCursor(0,0);
-  lcd.print("T1: " + String(TemperatureRead(TEMPERATURE_1_RED),1) + " T2: " + String(TemperatureRead(TEMPERATURE_2_BLUE),1));
+  TemperatureRead(TEMPERATURE_1_RED);
+  TemperatureRead(TEMPERATURE_2_BLUE);
 
-  lcd.setCursor(0,1);
-  for (uint8_t i = 0; i < SONAR_COUNT; i++)
-  {            // Loop through each sensor and display results.
-    delay(50); // Wait 50ms between pings (about 20 pings/sec). 29ms should be the shortest delay between pings.
-    unsigned int distance = sonar[i].ping_cm(SONAR_MAX_DISTANCE);
-    DebugPrint(" | Sonar" + String(i+1) + ": " + String(distance));
-    lcd.print("S" + String(i+1) + ":" + String(distance) + " ");
+  SonarRead(SONAR_FRONT);
+  SonarRead(SONAR_LEFT);
+  SonarRead(SONAR_RIGHT);
+  
+  BatteryVoltageRead();
+  static unsigned long LastRefresh = 0;
+
+  if ((millis() - LastRefresh > 500)) 
+  {
+    DebugPrint("Temp 1: " + String(Temperature[TEMPERATURE_1_RED],1) + // " | Err1: " + String(Temp1ErrorCount) + 
+              " | Temp 2: " + String(Temperature[TEMPERATURE_2_BLUE],1) + //" | Err2: " + String(Temp2ErrorCount) + 
+              " | Charge: " + String(BatteryChargeCurrent,2) + 
+              " | MotorR: " + String(MotorCurrent[MOTOR_CURRENT_RIGHT],2) + 
+              " | Volt: " + String(float(BatteryVotlage)/1000.0f,2), DBG_INFO, true);
+              
+  //  lcd.clear();
+    lcd.setCursor(0,0);
+    lcd.print("T1: " + String(Temperature[TEMPERATURE_1_RED],1) + " T2: " + String(Temperature[TEMPERATURE_2_BLUE],1));
+
+    lcd.setCursor(0,1);
+    for (uint8_t i = 0; i < SONAR_COUNT; i++)
+    {            // Loop through each sensor and display results.
+      delay(50); // Wait 50ms between pings (about 20 pings/sec). 29ms should be the shortest delay between pings.
+      DebugPrint(" | Sonar" + String(i+1) + ": " + String(SonarDistance[i]));
+      lcd.print("S" + String(i+1) + ":" + String(SonarDistance[i]) + " ");
+    }
+    DebugPrintln("");
+    LastRefresh = millis();
   }
-  DebugPrintln("");
-
   lcd.setCursor(0,2);
+  for (int i = 0; i < KEYPAD_MAX_KEYS; i++){
+//    if (!key) {DebugPrintln("Keypad key" + String(i-7) + " pressed", DBG_INFO, true);}
+    lcd.print("K" + String(i+1) + ":" + String(KeyPressed[i]) + " ");
+  }
 
+/*
   for (uint8_t i = 8; i < 12; i++){
     int key = IOExtend.digitalRead(i);
     if (!key) {DebugPrintln("Keypad key" + String(i-7) + " pressed", DBG_INFO, true);}
     lcd.print("K" + String(i-7) + ":" + String(key) + " ");
   }
-  
+*/
+
   lcd.setCursor(0,3);
   lcd.print("B:" + String(BatteryChargeCurrent,1) + " ");
   lcd.print("R:" + String(MotorCurrent[MOTOR_CURRENT_RIGHT],0) + " ");
   lcd.print("L:" + String(MotorCurrent[MOTOR_CURRENT_LEFT],0) + " ");
 //  lcd.print("C:" + String(MotorCurrent[MOTOR_CURRENT_CUT],0) + " ");
+  
 
   MQTTSendTelemetry();
 
@@ -107,5 +126,5 @@ void loop()
 
   events();   // eztime refresh
 
-  delay(500);
+  delay(50);
 }

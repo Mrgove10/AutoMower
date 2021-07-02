@@ -7,5 +7,12 @@
  */
 void KeypadSetup(void);
 
+/**
+ * Keypad Read function
+ * 
+ * Keypad status is memorised in global variables
+ */
+void KeypadRead(void);
+
 
 #endif

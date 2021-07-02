@@ -21,5 +21,27 @@ void KeypadSetup(void)
   IOExtend.pullUp(PIN_MCP_KEYPAD_4, HIGH);  // turn on a 100K pullup internally
   
   DebugPrintln("Keypad setup Done", DBG_VERBOSE, true);
+}
 
+/**
+ * Keypad Read function
+ * 
+ * Keypad status is memorised in global variables
+ */
+void KeypadRead(void)
+{
+  static unsigned long LastKeypadRead = 0;
+  uint8_t IOregister;
+
+  if ((millis() - LastKeypadRead > KEYPAD_READ_INTERVAL)) 
+  {
+    IOregister = IOExtend.readGPIO(KEYPAD_GPIO) & 0XF;   // logical AND to remove heigher weight bits
+
+    for (uint8_t key = 0; key < KEYPAD_MAX_KEYS; key++)
+    {
+      KeyPressed[key] = ((IOregister & KeyMasks[key]) ^ KeyMasks[key]) == KeyMasks[key];           // logical AND to isolate bit of interest 
+    }
+
+    LastKeypadRead = millis();
+  }
 }

@@ -58,6 +58,16 @@ extern Timezone myTime;
 
 extern LiquidCrystal_I2C lcd;
 
+/************************* Keypad variables *********************************/
+
+#define KEYPAD_READ_INTERVAL 100          // in ms
+#define KEYPAD_MAX_KEYS 4
+#define KEYPAD_GPIO 1                     // GPIO B
+
+extern const uint8_t KeyMasks[KEYPAD_MAX_KEYS];
+extern const int KeyPins[KEYPAD_MAX_KEYS];
+extern bool KeyPressed[KEYPAD_MAX_KEYS];
+
 /************************* MCP23017 I2C IO Extender variables *********************************/
 #include <Adafruit_MCP23017.h>
 
@@ -70,11 +80,18 @@ extern DallasTemperature TemperatureSensors;
 extern DeviceAddress temp_1_RedSensor;
 extern DeviceAddress temp_2_BlueSensor;
 
-extern int Temp1ErrorCount;
-extern int Temp2ErrorCount;
+#define TEMPERATURE_COUNT 2         // Number of temperature sensors
+#define TEMPERATURE_1_RED 0
+#define TEMPERATURE_2_BLUE 1
+#define TEMPERATURE_READ_INTERVAL 15000          // in ms
+
+extern int TempErrorCount[TEMPERATURE_COUNT];
+extern float Temperature[TEMPERATURE_COUNT];
 
 /************************* ACS712 Battery Charge current sensor variables *********************************/
 extern float BatteryChargeCurrent;
+
+#define BATTERY_CHARGE_READ_INTERVAL 2000               // in ms
 
 /************************* INA219 I2C Curent sensor variables *********************************/
 #include <Adafruit_INA219.h>
@@ -86,7 +103,7 @@ extern Adafruit_INA219 MotorCurrentSensor[MOTOR_CURRENT_COUNT];
 #define MOTOR_CURRENT_RIGHT 0
 #define MOTOR_CURRENT_LEFT 1
 #define MOTOR_CURRENT_CUT 2
-
+#define MOTOR_CURRENT_READ_INTERVAL 1000                // in ms
 extern float MotorCurrent[MOTOR_CURRENT_COUNT];
 
 /************************* Voltage variables *********************************/
@@ -97,6 +114,7 @@ extern float MotorCurrent[MOTOR_CURRENT_COUNT];
 #define BATTERY_VOLTAGE_MEDIUM 1            // if above BATTERY_VOLTAGE_MEDIUM_THRESHOLD and below VOLTAGE_NORMAL_THRESHOLD
 #define BATTERY_VOLTAGE_LOW 2               // if above BATTERY_VOLTAGE_LOW_THRESHOLD  and below BATTERY_VOLTAGE_MEDIUM_THRESHOLD
 #define BATTERY_VOLTAGE_CRITICAL 3           // if below BATTERY_VOLTAGE_LOW_THRESHOLD
+#define BATTERY_VOLTAGE_READ_INTERVAL 5000          // in ms
 
 extern float BatteryVotlage;
 
@@ -106,12 +124,14 @@ extern float BatteryVotlage;
 
 #define SONAR_COUNT 3         // Number of sensors.
 #define SONAR_MAX_DISTANCE 200      // Maximum distance (in cm) to ping.
+#define SONAR_READ_INTERVAL 1000          // in ms
 
-#define SONAR_FRONT 1
-#define SONAR_LEFT 2
-#define SONAR_RIGHT 3
+#define SONAR_FRONT 0
+#define SONAR_LEFT 1
+#define SONAR_RIGHT 2
 
 extern NewPing sonar[SONAR_COUNT];
+extern int SonarDistance[SONAR_COUNT];      // in cm
 
 /************************* Bumper variables *********************************/
 

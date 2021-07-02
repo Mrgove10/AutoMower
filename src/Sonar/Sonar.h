@@ -19,8 +19,9 @@ bool SonarSensorCheck(int sensor);
 /**
  * Function to read distance
  * @param sensor int functional sensor to read distance from
+ * @param Now optional bool true if immediate read
  * @return float sensor distance
  */
-float SonarRead(int sensor);
+int SonarRead(const int sensor, const bool Now = false);
 
 #endif

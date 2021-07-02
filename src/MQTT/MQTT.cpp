@@ -207,16 +207,16 @@ void MQTTSendTelemetry()
     JSONDataPayload.add("BatteryVoltage",           String(float(BatteryVotlage/1000.0f),2));
     JSONDataPayload.add("BatteryChargeCurrent",     String(BatteryChargeCurrent,2));
 
-    JSONDataPayload.add("DriveMotorTemperature",    String(TemperatureRead(TEMPERATURE_1_RED),1));
+    JSONDataPayload.add("DriveMotorTemperature",    String(Temperature[TEMPERATURE_1_RED],1));
     JSONDataPayload.add("RightMotorCurrent",        String(MotorCurrent[MOTOR_CURRENT_RIGHT],2));
     JSONDataPayload.add("LeftMotorCurrent",         String(MotorCurrent[MOTOR_CURRENT_LEFT],2));
     
-    JSONDataPayload.add("CutMotorTemperature",      String(TemperatureRead(TEMPERATURE_2_BLUE),1));
+    JSONDataPayload.add("CutMotorTemperature",      String(Temperature[TEMPERATURE_2_BLUE],1));
     JSONDataPayload.add("CutMotorCurrent",          String(MotorCurrent[MOTOR_CURRENT_CUT],2));
     
-    JSONDataPayload.add("FrontSonarDistance",       String(sonar[SONAR_FRONT].ping_cm(SONAR_MAX_DISTANCE)));
-    JSONDataPayload.add("RightSonarDistance",       String(sonar[SONAR_RIGHT].ping_cm(SONAR_MAX_DISTANCE)));
-    JSONDataPayload.add("LeftSonarDistance",       String(sonar[SONAR_LEFT].ping_cm(SONAR_MAX_DISTANCE)));
+    JSONDataPayload.add("FrontSonarDistance",       String(SonarDistance[SONAR_FRONT]));
+    JSONDataPayload.add("RightSonarDistance",       String(SonarDistance[SONAR_RIGHT]));
+    JSONDataPayload.add("LeftSonarDistance",        String(SonarDistance[SONAR_LEFT]));
     
     JSONDataPayload.toString(JSONDataPayloadStr, false);
     JSONDataPayloadStr.toCharArray(MQTTpayload, JSONDataPayloadStr.length()+1);

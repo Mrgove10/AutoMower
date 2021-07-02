@@ -22,10 +22,10 @@ bool BatteryVoltageCheck(void)
   lcd.clear();
   lcd.setCursor(0, 0);
   lcd.print(F("Battery Test"));
-  lcd.setCursor(2, 2);
+  lcd.setCursor(0, 2);
   lcd.print (F("Battery "));
   lcd.print (StatusStr[status]);
-  lcd.print (" " + String(float(BatteryVotlage/1000.0f),1) + " V");
+  lcd.print (" " + String(float(BatteryVotlage/1000.0f),1) + "V");
 
   if (status > BATTERY_VOLTAGE_LOW_THRESHOLD)  
   {
@@ -46,27 +46,34 @@ bool BatteryVoltageCheck(void)
  * 
  * * @return Range depending on voltage thresholds
  */
-int BatteryVoltageRead(void)
+int BatteryVoltageRead(const bool Now)
 {
-  int voltraw = analogRead(PIN_ESP_BAT_VOLT);
-  int volt = map(voltraw, 0, 4095, 0, VOLTAGE_RANGE_MAX);
+  static unsigned long LastVoltageRead = 0;
 
-  BatteryVotlage = volt;
+  if ((millis() - LastVoltageRead > BATTERY_VOLTAGE_READ_INTERVAL) || Now) 
+  {
 
-  if (volt < BATTERY_VOLTAGE_LOW_THRESHOLD) 
-  {
-    return BATTERY_VOLTAGE_CRITICAL;
-  }
-  else if (volt < BATTERY_VOLTAGE_MEDIUM_THRESHOLD)
-  {
-    return BATTERY_VOLTAGE_LOW;
-  }
-  else if (volt < VOLTAGE_NORMAL_THRESHOLD)
-  {
-    return BATTERY_VOLTAGE_MEDIUM;
-  }
-  else 
-  {
-    return BATTERY_VOLTAGE_OK;
+    int voltraw = analogRead(PIN_ESP_BAT_VOLT);
+    int volt = map(voltraw, 0, 4095, 0, VOLTAGE_RANGE_MAX);
+
+    BatteryVotlage = volt;
+    LastVoltageRead = millis();
+
+    if (volt < BATTERY_VOLTAGE_LOW_THRESHOLD) 
+    {
+      return BATTERY_VOLTAGE_CRITICAL;
+    }
+    else if (volt < BATTERY_VOLTAGE_MEDIUM_THRESHOLD)
+    {
+      return BATTERY_VOLTAGE_LOW;
+    }
+    else if (volt < VOLTAGE_NORMAL_THRESHOLD)
+    {
+      return BATTERY_VOLTAGE_MEDIUM;
+    }
+    else 
+    {
+      return BATTERY_VOLTAGE_OK;
+    }
   }
 }

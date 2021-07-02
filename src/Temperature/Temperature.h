@@ -4,9 +4,6 @@
 #include "pin_definitions.h"
 #define TEMPERATURE_PRECISION 9
 
-#define TEMPERATURE_1_RED 1
-#define TEMPERATURE_2_BLUE 2
-
 /**
  * Temperature sensor setup function
  * 
@@ -23,9 +20,11 @@ bool TemperatureSensorCheck(int sensor);
 /**
  * Function to read temperature
  * @param device int functional sensor to read temperature from
+ * @param Now optional bool to force immediate temperature read
+ * 
  * @return float sensor temperature
  */
-float TemperatureRead(int sensor);
+float TemperatureRead(int sensor, const bool Now = false);
 
 /**
  * Temperature sensor device address formating function

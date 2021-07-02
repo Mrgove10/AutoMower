@@ -17,9 +17,10 @@ void MotorCurrentSensorSetup();
  * Function to test and read I2C INA219 Current Sensor
  *  
  * @param sensor int sensor to read
+ * @param Now true to force an immediate read
  * @return true if current could be read
  */
-bool MotorCurrentRead(int sensor);
+bool MotorCurrentRead(const int sensor, const bool Now = false);
 
 /**
  * Checks to see if Motor I2C INA219 Current Sensor is connected (and hopefully functionning)
@@ -38,8 +39,9 @@ bool BatteryCurrentSensorCheck(void);
 /**
  * Function to test and read Battery Charge current
  * 
+ * * @param Now true to force an immediate read
  * * @return true if charge current could be read
  */
-bool BatteryChargeCurrentRead(void);
+bool BatteryChargeCurrentRead(const bool Now = false);
 
 #endif

@@ -49,6 +49,12 @@ Timezone myTime;
 
 LiquidCrystal_I2C lcd(PCF8574_ADDR_A21_A11_A01, 4, 5, 6, 16, 11, 12, 13, 14, POSITIVE);   // Uses Defaut Address
 
+/************************* Keypad variables *********************************/
+
+const uint8_t KeyMasks[KEYPAD_MAX_KEYS] = {0X2, 0X1, 0X8, 0x4};
+const int KeyPins[KEYPAD_MAX_KEYS] = {PIN_MCP_KEYPAD_1 - 8, PIN_MCP_KEYPAD_2 - 8, PIN_MCP_KEYPAD_3 - 8, PIN_MCP_KEYPAD_4 - 8};  // GPIO B
+bool KeyPressed[KEYPAD_MAX_KEYS] = {false, false, false, false};
+
 /************************* MCP23017 I2C IO Extender variables *********************************/
 #include <Adafruit_MCP23017.h>
 
@@ -72,8 +78,8 @@ DallasTemperature TemperatureSensors(&TemperatureOneWire);
 DeviceAddress temp_1_RedSensor = {0x28, 0xC9, 0xD0, 0x95, 0xF0, 0x01, 0x3C, 0x7D};
 DeviceAddress temp_2_BlueSensor = {0x28, 0xD7, 0x3C, 0x95, 0xF0, 0x01, 0x3C, 0xCE};
 
-int Temp1ErrorCount = 0;
-int Temp2ErrorCount = 0;
+int TempErrorCount[TEMPERATURE_COUNT] = { 0, 0};
+float Temperature[TEMPERATURE_COUNT] = { 0, 0};
 
 /************************* ACS712 Battery Charge current sensor variables *********************************/
 float BatteryChargeCurrent = 0;
@@ -98,6 +104,8 @@ NewPing sonar[SONAR_COUNT] = {                                           // Sens
     NewPing(PIN_ESP_SONAR_CENTER, PIN_ESP_SONAR_CENTER, SONAR_MAX_DISTANCE), // Each sensor's trigger pin, echo pin, and max distance to ping.
     NewPing(PIN_ESP_SONAR_LEFT, PIN_ESP_SONAR_LEFT, SONAR_MAX_DISTANCE),
     NewPing(PIN_ESP_SONAR_RIGHT, PIN_ESP_SONAR_RIGHT, SONAR_MAX_DISTANCE)};
+
+int SonarDistance[SONAR_COUNT] = {0, 0, 0};      // in cm
 
 /************************* Bumper variables *********************************/
 

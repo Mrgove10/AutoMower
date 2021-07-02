@@ -91,7 +91,7 @@ bool TemperatureSensorCheck(int sensor)
   TemperatureSensors.requestTemperatures();
 
   DebugPrintln("TemperatureSensorCheck start " + String(sensor), DBG_VERBOSE, true);
-  if (sensor == 1) 
+  if (sensor == 0) 
   {
     lcd.clear();
   }
@@ -101,17 +101,17 @@ bool TemperatureSensorCheck(int sensor)
   if (sensor == TEMPERATURE_1_RED)
   {
     sensorCheck = TemperatureSensors.isConnected(temp_1_RedSensor);
-    if (sensorCheck) {temperature = TemperatureRead(TEMPERATURE_1_RED);}
+    if (sensorCheck) {temperature = TemperatureRead(TEMPERATURE_1_RED, true);}
     sensorStr = "1-Red";
   }
   if (sensor == TEMPERATURE_2_BLUE)
   {
     sensorCheck = TemperatureSensors.isConnected(temp_2_BlueSensor);
-    if (sensorCheck) {temperature = TemperatureRead(TEMPERATURE_2_BLUE);}
+    if (sensorCheck) {temperature = TemperatureRead(TEMPERATURE_2_BLUE, true);}
     sensorStr = "2-Blue";
   }
 
-  lcd.setCursor(2, 1+sensor);
+  lcd.setCursor(2, 2 + sensor);
 
   DebugPrintln(sensorStr + " Temperature  " + String(temperature,2), DBG_INFO, true);
 
@@ -134,33 +134,43 @@ bool TemperatureSensorCheck(int sensor)
 
 /**
  * Function to read temperature
- * @param device int functional sensor to read temperature from
+ * @param sensor int functional sensor to read temperature from
+ * @param Now optional bool true if immediate read
  * @return float sensor temperature
  */
-float TemperatureRead(int sensor)
+float TemperatureRead(int sensor, const bool Now)
 {
-  float tempC = UNKNOWN_FLOAT;
+  static unsigned long LastTemperatureRead[2] = {0, 0};
 
-  if (sensor == TEMPERATURE_1_RED)
+  if ((millis() - LastTemperatureRead[sensor] > TEMPERATURE_READ_INTERVAL) || Now) 
   {
-    TemperatureSensors.requestTemperaturesByAddress(temp_1_RedSensor);
-    tempC = TemperatureSensors.getTempC(temp_1_RedSensor);
-  }
-  if (sensor == TEMPERATURE_2_BLUE)
-  {
-    TemperatureSensors.requestTemperaturesByAddress(temp_2_BlueSensor);
-    tempC = TemperatureSensors.getTempC(temp_2_BlueSensor);
-  }
+    float tempC = UNKNOWN_FLOAT;
 
-//  DebugPrintln("TemperatureRead value " + String(tempC,2), DBG_VERBOSE, true);
+    if (sensor == TEMPERATURE_1_RED)
+    {
+      TemperatureSensors.requestTemperaturesByAddress(temp_1_RedSensor);
+      tempC = TemperatureSensors.getTempC(temp_1_RedSensor);
+    }
+    if (sensor == TEMPERATURE_2_BLUE)
+    {
+      TemperatureSensors.requestTemperaturesByAddress(temp_2_BlueSensor);
+      tempC = TemperatureSensors.getTempC(temp_2_BlueSensor);
+    }
 
-  if (tempC > -127.0f && tempC < 85.0f) {
-    return tempC;
+//    DebugPrintln("TemperatureRead value " + String(tempC,2), DBG_VERBOSE, true);
+
+    LastTemperatureRead[sensor] = millis();
+
+    if (tempC > -127.0f && tempC < 85.0f) {
+      Temperature[sensor] = tempC;
+      return tempC;
+    }
+    else
+    {
+      TempErrorCount[sensor] = TempErrorCount[sensor] + 1;
+      Temperature[sensor] = UNKNOWN_FLOAT;
+      return UNKNOWN_FLOAT;
+    }
   }
-  else
-  {
-    if (sensor == TEMPERATURE_1_RED) {Temp1ErrorCount = Temp1ErrorCount + 1;}
-    if (sensor == TEMPERATURE_2_BLUE) {Temp2ErrorCount = Temp2ErrorCount + 1;}
-    return UNKNOWN_FLOAT;
-  }
+  return Temperature[sensor];
 }
