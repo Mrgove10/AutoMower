@@ -240,11 +240,13 @@ void MQTTSendTelemetry()
     JSONDataPayload.add("BattChargeCur",  String(BatteryChargeCurrent,2));
 
     JSONDataPayload.add("DrvMotTemp",     String(Temperature[TEMPERATURE_1_RED],1));
+    JSONDataPayload.add("DrvMotTempErr",  String(TempErrorCount[TEMPERATURE_1_RED]));
     JSONDataPayload.add("RMotCur",        String(MotorCurrent[MOTOR_CURRENT_RIGHT],2));
     JSONDataPayload.add("LMotCur",        String(MotorCurrent[MOTOR_CURRENT_LEFT],2));
     JSONDataPayload.add("DrvMotFan",      String(FanOn[FAN_1_RED]));
     
     JSONDataPayload.add("CutMotTemp",     String(Temperature[TEMPERATURE_2_BLUE],1));
+    JSONDataPayload.add("CutMotTempErr",  String(TempErrorCount[TEMPERATURE_2_BLUE]));
     JSONDataPayload.add("CutMotCur",      String(MotorCurrent[MOTOR_CURRENT_CUT],2));
     JSONDataPayload.add("CutMotFan",      String(FanOn[FAN_2_BLUE]));
 
@@ -271,6 +273,11 @@ void MQTTSendTelemetry()
     {
       publ = MQTTclient.publish(MQTT_TELEMETRY_CHANNEL, MQTTpayload);
       LastTelemetryDataSent = millis();
+      if (publ == 1) {
+        TempErrorCount[TEMPERATURE_1_RED] = 0;
+        TempErrorCount[TEMPERATURE_2_BLUE] = 0;
+      }
+
     }
     else 
     {

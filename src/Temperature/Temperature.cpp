@@ -151,18 +151,21 @@ float TemperatureRead(int sensor, const bool Now)
 
     if (sensor == TEMPERATURE_1_RED)
     {
-      if (TemperatureSensors.isConnected(temp_1_RedSensor))
+      if (!TemperatureSensors.isConnected(temp_1_RedSensor))
       {
         TemperatureSensors.begin();
+        TempErrorCount[sensor] = TempErrorCount[sensor] + 1;
+
       }
       TemperatureSensors.requestTemperaturesByAddress(temp_1_RedSensor);
       tempC = TemperatureSensors.getTempC(temp_1_RedSensor);
     }
     if (sensor == TEMPERATURE_2_BLUE)
     {
-      if (TemperatureSensors.isConnected(temp_2_BlueSensor))
+      if (!TemperatureSensors.isConnected(temp_2_BlueSensor))
       {
         TemperatureSensors.begin();
+        TempErrorCount[sensor] = TempErrorCount[sensor] + 1;
       }
       TemperatureSensors.requestTemperaturesByAddress(temp_2_BlueSensor);
       tempC = TemperatureSensors.getTempC(temp_2_BlueSensor);
