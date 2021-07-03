@@ -10,6 +10,7 @@
 #include "Current/Current.h"
 #include "Voltage/Voltage.h"
 #include "Fan/Fan.h"
+#include "Compass/Compass.h"
 
 /**
  * Runs all Mower checks on Startup
@@ -66,6 +67,8 @@ bool StartupChecks(void)
 
   FanTest(FAN_1_RED);
   FanTest(FAN_2_BLUE);
+
+  if (!CompassSensorCheck()) {allChecks = false;}; 
 
    // insert here all other startup checks
 

@@ -60,6 +60,16 @@ bool KeyPressed[KEYPAD_MAX_KEYS] = {false, false, false, false};
 
 Adafruit_MCP23017 IOExtend;
 
+/************************* I2C HMC5883L Compasss Sensor variables *********************************/
+#include <Adafruit_HMC5883_U.h>
+
+Adafruit_HMC5883_Unified Compass = Adafruit_HMC5883_Unified(COMPASS_ID);
+
+float CompassHeading = 0;
+float CompassHeadingCorrected = 0;
+float CompassXField = 0;
+float CompassYField = 0;
+
 /************************* DS18D20 temperature sensor variables *********************************/
 #include <DallasTemperature.h>
 

@@ -11,6 +11,7 @@
 #include "EEPROM/EEPROM.h"
 #include "Keypad/Keypad.h"
 #include "Fan/Fan.h"
+#include "Compass/Compass.h"
 #include "IOExtender/IOExtender.h"
 #include <pin_definitions.h>
 
@@ -74,6 +75,9 @@ void loop()
   SonarRead(SONAR_RIGHT);
   
   BatteryVoltageRead();
+
+  CompassRead();
+
   FanCheck(FAN_1_RED);
   FanCheck(FAN_2_BLUE);
   
@@ -85,7 +89,8 @@ void loop()
               " | Temp 2: " + String(Temperature[TEMPERATURE_2_BLUE],1) + //" | Err2: " + String(Temp2ErrorCount) + 
               " | Charge: " + String(BatteryChargeCurrent,0) + 
               " | MotorR: " + String(MotorCurrent[MOTOR_CURRENT_RIGHT],2) + 
-              " | Volt: " + String(float(BatteryVotlage)/1000.0f,2), DBG_INFO, true);
+              " | Volt: "   + String(float(BatteryVotlage)/1000.0f,2) + 
+              " | Heading: " + String(CompassHeading,1), DBG_INFO, true);
               
   //  lcd.clear();
     lcd.setCursor(0,0);
@@ -121,6 +126,8 @@ void loop()
   lcd.print("L:" + String(MotorCurrent[MOTOR_CURRENT_LEFT],0) + " ");
 //  lcd.print("C:" + String(MotorCurrent[MOTOR_CURRENT_CUT],0) + " ");
   
+
+  MQTTReconnect();
 
   MQTTSendTelemetry();
 

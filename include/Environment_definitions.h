@@ -8,6 +8,10 @@
 #define MQTT_SERVER "192.168.1.3"
 #define MQTT_PORT 1883
 
+/************************* I2C HMC5883L Compasss Sensor variables *********************************/
+
+#define COMPASS_DECLINATION_ANGLE 0.03961897f
+
 // -------------------- Network  ------------------------
 #define ESPHOSTNAME "MyMower"
 

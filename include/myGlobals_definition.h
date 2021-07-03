@@ -73,6 +73,22 @@ extern bool KeyPressed[KEYPAD_MAX_KEYS];
 
 extern Adafruit_MCP23017 IOExtend;
 
+/************************* I2C HMC5883L Compasss Sensor variables *********************************/
+#include <Adafruit_HMC5883_U.h>
+
+extern Adafruit_HMC5883_Unified Compass;
+
+#define COMPASS_ID 12345
+#define COMPASS_PRECISION 1
+#define COMPASS_X_HEADING_CORRECTION -3.5f
+#define COMPASS_Y_HEADING_CORRECTION -6.5f
+#define COMPASS_READ_INTERVAL 4000
+
+extern float CompassHeading;                        // in Degrees
+extern float CompassHeadingCorrected;               // in Degrees
+extern float CompassXField;
+extern float CompassYField;
+
 /************************* DS18D20 temperature sensor variables *********************************/
 #include <DallasTemperature.h>
 extern OneWire TemperatureOneWire;
@@ -92,6 +108,11 @@ extern float Temperature[TEMPERATURE_COUNT];
 extern float BatteryChargeCurrent;
 
 #define BATTERY_CHARGE_READ_INTERVAL 2000               // in ms
+#define CHARGE_CURRENT_CHECK_THRESHOLD 1000             // in raw AnalogRead points
+#define CHARGE_CURRENT_OFFSET 140                         // in raw AnalogRead 
+#define CHARGE_CURRENT_MV_PER_AMP 100.0F                   // From ACS712-20A datasheet
+#define CHARGE_CURRENT_ZERO_VOLTAGE 2500                // in mv
+#define CHARGE_CURRENT_DEADBAND 250                         // in mA 
 
 /************************* INA219 I2C Curent sensor variables *********************************/
 #include <Adafruit_INA219.h>

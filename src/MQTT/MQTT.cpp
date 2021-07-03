@@ -4,6 +4,7 @@
 #include "Utils/Utils.h"
 #include "OTA/OTA.h"
 #include "Temperature/Temperature.h"
+#include "StartupChecks.h"
 
 void MQTTSubscribe()
 {
@@ -90,6 +91,37 @@ void MQTTCallback(char *topic, byte *message, unsigned int length)
             lastCommand = String(messageTemp);
             otaFlag = true;
             OTAHandle();
+        }
+        else if (String(messageTemp) == "TEST" &&
+            String(messageTemp) != lastCommand)
+        {
+            LogPrintln("Request for AutoMower Test", TAG_CHECK, DBG_INFO);
+            lastCommand = String(messageTemp);
+            StartupChecks();
+        }
+
+        else if (String(messageTemp) == "DBG_VERBOSE" &&
+            String(messageTemp) != lastCommand)
+        {
+            debugLevel = DBG_VERBOSE;
+            DebugPrintln("Debug level to VERBOSE", DBG_INFO, true);
+            lastCommand = String(messageTemp);
+        }
+
+        else if (String(messageTemp) == "DBG_DEBUG" &&
+            String(messageTemp) != lastCommand)
+        {
+            debugLevel = DBG_DEBUG;
+            DebugPrintln("Debug level to DEBUG", DBG_INFO, true);
+            lastCommand = String(messageTemp);
+        }
+
+        else if (String(messageTemp) == "DBG_INFO" &&
+            String(messageTemp) != lastCommand)
+        {
+            debugLevel = DBG_INFO;
+            DebugPrintln("Debug level to INFO", DBG_INFO, true);
+            lastCommand = String(messageTemp);
         }
 
         else if (String(messageTemp) == lastCommand)
@@ -219,6 +251,8 @@ void MQTTSendTelemetry()
     JSONDataPayload.add("FrontSonarDistance",       String(SonarDistance[SONAR_FRONT]));
     JSONDataPayload.add("RightSonarDistance",       String(SonarDistance[SONAR_RIGHT]));
     JSONDataPayload.add("LeftSonarDistance",        String(SonarDistance[SONAR_LEFT]));
+
+    JSONDataPayload.add("CompassHeading",           String(CompassHeading));
     
     JSONDataPayload.toString(JSONDataPayloadStr, false);
     JSONDataPayloadStr.toCharArray(MQTTpayload, JSONDataPayloadStr.length()+1);

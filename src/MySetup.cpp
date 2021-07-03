@@ -16,6 +16,7 @@
 #include "Temperature/Temperature.h"
 #include "Current/Current.h"
 #include "Fan/Fan.h"
+#include "Compass/Compass.h"
 #include "StartupChecks.h"
 
 void MySetup(void)
@@ -28,10 +29,9 @@ void MySetup(void)
   IOExtendSetup();
 
   MotorCurrentSensorSetup();
+  CompassSensorSetup();
 
   KeypadSetup();
-
-  FanSetup();
 
   // Setup pins
 
@@ -75,6 +75,12 @@ void MySetup(void)
   LogPrintln(Resetreason, TAG_RESET, DBG_WARNING);
 
   TemperatureSensorSetup();
+
+  FanSetup();
+
+  MotorCurrentSensorSetup();
+
+  CompassSensorSetup();
 
   BumperSetup();
 
