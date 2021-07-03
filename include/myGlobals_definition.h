@@ -78,6 +78,7 @@ extern Adafruit_MCP23017 IOExtend;
 
 extern Adafruit_HMC5883_Unified Compass;
 
+//#define COMPASS_PRESENT 
 #define COMPASS_ID 12345
 #define COMPASS_PRECISION 1
 #define COMPASS_X_HEADING_CORRECTION -3.5f
@@ -88,6 +89,25 @@ extern float CompassHeading;                        // in Degrees
 extern float CompassHeadingCorrected;               // in Degrees
 extern float CompassXField;
 extern float CompassYField;
+
+/************************* UART NEO-N8M GPS variables *********************************/
+#include <TinyGPS++.h>
+
+#define GPS_BAUD 115200UL
+#define GPS_READ_INTERVAL 500
+#define GPS_UART Serial2
+#define GPS_CHARS_TO_DETECT 20
+
+extern TinyGPSPlus GPS; // The TinyGPS++ object
+extern HardwareSerial Serial2;
+
+extern float GPSHeading;                        // in Degrees
+extern int GPSSatellitesFix;
+extern double GPSHdop;
+extern double GPSSpeed;
+extern double GPSAltitude;
+extern double GPSLatitude;
+extern double GPSLongitude;
 
 /************************* DS18D20 temperature sensor variables *********************************/
 #include <DallasTemperature.h>

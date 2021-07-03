@@ -70,6 +70,20 @@ float CompassHeadingCorrected = 0;
 float CompassXField = 0;
 float CompassYField = 0;
 
+/************************* UART NEO-N8M GPS variables *********************************/
+#include <TinyGPS++.h>
+
+TinyGPSPlus GPS; // The TinyGPS++ object
+//HardwareSerial Serial2;
+
+float GPSHeading;                        // in Degrees
+int GPSSatellitesFix = 0;
+double GPSHdop = UNKNOWN_FLOAT;
+double GPSSpeed = UNKNOWN_FLOAT;
+double GPSAltitude = UNKNOWN_FLOAT;
+double GPSLatitude = UNKNOWN_FLOAT;
+double GPSLongitude = UNKNOWN_FLOAT;
+
 /************************* DS18D20 temperature sensor variables *********************************/
 #include <DallasTemperature.h>
 

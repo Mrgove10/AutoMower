@@ -34,7 +34,7 @@ bool BatteryVoltageCheck(void)
   }
   else
   {
-    LogPrintln("Battery Level low", TAG_CHECK, DBG_ERROR);
+    LogPrintln("Battery Level low:" + String(float(BatteryVotlage/1000.0f),1) + " V", TAG_CHECK, DBG_ERROR);
     delay(TEST_SEQ_STEP_WAIT + TEST_SEQ_STEP_ERROR_WAIT);
     return false;
   }

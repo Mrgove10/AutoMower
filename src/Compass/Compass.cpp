@@ -39,10 +39,14 @@ void CompassRead(const bool Now)
 {
   static unsigned long LastCompassRead = 0;
 
+#ifdef COMPASS_PRESENT 
+
   if ((millis() - LastCompassRead > COMPASS_READ_INTERVAL) || Now) 
   {
     sensors_event_t event; 
-    Compass.getEvent(&event);
+//    Serial.println("Before getEvent");
+    bool status = Compass.getEvent(&event);
+//    Serial.println("getEvent Satus:" + String(status));
 
     // Hold the module so that Z is pointing 'up' and you can measure the heading with x&y
     // Calculate heading when the magnetometer is level, then correct for signs of axis.
@@ -87,6 +91,7 @@ void CompassRead(const bool Now)
 
     LastCompassRead = millis();
   }
+#endif
 }
 
 /**
@@ -97,18 +102,19 @@ bool CompassSensorCheck(void)
 {
   CompassRead(true);
   sensor_t sensor;
+#ifdef COMPASS_PRESENT
   Compass.getSensor(&sensor);
-
+#endif
   lcd.clear();
   lcd.setCursor(0, 0);
   lcd.print(F("Compass sensor Test"));
-  lcd.setCursor(2, 1);
+  lcd.setCursor(2, 2);
 
   if (sensor.sensor_id == COMPASS_ID)
   {
     DebugPrintln("Compass Sensor ok", DBG_INFO, true);
     lcd.print("Sensor Ok");
-    lcd.setCursor(2, 2);
+    lcd.setCursor(2, 3);
     lcd.print("Heading: ");
     lcd.print(CompassHeading,1);
         delay(TEST_SEQ_STEP_WAIT);

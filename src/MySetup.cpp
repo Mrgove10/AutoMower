@@ -17,6 +17,7 @@
 #include "Current/Current.h"
 #include "Fan/Fan.h"
 #include "Compass/Compass.h"
+#include "GPS/GPS.h"
 #include "StartupChecks.h"
 
 void MySetup(void)
@@ -86,9 +87,13 @@ void MySetup(void)
 
   TiltSetup();
 
+  GPSSetup();
+
   bool startupChecksOk = StartupChecks();
 
   DebugPrintln("End of Setup()", DBG_VERBOSE, true);
+
+  SerialAndTelnet.handle();
 
   lcd.clear();
 }

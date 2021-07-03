@@ -12,6 +12,7 @@
 #include "Keypad/Keypad.h"
 #include "Fan/Fan.h"
 #include "Compass/Compass.h"
+#include "GPS/GPS.h"
 #include "IOExtender/IOExtender.h"
 #include <pin_definitions.h>
 
@@ -78,8 +79,12 @@ void loop()
 
   CompassRead();
 
+  GPSRead(true);
+
   FanCheck(FAN_1_RED);
   FanCheck(FAN_2_BLUE);
+
+  SerialAndTelnet.handle();
   
   static unsigned long LastRefresh = 0;
 
