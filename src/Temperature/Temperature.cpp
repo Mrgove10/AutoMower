@@ -13,7 +13,7 @@ void TemperatureSensorSetup(void)
   DebugPrintln("Temperature Sensor Setup start", DBG_VERBOSE, true);
 
   TemperatureSensors.begin();
-  delay(1500);
+  delay(100);
   
   #ifdef TEMPERATURE_SENSOR_ADDRESS_UNKNOWN
   if (!TemperatureSensors.getAddress(temp_1_RedSensor, 0)) DebugPrintln("Unable to find address for Device 0", DBG_VERBOSE, true);
@@ -39,11 +39,13 @@ void TemperatureSensorSetup(void)
     DebugPrintln("Device 2-Blue MISSING !", DBG_ERROR, true); 
   }
 
+/*
   int nbTempSensors = 0;
   nbTempSensors = TemperatureSensors.getDeviceCount();
 
   DebugPrint("Locating sensors...", DBG_INFO, true);
   DebugPrintln(String(nbTempSensors, DEC) + " sensors found");
+*/
 
   TemperatureSensors.setResolution(TEMPERATURE_PRECISION);
 
@@ -144,20 +146,29 @@ float TemperatureRead(int sensor, const bool Now)
 
   if ((millis() - LastTemperatureRead[sensor] > TEMPERATURE_READ_INTERVAL) || Now) 
   {
+
     float tempC = UNKNOWN_FLOAT;
 
     if (sensor == TEMPERATURE_1_RED)
     {
+      if (TemperatureSensors.isConnected(temp_1_RedSensor))
+      {
+        TemperatureSensors.begin();
+      }
       TemperatureSensors.requestTemperaturesByAddress(temp_1_RedSensor);
       tempC = TemperatureSensors.getTempC(temp_1_RedSensor);
     }
     if (sensor == TEMPERATURE_2_BLUE)
     {
+      if (TemperatureSensors.isConnected(temp_2_BlueSensor))
+      {
+        TemperatureSensors.begin();
+      }
       TemperatureSensors.requestTemperaturesByAddress(temp_2_BlueSensor);
       tempC = TemperatureSensors.getTempC(temp_2_BlueSensor);
     }
 
-//    DebugPrintln("TemperatureRead value " + String(tempC,2), DBG_VERBOSE, true);
+    DebugPrintln("TemperatureRead Sensor " + String(sensor+1) + ", value " + String(tempC,2), DBG_VERBOSE, true);
 
     LastTemperatureRead[sensor] = millis();
 
