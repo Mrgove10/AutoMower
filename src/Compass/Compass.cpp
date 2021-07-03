@@ -37,9 +37,9 @@ void CompassSensorSetup()
  */
 void CompassRead(const bool Now)
 {
-  static unsigned long LastCompassRead = 0;
+#ifdef COMPASS_PRESENT
 
-#ifdef COMPASS_PRESENT 
+  static unsigned long LastCompassRead = 0;
 
   if ((millis() - LastCompassRead > COMPASS_READ_INTERVAL) || Now) 
   {
