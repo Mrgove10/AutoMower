@@ -18,6 +18,7 @@
 #include "Fan/Fan.h"
 #include "Compass/Compass.h"
 #include "GPS/GPS.h"
+#include "MotionMotor/MotionMotor.h"
 #include "StartupChecks.h"
 
 void MySetup(void)
@@ -78,6 +79,8 @@ void MySetup(void)
   TemperatureSensorSetup();
 
   FanSetup();
+  
+  MotionMotorSetup();
 
   MotorCurrentSensorSetup();
 

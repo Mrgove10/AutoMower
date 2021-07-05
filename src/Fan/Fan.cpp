@@ -36,6 +36,7 @@ void FanTest(const int Fan)
   lcd.setCursor(2, 2 + Fan);
   lcd.print (F("Fan "));
   lcd.print (Fan + 1);
+  lcd.print (F(" Started"));
 
   FanStart(Fan);
 
@@ -43,7 +44,12 @@ void FanTest(const int Fan)
 
   FanStop(Fan);
 
-  lcd.print(F(" completed"));
+    lcd.setCursor(2, 2 + Fan);
+  lcd.print (F("Fan "));
+  lcd.print (Fan + 1);
+  lcd.print (F(" Stopped"));
+
+  delay(FAN_TEST_DURATION);
 
   DebugPrintln("Fan " + String(Fan + 1) + " test completed", DBG_INFO, true);
 }

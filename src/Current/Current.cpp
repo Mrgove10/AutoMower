@@ -42,7 +42,7 @@ bool MotorCurrentSensorCheck(int sensor)
   {
     lcd.clear();
     lcd.setCursor(0, 0);
-    lcd.print(F("Motor sensor Test"));
+    lcd.print(F("Motor Current Test"));
   }
   
   lcd.setCursor(2, sensor + 1);

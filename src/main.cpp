@@ -14,6 +14,7 @@
 #include "Compass/Compass.h"
 #include "GPS/GPS.h"
 #include "IOExtender/IOExtender.h"
+#include "MotionMotor/MotionMotor.h"
 #include <pin_definitions.h>
 
 void setup()
@@ -23,6 +24,10 @@ void setup()
 
 void loop()
 {
+
+static int speed = 0;
+static int sens = 1;
+static int direction = MOTION_MOTOR_STOPPED;
 
 /*  DebugPrintln("loop Always", DBG_ALWAYS, true);
   DebugPrintln("loop Error", DBG_ERROR, true);
@@ -84,9 +89,33 @@ void loop()
   FanCheck(FAN_1_RED);
   FanCheck(FAN_2_BLUE);
 
+  static unsigned long LastRefresh = 0;
+
+  if ((millis() - LastRefresh > 500)) 
+  {
+    speed = speed + (8 * sens);
+    if (speed > 4096) {sens = -1;}
+    if (speed < -4096) {sens = 1;}
+    if (speed < 0) 
+    {
+      if (direction != MOTION_MOTOR_REVERSE) {
+        direction = MOTION_MOTOR_REVERSE;
+        MotionMotorStop(MOTION_MOTOR_RIGHT);
+      }
+    }
+    else 
+    {
+      if (direction != MOTION_MOTOR_FORWARD) {
+        direction = MOTION_MOTOR_FORWARD;
+        MotionMotorStop(MOTION_MOTOR_RIGHT);
+      }
+    }
+    if (!MotionMotorOn[MOTION_MOTOR_RIGHT]) {MotionMotorStart(MOTION_MOTOR_RIGHT,direction, abs(speed));}
+    else {MotionMotorSetSpeed(MOTION_MOTOR_RIGHT, abs(speed));}
+  }
+
   SerialAndTelnet.handle();
   
-  static unsigned long LastRefresh = 0;
 
   if ((millis() - LastRefresh > 500)) 
   {

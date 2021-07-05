@@ -12,6 +12,7 @@
 #include "Fan/Fan.h"
 #include "Compass/Compass.h"
 #include "GPS/GPS.h"
+#include "MotionMotor/MotionMotor.h"
 
 /**
  * Runs all Mower checks on Startup
@@ -78,6 +79,9 @@ bool StartupChecks(void)
   if (!GPSCheck()) {allChecks = false;}; 
 
   SerialAndTelnet.handle();
+
+  MotionMotorTest(MOTION_MOTOR_RIGHT);            //TEMPORAIRE
+//  MotionMotorTest(MOTION_MOTOR_LEFT);            //TEMPORAIRE
 
    // insert here all other startup checks
 

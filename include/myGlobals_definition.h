@@ -198,6 +198,34 @@ extern bool VerticalTiltTriggered;
 extern const int FanPin[FAN_COUNT];
 extern bool FanOn[FAN_COUNT];
 
+
+/************************* Motion Motor variables *********************************/
+
+#define MOTION_MOTOR_COUNT 2         // Number of motors
+#define MOTION_MOTOR_RIGHT 0
+#define MOTION_MOTOR_LEFT 1
+
+#define MOTION_MOTOR_PWM_FREQUENCY 5000
+#define MOTION_MOTOR_PWM_RESOLUTION 12
+#define MOTION_MOTOR_PWM_CHANNEL_RIGHT 0
+#define MOTION_MOTOR_PWM_CHANNEL_LEFT 1
+
+#define MOTION_MOTOR_RIGHT 0
+#define MOTION_MOTOR_LEFT 1
+
+#define MOTION_MOTOR_STOPPED 0
+#define MOTION_MOTOR_FORWARD 1
+#define MOTION_MOTOR_REVERSE -1
+#define MOTION_MOTOR_MIN_SPEED 4096/4
+
+extern const int MotionMotorIn1Pin[MOTION_MOTOR_COUNT];
+extern const int MotionMotorIn2Pin[MOTION_MOTOR_COUNT];
+extern const int MotionMotorPWMChannel[MOTION_MOTOR_COUNT];
+extern bool MotionMotorOn[MOTION_MOTOR_COUNT];
+extern int MotionMotorDirection[MOTION_MOTOR_COUNT];
+extern int MotionMotorSpeed[MOTION_MOTOR_COUNT];
+extern String MotionMotorStr[MOTION_MOTOR_COUNT];
+
 /************************* Test sequence variables *********************************/
 #define TEST_SEQ_STEP_WAIT 1000
 #define TEST_SEQ_STEP_ERROR_WAIT 1000

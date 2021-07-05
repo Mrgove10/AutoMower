@@ -147,6 +147,18 @@ bool VerticalTiltTriggered = false;
 const int FanPin[FAN_COUNT] = {PIN_MCP_FAN_1, PIN_MCP_FAN_2};
 bool FanOn[FAN_COUNT] = {false, false};
 
+/************************* Motion Motor variables *********************************/
+
+const int MotionMotorIn1Pin[MOTION_MOTOR_COUNT] = {PIN_MCP_MOTOR_RIGHT_LN1, PIN_MCP_MOTOR_LEFT_LN1};
+const int MotionMotorIn2Pin[MOTION_MOTOR_COUNT] = {PIN_MCP_MOTOR_RIGHT_LN2, PIN_MCP_MOTOR_LEFT_LN2};
+const int MotionMotorPWMChannel[MOTION_MOTOR_COUNT] = {MOTION_MOTOR_PWM_CHANNEL_RIGHT, MOTION_MOTOR_PWM_CHANNEL_LEFT};
+
+bool MotionMotorOn[MOTION_MOTOR_COUNT];
+int MotionMotorDirection[MOTION_MOTOR_COUNT];
+int MotionMotorSpeed[MOTION_MOTOR_COUNT];
+
+String MotionMotorStr[MOTION_MOTOR_COUNT] = { "Right", "Left"};
+
 /************************* Program variables *********************************/
 
 byte TestVal1 = 0;

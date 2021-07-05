@@ -4,6 +4,7 @@
 #include "Utils/Utils.h"
 #include "OTA/OTA.h"
 #include "Temperature/Temperature.h"
+#include "MotionMotor/MotionMotor.h"
 #include "StartupChecks.h"
 
 void MQTTSubscribe()
@@ -124,6 +125,14 @@ void MQTTCallback(char *topic, byte *message, unsigned int length)
             lastCommand = String(messageTemp);
         }
 
+        else if (String(messageTemp) == "TEST_MOTOR" &&
+            String(messageTemp) != lastCommand)
+        {
+            MotionMotorTest(MOTION_MOTOR_RIGHT);            //TEMPORAIRE
+//            MotionMotorTest(MOTION_MOTOR_LEFT);            //TEMPORAIRE
+            lastCommand = String(messageTemp);
+        }
+
         else if (String(messageTemp) == lastCommand)
         {
             DebugPrintln(" ...... Nothing (same command) !!!!", DBG_DEBUG, true);
@@ -239,16 +248,19 @@ void MQTTSendTelemetry()
     JSONDataPayload.add("BattVolt",       String(float(BatteryVotlage/1000.0f),2));
     JSONDataPayload.add("BattChargeCur",  String(BatteryChargeCurrent,2));
 
-    JSONDataPayload.add("DrvMotTemp",     String(Temperature[TEMPERATURE_1_RED],1));
-    JSONDataPayload.add("DrvMotTempErr",  String(TempErrorCount[TEMPERATURE_1_RED]));
-    JSONDataPayload.add("RMotCur",        String(MotorCurrent[MOTOR_CURRENT_RIGHT],2));
+    JSONDataPayload.add("DrvMotTemp",     String(Temperature[TEMPERATURE_2_BLUE],1));
+    JSONDataPayload.add("DrvMotTempErr",  String(TempErrorCount[TEMPERATURE_2_BLUE]));
+    JSONDataPayload.add("RMotCur",        String(MotorCurrent[MOTOR_CURRENT_RIGHT]));
+    JSONDataPayload.add("RMotSpeed",      String(float(MotionMotorSpeed[MOTION_MOTOR_RIGHT]*MotionMotorDirection[MOTION_MOTOR_RIGHT]*100)/4096,2));
     JSONDataPayload.add("LMotCur",        String(MotorCurrent[MOTOR_CURRENT_LEFT],2));
-    JSONDataPayload.add("DrvMotFan",      String(FanOn[FAN_1_RED]));
+    JSONDataPayload.add("LMotSpeed",      String(float(MotionMotorSpeed[MOTION_MOTOR_LEFT]*MotionMotorDirection[MOTION_MOTOR_LEFT]*100)/4096,2));
+    JSONDataPayload.add("DrvMotFan",      String(FanOn[FAN_2_BLUE]));
+
     
-    JSONDataPayload.add("CutMotTemp",     String(Temperature[TEMPERATURE_2_BLUE],1));
-    JSONDataPayload.add("CutMotTempErr",  String(TempErrorCount[TEMPERATURE_2_BLUE]));
+    JSONDataPayload.add("CutMotTemp",     String(Temperature[TEMPERATURE_1_RED],1));
+    JSONDataPayload.add("CutMotTempErr",  String(TempErrorCount[TEMPERATURE_1_RED]));
     JSONDataPayload.add("CutMotCur",      String(MotorCurrent[MOTOR_CURRENT_CUT],2));
-    JSONDataPayload.add("CutMotFan",      String(FanOn[FAN_2_BLUE]));
+    JSONDataPayload.add("CutMotFan",      String(FanOn[FAN_1_RED]));
 
     JSONDataPayload.add("FSnrDist",       String(SonarDistance[SONAR_FRONT]));
     JSONDataPayload.add("RSnrDist",       String(SonarDistance[SONAR_RIGHT]));
@@ -263,6 +275,8 @@ void MQTTSendTelemetry()
     JSONDataPayload.add("GPSAlt",         String(GPSAltitude,2));
     JSONDataPayload.add("GPSLat",         String(GPSLatitude,2));
     JSONDataPayload.add("GPSLon",         String(GPSLongitude,2));
+
+    JSONDataPayload.add("RSSI",         String(WiFi.RSSI()));
 
     JSONDataPayload.toString(JSONDataPayloadStr, false);
     JSONDataPayloadStr.toCharArray(MQTTpayload, JSONDataPayloadStr.length()+1);

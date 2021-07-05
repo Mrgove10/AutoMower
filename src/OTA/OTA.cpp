@@ -3,6 +3,7 @@
 #include "Environment_definitions.h"
 #include "OTA/OTA.h"
 #include "Utils/Utils.h"
+#include "MotionMotor/MotionMotor.h"
 #include "MQTT/MQTT.h"
 
 /* OTA init procedure */
@@ -93,6 +94,9 @@ void OTAHandle(void)
     lcd.print(F("Pending..."));
     lcd.setCursor(2,3);
     lcd.print(outBuf);
+    
+    MotionMotorStop(MOTION_MOTOR_RIGHT);
+    MotionMotorStop(MOTION_MOTOR_LEFT);
     
     setInterval(0); // no NTP update to avoid any interruption during upload
 
