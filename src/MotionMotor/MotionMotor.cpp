@@ -75,9 +75,12 @@ void MotionMotorStart(const int Motor, const int Direction, const int Speed)
 void MotionMotorSetSpeed(const int Motor, const int Speed)
 {
   if (Speed > 0 && Speed < 4096) {
-    if (Speed < MOTION_MOTOR_MIN_SPEED) 
+    if ((Speed < MOTION_MOTOR_MIN_SPEED) && (Speed != 0)) 
     {
       DebugPrintln("Motion Motor " + MotionMotorStr[Motor] + " speed " + String(Speed) + " too low : not applied", DBG_VERBOSE, true);
+      ledcWrite(MotionMotorPWMChannel[Motor], 0);
+      MotionMotorSpeed[Motor] = 0;
+
     }
     else 
     {
@@ -123,8 +126,8 @@ void MotionMotorTest(const int Motor)
   #define CRAWL 4096*25/100
   #define SLOW 4096*40/100
   #define NORMAL 4096*70/100
-  #define FAST 4000
-  #define DURATION 3000
+  #define FAST 4090
+  #define DURATION 2000
 
 //Forward
 
@@ -148,6 +151,12 @@ void MotionMotorTest(const int Motor)
   lcd.setCursor(8, 2 + Motor);
   lcd.print("FAST FWD  ");
   MotionMotorSetSpeed(Motor, FAST);
+  SerialAndTelnet.handle();
+  delay(DURATION);
+
+  lcd.setCursor(8, 2 + Motor);
+  lcd.print("SLOW FWD  ");
+  MotionMotorSetSpeed(Motor, SLOW);
   SerialAndTelnet.handle();
   delay(DURATION);
 
@@ -177,6 +186,12 @@ void MotionMotorTest(const int Motor)
   lcd.setCursor(8, 2 + Motor);
   lcd.print("FAST REV  ");
   MotionMotorSetSpeed(Motor, FAST);
+  SerialAndTelnet.handle();
+  delay(DURATION);
+
+  lcd.setCursor(8, 2 + Motor);
+  lcd.print("SLOW REV  ");
+  MotionMotorSetSpeed(Motor, SLOW);
   SerialAndTelnet.handle();
   delay(DURATION);
 

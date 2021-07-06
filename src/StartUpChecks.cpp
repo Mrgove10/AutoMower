@@ -81,7 +81,7 @@ bool StartupChecks(void)
   SerialAndTelnet.handle();
 
   MotionMotorTest(MOTION_MOTOR_RIGHT);            //TEMPORAIRE
-//  MotionMotorTest(MOTION_MOTOR_LEFT);            //TEMPORAIRE
+  MotionMotorTest(MOTION_MOTOR_LEFT);            //TEMPORAIRE
 
    // insert here all other startup checks
 

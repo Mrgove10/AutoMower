@@ -94,8 +94,8 @@ static int direction = MOTION_MOTOR_STOPPED;
   if ((millis() - LastRefresh > 500)) 
   {
     speed = speed + (8 * sens);
-    if (speed > 4096) {sens = -1;}
-    if (speed < -4096) {sens = 1;}
+    if (speed > 4096+1024) {sens = -1;}
+    if (speed < -4096-1024) {sens = 1;}
     if (speed < 0) 
     {
       if (direction != MOTION_MOTOR_REVERSE) {
