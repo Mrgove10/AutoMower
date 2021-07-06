@@ -13,21 +13,20 @@
  */
 void CompassSensorSetup()
 {
-  if(!Compass.begin())
+  if (!Compass.begin())
   {
     /* There was a problem detecting the HMC5883 ... check your connections */
-      DebugPrintln("Compass Sensor not found !", DBG_VERBOSE, false);
-      LogPrintln("Compass Sensor not found !", TAG_CHECK, DBG_ERROR);
+    DebugPrintln("Compass Sensor not found !", DBG_VERBOSE, false);
+    LogPrintln("Compass Sensor not found !", TAG_CHECK, DBG_ERROR);
   }
-  else 
+  else
   {
     DebugPrintln("Compass Sensor found !", DBG_VERBOSE, false);
   }
-//  mag.setMagGain(HMC5883_MAGGAIN_4_0);
+  //  mag.setMagGain(HMC5883_MAGGAIN_4_0);
 
   /* Display some basic information on this sensor */
   DisplayCompassDetails();
-
 }
 
 /**
@@ -41,12 +40,12 @@ void CompassRead(const bool Now)
 
   static unsigned long LastCompassRead = 0;
 
-  if ((millis() - LastCompassRead > COMPASS_READ_INTERVAL) || Now) 
+  if ((millis() - LastCompassRead > COMPASS_READ_INTERVAL) || Now)
   {
-    sensors_event_t event; 
-//    Serial.println("Before getEvent");
+    sensors_event_t event;
+    //    Serial.println("Before getEvent");
     bool status = Compass.getEvent(&event);
-//    Serial.println("getEvent Satus:" + String(status));
+    //    Serial.println("getEvent Satus:" + String(status));
 
     // Hold the module so that Z is pointing 'up' and you can measure the heading with x&y
     // Calculate heading when the magnetometer is level, then correct for signs of axis.
@@ -61,33 +60,34 @@ void CompassRead(const bool Now)
     headingCorr += COMPASS_DECLINATION_ANGLE;
 
     // Correct for when signs are reversed.
-    if(heading < 0)
-      heading += 2*PI;
-    if(headingCorr < 0)
-      headingCorr += 2*PI;
-      
+    if (heading < 0)
+      heading += 2 * PI;
+    if (headingCorr < 0)
+      headingCorr += 2 * PI;
+
     // Check for wrap due to addition of declination.
-    if(heading > 2*PI)
-      heading -= 2*PI;
-    if(headingCorr > 2*PI)
-      headingCorr -= 2*PI;
-    
+    if (heading > 2 * PI)
+      heading -= 2 * PI;
+    if (headingCorr > 2 * PI)
+      headingCorr -= 2 * PI;
+
     // Convert radians to degrees for readability.
-    float headingDegrees = heading * 180/M_PI; 
-    float headingDegreesCorr = headingCorr * 180/M_PI;  
+    float headingDegrees = heading * 180 / M_PI;
+    float headingDegreesCorr = headingCorr * 180 / M_PI;
 
     CompassHeading = headingDegrees;
     CompassHeadingCorrected = headingDegreesCorr;
     CompassXField = event.magnetic.x;
     CompassYField = event.magnetic.y;
 
-    DebugPrintln ("Compass readings: X:"+ String(CompassXField,COMPASS_PRECISION) + 
-                  "(uT) Y:" + String(CompassYField,COMPASS_PRECISION) + 
-                  "(uT) Z:" + String(event.magnetic.z,COMPASS_PRECISION) + "(uT)",
-                   DBG_VERBOSE, true);
+    DebugPrintln("Compass readings: X:" + String(CompassXField, COMPASS_PRECISION) +
+                     "(uT) Y:" + String(CompassYField, COMPASS_PRECISION) +
+                     "(uT) Z:" + String(event.magnetic.z, COMPASS_PRECISION) + "(uT)",
+                 DBG_VERBOSE, true);
 
-    DebugPrintln ("Compass Heading:"+ String(CompassHeading,COMPASS_PRECISION) + 
-                  " Corrected: " + String(CompassHeadingCorrected,COMPASS_PRECISION), DBG_INFO, true);
+    DebugPrintln("Compass Heading:" + String(CompassHeading, COMPASS_PRECISION) +
+                     " Corrected: " + String(CompassHeadingCorrected, COMPASS_PRECISION),
+                 DBG_INFO, true);
 
     LastCompassRead = millis();
   }
@@ -116,8 +116,8 @@ bool CompassSensorCheck(void)
     lcd.print("Sensor Ok");
     lcd.setCursor(2, 3);
     lcd.print("Heading: ");
-    lcd.print(CompassHeading,1);
-        delay(TEST_SEQ_STEP_WAIT);
+    lcd.print(CompassHeading, 1);
+    delay(TEST_SEQ_STEP_WAIT);
     return true;
   }
   else
@@ -136,13 +136,13 @@ void DisplayCompassDetails(void)
 {
   sensor_t sensor;
   Compass.getSensor(&sensor);
-  DebugPrintln ("------------------------------------", DBG_VERBOSE, true);
-  DebugPrintln  ("Sensor:       "  + String(sensor.name), DBG_VERBOSE, true);
-  DebugPrintln  ("Driver Ver:   " + String(sensor.version), DBG_VERBOSE, true);
-  DebugPrintln  ("Unique ID:    " + String(sensor.sensor_id), DBG_VERBOSE, true);
-  DebugPrintln  ("Max Value:    " + String(sensor.max_value) + " uT", DBG_VERBOSE, true);
-  DebugPrintln  ("Min Value:    " + String(sensor.min_value) + " uT", DBG_VERBOSE, true);
-  DebugPrintln  ("Resolution:   " + String(sensor.resolution) + " uT", DBG_VERBOSE, true);  
+  DebugPrintln("------------------------------------", DBG_VERBOSE, true);
+  DebugPrintln("Sensor:       " + String(sensor.name), DBG_VERBOSE, true);
+  DebugPrintln("Driver Ver:   " + String(sensor.version), DBG_VERBOSE, true);
+  DebugPrintln("Unique ID:    " + String(sensor.sensor_id), DBG_VERBOSE, true);
+  DebugPrintln("Max Value:    " + String(sensor.max_value) + " uT", DBG_VERBOSE, true);
+  DebugPrintln("Min Value:    " + String(sensor.min_value) + " uT", DBG_VERBOSE, true);
+  DebugPrintln("Resolution:   " + String(sensor.resolution) + " uT", DBG_VERBOSE, true);
   DebugPrintln("------------------------------------");
   DebugPrintln("");
   delay(500);

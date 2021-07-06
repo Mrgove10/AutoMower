@@ -29,9 +29,9 @@ void OTASetup(void)
                          type = "filesystem";
                        }
                        lcd.clear();
-                       lcd.setCursor(0,0);
+                       lcd.setCursor(0, 0);
                        lcd.print(F("OTA Update"));
-                       lcd.setCursor(0,2);
+                       lcd.setCursor(0, 2);
                        lcd.print(F("In Progress ..."));
 
                        // NOTE: if updating SPIFFS this would be the place to unmount SPIFFS using SPIFFS.end()
@@ -43,8 +43,8 @@ void OTASetup(void)
 
   ArduinoOTA.onProgress([](unsigned int progress, unsigned int total)
                         {
-                          lcd.setCursor(16,2);
-                          lcd.print((progress*100) / total);
+                          lcd.setCursor(16, 2);
+                          lcd.print((progress * 100) / total);
                           lcd.print(F("%"));
                         });
 
@@ -86,23 +86,23 @@ void OTAHandle(void)
     IPAddress ip = WiFi.localIP();
 
     char outBuf[18];
-    sprintf(outBuf,"%u.%u.%u.%u",ip[0],ip[1],ip[2],ip[3]);
+    sprintf(outBuf, "%u.%u.%u.%u", ip[0], ip[1], ip[2], ip[3]);
     lcd.clear();
-    lcd.setCursor(0,0);
+    lcd.setCursor(0, 0);
     lcd.print(F("OTA Update"));
-    lcd.setCursor(2,1);
+    lcd.setCursor(2, 1);
     lcd.print(F("Pending..."));
-    lcd.setCursor(2,3);
+    lcd.setCursor(2, 3);
     lcd.print(outBuf);
-    
+
     MotionMotorStop(MOTION_MOTOR_RIGHT);
     MotionMotorStop(MOTION_MOTOR_LEFT);
-    
+
     setInterval(0); // no NTP update to avoid any interruption during upload
 
     DebugPrintln("Waiting for OTA upload ", DBG_INFO, true);
     SerialAndTelnet.handle();
-    MQTTUnSubscribe();  // no MQTT update to avoid any interruption during upload
+    MQTTUnSubscribe(); // no MQTT update to avoid any interruption during upload
     while (OTAelapsed < OTA_TIMEOUT)
     {
       ArduinoOTA.handle();
@@ -110,10 +110,10 @@ void OTAHandle(void)
       delay(250);
     }
     DebugPrintln("Upload timeout", DBG_ERROR, true);
-    lcd.setCursor(2,3);
+    lcd.setCursor(2, 3);
     lcd.print(F("   Timeout !    "));
     delay(TEST_SEQ_STEP_WAIT + TEST_SEQ_STEP_ERROR_WAIT);
-    
+
     MQTTReconnect();
 
     MQTTSubscribe();

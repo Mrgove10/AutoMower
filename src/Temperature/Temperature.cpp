@@ -14,32 +14,38 @@ void TemperatureSensorSetup(void)
 
   TemperatureSensors.begin();
   delay(100);
-  
-  #ifdef TEMPERATURE_SENSOR_ADDRESS_UNKNOWN
-  if (!TemperatureSensors.getAddress(temp_1_RedSensor, 0)) DebugPrintln("Unable to find address for Device 0", DBG_VERBOSE, true);
-  if (!TemperatureSensors.getAddress(temp_2_BlueSensor, 1)) DebugPrintln("Unable to find address for Device 1", DBG_VERBOSE, true);
-  #endif
+
+#ifdef TEMPERATURE_SENSOR_ADDRESS_UNKNOWN
+  if (!TemperatureSensors.getAddress(temp_1_RedSensor, 0))
+    DebugPrintln("Unable to find address for Device 0", DBG_VERBOSE, true);
+  if (!TemperatureSensors.getAddress(temp_2_BlueSensor, 1))
+    DebugPrintln("Unable to find address for Device 1", DBG_VERBOSE, true);
+#endif
 
   TemperatureOneWire.reset_search();
 
-  DebugPrintln("Device 1-Red Address: " + TempSensorAddress(temp_1_RedSensor), DBG_VERBOSE, true); 
+  DebugPrintln("Device 1-Red Address: " + TempSensorAddress(temp_1_RedSensor), DBG_VERBOSE, true);
   DebugPrintln("Device 2-Blue Address: " + TempSensorAddress(temp_2_BlueSensor), DBG_VERBOSE, true);
 
-  if (TemperatureSensors.isConnected(temp_1_RedSensor)){
-    DebugPrintln("Device 1-Red found", DBG_INFO, true); 
+  if (TemperatureSensors.isConnected(temp_1_RedSensor))
+  {
+    DebugPrintln("Device 1-Red found", DBG_INFO, true);
   }
-  else {
-    DebugPrintln("Device 1-Red MISSING !", DBG_ERROR, true); 
-  }
-
-  if (TemperatureSensors.isConnected(temp_2_BlueSensor)){
-    DebugPrintln("Device 2-Blue found", DBG_INFO, true); 
-  }
-  else {
-    DebugPrintln("Device 2-Blue MISSING !", DBG_ERROR, true); 
+  else
+  {
+    DebugPrintln("Device 1-Red MISSING !", DBG_ERROR, true);
   }
 
-/*
+  if (TemperatureSensors.isConnected(temp_2_BlueSensor))
+  {
+    DebugPrintln("Device 2-Blue found", DBG_INFO, true);
+  }
+  else
+  {
+    DebugPrintln("Device 2-Blue MISSING !", DBG_ERROR, true);
+  }
+
+  /*
   int nbTempSensors = 0;
   nbTempSensors = TemperatureSensors.getDeviceCount();
 
@@ -49,17 +55,18 @@ void TemperatureSensorSetup(void)
 
   TemperatureSensors.setResolution(TEMPERATURE_PRECISION);
 
-  DebugPrintln("Device 1-Red Resolution: " + String(TemperatureSensors.getResolution(temp_1_RedSensor), DEC), DBG_VERBOSE, true );
-  DebugPrintln("Device 2-Blue Resolution: " + String(TemperatureSensors.getResolution(temp_2_BlueSensor), DEC), DBG_VERBOSE, true );
+  DebugPrintln("Device 1-Red Resolution: " + String(TemperatureSensors.getResolution(temp_1_RedSensor), DEC), DBG_VERBOSE, true);
+  DebugPrintln("Device 2-Blue Resolution: " + String(TemperatureSensors.getResolution(temp_2_BlueSensor), DEC), DBG_VERBOSE, true);
 
   DebugPrint("Parasite power is: ", DBG_INFO, true);
-  if (TemperatureSensors.isParasitePowerMode()) {
+  if (TemperatureSensors.isParasitePowerMode())
+  {
     DebugPrintln("ON");
   }
-  else 
+  else
   {
     DebugPrintln("OFF");
-  } 
+  }
 
   TemperatureSensors.requestTemperatures();
   delay(1000);
@@ -70,12 +77,16 @@ void TemperatureSensorSetup(void)
  * @param device DeviceAddress to format
  * @return String displaying a formated device address
  */
-String TempSensorAddress(DeviceAddress device) {
+String TempSensorAddress(DeviceAddress device)
+{
   String returnStr = "";
   for (uint8_t i = 0; i < 8; i++)
   {
     // zero pad the address if necessary
-    if (device[i] < 16) {returnStr = returnStr + "0";}
+    if (device[i] < 16)
+    {
+      returnStr = returnStr + "0";
+    }
     returnStr = returnStr + String(device[i], HEX);
   }
   return returnStr;
@@ -93,7 +104,7 @@ bool TemperatureSensorCheck(int sensor)
   TemperatureSensors.requestTemperatures();
 
   DebugPrintln("TemperatureSensorCheck start " + String(sensor), DBG_VERBOSE, true);
-  if (sensor == 0) 
+  if (sensor == 0)
   {
     lcd.clear();
   }
@@ -103,25 +114,31 @@ bool TemperatureSensorCheck(int sensor)
   if (sensor == TEMPERATURE_1_RED)
   {
     sensorCheck = TemperatureSensors.isConnected(temp_1_RedSensor);
-    if (sensorCheck) {temperature = TemperatureRead(TEMPERATURE_1_RED, true);}
+    if (sensorCheck)
+    {
+      temperature = TemperatureRead(TEMPERATURE_1_RED, true);
+    }
     sensorStr = "1-Red";
   }
   if (sensor == TEMPERATURE_2_BLUE)
   {
     sensorCheck = TemperatureSensors.isConnected(temp_2_BlueSensor);
-    if (sensorCheck) {temperature = TemperatureRead(TEMPERATURE_2_BLUE, true);}
+    if (sensorCheck)
+    {
+      temperature = TemperatureRead(TEMPERATURE_2_BLUE, true);
+    }
     sensorStr = "2-Blue";
   }
 
   lcd.setCursor(2, 2 + sensor);
 
-  DebugPrintln(sensorStr + " Temperature  " + String(temperature,2), DBG_INFO, true);
+  DebugPrintln(sensorStr + " Temperature  " + String(temperature, 2), DBG_INFO, true);
 
-  if (sensorCheck && temperature != UNKNOWN_FLOAT) 
+  if (sensorCheck && temperature != UNKNOWN_FLOAT)
   {
-    DebugPrintln(sensorStr + " Temperature sensor Ok : " + String(temperature,2), DBG_INFO, true);
+    DebugPrintln(sensorStr + " Temperature sensor Ok : " + String(temperature, 2), DBG_INFO, true);
     lcd.print(sensorStr + " OK ");
-    lcd.print(temperature,1);
+    lcd.print(temperature, 1);
     delay(TEST_SEQ_STEP_WAIT);
     return true;
   }
@@ -144,7 +161,7 @@ float TemperatureRead(int sensor, const bool Now)
 {
   static unsigned long LastTemperatureRead[2] = {0, 0};
 
-  if ((millis() - LastTemperatureRead[sensor] > TEMPERATURE_READ_INTERVAL) || Now) 
+  if ((millis() - LastTemperatureRead[sensor] > TEMPERATURE_READ_INTERVAL) || Now)
   {
 
     float tempC = UNKNOWN_FLOAT;
@@ -155,7 +172,6 @@ float TemperatureRead(int sensor, const bool Now)
       {
         TemperatureSensors.begin();
         TempErrorCount[sensor] = TempErrorCount[sensor] + 1;
-
       }
       TemperatureSensors.requestTemperaturesByAddress(temp_1_RedSensor);
       tempC = TemperatureSensors.getTempC(temp_1_RedSensor);
@@ -171,11 +187,12 @@ float TemperatureRead(int sensor, const bool Now)
       tempC = TemperatureSensors.getTempC(temp_2_BlueSensor);
     }
 
-    DebugPrintln("TemperatureRead Sensor " + String(sensor+1) + ", value " + String(tempC,2), DBG_VERBOSE, true);
+    DebugPrintln("TemperatureRead Sensor " + String(sensor + 1) + ", value " + String(tempC, 2), DBG_VERBOSE, true);
 
     LastTemperatureRead[sensor] = millis();
 
-    if (tempC > -127.0f && tempC < 85.0f) {
+    if (tempC > -127.0f && tempC < 85.0f)
+    {
       Temperature[sensor] = tempC;
       return tempC;
     }

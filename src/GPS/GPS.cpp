@@ -6,14 +6,13 @@
 #include "Utils/Utils.h"
 #include "LCD/LCD.h"
 
-
 /**
  * NEO-M8N GPS Setup function
  *
  */
 void GPSSetup()
 {
-  GPS_UART.begin(GPS_BAUD,SERIAL_8N1,PIN_ESP_GPS_RX,PIN_ESP_GPS_TX); 
+  GPS_UART.begin(GPS_BAUD, SERIAL_8N1, PIN_ESP_GPS_RX, PIN_ESP_GPS_TX);
 
   GPS_UART.flush();
 
@@ -29,22 +28,22 @@ void GPSRead(const bool Now)
 {
   static unsigned long LastGPSRead = 0;
 
-  if ((millis() - LastGPSRead > GPS_READ_INTERVAL) || Now) 
+  if ((millis() - LastGPSRead > GPS_READ_INTERVAL) || Now)
   {
-    if (GPS_UART.available() > 0 ) 
+    if (GPS_UART.available() > 0)
     {
-//      Serial.println("GPS Serial data: " + String (GPS_UART.available()) + " ");
-      DebugPrintln ("GPS Serial data: " + String (GPS_UART.available()) + " ", DBG_VERBOSE, true);
+      //      Serial.println("GPS Serial data: " + String (GPS_UART.available()) + " ");
+      DebugPrintln("GPS Serial data: " + String(GPS_UART.available()) + " ", DBG_VERBOSE, true);
     }
 
     String buf;
-    while (GPS_UART.available() > 0 ) 
+    while (GPS_UART.available() > 0)
     {
       char c = GPS_UART.read();
-      buf = buf  + c;
+      buf = buf + c;
       GPS.encode(c);
     }
-/*
+    /*
     if (buf.length() > 0 ) 
     {
       Serial.println("GPS Buffer:[" + buf + "]");
@@ -52,7 +51,7 @@ void GPSRead(const bool Now)
       GPSDetails();
     }
 */
-    if (GPS.location.isValid()) 
+    if (GPS.location.isValid())
     {
       GPSSatellitesFix = GPS.satellites.value();
       GPSHdop = GPS.hdop.hdop();
@@ -61,8 +60,8 @@ void GPSRead(const bool Now)
       GPSLatitude = GPS.location.lat();
       GPSLongitude = GPS.location.lng();
       GPSHeading = GPS.course.value();
-      
-      DebugPrintln ("Sat: " + String(GPSSatellitesFix) + " HDop: " + String(GPSHdop,2) + " Head: " + String(GPSHeading), DBG_VERBOSE, true);      
+
+      DebugPrintln("Sat: " + String(GPSSatellitesFix) + " HDop: " + String(GPSHdop, 2) + " Head: " + String(GPSHeading), DBG_VERBOSE, true);
     }
     LastGPSRead = millis();
   }
@@ -105,9 +104,9 @@ bool GPSCheck(void)
  */
 void GPSDetails(void)
 {
-  DebugPrintln("Hdop: " + String(GPS.hdop.hdop()) + ", " + "Speed: " + String(GPS.speed.kmph()) + ", " + "alt: " + String(GPS.altitude.meters()) + ", " + String(GPS.satellites.value()) + " sats" ); 
-  DebugPrint ("charsProcessed: " + String (GPS.charsProcessed()) + " | ");
-  DebugPrint ("sentencesWithFix: " + String (GPS.sentencesWithFix()) + " | ");
-  DebugPrint ("failedChecksum: " + String (GPS.failedChecksum()) + " | ");
-  DebugPrintln ("passedChecksum: " + String (GPS.passedChecksum()) + " | ");
+  DebugPrintln("Hdop: " + String(GPS.hdop.hdop()) + ", " + "Speed: " + String(GPS.speed.kmph()) + ", " + "alt: " + String(GPS.altitude.meters()) + ", " + String(GPS.satellites.value()) + " sats");
+  DebugPrint("charsProcessed: " + String(GPS.charsProcessed()) + " | ");
+  DebugPrint("sentencesWithFix: " + String(GPS.sentencesWithFix()) + " | ");
+  DebugPrint("failedChecksum: " + String(GPS.failedChecksum()) + " | ");
+  DebugPrintln("passedChecksum: " + String(GPS.passedChecksum()) + " | ");
 }

@@ -25,11 +25,11 @@ void setup()
 void loop()
 {
 
-static int speed = 0;
-static int sens = 1;
-static int direction = MOTION_MOTOR_STOPPED;
+  static int speed = 0;
+  static int sens = 1;
+  static int direction = MOTION_MOTOR_STOPPED;
 
-/*  DebugPrintln("loop Always", DBG_ALWAYS, true);
+  /*  DebugPrintln("loop Always", DBG_ALWAYS, true);
   DebugPrintln("loop Error", DBG_ERROR, true);
   DebugPrintln("loop Warning", DBG_WARNING, true);
   DebugPrintln("loop Info", DBG_INFO, true);
@@ -48,38 +48,42 @@ static int direction = MOTION_MOTOR_STOPPED;
 */
   EEPROMSave(false);
 
-  if (RightBumperTriggered) {
+  if (RightBumperTriggered)
+  {
     DebugPrintln("Right Bumper Triggered !", DBG_INFO, true);
     RightBumperTriggered = false;
   }
-  if (LeftBumperTriggered) {
+  if (LeftBumperTriggered)
+  {
     DebugPrintln("Left Bumper Triggered !", DBG_INFO, true);
     LeftBumperTriggered = false;
   }
-  
-  if (HorizontalTiltTriggered) {
+
+  if (HorizontalTiltTriggered)
+  {
     DebugPrintln("Horizontal Tilt sensor Triggered !", DBG_INFO, true);
     HorizontalTiltTriggered = false;
   }
 
-  if (VerticalTiltTriggered) {
+  if (VerticalTiltTriggered)
+  {
     DebugPrintln("Vertical Tilt sensor Triggered !", DBG_INFO, true);
     VerticalTiltTriggered = false;
   }
 
   BatteryChargeCurrentRead(false);
   MotorCurrentRead(MOTOR_CURRENT_RIGHT);
-//  MotorCurrentRead(MOTOR_CURRENT_LEFT);
-//  MotorCurrentRead(MOTOR_CURRENT_CUT);
+  //  MotorCurrentRead(MOTOR_CURRENT_LEFT);
+  //  MotorCurrentRead(MOTOR_CURRENT_CUT);
   KeypadRead();
-  
-//  TemperatureRead(TEMPERATURE_1_RED);   // not needed : Done by FanCheck()
-//  TemperatureRead(TEMPERATURE_2_BLUE);   // not needed : Done by FanCheck()
+
+  //  TemperatureRead(TEMPERATURE_1_RED);   // not needed : Done by FanCheck()
+  //  TemperatureRead(TEMPERATURE_2_BLUE);   // not needed : Done by FanCheck()
 
   SonarRead(SONAR_FRONT);
   SonarRead(SONAR_LEFT);
   SonarRead(SONAR_RIGHT);
-  
+
   BatteryVoltageRead();
 
   CompassRead();
@@ -91,62 +95,77 @@ static int direction = MOTION_MOTOR_STOPPED;
 
   static unsigned long LastRefresh = 0;
 
-  if ((millis() - LastRefresh > 500)) 
+  if ((millis() - LastRefresh > 500))
   {
     speed = speed + (8 * sens);
-    if (speed > 4096+1024) {sens = -1;}
-    if (speed < -4096-1024) {sens = 1;}
-    if (speed < 0) 
+    if (speed > 4096 + 1024)
     {
-      if (direction != MOTION_MOTOR_REVERSE) {
+      sens = -1;
+    }
+    if (speed < -4096 - 1024)
+    {
+      sens = 1;
+    }
+    if (speed < 0)
+    {
+      if (direction != MOTION_MOTOR_REVERSE)
+      {
         direction = MOTION_MOTOR_REVERSE;
         MotionMotorStop(MOTION_MOTOR_RIGHT);
       }
     }
-    else 
+    else
     {
-      if (direction != MOTION_MOTOR_FORWARD) {
+      if (direction != MOTION_MOTOR_FORWARD)
+      {
         direction = MOTION_MOTOR_FORWARD;
         MotionMotorStop(MOTION_MOTOR_RIGHT);
       }
     }
-    if (!MotionMotorOn[MOTION_MOTOR_RIGHT]) {MotionMotorStart(MOTION_MOTOR_RIGHT,direction, abs(speed));}
-    else {MotionMotorSetSpeed(MOTION_MOTOR_RIGHT, abs(speed));}
+    if (!MotionMotorOn[MOTION_MOTOR_RIGHT])
+    {
+      MotionMotorStart(MOTION_MOTOR_RIGHT, direction, abs(speed));
+    }
+    else
+    {
+      MotionMotorSetSpeed(MOTION_MOTOR_RIGHT, abs(speed));
+    }
   }
 
   SerialAndTelnet.handle();
-  
 
-  if ((millis() - LastRefresh > 500)) 
+  if ((millis() - LastRefresh > 500))
   {
-    DebugPrint("Temp 1: " + String(Temperature[TEMPERATURE_1_RED],1) + // " | Err1: " + String(Temp1ErrorCount) + 
-              " | Temp 2: " + String(Temperature[TEMPERATURE_2_BLUE],1) + //" | Err2: " + String(Temp2ErrorCount) + 
-              " | Charge: " + String(BatteryChargeCurrent,0) + 
-              " | MotorR: " + String(MotorCurrent[MOTOR_CURRENT_RIGHT],2) + 
-              " | Volt: "   + String(float(BatteryVotlage)/1000.0f,2) + 
-              " | Heading: " + String(CompassHeading,1), DBG_INFO, true);
-              
-  //  lcd.clear();
-    lcd.setCursor(0,0);
-    lcd.print("T1: " + String(Temperature[TEMPERATURE_1_RED],1) + " T2: " + String(Temperature[TEMPERATURE_2_BLUE],1));
+    DebugPrint("Temp 1: " + String(Temperature[TEMPERATURE_1_RED], 1) +         // " | Err1: " + String(Temp1ErrorCount) +
+                   " | Temp 2: " + String(Temperature[TEMPERATURE_2_BLUE], 1) + //" | Err2: " + String(Temp2ErrorCount) +
+                   " | Charge: " + String(BatteryChargeCurrent, 0) +
+                   " | MotorR: " + String(MotorCurrent[MOTOR_CURRENT_RIGHT], 2) +
+                   " | Volt: " + String(float(BatteryVotlage) / 1000.0f, 2) +
+                   " | Heading: " + String(CompassHeading, 1),
+               DBG_INFO, true);
 
-    lcd.setCursor(0,1);
+    //  lcd.clear();
+    lcd.setCursor(0, 0);
+    lcd.print("T1: " + String(Temperature[TEMPERATURE_1_RED], 1) + " T2: " + String(Temperature[TEMPERATURE_2_BLUE], 1));
+
+    lcd.setCursor(0, 1);
     for (uint8_t i = 0; i < SONAR_COUNT; i++)
     {            // Loop through each sensor and display results.
       delay(50); // Wait 50ms between pings (about 20 pings/sec). 29ms should be the shortest delay between pings.
-      DebugPrint(" | Sonar" + String(i+1) + ": " + String(SonarDistance[i]));
-      lcd.print("S" + String(i+1) + ":" + String(SonarDistance[i]) + " ");
+      DebugPrint(" | Sonar" + String(i + 1) + ": " + String(SonarDistance[i]));
+      lcd.print("S" + String(i + 1) + ":" + String(SonarDistance[i]) + " ");
     }
     DebugPrintln("");
     LastRefresh = millis();
   }
-  lcd.setCursor(0,2);
-  for (int i = 0; i < KEYPAD_MAX_KEYS; i++){
-//    if (!key) {DebugPrintln("Keypad key" + String(i-7) + " pressed", DBG_INFO, true);}
-    lcd.print("K" + String(i+1) + ":" + String(KeyPressed[i]) + " ");
+  lcd.setCursor(0, 2);
+  for (int i = 0; i < KEYPAD_MAX_KEYS; i++)
+  {
+    //    if (!key) {DebugPrintln("Keypad key" + String(i-7) + " pressed", DBG_INFO, true);}
+    lcd.print("K" + String(i + 1) + ":" + String(KeyPressed[i]) + " ");
   }
 
-/*
+  /*
   for (uint8_t i = 8; i < 12; i++){
     int key = IOExtend.digitalRead(i);
     if (!key) {DebugPrintln("Keypad key" + String(i-7) + " pressed", DBG_INFO, true);}
@@ -154,12 +173,11 @@ static int direction = MOTION_MOTOR_STOPPED;
   }
 */
 
-  lcd.setCursor(0,3);
-  lcd.print("B:" + String(BatteryChargeCurrent,0) + " ");
-  lcd.print("R:" + String(MotorCurrent[MOTOR_CURRENT_RIGHT],0) + " ");
-  lcd.print("L:" + String(MotorCurrent[MOTOR_CURRENT_LEFT],0) + " ");
-//  lcd.print("C:" + String(MotorCurrent[MOTOR_CURRENT_CUT],0) + " ");
-  
+  lcd.setCursor(0, 3);
+  lcd.print("B:" + String(BatteryChargeCurrent, 0) + " ");
+  lcd.print("R:" + String(MotorCurrent[MOTOR_CURRENT_RIGHT], 0) + " ");
+  lcd.print("L:" + String(MotorCurrent[MOTOR_CURRENT_LEFT], 0) + " ");
+  //  lcd.print("C:" + String(MotorCurrent[MOTOR_CURRENT_CUT],0) + " ");
 
   MQTTReconnect();
 
@@ -169,7 +187,7 @@ static int direction = MOTION_MOTOR_STOPPED;
 
   SerialAndTelnet.handle();
 
-  events();   // eztime refresh
+  events(); // eztime refresh
 
   delay(50);
 }

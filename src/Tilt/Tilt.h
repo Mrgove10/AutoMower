@@ -4,7 +4,7 @@
 #define TILT_HORIZONTAL 1
 #define TILT_VERTICAL 2
 
-#define TILT_DEBOUNCE_TIMEOUT 100         // in ms
+#define TILT_DEBOUNCE_TIMEOUT 100 // in ms
 
 /**
  * Horizontal Tilt sensor ISR function
@@ -30,6 +30,5 @@ void TiltSetup(void);
  * @return boolean true if sensor check is ok
  */
 bool TiltSensorCheck(int tilt);
-
 
 #endif

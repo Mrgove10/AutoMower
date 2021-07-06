@@ -16,7 +16,7 @@ void FanSetup()
 
   FanStop(FAN_1_RED);
   FanStop(FAN_2_BLUE);
-  
+
   DebugPrintln("Fan setup Done", DBG_VERBOSE, true);
 }
 
@@ -28,15 +28,16 @@ void FanTest(const int Fan)
 {
   DebugPrintln("Fan " + String(Fan + 1) + " test started", DBG_INFO, true);
 
-  if (Fan == 0) {
+  if (Fan == 0)
+  {
     lcd.clear();
     lcd.setCursor(0, 0);
     lcd.print(F("Fan Test"));
   }
   lcd.setCursor(2, 2 + Fan);
-  lcd.print (F("Fan "));
-  lcd.print (Fan + 1);
-  lcd.print (F(" Started"));
+  lcd.print(F("Fan "));
+  lcd.print(Fan + 1);
+  lcd.print(F(" Started"));
 
   FanStart(Fan);
 
@@ -44,10 +45,10 @@ void FanTest(const int Fan)
 
   FanStop(Fan);
 
-    lcd.setCursor(2, 2 + Fan);
-  lcd.print (F("Fan "));
-  lcd.print (Fan + 1);
-  lcd.print (F(" Stopped"));
+  lcd.setCursor(2, 2 + Fan);
+  lcd.print(F("Fan "));
+  lcd.print(Fan + 1);
+  lcd.print(F(" Stopped"));
 
   delay(FAN_TEST_DURATION);
 
@@ -84,16 +85,16 @@ void FanCheck(const int Fan, const bool Now)
 {
   static unsigned long LastFanCheck[FAN_COUNT] = {0, 0};
 
-  if ((millis() - LastFanCheck[Fan] > FAN_UPDATE_INTERVAL) || Now) 
+  if ((millis() - LastFanCheck[Fan] > FAN_UPDATE_INTERVAL) || Now)
   {
-    float temperature = TemperatureRead(Fan,true);
-    if ( !FanOn[Fan] && (temperature != UNKNOWN_FLOAT) && (temperature > FAN_START_THRESHOLD))
+    float temperature = TemperatureRead(Fan, true);
+    if (!FanOn[Fan] && (temperature != UNKNOWN_FLOAT) && (temperature > FAN_START_THRESHOLD))
     {
       DebugPrintln("Fan " + String(Fan + 1) + " Started", DBG_INFO, true);
       FanOn[Fan] = true;
       FanStart(Fan);
     }
-    if ( FanOn[Fan] && (temperature != UNKNOWN_FLOAT) && (temperature < FAN_STOP_THRESHOLD))
+    if (FanOn[Fan] && (temperature != UNKNOWN_FLOAT) && (temperature < FAN_STOP_THRESHOLD))
     {
       DebugPrintln("Fan " + String(Fan + 1) + " Stopped", DBG_INFO, true);
       FanOn[Fan] = false;

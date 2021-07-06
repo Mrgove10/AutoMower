@@ -14,5 +14,4 @@ void KeypadSetup(void);
  */
 void KeypadRead(void);
 
-
 #endif

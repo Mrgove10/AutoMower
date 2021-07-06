@@ -51,6 +51,6 @@ bool isRaining(void)
 {
   int raw = analogRead(PIN_ESP_RAIN);
   DebugPrintln("Raining check value: " + String(raw), DBG_VERBOSE, true);
-  
+
   return raw > RAIN_SENSOR_RAINING_THRESHOLD;
 }

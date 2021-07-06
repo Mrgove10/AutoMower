@@ -19,7 +19,7 @@ jobs:
           pip install platformio
 
       - name: Rename file
-        run: mv include/Credentials_definitions.h.sample include/Credentials_definitions.h 
+        run: mv include/Credentials_definitions.h.sample include/Credentials_definitions.h
 
       - name: Run PlatformIO
         run: platformio run

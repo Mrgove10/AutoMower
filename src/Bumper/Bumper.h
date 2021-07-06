@@ -4,7 +4,7 @@
 #define BUMPER_LEFT 1
 #define BUMPER_RIGHT 2
 
-#define BUMPER_DEBOUNCE_TIMEOUT 100         // in ms
+#define BUMPER_DEBOUNCE_TIMEOUT 100 // in ms
 
 /**
  * Left Bumper ISR function

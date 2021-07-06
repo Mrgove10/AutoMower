@@ -39,7 +39,7 @@ void MQTTSendLogMessage(const char *MQTTTopic, const char *Message, const char *
     bool result = MQTTclient.publish(MQTTTopic, MQTTpayload);
     if (result != 1)
     {
-      MQTTErrorCount = MQTTErrorCount + 1;
+        MQTTErrorCount = MQTTErrorCount + 1;
     }
 
     MQTTclient.loop();
@@ -94,7 +94,7 @@ void MQTTCallback(char *topic, byte *message, unsigned int length)
             OTAHandle();
         }
         else if (String(messageTemp) == "TEST" &&
-            String(messageTemp) != lastCommand)
+                 String(messageTemp) != lastCommand)
         {
             LogPrintln("Request for AutoMower Test", TAG_CHECK, DBG_INFO);
             lastCommand = String(messageTemp);
@@ -102,7 +102,7 @@ void MQTTCallback(char *topic, byte *message, unsigned int length)
         }
 
         else if (String(messageTemp) == "DBG_VERBOSE" &&
-            String(messageTemp) != lastCommand)
+                 String(messageTemp) != lastCommand)
         {
             debugLevel = DBG_VERBOSE;
             DebugPrintln("Debug level to VERBOSE", DBG_INFO, true);
@@ -110,7 +110,7 @@ void MQTTCallback(char *topic, byte *message, unsigned int length)
         }
 
         else if (String(messageTemp) == "DBG_DEBUG" &&
-            String(messageTemp) != lastCommand)
+                 String(messageTemp) != lastCommand)
         {
             debugLevel = DBG_DEBUG;
             DebugPrintln("Debug level to DEBUG", DBG_INFO, true);
@@ -118,7 +118,7 @@ void MQTTCallback(char *topic, byte *message, unsigned int length)
         }
 
         else if (String(messageTemp) == "DBG_INFO" &&
-            String(messageTemp) != lastCommand)
+                 String(messageTemp) != lastCommand)
         {
             debugLevel = DBG_INFO;
             DebugPrintln("Debug level to INFO", DBG_INFO, true);
@@ -126,10 +126,10 @@ void MQTTCallback(char *topic, byte *message, unsigned int length)
         }
 
         else if (String(messageTemp) == "TEST_MOTOR" &&
-            String(messageTemp) != lastCommand)
+                 String(messageTemp) != lastCommand)
         {
-            MotionMotorTest(MOTION_MOTOR_RIGHT);            //TEMPORAIRE
-//            MotionMotorTest(MOTION_MOTOR_LEFT);            //TEMPORAIRE
+            MotionMotorTest(MOTION_MOTOR_RIGHT); //TEMPORAIRE
+                                                 //            MotionMotorTest(MOTION_MOTOR_LEFT);            //TEMPORAIRE
             lastCommand = String(messageTemp);
         }
 
@@ -223,80 +223,79 @@ void MQTTInit(void)
 
     if (MQTTclient.connect(ESPHOSTNAME))
     {
-      lcd.print(F("Connected"));
+        lcd.print(F("Connected"));
     }
     else
     {
-      lcd.print(F("FAILED"));
-      delay(TEST_SEQ_STEP_ERROR_WAIT);
+        lcd.print(F("FAILED"));
+        delay(TEST_SEQ_STEP_ERROR_WAIT);
     }
     delay(TEST_SEQ_STEP_WAIT);
 }
 
 void MQTTSendTelemetry()
 {
-  static unsigned long LastTelemetryDataSent = 0;
+    static unsigned long LastTelemetryDataSent = 0;
 
-  if ((millis() - LastTelemetryDataSent > MQTT_TELEMETRY_SEND_INTERVAL)) 
-  {
-    unsigned long StartSend = millis();
-
-    byte publ = 0;
-
-    JSONDataPayload.clear();
-
-    JSONDataPayload.add("BattVolt",       String(float(BatteryVotlage/1000.0f),2));
-    JSONDataPayload.add("BattChargeCur",  String(BatteryChargeCurrent,2));
-
-    JSONDataPayload.add("DrvMotTemp",     String(Temperature[TEMPERATURE_2_BLUE],1));
-    JSONDataPayload.add("DrvMotTempErr",  String(TempErrorCount[TEMPERATURE_2_BLUE]));
-    JSONDataPayload.add("RMotCur",        String(MotorCurrent[MOTOR_CURRENT_RIGHT]));
-    JSONDataPayload.add("RMotSpeed",      String(float(MotionMotorSpeed[MOTION_MOTOR_RIGHT]*MotionMotorDirection[MOTION_MOTOR_RIGHT]*100)/4096,2));
-    JSONDataPayload.add("LMotCur",        String(MotorCurrent[MOTOR_CURRENT_LEFT],2));
-    JSONDataPayload.add("LMotSpeed",      String(float(MotionMotorSpeed[MOTION_MOTOR_LEFT]*MotionMotorDirection[MOTION_MOTOR_LEFT]*100)/4096,2));
-    JSONDataPayload.add("DrvMotFan",      String(FanOn[FAN_2_BLUE]));
-
-    
-    JSONDataPayload.add("CutMotTemp",     String(Temperature[TEMPERATURE_1_RED],1));
-    JSONDataPayload.add("CutMotTempErr",  String(TempErrorCount[TEMPERATURE_1_RED]));
-    JSONDataPayload.add("CutMotCur",      String(MotorCurrent[MOTOR_CURRENT_CUT],2));
-    JSONDataPayload.add("CutMotFan",      String(FanOn[FAN_1_RED]));
-
-    JSONDataPayload.add("FSnrDist",       String(SonarDistance[SONAR_FRONT]));
-    JSONDataPayload.add("RSnrDist",       String(SonarDistance[SONAR_RIGHT]));
-    JSONDataPayload.add("LSnrDist",       String(SonarDistance[SONAR_LEFT]));
-
-    JSONDataPayload.add("CompHead",       String(CompassHeading));
-    
-    JSONDataPayload.add("GPSHead",        String(GPSHeading,1));
-    JSONDataPayload.add("GPSSatFix",      String(GPSSatellitesFix));
-    JSONDataPayload.add("GPSHdop",        String(GPSHdop,2));
-    JSONDataPayload.add("GPSSpeed",       String(GPSSpeed,2));
-    JSONDataPayload.add("GPSAlt",         String(GPSAltitude,2));
-    JSONDataPayload.add("GPSLat",         String(GPSLatitude,2));
-    JSONDataPayload.add("GPSLon",         String(GPSLongitude,2));
-
-    JSONDataPayload.add("RSSI",         String(WiFi.RSSI()));
-
-    JSONDataPayload.toString(JSONDataPayloadStr, false);
-    JSONDataPayloadStr.toCharArray(MQTTpayload, JSONDataPayloadStr.length()+1);
-
-    DebugPrintln(MQTTpayload + String(JSONDataPayloadStr.length()) + "=> " + String(publ) + " in " + String(millis() - StartSend) + " ms", DBG_VERBOSE, true); 
-
-    if (JSONDataPayloadStr.length() < MQTT_MAX_PAYLOAD)
+    if ((millis() - LastTelemetryDataSent > MQTT_TELEMETRY_SEND_INTERVAL))
     {
-      publ = MQTTclient.publish(MQTT_TELEMETRY_CHANNEL, MQTTpayload);
-      LastTelemetryDataSent = millis();
-      if (publ == 1) {
-        TempErrorCount[TEMPERATURE_1_RED] = 0;
-        TempErrorCount[TEMPERATURE_2_BLUE] = 0;
-      }
+        unsigned long StartSend = millis();
 
+        byte publ = 0;
+
+        JSONDataPayload.clear();
+
+        JSONDataPayload.add("BattVolt", String(float(BatteryVotlage / 1000.0f), 2));
+        JSONDataPayload.add("BattChargeCur", String(BatteryChargeCurrent, 2));
+
+        JSONDataPayload.add("DrvMotTemp", String(Temperature[TEMPERATURE_2_BLUE], 1));
+        JSONDataPayload.add("DrvMotTempErr", String(TempErrorCount[TEMPERATURE_2_BLUE]));
+        JSONDataPayload.add("RMotCur", String(MotorCurrent[MOTOR_CURRENT_RIGHT]));
+        JSONDataPayload.add("RMotSpeed", String(float(MotionMotorSpeed[MOTION_MOTOR_RIGHT] * MotionMotorDirection[MOTION_MOTOR_RIGHT] * 100) / 4096, 2));
+        JSONDataPayload.add("LMotCur", String(MotorCurrent[MOTOR_CURRENT_LEFT], 2));
+        JSONDataPayload.add("LMotSpeed", String(float(MotionMotorSpeed[MOTION_MOTOR_LEFT] * MotionMotorDirection[MOTION_MOTOR_LEFT] * 100) / 4096, 2));
+        JSONDataPayload.add("DrvMotFan", String(FanOn[FAN_2_BLUE]));
+
+        JSONDataPayload.add("CutMotTemp", String(Temperature[TEMPERATURE_1_RED], 1));
+        JSONDataPayload.add("CutMotTempErr", String(TempErrorCount[TEMPERATURE_1_RED]));
+        JSONDataPayload.add("CutMotCur", String(MotorCurrent[MOTOR_CURRENT_CUT], 2));
+        JSONDataPayload.add("CutMotFan", String(FanOn[FAN_1_RED]));
+
+        JSONDataPayload.add("FSnrDist", String(SonarDistance[SONAR_FRONT]));
+        JSONDataPayload.add("RSnrDist", String(SonarDistance[SONAR_RIGHT]));
+        JSONDataPayload.add("LSnrDist", String(SonarDistance[SONAR_LEFT]));
+
+        JSONDataPayload.add("CompHead", String(CompassHeading));
+
+        JSONDataPayload.add("GPSHead", String(GPSHeading, 1));
+        JSONDataPayload.add("GPSSatFix", String(GPSSatellitesFix));
+        JSONDataPayload.add("GPSHdop", String(GPSHdop, 2));
+        JSONDataPayload.add("GPSSpeed", String(GPSSpeed, 2));
+        JSONDataPayload.add("GPSAlt", String(GPSAltitude, 2));
+        JSONDataPayload.add("GPSLat", String(GPSLatitude, 2));
+        JSONDataPayload.add("GPSLon", String(GPSLongitude, 2));
+
+        JSONDataPayload.add("RSSI", String(WiFi.RSSI()));
+
+        JSONDataPayload.toString(JSONDataPayloadStr, false);
+        JSONDataPayloadStr.toCharArray(MQTTpayload, JSONDataPayloadStr.length() + 1);
+
+        DebugPrintln(MQTTpayload + String(JSONDataPayloadStr.length()) + "=> " + String(publ) + " in " + String(millis() - StartSend) + " ms", DBG_VERBOSE, true);
+
+        if (JSONDataPayloadStr.length() < MQTT_MAX_PAYLOAD)
+        {
+            publ = MQTTclient.publish(MQTT_TELEMETRY_CHANNEL, MQTTpayload);
+            LastTelemetryDataSent = millis();
+            if (publ == 1)
+            {
+                TempErrorCount[TEMPERATURE_1_RED] = 0;
+                TempErrorCount[TEMPERATURE_2_BLUE] = 0;
+            }
+        }
+        else
+        {
+            LogPrintln("MQTT payload larger than buffer !!!!!!", TAG_ERROR, DBG_ERROR);
+        }
+        LastTelemetryDataSent = millis();
     }
-    else 
-    {
-      LogPrintln("MQTT payload larger than buffer !!!!!!", TAG_ERROR, DBG_ERROR);
-    }
-    LastTelemetryDataSent = millis();
-  }
 }

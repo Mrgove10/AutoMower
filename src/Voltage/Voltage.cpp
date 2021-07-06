@@ -23,23 +23,22 @@ bool BatteryVoltageCheck(void)
   lcd.setCursor(0, 0);
   lcd.print(F("Battery Test"));
   lcd.setCursor(0, 2);
-  lcd.print (F("Battery "));
-  lcd.print (StatusStr[status]);
-  lcd.print (" " + String(float(BatteryVotlage/1000.0f),1) + "V");
+  lcd.print(F("Battery "));
+  lcd.print(StatusStr[status]);
+  lcd.print(" " + String(float(BatteryVotlage / 1000.0f), 1) + "V");
 
-  if (status > BATTERY_VOLTAGE_LOW_THRESHOLD)  
+  if (status > BATTERY_VOLTAGE_LOW_THRESHOLD)
   {
-     delay(TEST_SEQ_STEP_WAIT);
+    delay(TEST_SEQ_STEP_WAIT);
     return true;
   }
   else
   {
-    LogPrintln("Battery Level low:" + String(float(BatteryVotlage/1000.0f),1) + " V", TAG_CHECK, DBG_ERROR);
+    LogPrintln("Battery Level low:" + String(float(BatteryVotlage / 1000.0f), 1) + " V", TAG_CHECK, DBG_ERROR);
     delay(TEST_SEQ_STEP_WAIT + TEST_SEQ_STEP_ERROR_WAIT);
     return false;
   }
 }
-
 
 /**
  * Function to read voltage 
@@ -50,7 +49,7 @@ int BatteryVoltageRead(const bool Now)
 {
   static unsigned long LastVoltageRead = 0;
 
-  if ((millis() - LastVoltageRead > BATTERY_VOLTAGE_READ_INTERVAL) || Now) 
+  if ((millis() - LastVoltageRead > BATTERY_VOLTAGE_READ_INTERVAL) || Now)
   {
 
     int voltraw = analogRead(PIN_ESP_BAT_VOLT);
@@ -59,7 +58,7 @@ int BatteryVoltageRead(const bool Now)
     BatteryVotlage = volt;
     LastVoltageRead = millis();
 
-    if (volt < BATTERY_VOLTAGE_LOW_THRESHOLD) 
+    if (volt < BATTERY_VOLTAGE_LOW_THRESHOLD)
     {
       BatteryStatus = BATTERY_VOLTAGE_CRITICAL;
       return BATTERY_VOLTAGE_CRITICAL;
@@ -74,7 +73,7 @@ int BatteryVoltageRead(const bool Now)
       BatteryStatus = BATTERY_VOLTAGE_MEDIUM;
       return BATTERY_VOLTAGE_MEDIUM;
     }
-    else 
+    else
     {
       BatteryStatus = BATTERY_VOLTAGE_OK;
       return BATTERY_VOLTAGE_OK;

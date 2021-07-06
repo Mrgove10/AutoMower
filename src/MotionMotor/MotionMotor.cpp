@@ -14,13 +14,13 @@ void MotionMotorSetup(void)
   IOExtend.pinMode(PIN_MCP_MOTOR_RIGHT_LN2, OUTPUT);
   IOExtend.pinMode(PIN_MCP_MOTOR_LEFT_LN1, OUTPUT);
   IOExtend.pinMode(PIN_MCP_MOTOR_LEFT_LN2, OUTPUT);
-  
-//  adcAttachPin(PIN_ESP_SPARE_1);                    // TEMPORARY FOR TESTS
+
+  //  adcAttachPin(PIN_ESP_SPARE_1);                    // TEMPORARY FOR TESTS
 
   // configure LED PWM functionalitites
   ledcSetup(MOTION_MOTOR_PWM_CHANNEL_RIGHT, MOTION_MOTOR_PWM_FREQUENCY, MOTION_MOTOR_PWM_RESOLUTION);
   ledcSetup(MOTION_MOTOR_PWM_CHANNEL_LEFT, MOTION_MOTOR_PWM_FREQUENCY, MOTION_MOTOR_PWM_RESOLUTION);
-  
+
   // attach the channel to the GPIO to be controlled
   ledcAttachPin(PIN_ESP_MOTOR_RIGHT_PWM, MOTION_MOTOR_PWM_CHANNEL_RIGHT);
   ledcAttachPin(PIN_ESP_MOTOR_LEFT_PWM, MOTION_MOTOR_PWM_CHANNEL_LEFT);
@@ -39,31 +39,31 @@ void MotionMotorSetup(void)
  */
 void MotionMotorStart(const int Motor, const int Direction, const int Speed)
 {
-// check to see if motor is not already running in a different direction. If it is the case, stop the motor.
+  // check to see if motor is not already running in a different direction. If it is the case, stop the motor.
 
-  if (MotionMotorOn[Motor] && MotionMotorDirection[Motor] != Direction) 
+  if (MotionMotorOn[Motor] && MotionMotorDirection[Motor] != Direction)
   {
     MotionMotorStop(Motor);
   }
 
   if (Direction == MOTION_MOTOR_FORWARD)
   {
-      IOExtend.digitalWrite(MotionMotorIn1Pin[Motor],LOW);
-      IOExtend.digitalWrite(MotionMotorIn2Pin[Motor],HIGH);
-      MotionMotorSetSpeed(Motor, Speed);
-      MotionMotorOn[Motor] = true;
-      MotionMotorDirection[Motor] = MOTION_MOTOR_FORWARD;
-      DebugPrintln("Motion Motor " + MotionMotorStr[Motor] + " start Forward", DBG_VERBOSE, true);
+    IOExtend.digitalWrite(MotionMotorIn1Pin[Motor], LOW);
+    IOExtend.digitalWrite(MotionMotorIn2Pin[Motor], HIGH);
+    MotionMotorSetSpeed(Motor, Speed);
+    MotionMotorOn[Motor] = true;
+    MotionMotorDirection[Motor] = MOTION_MOTOR_FORWARD;
+    DebugPrintln("Motion Motor " + MotionMotorStr[Motor] + " start Forward", DBG_VERBOSE, true);
   }
 
   if (Direction == MOTION_MOTOR_REVERSE)
   {
-      IOExtend.digitalWrite(MotionMotorIn1Pin[Motor],HIGH);
-      IOExtend.digitalWrite(MotionMotorIn2Pin[Motor],LOW);
-      MotionMotorSetSpeed(Motor, Speed);
-      MotionMotorOn[Motor] = true;
-      MotionMotorDirection[Motor] = MOTION_MOTOR_REVERSE;
-      DebugPrintln("Motion Motor " + MotionMotorStr[Motor] + " start Reverse", DBG_VERBOSE, true);
+    IOExtend.digitalWrite(MotionMotorIn1Pin[Motor], HIGH);
+    IOExtend.digitalWrite(MotionMotorIn2Pin[Motor], LOW);
+    MotionMotorSetSpeed(Motor, Speed);
+    MotionMotorOn[Motor] = true;
+    MotionMotorDirection[Motor] = MOTION_MOTOR_REVERSE;
+    DebugPrintln("Motion Motor " + MotionMotorStr[Motor] + " start Reverse", DBG_VERBOSE, true);
   }
 }
 
@@ -74,22 +74,22 @@ void MotionMotorStart(const int Motor, const int Direction, const int Speed)
  */
 void MotionMotorSetSpeed(const int Motor, const int Speed)
 {
-  if (Speed > 0 && Speed < 4096) {
-    if ((Speed < MOTION_MOTOR_MIN_SPEED) && (Speed != 0)) 
+  if (Speed > 0 && Speed < 4096)
+  {
+    if ((Speed < MOTION_MOTOR_MIN_SPEED) && (Speed != 0))
     {
       DebugPrintln("Motion Motor " + MotionMotorStr[Motor] + " speed " + String(Speed) + " too low : not applied", DBG_VERBOSE, true);
       ledcWrite(MotionMotorPWMChannel[Motor], 0);
       MotionMotorSpeed[Motor] = 0;
-
     }
-    else 
+    else
     {
       ledcWrite(MotionMotorPWMChannel[Motor], Speed);
       MotionMotorSpeed[Motor] = Speed;
 
       DebugPrintln("Motion Motor " + MotionMotorStr[Motor] + " @ " + String(Speed) + " on Channel " + String(MotionMotorPWMChannel[Motor]), DBG_VERBOSE, true);
     }
-  }  
+  }
 };
 
 /**
@@ -98,8 +98,8 @@ void MotionMotorSetSpeed(const int Motor, const int Speed)
  */
 void MotionMotorStop(const int Motor)
 {
-  IOExtend.digitalWrite(MotionMotorIn1Pin[Motor],LOW);
-  IOExtend.digitalWrite(MotionMotorIn2Pin[Motor],LOW);
+  IOExtend.digitalWrite(MotionMotorIn1Pin[Motor], LOW);
+  IOExtend.digitalWrite(MotionMotorIn2Pin[Motor], LOW);
   MotionMotorSetSpeed(Motor, 0);
   MotionMotorOn[Motor] = false;
   MotionMotorDirection[Motor] = MOTION_MOTOR_STOPPED;
@@ -114,7 +114,8 @@ void MotionMotorTest(const int Motor)
 {
   DebugPrintln("Motion Motor Test for " + MotionMotorStr[Motor] + " started", DBG_INFO, true);
 
-  if (Motor == 0) {
+  if (Motor == 0)
+  {
     lcd.clear();
     lcd.setCursor(0, 0);
     lcd.print(F("Motion Motor Test"));
@@ -123,13 +124,13 @@ void MotionMotorTest(const int Motor)
   lcd.print(MotionMotorStr[Motor]);
   lcd.setCursor(8, 2 + Motor);
 
-  #define CRAWL 4096*25/100
-  #define SLOW 4096*40/100
-  #define NORMAL 4096*70/100
-  #define FAST 4090
-  #define DURATION 2000
+#define CRAWL 4096 * 25 / 100
+#define SLOW 4096 * 40 / 100
+#define NORMAL 4096 * 70 / 100
+#define FAST 4090
+#define DURATION 2000
 
-//Forward
+  //Forward
 
   lcd.print("CRAWL FWD ");
   MotionMotorStart(Motor, MOTION_MOTOR_FORWARD, CRAWL);
@@ -160,7 +161,7 @@ void MotionMotorTest(const int Motor)
   SerialAndTelnet.handle();
   delay(DURATION);
 
-//Reverse
+  //Reverse
 
   MotionMotorStop(Motor);
   delay(250);
@@ -201,7 +202,8 @@ void MotionMotorTest(const int Motor)
   SerialAndTelnet.handle();
   delay(TEST_SEQ_STEP_WAIT);
 
-  if (Motor != 0) {
+  if (Motor != 0)
+  {
     lcd.clear();
   }
 }

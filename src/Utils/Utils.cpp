@@ -67,8 +67,9 @@ String char_reset_reason(byte reason)
  * @param level     int        Debug message level.
  * @return String based on level
  */
-String DebugLevelChar(const int level){
-    switch (level)
+String DebugLevelChar(const int level)
+{
+  switch (level)
   {
   case DBG_ALWAYS:
     return DBG_ALWAYS_TEXT;
@@ -138,7 +139,7 @@ void DebugPrintln(String message, int level, boolean time)
 void LogPrintln(const String message, const String tags, const int level)
 {
   String timeStr = myTime.dateTime("H:i:s");
-  String messageStr = timeStr + "-" + DebugLevelChar(level) + "-" + message; 
+  String messageStr = timeStr + "-" + DebugLevelChar(level) + "-" + message;
   DebugPrintln(messageStr, false);
   MQTTSendLogMessage(MQTT_LOG_CHANNEL, messageStr.c_str(), tags.c_str(), level);
 }

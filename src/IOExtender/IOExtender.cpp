@@ -11,7 +11,7 @@
  */
 void IOExtendSetup(void)
 {
-  IOExtend.begin();       // default address 0X20
-  
+  IOExtend.begin(); // default address 0X20
+
   DebugPrintln("MCP I2C IO Extender setup Done", DBG_VERBOSE, true);
 }

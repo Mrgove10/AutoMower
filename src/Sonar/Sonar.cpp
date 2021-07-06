@@ -10,7 +10,6 @@
 void SonarSensorSetup(void)
 {
   DebugPrintln("Sonar Sensor Setup start", DBG_VERBOSE, true);
-
 }
 
 /**
@@ -21,11 +20,11 @@ void SonarSensorSetup(void)
 bool SonarSensorCheck(int sensor)
 {
   bool sensorCheck = false;
-  String sensorStr[SONAR_COUNT] = {"Front", "Left","Right" } ;
+  String sensorStr[SONAR_COUNT] = {"Front", "Left", "Right"};
   unsigned int Distance = UNKNOWN_INT;
 
   DebugPrintln("SonarSensorCheck start #" + String(sensor + 1), DBG_VERBOSE, true);
-  if (sensor == 0) 
+  if (sensor == 0)
   {
     lcd.clear();
     lcd.setCursor(0, 0);
@@ -39,7 +38,7 @@ bool SonarSensorCheck(int sensor)
 
   DebugPrintln(sensorStr[sensor] + " Distance " + String(Distance), DBG_INFO, true);
 
-  if (sensorCheck) 
+  if (sensorCheck)
   {
     DebugPrintln(sensorStr[sensor] + " Sonar sensor Ok : " + String(Distance), DBG_INFO, true);
     lcd.print(sensorStr[sensor]);
@@ -71,12 +70,12 @@ int SonarRead(const int sensor, const bool Now)
 {
   static unsigned long LastSonarRead[SONAR_COUNT] = {0, 0, 0};
 
-  if ((millis() - LastSonarRead[sensor] > SONAR_READ_INTERVAL) || Now) 
+  if ((millis() - LastSonarRead[sensor] > SONAR_READ_INTERVAL) || Now)
   {
     unsigned int Distance = UNKNOWN_INT;
     Distance = sonar[sensor].ping_cm(SONAR_MAX_DISTANCE);
 
-//    DebugPrintln("TemperatureRead value " + String(tempC,2), DBG_VERBOSE, true);
+    //    DebugPrintln("TemperatureRead value " + String(tempC,2), DBG_VERBOSE, true);
 
     LastSonarRead[sensor] = millis();
     SonarDistance[sensor] = Distance;

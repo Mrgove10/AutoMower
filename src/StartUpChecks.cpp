@@ -20,7 +20,7 @@
  * @return true if all checks pass
  */
 bool StartupChecks(void)
-{  
+{
   bool allChecks = true;
 
   DebugPrintln("");
@@ -33,61 +33,112 @@ bool StartupChecks(void)
 
   SerialAndTelnet.handle();
 
-  if (!BatteryVoltageCheck()) {allChecks = false;};
+  if (!BatteryVoltageCheck())
+  {
+    allChecks = false;
+  };
 
   SerialAndTelnet.handle();
 
-  if (!TiltSensorCheck(TILT_HORIZONTAL)) {allChecks = false;};
-  if (!TiltSensorCheck(TILT_VERTICAL)) {allChecks = false;};
-
-    SerialAndTelnet.handle();
-
-  if (!BumperSensorCheck(BUMPER_LEFT)) {allChecks = false;};
-  if (!BumperSensorCheck(BUMPER_RIGHT)) {allChecks = false;};
-
-  SerialAndTelnet.handle();
-
-  if (!RainSensorCheck()) {allChecks = false;};
+  if (!TiltSensorCheck(TILT_HORIZONTAL))
+  {
+    allChecks = false;
+  };
+  if (!TiltSensorCheck(TILT_VERTICAL))
+  {
+    allChecks = false;
+  };
 
   SerialAndTelnet.handle();
 
-  if (!TemperatureSensorCheck(TEMPERATURE_1_RED)) {allChecks = false;};
-  if (!TemperatureSensorCheck(TEMPERATURE_2_BLUE)) {allChecks = false;};
+  if (!BumperSensorCheck(BUMPER_LEFT))
+  {
+    allChecks = false;
+  };
+  if (!BumperSensorCheck(BUMPER_RIGHT))
+  {
+    allChecks = false;
+  };
 
   SerialAndTelnet.handle();
 
-  if (!SonarSensorCheck(SONAR_FRONT)) {allChecks = false;};
-  if (!SonarSensorCheck(SONAR_LEFT)) {allChecks = false;};
-  if (!SonarSensorCheck(SONAR_RIGHT)) {allChecks = false;};
+  if (!RainSensorCheck())
+  {
+    allChecks = false;
+  };
 
   SerialAndTelnet.handle();
 
-  if (!BatteryCurrentSensorCheck()) {allChecks = false;};
-  if (!MotorCurrentSensorCheck(MOTOR_CURRENT_RIGHT)) {allChecks = false;}; 
-  if (!MotorCurrentSensorCheck(MOTOR_CURRENT_LEFT)) {allChecks = false;}; 
-  if (!MotorCurrentSensorCheck(MOTOR_CURRENT_CUT)) {allChecks = false;}; 
+  if (!TemperatureSensorCheck(TEMPERATURE_1_RED))
+  {
+    allChecks = false;
+  };
+  if (!TemperatureSensorCheck(TEMPERATURE_2_BLUE))
+  {
+    allChecks = false;
+  };
+
+  SerialAndTelnet.handle();
+
+  if (!SonarSensorCheck(SONAR_FRONT))
+  {
+    allChecks = false;
+  };
+  if (!SonarSensorCheck(SONAR_LEFT))
+  {
+    allChecks = false;
+  };
+  if (!SonarSensorCheck(SONAR_RIGHT))
+  {
+    allChecks = false;
+  };
+
+  SerialAndTelnet.handle();
+
+  if (!BatteryCurrentSensorCheck())
+  {
+    allChecks = false;
+  };
+  if (!MotorCurrentSensorCheck(MOTOR_CURRENT_RIGHT))
+  {
+    allChecks = false;
+  };
+  if (!MotorCurrentSensorCheck(MOTOR_CURRENT_LEFT))
+  {
+    allChecks = false;
+  };
+  if (!MotorCurrentSensorCheck(MOTOR_CURRENT_CUT))
+  {
+    allChecks = false;
+  };
 
   SerialAndTelnet.handle();
 
   FanTest(FAN_1_RED);
   FanTest(FAN_2_BLUE);
 
-  if (!CompassSensorCheck()) {allChecks = false;}; 
-
-  SerialAndTelnet.handle();
-
-  if (!GPSCheck()) {allChecks = false;}; 
-
-  SerialAndTelnet.handle();
-
-  MotionMotorTest(MOTION_MOTOR_RIGHT);            //TEMPORAIRE
-  MotionMotorTest(MOTION_MOTOR_LEFT);            //TEMPORAIRE
-
-   // insert here all other startup checks
-
-  if (allChecks) 
+  if (!CompassSensorCheck())
   {
-      LogPrintln("All checks Ok", TAG_CHECK, DBG_ALWAYS);
+    allChecks = false;
+  };
+
+  SerialAndTelnet.handle();
+
+  if (!GPSCheck())
+  {
+    allChecks = false;
+  };
+
+  SerialAndTelnet.handle();
+
+  MotionMotorTest(MOTION_MOTOR_RIGHT); //TEMPORAIRE
+  MotionMotorTest(MOTION_MOTOR_LEFT);  //TEMPORAIRE
+
+  // insert here all other startup checks
+
+  if (allChecks)
+  {
+    LogPrintln("All checks Ok", TAG_CHECK, DBG_ALWAYS);
   }
   DebugPrintln("");
 

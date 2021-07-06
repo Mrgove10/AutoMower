@@ -47,12 +47,12 @@ Timezone myTime;
 
 /************************* LCD variables *********************************/
 
-LiquidCrystal_I2C lcd(PCF8574_ADDR_A21_A11_A01, 4, 5, 6, 16, 11, 12, 13, 14, POSITIVE);   // Uses Defaut Address
+LiquidCrystal_I2C lcd(PCF8574_ADDR_A21_A11_A01, 4, 5, 6, 16, 11, 12, 13, 14, POSITIVE); // Uses Defaut Address
 
 /************************* Keypad variables *********************************/
 
 const uint8_t KeyMasks[KEYPAD_MAX_KEYS] = {0X2, 0X1, 0X8, 0x4};
-const int KeyPins[KEYPAD_MAX_KEYS] = {PIN_MCP_KEYPAD_1 - 8, PIN_MCP_KEYPAD_2 - 8, PIN_MCP_KEYPAD_3 - 8, PIN_MCP_KEYPAD_4 - 8};  // GPIO B
+const int KeyPins[KEYPAD_MAX_KEYS] = {PIN_MCP_KEYPAD_1 - 8, PIN_MCP_KEYPAD_2 - 8, PIN_MCP_KEYPAD_3 - 8, PIN_MCP_KEYPAD_4 - 8}; // GPIO B
 bool KeyPressed[KEYPAD_MAX_KEYS] = {false, false, false, false};
 
 /************************* MCP23017 I2C IO Extender variables *********************************/
@@ -76,7 +76,7 @@ float CompassYField = 0;
 TinyGPSPlus GPS; // The TinyGPS++ object
 //HardwareSerial Serial2;
 
-float GPSHeading;                        // in Degrees
+float GPSHeading; // in Degrees
 int GPSSatellitesFix = 0;
 double GPSHdop = UNKNOWN_FLOAT;
 double GPSSpeed = UNKNOWN_FLOAT;
@@ -102,8 +102,8 @@ DallasTemperature TemperatureSensors(&TemperatureOneWire);
 DeviceAddress temp_1_RedSensor = {0x28, 0xC9, 0xD0, 0x95, 0xF0, 0x01, 0x3C, 0x7D};
 DeviceAddress temp_2_BlueSensor = {0x28, 0xD7, 0x3C, 0x95, 0xF0, 0x01, 0x3C, 0xCE};
 
-int TempErrorCount[TEMPERATURE_COUNT] = { 0, 0};
-float Temperature[TEMPERATURE_COUNT] = { 0, 0};
+int TempErrorCount[TEMPERATURE_COUNT] = {0, 0};
+float Temperature[TEMPERATURE_COUNT] = {0, 0};
 
 /************************* ACS712 Battery Charge current sensor variables *********************************/
 float BatteryChargeCurrent = 0;
@@ -111,9 +111,9 @@ float BatteryChargeCurrent = 0;
 /************************* INA219 I2C Curent sensor variables *********************************/
 #include <Adafruit_INA219.h>
 
-Adafruit_INA219 MotorCurrentSensor[MOTOR_CURRENT_COUNT] = {Adafruit_INA219(MOTOR_RIGHT_INA219_I2C_ADDRESS), 
-                                                           Adafruit_INA219(MOTOR_LEFT_INA219_I2C_ADDRESS), 
-                                                           Adafruit_INA219(MOTOR_CUT_INA219_I2C_ADDRESS) };
+Adafruit_INA219 MotorCurrentSensor[MOTOR_CURRENT_COUNT] = {Adafruit_INA219(MOTOR_RIGHT_INA219_I2C_ADDRESS),
+                                                           Adafruit_INA219(MOTOR_LEFT_INA219_I2C_ADDRESS),
+                                                           Adafruit_INA219(MOTOR_CUT_INA219_I2C_ADDRESS)};
 
 float MotorCurrent[MOTOR_CURRENT_COUNT] = {0, 0, 0};
 
@@ -125,12 +125,12 @@ int BatteryStatus = BATTERY_VOLTAGE_OK;
 /************************* HC-SR04 Sonar sensor variables *********************************/
 #include <Wire.h>
 
-NewPing sonar[SONAR_COUNT] = {                                           // Sensor object array.
+NewPing sonar[SONAR_COUNT] = {                                               // Sensor object array.
     NewPing(PIN_ESP_SONAR_CENTER, PIN_ESP_SONAR_CENTER, SONAR_MAX_DISTANCE), // Each sensor's trigger pin, echo pin, and max distance to ping.
     NewPing(PIN_ESP_SONAR_LEFT, PIN_ESP_SONAR_LEFT, SONAR_MAX_DISTANCE),
     NewPing(PIN_ESP_SONAR_RIGHT, PIN_ESP_SONAR_RIGHT, SONAR_MAX_DISTANCE)};
 
-int SonarDistance[SONAR_COUNT] = {0, 0, 0};      // in cm
+int SonarDistance[SONAR_COUNT] = {0, 0, 0}; // in cm
 
 /************************* Bumper variables *********************************/
 
@@ -157,7 +157,7 @@ bool MotionMotorOn[MOTION_MOTOR_COUNT];
 int MotionMotorDirection[MOTION_MOTOR_COUNT];
 int MotionMotorSpeed[MOTION_MOTOR_COUNT];
 
-String MotionMotorStr[MOTION_MOTOR_COUNT] = { "Right", "Left"};
+String MotionMotorStr[MOTION_MOTOR_COUNT] = {"Right", "Left"};
 
 /************************* Program variables *********************************/
 

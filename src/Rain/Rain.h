@@ -2,7 +2,7 @@
 #define rain_h
 
 #define RAIN_SENSOR_CHECK_THRESHOLD 1
-#define RAIN_SENSOR_RAINING_THRESHOLD 50     // this may have to be placed in a parameter
+#define RAIN_SENSOR_RAINING_THRESHOLD 50 // this may have to be placed in a parameter
 
 /**
  * Checks to see if rain sensor is connected (and hopefully functionning)

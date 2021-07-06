@@ -13,11 +13,12 @@
 ICACHE_RAM_ATTR void LeftBumperISR(void)
 {
   static unsigned long LastLeftBumperChange = 0;
-  static bool LastLeftBumperStatus = false;     // assumption is that bumper is functionning on start and in not "bumped" (normally closed contact)
+  static bool LastLeftBumperStatus = false; // assumption is that bumper is functionning on start and in not "bumped" (normally closed contact)
 
-  LastLeftBumperStatus = !LastLeftBumperStatus;  // Capture every status change
+  LastLeftBumperStatus = !LastLeftBumperStatus; // Capture every status change
 
-  if (millis() - LastLeftBumperChange > BUMPER_DEBOUNCE_TIMEOUT) {
+  if (millis() - LastLeftBumperChange > BUMPER_DEBOUNCE_TIMEOUT)
+  {
     LeftBumperTriggered = (LastLeftBumperStatus == HIGH);
     LastLeftBumperChange = millis();
   }
@@ -30,11 +31,12 @@ ICACHE_RAM_ATTR void LeftBumperISR(void)
 ICACHE_RAM_ATTR void RightBumperISR(void)
 {
   static unsigned long LastRightBumperChange = 0;
-  static bool LastRightBumperStatus = false;     // assumption is that bumper is functionning on start and in not "bumped" (normally closed contact)
+  static bool LastRightBumperStatus = false; // assumption is that bumper is functionning on start and in not "bumped" (normally closed contact)
 
-  LastRightBumperStatus = !LastRightBumperStatus;  // Capture every status change
+  LastRightBumperStatus = !LastRightBumperStatus; // Capture every status change
 
-  if (millis() - LastRightBumperChange > BUMPER_DEBOUNCE_TIMEOUT) {
+  if (millis() - LastRightBumperChange > BUMPER_DEBOUNCE_TIMEOUT)
+  {
     RightBumperTriggered = (LastRightBumperStatus == HIGH);
     LastRightBumperChange = millis();
   }
@@ -66,14 +68,14 @@ bool BumperSensorCheck(int bumper)
   String bumperStr = "";
 
   DebugPrintln("BumperSensorCheck start " + String(bumper), DBG_VERBOSE, true);
-  if (bumper == 1) 
+  if (bumper == 1)
   {
     lcd.clear();
   }
   lcd.setCursor(0, 0);
   lcd.print(F("Bumper Tests"));
 
-  if (bumper == BUMPER_LEFT) 
+  if (bumper == BUMPER_LEFT)
   {
     bumperPin = PIN_ESP_BUMPER_LEFT;
     bumperStr = "Left";
@@ -86,10 +88,10 @@ bool BumperSensorCheck(int bumper)
   }
 
   int raw = digitalRead(bumperPin);
-  
+
   DebugPrintln(bumperStr + " bumper input value: " + String(raw), DBG_VERBOSE, true);
-  
-  lcd.setCursor(2, 1+bumper);
+
+  lcd.setCursor(2, 1 + bumper);
 
   if (!raw)
   {
@@ -105,5 +107,4 @@ bool BumperSensorCheck(int bumper)
     delay(TEST_SEQ_STEP_WAIT + TEST_SEQ_STEP_ERROR_WAIT);
     return false;
   }
-
 }
