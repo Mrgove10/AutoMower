@@ -137,11 +137,13 @@ void loop()
   if ((millis() - LastRefresh > 500))
   {
     DebugPrint("Temp 1: " + String(Temperature[TEMPERATURE_1_RED], 1) +         // " | Err1: " + String(Temp1ErrorCount) +
-                   " | Temp 2: " + String(Temperature[TEMPERATURE_2_BLUE], 1) + //" | Err2: " + String(Temp2ErrorCount) +
-                   " | Charge: " + String(BatteryChargeCurrent, 0) +
-                   " | MotorR: " + String(MotorCurrent[MOTOR_CURRENT_RIGHT], 2) +
-                   " | Volt: " + String(float(BatteryVotlage) / 1000.0f, 2) +
-                   " | Heading: " + String(CompassHeading, 1),
+                   " |Temp 2: " + String(Temperature[TEMPERATURE_2_BLUE], 1) + //" | Err2: " + String(Temp2ErrorCount) +
+                   " |Charge: " + String(BatteryChargeCurrent, 0) +
+                   " |MotorR: " + String(MotorCurrent[MOTOR_CURRENT_RIGHT], 2) +
+                   " |MotorL: " + String(MotorCurrent[MOTOR_CURRENT_LEFT], 2) +
+                   " |MotorC: " + String(MotorCurrent[MOTOR_CURRENT_CUT], 2) +
+                   " |Volt: " + String(float(BatteryVotlage) / 1000.0f, 2) +
+                   " |Heading: " + String(CompassHeading, 1),
                DBG_INFO, true);
 
     //  lcd.clear();

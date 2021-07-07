@@ -128,6 +128,7 @@ void DebugPrint(String message, int level, boolean time)
     {
       MySERIAL.print(timeStr + "-" + debugLevelStr + "-" + message);
     }
+    SerialAndTelnet.handle();
   }
 }
 

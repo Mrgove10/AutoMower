@@ -31,14 +31,11 @@ bool StartupChecks(void)
   lcd.print(F("Startup Checks..."));
   delay(TEST_SEQ_STEP_WAIT);
 
-  SerialAndTelnet.handle();
-
   if (!BatteryVoltageCheck())
   {
     allChecks = false;
   };
-
-  SerialAndTelnet.handle();
+  DebugPrintln(" ");
 
   if (!TiltSensorCheck(TILT_HORIZONTAL))
   {
@@ -49,7 +46,7 @@ bool StartupChecks(void)
     allChecks = false;
   };
 
-  SerialAndTelnet.handle();
+  DebugPrintln(" ");
 
   if (!BumperSensorCheck(BUMPER_LEFT))
   {
@@ -60,14 +57,14 @@ bool StartupChecks(void)
     allChecks = false;
   };
 
-  SerialAndTelnet.handle();
+  DebugPrintln(" ");
 
   if (!RainSensorCheck())
   {
     allChecks = false;
   };
 
-  SerialAndTelnet.handle();
+  DebugPrintln(" ");
 
   if (!TemperatureSensorCheck(TEMPERATURE_1_RED))
   {
@@ -78,7 +75,7 @@ bool StartupChecks(void)
     allChecks = false;
   };
 
-  SerialAndTelnet.handle();
+  DebugPrintln(" ");
 
   if (!SonarSensorCheck(SONAR_FRONT))
   {
@@ -93,7 +90,7 @@ bool StartupChecks(void)
     allChecks = false;
   };
 
-  SerialAndTelnet.handle();
+  DebugPrintln(" ");
 
   if (!BatteryCurrentSensorCheck())
   {
@@ -112,27 +109,32 @@ bool StartupChecks(void)
     allChecks = false;
   };
 
-  SerialAndTelnet.handle();
+  DebugPrintln(" ");
 
   FanTest(FAN_1_RED);
   FanTest(FAN_2_BLUE);
+
+  DebugPrintln(" ");
 
   if (!CompassSensorCheck())
   {
     allChecks = false;
   };
 
-  SerialAndTelnet.handle();
+  DebugPrintln(" ");
 
   if (!GPSCheck())
   {
     allChecks = false;
   };
 
-  SerialAndTelnet.handle();
+  DebugPrintln(" ");
 
   MotionMotorTest(MOTION_MOTOR_RIGHT); //TEMPORAIRE
+  DebugPrintln(" ");
   MotionMotorTest(MOTION_MOTOR_LEFT);  //TEMPORAIRE
+
+  DebugPrintln(" ");
 
   // insert here all other startup checks
 
