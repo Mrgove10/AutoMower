@@ -29,6 +29,7 @@ void MQTTSendLogMessage(const char *MQTTTopic, const char *Message, const char *
 
     JSONNotePayload.clear();
 
+    JSONNotePayload.add("Sender", ESPHOSTNAME);
     JSONNotePayload.add("Message", Message);
     JSONNotePayload.add("Tags", Tag);
     JSONNotePayload.add("Level", Level);

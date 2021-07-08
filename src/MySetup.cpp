@@ -70,6 +70,8 @@ void MySetup(void)
   DebugPrint(" IP:" + String(outBuf));
   DebugPrintln(" RSSI:" + String(WiFi.RSSI()) + " dBm");
 
+  Resetreason = Resetreason + " IP :" + String(outBuf) + " Wifi " + String(WiFi.SSID());
+
   MQTTInit();
 
   SerialAndTelnet.handle();
