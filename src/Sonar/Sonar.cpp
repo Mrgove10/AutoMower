@@ -2,6 +2,7 @@
 #include "Environment_definitions.h"
 #include "Sonar/Sonar.h"
 #include "Utils/Utils.h"
+#include "Display/Display.h"
 
 /**
  * Sonar sensor setup function
@@ -26,35 +27,28 @@ bool SonarSensorCheck(int sensor)
   DebugPrintln("SonarSensorCheck start #" + String(sensor + 1), DBG_VERBOSE, true);
   if (sensor == 0)
   {
-    lcd.clear();
-    lcd.setCursor(0, 0);
-    lcd.print(F("Sonar Tests"));
+    DisplayClear();
+    DisplayPrint(0, 0, F("Sonar Tests"));
   }
 
   Distance = sonar[sensor].ping_cm(SONAR_MAX_DISTANCE);
   sensorCheck = Distance != 0;
-
-  lcd.setCursor(2, sensor + 1);
 
   DebugPrintln(sensorStr[sensor] + " Distance " + String(Distance), DBG_INFO, true);
 
   if (sensorCheck)
   {
     DebugPrintln(sensorStr[sensor] + " Sonar sensor Ok : " + String(Distance), DBG_INFO, true);
-    lcd.print(sensorStr[sensor]);
-    lcd.setCursor(8, sensor + 1);
-    lcd.print(F("OK "));
-    lcd.print(Distance);
-    lcd.print(F(" cm"));
+    DisplayPrint(2, sensor + 1, sensorStr[sensor]);
+    DisplayPrint(8, sensor + 1, "OK " + String(Distance) + " cm");
     delay(TEST_SEQ_STEP_WAIT);
     return true;
   }
   else
   {
     LogPrintln(sensorStr[sensor] + " No sensor echo", TAG_CHECK, DBG_WARNING);
-    lcd.print(sensorStr[sensor]);
-    lcd.setCursor(8, sensor + 1);
-    lcd.print(F("NO ECHO"));
+    DisplayPrint(2, sensor + 1, sensorStr[sensor]);
+    DisplayPrint(8, sensor + 1, F("NO ECHO"));
     delay(TEST_SEQ_STEP_WAIT + TEST_SEQ_STEP_ERROR_WAIT);
     return false;
   }

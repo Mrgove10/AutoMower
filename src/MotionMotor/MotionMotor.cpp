@@ -4,6 +4,7 @@
 #include "myGlobals_definition.h"
 #include "MotionMotor/MotionMotor.h"
 #include "Utils/Utils.h"
+#include "Display/Display.h"
 
 /**
  * Motion Motor Setup function
@@ -116,47 +117,40 @@ void MotionMotorTest(const int Motor)
 
   if (Motor == 0)
   {
-    lcd.clear();
-    lcd.setCursor(0, 0);
-    lcd.print(F("Motion Motor Test"));
+    DisplayClear();
+    DisplayPrint(0, 0, F("Motion Motor Test"));
   }
-  lcd.setCursor(2, 2 + Motor);
-  lcd.print(MotionMotorStr[Motor]);
-  lcd.setCursor(8, 2 + Motor);
+  DisplayPrint(2, 2 + Motor, MotionMotorStr[Motor]);
 
-#define CRAWL 4096 * 25 / 100
-#define SLOW 4096 * 40 / 100
+#define CRAWL 4096 * 30 / 100
+#define SLOW 4096 * 45 / 100
 #define NORMAL 4096 * 70 / 100
 #define FAST 4090
 #define DURATION 2000
 
   //Forward
 
-  lcd.print("CRAWL FWD ");
+  DisplayPrint(8, 2 + Motor, "Crawl FWD ");
   MotionMotorStart(Motor, MOTION_MOTOR_FORWARD, CRAWL);
   SerialAndTelnet.handle();
   delay(DURATION);
 
-  lcd.setCursor(8, 2 + Motor);
-  lcd.print("SLOW FWD  ");
+  DisplayPrint(8, 2 + Motor, "Slow FWD  ", true);
   MotionMotorSetSpeed(Motor, SLOW);
   SerialAndTelnet.handle();
   delay(DURATION);
 
-  lcd.setCursor(8, 2 + Motor);
-  lcd.print("NORMAL FWD");
+  DisplayPrint(8, 2 + Motor, "Normal FWD", true);
   MotionMotorSetSpeed(Motor, NORMAL);
   SerialAndTelnet.handle();
   delay(DURATION);
 
-  lcd.setCursor(8, 2 + Motor);
-  lcd.print("FAST FWD  ");
+  DisplayPrint(8, 2 + Motor, "Fast FWD  ", true);
   MotionMotorSetSpeed(Motor, FAST);
   SerialAndTelnet.handle();
   delay(DURATION);
 
-  lcd.setCursor(8, 2 + Motor);
-  lcd.print("SLOW FWD  ");
+  DisplayPrint(8, 2 + Motor, "Slow FWD  ", true);
   MotionMotorSetSpeed(Motor, SLOW);
   SerialAndTelnet.handle();
   delay(DURATION);
@@ -166,44 +160,38 @@ void MotionMotorTest(const int Motor)
   MotionMotorStop(Motor);
   delay(250);
 
-  lcd.setCursor(8, 2 + Motor);
-  lcd.print("CRAWL REV ");
+  DisplayPrint(8, 2 + Motor, "Crawl REV ", true);
   MotionMotorStart(Motor, MOTION_MOTOR_REVERSE, CRAWL);
   SerialAndTelnet.handle();
   delay(DURATION);
 
-  lcd.setCursor(8, 2 + Motor);
-  lcd.print("SLOW REV  ");
+  DisplayPrint(8, 2 + Motor, "Slow REV  ", true);
   MotionMotorSetSpeed(Motor, SLOW);
   SerialAndTelnet.handle();
   delay(DURATION);
 
-  lcd.setCursor(8, 2 + Motor);
-  lcd.print("NORMAL REV");
+  DisplayPrint(8, 2 + Motor, "Normal REV", true);
   MotionMotorSetSpeed(Motor, NORMAL);
   SerialAndTelnet.handle();
   delay(DURATION);
 
-  lcd.setCursor(8, 2 + Motor);
-  lcd.print("FAST REV  ");
+  DisplayPrint(8, 2 + Motor, "Fast REV  ", true);
   MotionMotorSetSpeed(Motor, FAST);
   SerialAndTelnet.handle();
   delay(DURATION);
 
-  lcd.setCursor(8, 2 + Motor);
-  lcd.print("SLOW REV  ");
+  DisplayPrint(8, 2 + Motor, "Slow REV  ", true);
   MotionMotorSetSpeed(Motor, SLOW);
   SerialAndTelnet.handle();
   delay(DURATION);
 
-  lcd.setCursor(8, 2 + Motor);
-  lcd.print("STOPPED   ");
+  DisplayPrint(8, 2 + Motor, "Stopped   ", true);
   MotionMotorStop(Motor);
   SerialAndTelnet.handle();
   delay(TEST_SEQ_STEP_WAIT);
 
   if (Motor != 0)
   {
-    lcd.clear();
+    DisplayClear();
   }
 }

@@ -1,4 +1,5 @@
 #include <Arduino.h>
+#include "Environment_definitions.h"
 
 /************************* MQTT *********************************/
 #include <PubSubClient.h>
@@ -53,10 +54,25 @@ extern Timezone myTime;
 #define NTP_REFRESH 3600
 #define POSIXTZ "CET-1CEST,M3.5.0,M10.5.0/3"
 
-/************************* LCD variables *********************************/
-#include <LiquidCrystal_I2C.h>
+/************************* Display variables *********************************/
 
+#ifdef LCD2004_DISPLAY
+#include <LiquidCrystal_I2C.h>
 extern LiquidCrystal_I2C lcd;
+#endif
+
+#ifdef OLEDSSD1306_DISPLAY
+
+#include <SSD1306.h> 
+extern SSD1306Wire oled;
+
+#endif
+
+#define COLUMS 20
+#define ROWS 4
+#define OLED_PIXEL_PER_LINE 16 // to reproduce LCD "form factor" on OLED display : 64/4
+#define OLED_PIXEL_PER_COLUMN 7 // to reproduce LCD "form factor" on OLED display : 128/20 => 6.4 rounded up to 7
+#define OLED_BRIGHTNESS 200
 
 /************************* Keypad variables *********************************/
 

@@ -16,6 +16,7 @@
 #include "IOExtender/IOExtender.h"
 #include "MotionMotor/MotionMotor.h"
 #include <pin_definitions.h>
+#include "Display/Display.h"
 
 void setup()
 {
@@ -146,25 +147,21 @@ void loop()
                    " |Heading: " + String(CompassHeading, 1),
                DBG_INFO, true);
 
-    //  lcd.clear();
-    lcd.setCursor(0, 0);
-    lcd.print("T1: " + String(Temperature[TEMPERATURE_1_RED], 1) + " T2: " + String(Temperature[TEMPERATURE_2_BLUE], 1));
+//    DisplayClear();
+    DisplayPrint(0, 0, "T1: " + String(Temperature[TEMPERATURE_1_RED], 1) + " T2: " + String(Temperature[TEMPERATURE_2_BLUE], 1), true);
 
-    lcd.setCursor(0, 1);
     for (uint8_t i = 0; i < SONAR_COUNT; i++)
     {            // Loop through each sensor and display results.
-      delay(50); // Wait 50ms between pings (about 20 pings/sec). 29ms should be the shortest delay between pings.
       DebugPrint(" | Sonar" + String(i + 1) + ": " + String(SonarDistance[i]));
-      lcd.print("S" + String(i + 1) + ":" + String(SonarDistance[i]) + " ");
+      DisplayPrint(0 + i * 6, 1, "S" + String(i + 1) + ":" + String(SonarDistance[i]) + " ", true);
     }
     DebugPrintln("");
     LastRefresh = millis();
   }
-  lcd.setCursor(0, 2);
   for (int i = 0; i < KEYPAD_MAX_KEYS; i++)
   {
     //    if (!key) {DebugPrintln("Keypad key" + String(i-7) + " pressed", DBG_INFO, true);}
-    lcd.print("K" + String(i + 1) + ":" + String(KeyPressed[i]) + " ");
+    DisplayPrint(0 + i * 4, 2, "K" + String(i + 1) + ":" + String(KeyPressed[i]) + " ", true);
   }
 
   /*
@@ -175,12 +172,10 @@ void loop()
   }
 */
 
-  lcd.setCursor(0, 3);
-  lcd.print("B:" + String(BatteryChargeCurrent, 0) + " ");
-  lcd.print("R:" + String(MotorCurrent[MOTOR_CURRENT_RIGHT], 0) + " ");
-  lcd.print("L:" + String(MotorCurrent[MOTOR_CURRENT_LEFT], 0) + " ");
-  //  lcd.print("C:" + String(MotorCurrent[MOTOR_CURRENT_CUT],0) + " ");
-
+  DisplayPrint(0, 3, "B:" + String(BatteryChargeCurrent, 0) + " ", true);
+  DisplayPrint(6, 3, "R:" + String(MotorCurrent[MOTOR_CURRENT_RIGHT], 0) + " ", true);
+  DisplayPrint(12, 3 , "L:" + String(MotorCurrent[MOTOR_CURRENT_LEFT], 0) + " ", true);
+  
   MQTTReconnect();
 
   MQTTSendTelemetry();

@@ -5,6 +5,7 @@
 #include "Fan/Fan.h"
 #include "Temperature/Temperature.h"
 #include "Utils/Utils.h"
+#include "Display/Display.h"
 
 /**
  * Fan Setup function
@@ -30,25 +31,17 @@ void FanTest(const int Fan)
 
   if (Fan == 0)
   {
-    lcd.clear();
-    lcd.setCursor(0, 0);
-    lcd.print(F("Fan Test"));
+    DisplayClear();
+    DisplayPrint(0, 0, F("Fan Test"));
   }
-  lcd.setCursor(2, 2 + Fan);
-  lcd.print(F("Fan "));
-  lcd.print(Fan + 1);
-  lcd.print(F(" Started"));
+  DisplayPrint(2, 2 + Fan, "Fan " + String(Fan + 1) + " Started");
 
   FanStart(Fan);
 
   delay(FAN_TEST_DURATION);
 
   FanStop(Fan);
-
-  lcd.setCursor(2, 2 + Fan);
-  lcd.print(F("Fan "));
-  lcd.print(Fan + 1);
-  lcd.print(F(" Stopped"));
+  DisplayPrint(2, 2 + Fan, "Fan " + String(Fan + 1) + " Stopped", true);
 
   delay(FAN_TEST_DURATION);
 

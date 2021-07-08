@@ -10,7 +10,7 @@
 #include "EEPROM/EEPROM.h"
 #include "Bumper/Bumper.h"
 #include "Tilt/Tilt.h"
-#include "LCD/LCD.h"
+#include "Display/Display.h"
 #include "IOExtender/IOExtender.h"
 #include "Keypad/Keypad.h"
 #include "Temperature/Temperature.h"
@@ -26,7 +26,7 @@ void MySetup(void)
   Serial.begin(SERIAL_BAUD);
   delay(500);
 
-  LCDSetup();
+  DisplaySetup();
 
   IOExtendSetup();
 
@@ -70,6 +70,8 @@ void MySetup(void)
   DebugPrint(" IP:" + String(outBuf));
   DebugPrintln(" RSSI:" + String(WiFi.RSSI()) + " dBm");
 
+  Resetreason = Resetreason + " IP :" + String(outBuf) + " Wifi " + String(WiFi.SSID());
+
   MQTTInit();
 
   SerialAndTelnet.handle();
@@ -98,5 +100,5 @@ void MySetup(void)
 
   SerialAndTelnet.handle();
 
-  lcd.clear();
+  DisplayClear();
 }

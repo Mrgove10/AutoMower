@@ -5,7 +5,7 @@
 #include "Environment_definitions.h"
 #include "Compass/Compass.h"
 #include "Utils/Utils.h"
-#include "LCD/LCD.h"
+#include "Display/Display.h"
 
 /**
  * I2C HMC5883L Compasss Sensor Setup function
@@ -105,25 +105,21 @@ bool CompassSensorCheck(void)
 #ifdef COMPASS_PRESENT
   Compass.getSensor(&sensor);
 #endif
-  lcd.clear();
-  lcd.setCursor(0, 0);
-  lcd.print(F("Compass sensor Test"));
-  lcd.setCursor(2, 2);
+  DisplayClear();
+  DisplayPrint(0, 0, F("Compass sensor Test"));
 
   if (sensor.sensor_id == COMPASS_ID)
   {
     DebugPrintln("Compass Sensor ok", DBG_INFO, true);
-    lcd.print("Sensor Ok");
-    lcd.setCursor(2, 3);
-    lcd.print("Heading: ");
-    lcd.print(CompassHeading, 1);
+    DisplayPrint(2, 2, "Sensor Ok");
+    DisplayPrint(2, 3, "Heading: " + String(CompassHeading, 1));
     delay(TEST_SEQ_STEP_WAIT);
     return true;
   }
   else
   {
     LogPrintln("Compass Sensor not found", TAG_CHECK, DBG_ERROR);
-    lcd.print("Sensor ERROR");
+    DisplayPrint(2, 2, "Sensor ERROR");
     delay(TEST_SEQ_STEP_WAIT + TEST_SEQ_STEP_ERROR_WAIT);
     return false;
   }

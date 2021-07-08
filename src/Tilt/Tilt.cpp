@@ -4,7 +4,7 @@
 #include "myGlobals_definition.h"
 #include "Tilt/Tilt.h"
 #include "Utils/Utils.h"
-#include "LCD/LCD.h"
+#include "Display/Display.h"
 
 /**
  * Horizontal Tilt sensor ISR function
@@ -71,10 +71,9 @@ bool TiltSensorCheck(int tilt)
 
   if (tilt == 1)
   {
-    lcd.clear();
+    DisplayClear();
   }
-  lcd.setCursor(0, 0);
-  lcd.print(F("Tilt Tests"));
+  DisplayPrint(0, 0, F("Tilt Tests"));
 
   if (tilt == TILT_HORIZONTAL)
   {
@@ -92,19 +91,17 @@ bool TiltSensorCheck(int tilt)
 
   DebugPrintln(tiltStr + " tilt input value: " + String(raw), DBG_VERBOSE, true);
 
-  lcd.setCursor(2, 1 + tilt);
-
   if (raw)
   {
     DebugPrintln(tiltStr + " tilt sensor Ok", DBG_INFO, true);
-    lcd.print(tiltStr + " OK");
+    DisplayPrint(2, 1 + tilt, tiltStr + " OK");
     delay(TEST_SEQ_STEP_WAIT);
     return true;
   }
   else
   {
     LogPrintln(tiltStr + " tilt sensor is triggered", TAG_CHECK, DBG_ERROR);
-    lcd.print(tiltStr + " ACTIVE");
+    DisplayPrint(2, 1 + tilt, tiltStr + " ACTIVE");
     delay(TEST_SEQ_STEP_WAIT + TEST_SEQ_STEP_ERROR_WAIT);
     return false;
   }

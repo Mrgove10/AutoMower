@@ -32,3 +32,4 @@ void LCDSetup(void)
   lcd.print(__TIME__);
   delay(2000);
 }
+#endif

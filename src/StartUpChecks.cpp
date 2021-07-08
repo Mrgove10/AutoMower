@@ -13,6 +13,7 @@
 #include "Compass/Compass.h"
 #include "GPS/GPS.h"
 #include "MotionMotor/MotionMotor.h"
+#include "Display/Display.h"
 
 /**
  * Runs all Mower checks on Startup
@@ -26,9 +27,8 @@ bool StartupChecks(void)
   DebugPrintln("");
   DebugPrintln("Starting AutoMower startup checks.....", DBG_INFO, true);
   DebugPrintln("");
-  lcd.clear();
-  lcd.setCursor(0, 1);
-  lcd.print(F("Startup Checks..."));
+  DisplayClear();
+  DisplayPrint(0, 1, F("Startup Checks..."));
   delay(TEST_SEQ_STEP_WAIT);
 
   if (!BatteryVoltageCheck())

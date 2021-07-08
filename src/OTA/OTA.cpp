@@ -5,6 +5,7 @@
 #include "Utils/Utils.h"
 #include "MotionMotor/MotionMotor.h"
 #include "MQTT/MQTT.h"
+#include "Display/Display.h"
 
 /* OTA init procedure */
 
@@ -28,11 +29,9 @@ void OTASetup(void)
                        { // U_SPIFFS
                          type = "filesystem";
                        }
-                       lcd.clear();
-                       lcd.setCursor(0, 0);
-                       lcd.print(F("OTA Update"));
-                       lcd.setCursor(0, 2);
-                       lcd.print(F("In Progress ..."));
+                       DisplayClear();
+                       DisplayPrint(0, 0, F("OTA Update"));
+                       DisplayPrint(0, 2, F("In Progress ..."));
 
                        // NOTE: if updating SPIFFS this would be the place to unmount SPIFFS using SPIFFS.end()
                        //    MySERIAL.println("Start updating " + type);
@@ -43,9 +42,7 @@ void OTASetup(void)
 
   ArduinoOTA.onProgress([](unsigned int progress, unsigned int total)
                         {
-                          lcd.setCursor(16, 2);
-                          lcd.print((progress * 100) / total);
-                          lcd.print(F("%"));
+                          DisplayPrint(16, 2, (progress * 100) / total + String("%"));
                         });
 
   ArduinoOTA.onError([](ota_error_t error)
@@ -81,25 +78,24 @@ void OTAHandle(void)
 
   if (otaFlag)
   {
-    unsigned long otaStart = millis();
+    unsigned long otaStart;
     OTAelapsed = 0;
+    otaStart = millis();
+
     IPAddress ip = WiFi.localIP();
 
     char outBuf[18];
     sprintf(outBuf, "%u.%u.%u.%u", ip[0], ip[1], ip[2], ip[3]);
-    lcd.clear();
-    lcd.setCursor(0, 0);
-    lcd.print(F("OTA Update"));
-    lcd.setCursor(2, 1);
-    lcd.print(F("Pending..."));
-    lcd.setCursor(2, 3);
-    lcd.print(outBuf);
+    DisplayClear();
+    DisplayPrint(0, 0, F("OTA Update"));
+    DisplayPrint(2, 1, F("Pending..."));
+    DisplayPrint(2, 3, String(outBuf));
 
     MotionMotorStop(MOTION_MOTOR_RIGHT);
     MotionMotorStop(MOTION_MOTOR_LEFT);
 
     setInterval(0); // no NTP update to avoid any interruption during upload
-
+    
     DebugPrintln("Waiting for OTA upload ", DBG_INFO, true);
     SerialAndTelnet.handle();
     MQTTUnSubscribe(); // no MQTT update to avoid any interruption during upload
@@ -110,8 +106,7 @@ void OTAHandle(void)
       delay(250);
     }
     DebugPrintln("Upload timeout", DBG_ERROR, true);
-    lcd.setCursor(2, 3);
-    lcd.print(F("   Timeout !    "));
+    DisplayPrint(2, 3, F("   Timeout !    "));
     delay(TEST_SEQ_STEP_WAIT + TEST_SEQ_STEP_ERROR_WAIT);
 
     MQTTReconnect();

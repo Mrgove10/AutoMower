@@ -4,7 +4,7 @@
 #include "Environment_definitions.h"
 #include "Current/Current.h"
 #include "Utils/Utils.h"
-#include "LCD/LCD.h"
+#include "Display/Display.h"
 
 /**
  * I2C INA219 Current Sensor Setup function
@@ -42,19 +42,16 @@ bool MotorCurrentSensorCheck(int sensor)
 
   if (sensor == 0)
   {
-    lcd.clear();
-    lcd.setCursor(0, 0);
-    lcd.print(F("Motor Current Test"));
+    DisplayClear();
+    DisplayPrint(0, 0, F("Motor Current Test"));
   }
 
-  lcd.setCursor(2, sensor + 1);
+  DisplayPrint(2, sensor + 1, sensorStr[sensor]);
 
   if (MotorCurrentSensor[sensor].success())
   {
     DebugPrintln(sensorStr[sensor] + " Motor Current Sensor ok", DBG_INFO, true);
-    lcd.print(sensorStr[sensor]);
-    lcd.setCursor(8, sensor + 1);
-    lcd.print(F("OK"));
+    DisplayPrint(8, sensor + 1, F("OK"));
 
     delay(TEST_SEQ_STEP_WAIT);
     return true;
@@ -62,9 +59,7 @@ bool MotorCurrentSensorCheck(int sensor)
   else
   {
     LogPrintln(sensorStr[sensor] + " Motor Current Sensor not found", TAG_CHECK, DBG_ERROR);
-    lcd.print(sensorStr[sensor]);
-    lcd.setCursor(8, sensor + 1);
-    lcd.print(F("ERROR"));
+    DisplayPrint(8, sensor + 1, F("ERROR"));
     delay(TEST_SEQ_STEP_WAIT + TEST_SEQ_STEP_ERROR_WAIT);
     return false;
   }
@@ -117,25 +112,21 @@ bool BatteryCurrentSensorCheck(void)
 {
   bool readStatus = BatteryChargeCurrentRead(true);
 
-  lcd.clear();
-  lcd.setCursor(0, 0);
-  lcd.print(F("Charge sensor Test"));
-  lcd.setCursor(2, 2);
+  DisplayClear();
+  DisplayPrint(0, 0 ,F("Charge sensor Test"));
 
   if (readStatus)
   {
     DebugPrintln("Charge Sensor , Value: " + String(BatteryChargeCurrent, 3), DBG_INFO, true);
-    lcd.print(F("Charge OK: "));
-    lcd.setCursor(7, 3);
-    lcd.print(BatteryChargeCurrent, 0);
-    lcd.print(F(" mA"));
+    DisplayPrint(2, 2, F("Charge OK: "));
+    DisplayPrint(7, 3, String(BatteryChargeCurrent, 0) + F(" mA"));
     delay(TEST_SEQ_STEP_WAIT);
     return true;
   }
   else
   {
     LogPrintln("Battery charge Sensor not found", TAG_CHECK, DBG_ERROR);
-    lcd.print(F("Charge ERROR"));
+    DisplayPrint(2, 2, F("Charge ERROR"));
     delay(TEST_SEQ_STEP_WAIT + TEST_SEQ_STEP_ERROR_WAIT);
     return false;
   }

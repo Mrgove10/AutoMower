@@ -4,7 +4,7 @@
 #include "Environment_definitions.h"
 #include "GPS/GPS.h"
 #include "Utils/Utils.h"
-#include "LCD/LCD.h"
+#include "Display/Display.h"
 
 /**
  * NEO-M8N GPS Setup function
@@ -75,25 +75,21 @@ bool GPSCheck(void)
 {
   GPSRead(true);
 
-  lcd.clear();
-  lcd.setCursor(0, 0);
-  lcd.print(F("GPS Test"));
-  lcd.setCursor(2, 2);
+  DisplayClear();
+  DisplayPrint(0, 0, F("GPS Test"));
 
   if (GPS.charsProcessed() > GPS_CHARS_TO_DETECT)
   {
     DebugPrintln("GPS ok", DBG_INFO, true);
-    lcd.print("GPS Ok");
-    lcd.setCursor(2, 3);
-    lcd.print("Statelites: ");
-    lcd.print(GPS.satellites.value());
+    DisplayPrint(2, 2, "GPS Ok");
+    DisplayPrint(2, 3 , "Statelites: " + String(GPS.satellites.value()));
     delay(TEST_SEQ_STEP_WAIT);
     return true;
   }
   else
   {
     LogPrintln("GPS not found", TAG_CHECK, DBG_ERROR);
-    lcd.print("GPS ERROR");
+    DisplayPrint(2, 2, "GPS ERROR");
     delay(TEST_SEQ_STEP_WAIT + TEST_SEQ_STEP_ERROR_WAIT);
     return false;
   }

@@ -4,7 +4,7 @@
 #include "myGlobals_definition.h"
 #include "Bumper/Bumper.h"
 #include "Utils/Utils.h"
-#include "LCD/LCD.h"
+#include "Display/Display.h"
 
 /**
  * Left Bumper ISR function
@@ -70,10 +70,9 @@ bool BumperSensorCheck(int bumper)
   DebugPrintln("BumperSensorCheck start " + String(bumper), DBG_VERBOSE, true);
   if (bumper == 1)
   {
-    lcd.clear();
+    DisplayClear();
   }
-  lcd.setCursor(0, 0);
-  lcd.print(F("Bumper Tests"));
+  DisplayPrint(0, 0, F("Bumper Tests"));
 
   if (bumper == BUMPER_LEFT)
   {
@@ -91,19 +90,17 @@ bool BumperSensorCheck(int bumper)
 
   DebugPrintln(bumperStr + " bumper input value: " + String(raw), DBG_VERBOSE, true);
 
-  lcd.setCursor(2, 1 + bumper);
-
   if (!raw)
   {
     DebugPrintln(bumperStr + " bumper Ok", DBG_INFO, true);
-    lcd.print(bumperStr + " OK");
+    DisplayPrint(2, 1 + bumper, bumperStr + " OK");
     delay(TEST_SEQ_STEP_WAIT);
     return true;
   }
   else
   {
     LogPrintln(bumperStr + " bumper not found or is triggered", TAG_CHECK, DBG_ERROR);
-    lcd.print(bumperStr + " ERROR");
+    DisplayPrint(2, 1 + bumper, bumperStr + " ERROR");
     delay(TEST_SEQ_STEP_WAIT + TEST_SEQ_STEP_ERROR_WAIT);
     return false;
   }

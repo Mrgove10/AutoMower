@@ -2,6 +2,7 @@
 #include "Environment_definitions.h"
 #include "Temperature/Temperature.h"
 #include "Utils/Utils.h"
+#include "Display/Display.h"
 
 /**
  * Temperature sensor setup function
@@ -106,10 +107,9 @@ bool TemperatureSensorCheck(int sensor)
   DebugPrintln("TemperatureSensorCheck start " + String(sensor), DBG_VERBOSE, true);
   if (sensor == 0)
   {
-    lcd.clear();
+    DisplayClear();
   }
-  lcd.setCursor(0, 0);
-  lcd.print(F("Temperature Tests"));
+  DisplayPrint(0, 0, F("Temperature Tests"));
 
   if (sensor == TEMPERATURE_1_RED)
   {
@@ -130,22 +130,19 @@ bool TemperatureSensorCheck(int sensor)
     sensorStr = "2-Blue";
   }
 
-  lcd.setCursor(2, 2 + sensor);
-
   DebugPrintln(sensorStr + " Temperature  " + String(temperature, 2), DBG_INFO, true);
 
   if (sensorCheck && temperature != UNKNOWN_FLOAT)
   {
     DebugPrintln(sensorStr + " Temperature sensor Ok : " + String(temperature, 2), DBG_INFO, true);
-    lcd.print(sensorStr + " OK ");
-    lcd.print(temperature, 1);
+    DisplayPrint(2, 2 + sensor, sensorStr + " OK " + String(temperature, 1));
     delay(TEST_SEQ_STEP_WAIT);
     return true;
   }
   else
   {
     LogPrintln(sensorStr + " Temperature sensor not found or invalid value", TAG_CHECK, DBG_ERROR);
-    lcd.print(sensorStr + " ERROR");
+    DisplayPrint(2, 2 + sensor, sensorStr + " ERROR");
     delay(TEST_SEQ_STEP_WAIT + TEST_SEQ_STEP_ERROR_WAIT);
     return false;
   }

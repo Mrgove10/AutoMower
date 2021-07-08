@@ -4,7 +4,7 @@
 #include "Environment_definitions.h"
 #include "Voltage/Voltage.h"
 #include "Utils/Utils.h"
-#include "LCD/LCD.h"
+#include "Display/Display.h"
 
 /**
  * Checks to see if voltage is connected and its level
@@ -19,13 +19,10 @@ bool BatteryVoltageCheck(void)
 
   DebugPrintln("Battery Voltage status: " + StatusStr[status], DBG_INFO, true);
 
-  lcd.clear();
-  lcd.setCursor(0, 0);
-  lcd.print(F("Battery Test"));
-  lcd.setCursor(0, 2);
-  lcd.print(F("Battery "));
-  lcd.print(StatusStr[status]);
-  lcd.print(" " + String(float(BatteryVotlage / 1000.0f), 1) + "V");
+  DisplayClear();
+  DisplayPrint(0, 0, F("Battery Test"));
+  DisplayPrint(2, 2, "Battery " + StatusStr[status]);
+  DisplayPrint(2, 3, String(float(BatteryVotlage / 1000.0f), 1) + " V");
 
   if (status > BATTERY_VOLTAGE_LOW_THRESHOLD)
   {

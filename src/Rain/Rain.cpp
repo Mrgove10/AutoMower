@@ -4,7 +4,7 @@
 #include "Environment_definitions.h"
 #include "Rain/Rain.h"
 #include "Utils/Utils.h"
-#include "LCD/LCD.h"
+#include "Display/Display.h"
 
 /**
  * Checks to see if rain sensor is connected (and hopefully functionning)
@@ -16,18 +16,16 @@ bool RainSensorCheck(void)
 
   DebugPrintln("Raw Rain value: " + String(raw), DBG_VERBOSE, true);
 
-  lcd.clear();
-  lcd.setCursor(0, 0);
-  lcd.print(F("Rain Test"));
-  lcd.setCursor(2, 2);
+  DisplayClear();
+  DisplayPrint(0 , 0, F("Rain Test"));
 
   if (raw > RAIN_SENSOR_CHECK_THRESHOLD)
   {
     DebugPrintln("Rain Sensor Ok", DBG_INFO, true);
-    lcd.print(F("Rain OK"));
+    DisplayPrint(2 , 2, F("Rain OK"));
     if (raw > RAIN_SENSOR_RAINING_THRESHOLD)
     {
-      lcd.print(F(" + rain"));
+      DisplayPrint(9, 2, F(" + rain"));
     }
     delay(TEST_SEQ_STEP_WAIT);
 
@@ -36,7 +34,7 @@ bool RainSensorCheck(void)
   else
   {
     LogPrintln("Rain Sensor not found", TAG_CHECK, DBG_ERROR);
-    lcd.print(F("Rain ERROR"));
+    DisplayPrint(2 , 2, F("Rain ERROR"));
     delay(TEST_SEQ_STEP_WAIT + TEST_SEQ_STEP_ERROR_WAIT);
     return false;
   }

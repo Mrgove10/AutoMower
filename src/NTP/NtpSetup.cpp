@@ -1,13 +1,13 @@
 /* Time init procedure */
 #include "myGlobals_definition.h"
 #include "Utils/Utils.h"
+#include "Display/Display.h"
 
 void NtpSetup(void)
 {
 
-  lcd.clear();
-  lcd.setCursor(0, 0);
-  lcd.print(F("Time update ..."));
+  DisplayClear();
+  DisplayPrint(0, 0, F("Time update ..."));
 
   setDebug(INFO, MySERIAL);
   setInterval(NTP_REFRESH); // in seconds - Default is 10 minutes
@@ -16,8 +16,7 @@ void NtpSetup(void)
 
   waitForSync();
 
-  lcd.setCursor(2, 1);
-  lcd.print(myTime.dateTime("H:i:s"));
+  DisplayPrint(2, 1, myTime.dateTime("H:i:s"));
   delay(TEST_SEQ_STEP_WAIT);
 
   DebugPrint("Local Time is: " + myTime.dateTime(), DBG_ALWAYS, false);
