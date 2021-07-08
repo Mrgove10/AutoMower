@@ -58,14 +58,12 @@ void EEPROMSetup(void)
 
   if (calculatedChecksum != EEPROMLoad.LoadBuffer[EEPROM_SIZE - 1])
   {
-
     DebugPrintln("EEPROM Checksum = 0x" + String(EEPROMLoad.LoadBuffer[EEPROM_SIZE - 1], HEX) + " invalid (should be 0x" + String(calculatedChecksum, HEX) + "): initialising EEPROM !", DBG_ERROR);
     EEPROMInitialise();
     EEPROMWrite();
   }
   else
   {
-
     DebugPrintln("EEPROM Checksum ok (0x" + String(EEPROMLoad.LoadBuffer[EEPROM_SIZE - 1], HEX) + ")", DBG_INFO);
 
     char buf[128];

@@ -11,7 +11,6 @@
 
 void OTASetup(void)
 {
-
   ArduinoOTA.setPort(OTA_PORT);
 
   ArduinoOTA.setHostname(ESPHOSTNAME);
@@ -75,7 +74,6 @@ void OTASetup(void)
 
 void OTAHandle(void)
 {
-
   if (otaFlag)
   {
     unsigned long otaStart;

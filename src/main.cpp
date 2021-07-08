@@ -26,7 +26,6 @@ void setup()
 
 void loop()
 {
-
   static int speed = 0;
   static int sens = 1;
   static int direction = MOTION_MOTOR_STOPPED;
