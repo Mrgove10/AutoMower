@@ -22,7 +22,7 @@ bool BatteryVoltageCheck(void)
   DisplayClear();
   DisplayPrint(0, 0, F("Battery Test"));
   DisplayPrint(2, 2, "Battery " + StatusStr[status]);
-  DisplayPrint(2, 3, String(float(BatteryVotlage / 1000.0f), 1) + " V");
+  DisplayPrint(7, 3, String(float(BatteryVotlage / 1000.0f), 1) + " V");
 
   if (status > BATTERY_VOLTAGE_LOW_THRESHOLD)
   {

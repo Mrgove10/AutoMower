@@ -15,6 +15,7 @@
 #include "GPS/GPS.h"
 #include "IOExtender/IOExtender.h"
 #include "MotionMotor/MotionMotor.h"
+#include "CutMotor/CutMotor.h"
 #include <pin_definitions.h>
 #include "Display/Display.h"
 
@@ -74,8 +75,9 @@ void loop()
 
   BatteryChargeCurrentRead(false);
   MotorCurrentRead(MOTOR_CURRENT_RIGHT);
-  //  MotorCurrentRead(MOTOR_CURRENT_LEFT);
-  //  MotorCurrentRead(MOTOR_CURRENT_CUT);
+  MotorCurrentRead(MOTOR_CURRENT_LEFT);
+  MotorCurrentRead(MOTOR_CURRENT_CUT);
+  
   KeypadRead();
 
   //  TemperatureRead(TEMPERATURE_1_RED);   // not needed : Done by FanCheck()
@@ -93,6 +95,8 @@ void loop()
 
   FanCheck(FAN_1_RED);
   FanCheck(FAN_2_BLUE);
+
+  CutMotorCheck();
 
   static unsigned long LastRefresh = 0;
 
@@ -113,6 +117,7 @@ void loop()
       {
         direction = MOTION_MOTOR_REVERSE;
         MotionMotorStop(MOTION_MOTOR_RIGHT);
+        CutMotorStop(true);
       }
     }
     else
@@ -121,15 +126,18 @@ void loop()
       {
         direction = MOTION_MOTOR_FORWARD;
         MotionMotorStop(MOTION_MOTOR_RIGHT);
+        CutMotorStop(true);
       }
     }
     if (!MotionMotorOn[MOTION_MOTOR_RIGHT])
     {
       MotionMotorStart(MOTION_MOTOR_RIGHT, direction, abs(speed));
+      CutMotorStart(direction, abs(speed));
     }
     else
     {
       MotionMotorSetSpeed(MOTION_MOTOR_RIGHT, abs(speed));
+      CutMotorSetSpeed(abs(speed));
     }
   }
 
@@ -143,6 +151,7 @@ void loop()
                    " |MotorR: " + String(MotorCurrent[MOTOR_CURRENT_RIGHT], 2) +
                    " |MotorL: " + String(MotorCurrent[MOTOR_CURRENT_LEFT], 2) +
                    " |MotorC: " + String(MotorCurrent[MOTOR_CURRENT_CUT], 2) +
+                   " |MotorCAlm: " + String(CutMotorAlarm) +
                    " |Volt: " + String(float(BatteryVotlage) / 1000.0f, 2) +
                    " |Heading: " + String(CompassHeading, 1),
                DBG_INFO, true);
@@ -172,9 +181,10 @@ void loop()
   }
 */
 
-  DisplayPrint(0, 3, "B:" + String(BatteryChargeCurrent, 0) + " ", true);
-  DisplayPrint(6, 3, "R:" + String(MotorCurrent[MOTOR_CURRENT_RIGHT], 0) + " ", true);
-  DisplayPrint(12, 3 , "L:" + String(MotorCurrent[MOTOR_CURRENT_LEFT], 0) + " ", true);
+//  DisplayPrint(0, 3, "B:" + String(BatteryChargeCurrent, 0) + " ", true);
+  DisplayPrint(0, 3, "R:" + String(MotorCurrent[MOTOR_CURRENT_RIGHT], 0) + " ", true);
+  DisplayPrint(6, 3 , "L:" + String(MotorCurrent[MOTOR_CURRENT_LEFT], 0) + " ", true);
+  DisplayPrint(12, 3 , "C:" + String(MotorCurrent[MOTOR_CURRENT_CUT], 0) + " ", true);
   
   MQTTReconnect();
 

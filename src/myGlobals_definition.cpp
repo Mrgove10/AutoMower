@@ -159,11 +159,18 @@ const int MotionMotorIn1Pin[MOTION_MOTOR_COUNT] = {PIN_MCP_MOTOR_RIGHT_LN1, PIN_
 const int MotionMotorIn2Pin[MOTION_MOTOR_COUNT] = {PIN_MCP_MOTOR_RIGHT_LN2, PIN_MCP_MOTOR_LEFT_LN2};
 const int MotionMotorPWMChannel[MOTION_MOTOR_COUNT] = {MOTION_MOTOR_PWM_CHANNEL_RIGHT, MOTION_MOTOR_PWM_CHANNEL_LEFT};
 
-bool MotionMotorOn[MOTION_MOTOR_COUNT];
-int MotionMotorDirection[MOTION_MOTOR_COUNT];
-int MotionMotorSpeed[MOTION_MOTOR_COUNT];
+bool MotionMotorOn[MOTION_MOTOR_COUNT] = {false, false};
+int MotionMotorDirection[MOTION_MOTOR_COUNT] = {MOTION_MOTOR_STOPPED, MOTION_MOTOR_STOPPED};
+int MotionMotorSpeed[MOTION_MOTOR_COUNT] = {0, 0};
 
 String MotionMotorStr[MOTION_MOTOR_COUNT] = {"Right", "Left"};
+
+/************************* CUT Motor variables *********************************/
+
+bool CutMotorOn = false;
+int CutMotorDirection = CUT_MOTOR_STOPPED;
+int CutMotorSpeed = 0;
+bool CutMotorAlarm = false;
 
 /************************* Program variables *********************************/
 

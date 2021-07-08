@@ -241,6 +241,28 @@ extern int MotionMotorDirection[MOTION_MOTOR_COUNT];
 extern int MotionMotorSpeed[MOTION_MOTOR_COUNT];
 extern String MotionMotorStr[MOTION_MOTOR_COUNT];
 
+/************************* CUT Motor variables *********************************/
+
+#define CUT_MOTOR_PWM_FREQUENCY 5000
+#define CUT_MOTOR_PWM_RESOLUTION 12
+#define CUT_MOTOR_PWM_CHANNEL_FORWARD 2
+#define CUT_MOTOR_PWM_CHANNEL_REVERSE 3
+
+#define CUT_MOTOR_STOPPED 0
+#define CUT_MOTOR_FORWARD 1
+#define CUT_MOTOR_REVERSE -1
+#define CUT_MOTOR_MIN_SPEED 4096 / 10
+
+#define CUT_MOTOR_FAST_STOP_INVERSE_SPEED 4096      // full inverse speed
+#define CUT_MOTOR_FAST_STOP_INVERSE_DURATION  750 // in ms
+
+#define CUT_MOTOR_CHECK_INTERVAL 2000   // in ms
+
+extern bool CutMotorOn;
+extern int CutMotorDirection;
+extern int CutMotorSpeed;
+extern bool CutMotorAlarm;
+
 /************************* Test sequence variables *********************************/
 #define TEST_SEQ_STEP_WAIT 1000
 #define TEST_SEQ_STEP_ERROR_WAIT 1000

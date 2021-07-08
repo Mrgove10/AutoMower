@@ -13,6 +13,7 @@
 #include "Compass/Compass.h"
 #include "GPS/GPS.h"
 #include "MotionMotor/MotionMotor.h"
+#include "CutMotor/CutMotor.h"
 #include "Display/Display.h"
 
 /**
@@ -133,7 +134,9 @@ bool StartupChecks(void)
   MotionMotorTest(MOTION_MOTOR_RIGHT); //TEMPORAIRE
   DebugPrintln(" ");
   MotionMotorTest(MOTION_MOTOR_LEFT);  //TEMPORAIRE
+  DebugPrintln(" ");
 
+  CutMotorTest(); //TEMPORAIRE
   DebugPrintln(" ");
 
   // insert here all other startup checks

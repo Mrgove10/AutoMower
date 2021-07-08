@@ -19,6 +19,7 @@
 #include "Compass/Compass.h"
 #include "GPS/GPS.h"
 #include "MotionMotor/MotionMotor.h"
+#include "CutMotor/CutMotor.h"
 #include "StartupChecks.h"
 
 void MySetup(void)
@@ -84,6 +85,8 @@ void MySetup(void)
 
   MotionMotorSetup();
 
+  CutMotorSetup();
+  
   MotorCurrentSensorSetup();
 
   CompassSensorSetup();

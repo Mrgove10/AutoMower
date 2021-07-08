@@ -244,21 +244,23 @@ void MQTTSendTelemetry()
 
         JSONDataPayload.clear();
 
-        JSONDataPayload.add("BattVolt", String(float(BatteryVotlage / 1000.0f), 2));
-        JSONDataPayload.add("BattChargeCur", String(BatteryChargeCurrent, 2));
+        JSONDataPayload.add("BatVolt", String(float(BatteryVotlage / 1000.0f), 2));
+        JSONDataPayload.add("ChargeCur", String(BatteryChargeCurrent, 2));
 
         JSONDataPayload.add("DrvMotTemp", String(Temperature[TEMPERATURE_2_BLUE], 1));
-        JSONDataPayload.add("DrvMotTempErr", String(TempErrorCount[TEMPERATURE_2_BLUE]));
+        JSONDataPayload.add("DrvMotTempEr", String(TempErrorCount[TEMPERATURE_2_BLUE]));
         JSONDataPayload.add("RMotCur", String(MotorCurrent[MOTOR_CURRENT_RIGHT]));
-        JSONDataPayload.add("RMotSpeed", String(float(MotionMotorSpeed[MOTION_MOTOR_RIGHT] * MotionMotorDirection[MOTION_MOTOR_RIGHT] * 100) / 4096, 2));
+        JSONDataPayload.add("RMotSpd", String(float(MotionMotorSpeed[MOTION_MOTOR_RIGHT] * MotionMotorDirection[MOTION_MOTOR_RIGHT] * 100) / 4096, 2));
         JSONDataPayload.add("LMotCur", String(MotorCurrent[MOTOR_CURRENT_LEFT], 2));
-        JSONDataPayload.add("LMotSpeed", String(float(MotionMotorSpeed[MOTION_MOTOR_LEFT] * MotionMotorDirection[MOTION_MOTOR_LEFT] * 100) / 4096, 2));
+        JSONDataPayload.add("LMotSpd", String(float(MotionMotorSpeed[MOTION_MOTOR_LEFT] * MotionMotorDirection[MOTION_MOTOR_LEFT] * 100) / 4096, 2));
         JSONDataPayload.add("DrvMotFan", String(FanOn[FAN_2_BLUE]));
 
-        JSONDataPayload.add("CutMotTemp", String(Temperature[TEMPERATURE_1_RED], 1));
-        JSONDataPayload.add("CutMotTempErr", String(TempErrorCount[TEMPERATURE_1_RED]));
-        JSONDataPayload.add("CutMotCur", String(MotorCurrent[MOTOR_CURRENT_CUT], 2));
-        JSONDataPayload.add("CutMotFan", String(FanOn[FAN_1_RED]));
+        JSONDataPayload.add("CMotTemp", String(Temperature[TEMPERATURE_1_RED], 1));
+        JSONDataPayload.add("CMotTempEr", String(TempErrorCount[TEMPERATURE_1_RED]));
+        JSONDataPayload.add("CMotCur", String(MotorCurrent[MOTOR_CURRENT_CUT], 2));
+        JSONDataPayload.add("CMotSpd", String(float(CutMotorSpeed * CutMotorDirection * 100) / 4096, 2));
+        JSONDataPayload.add("CMotAlm", String(CutMotorAlarm));
+        JSONDataPayload.add("CMotFan", String(FanOn[FAN_1_RED]));
 
         JSONDataPayload.add("FSnrDist", String(SonarDistance[SONAR_FRONT]));
         JSONDataPayload.add("RSnrDist", String(SonarDistance[SONAR_RIGHT]));
@@ -267,9 +269,9 @@ void MQTTSendTelemetry()
         JSONDataPayload.add("CompHead", String(CompassHeading));
 
         JSONDataPayload.add("GPSHead", String(GPSHeading, 1));
-        JSONDataPayload.add("GPSSatFix", String(GPSSatellitesFix));
+        JSONDataPayload.add("GPSSat", String(GPSSatellitesFix));
         JSONDataPayload.add("GPSHdop", String(GPSHdop, 2));
-        JSONDataPayload.add("GPSSpeed", String(GPSSpeed, 2));
+        JSONDataPayload.add("GPSSpd", String(GPSSpeed, 2));
         JSONDataPayload.add("GPSAlt", String(GPSAltitude, 2));
         JSONDataPayload.add("GPSLat", String(GPSLatitude, 2));
         JSONDataPayload.add("GPSLon", String(GPSLongitude, 2));

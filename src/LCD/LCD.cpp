@@ -1,3 +1,5 @@
+#ifdef LCD2004_DISPLAY
+
 #include <Arduino.h>
 #include "pin_definitions.h"
 #include "Environment_definitions.h"
