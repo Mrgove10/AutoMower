@@ -46,21 +46,21 @@ void CutMotorStart(const int Direction, const int Speed)
   IOExtend.digitalWrite(PIN_MCP_MOTOR_CUT_LN1, HIGH);
   IOExtend.digitalWrite(PIN_MCP_MOTOR_CUT_LN2, HIGH);
 
-  if (Direction == MOTION_MOTOR_FORWARD)
+  if (Direction == CUT_MOTOR_FORWARD)
   {
     IOExtend.digitalWrite(PIN_MCP_MOTOR_CUT_LN1, HIGH);
     IOExtend.digitalWrite(PIN_MCP_MOTOR_CUT_LN2, HIGH);
-    CutMotorSetSpeed(Speed);
     CutMotorOn = true;
-    CutMotorDirection = MOTION_MOTOR_FORWARD;
+    CutMotorDirection = CUT_MOTOR_FORWARD;
+    CutMotorSetSpeed(Speed);
     DebugPrintln("Cut Motor start Forward", DBG_VERBOSE, true);
   }
 
-  if (Direction == MOTION_MOTOR_REVERSE)
+  if (Direction == CUT_MOTOR_REVERSE)
   {
-    CutMotorSetSpeed(Speed);
     CutMotorOn = true;
-    CutMotorDirection = MOTION_MOTOR_FORWARD;
+    CutMotorDirection = CUT_MOTOR_REVERSE;
+    CutMotorSetSpeed(Speed);
     DebugPrintln("Cut Motor start Reverse", DBG_VERBOSE, true);
   }
 }
