@@ -51,7 +51,6 @@ void MQTTSendLogMessage(const char *MQTTTopic, const char *Message, const char *
 
 void MQTTCallback(char *topic, byte *message, unsigned int length)
 {
-
     static String lastCommand;
 
     DebugPrintln("Start of MQTTCallback...", DBG_VERBOSE, true);
@@ -86,7 +85,6 @@ void MQTTCallback(char *topic, byte *message, unsigned int length)
 
     if (String(topic) == String(MQTT_COMMAND_CHANNEL))
     {
-
         if (String(messageTemp) == "OTA" &&
             String(messageTemp) != lastCommand)
         {

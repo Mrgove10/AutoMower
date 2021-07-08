@@ -13,7 +13,6 @@
  */
 void LCDSetup(void)
 {
-
   //  while (lcd.begin(COLUMS, ROWS, LCD_5x8DOTS) != 1) //colums - 20, rows - 4, pixels - 5x8, SDA - D2, SCL - D1
   if (lcd.begin(COLUMS, ROWS, LCD_5x8DOTS) != 1) //colums - 20, rows - 4, pixels - 5x8, SDA - D2, SCL - D1
   {

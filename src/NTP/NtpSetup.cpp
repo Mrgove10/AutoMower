@@ -5,7 +5,6 @@
 
 void NtpSetup(void)
 {
-
   DisplayClear();
   DisplayPrint(0, 0, F("Time update ..."));
 

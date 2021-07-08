@@ -160,7 +160,6 @@ float TemperatureRead(int sensor, const bool Now)
 
   if ((millis() - LastTemperatureRead[sensor] > TEMPERATURE_READ_INTERVAL) || Now)
   {
-
     float tempC = UNKNOWN_FLOAT;
 
     if (sensor == TEMPERATURE_1_RED)

@@ -48,7 +48,6 @@ int BatteryVoltageRead(const bool Now)
 
   if ((millis() - LastVoltageRead > BATTERY_VOLTAGE_READ_INTERVAL) || Now)
   {
-
     int voltraw = analogRead(PIN_ESP_BAT_VOLT);
     int volt = map(voltraw, 0, 4095, 0, VOLTAGE_RANGE_MAX);
 

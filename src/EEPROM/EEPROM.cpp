@@ -58,14 +58,12 @@ void EEPROMSetup(void)
 
   if (calculatedChecksum != EEPROMLoad.LoadBuffer[EEPROM_SIZE - 1])
   {
-
     DebugPrintln("EEPROM Checksum = 0x" + String(EEPROMLoad.LoadBuffer[EEPROM_SIZE - 1], HEX) + " invalid (should be 0x" + String(calculatedChecksum, HEX) + "): initialising EEPROM !", DBG_ERROR);
     EEPROMInitialise();
     EEPROMWrite();
   }
   else
   {
-
     DebugPrintln("EEPROM Checksum ok (0x" + String(EEPROMLoad.LoadBuffer[EEPROM_SIZE - 1], HEX) + ")", DBG_INFO);
 
     char buf[128];
@@ -141,7 +139,6 @@ void EEPROMSave(boolean immediatly)
 {
   if (immediatly || millis() - LastEepromWriteTime > EEPROM_WRITE_FREQUENCY)
   {
-
     EEPROMLoad.Load.Data.val1 = TestVal1; // just for tests
     EEPROMLoad.Load.Data.val2 = TestVal2; // just for tests
     EEPROMLoad.Load.Data.val3 = TestVal3; // just for tests
