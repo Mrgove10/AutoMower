@@ -139,7 +139,6 @@ void EEPROMSave(boolean immediatly)
 {
   if (immediatly || millis() - LastEepromWriteTime > EEPROM_WRITE_FREQUENCY)
   {
-
     EEPROMLoad.Load.Data.val1 = TestVal1; // just for tests
     EEPROMLoad.Load.Data.val2 = TestVal2; // just for tests
     EEPROMLoad.Load.Data.val3 = TestVal3; // just for tests
