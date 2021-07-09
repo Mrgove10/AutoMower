@@ -206,28 +206,44 @@ void MQTTReconnect()
     }
 }
 
-void MQTTInit(void)
+void MQTTDisconnect(void)
 {
-    DisplayPrint(0, 2, F("Server link ..."));
+  MQTTclient.disconnect();
+  DebugPrint("Disconnected from MQTT server", DBG_WARNING, true);
+}
 
+
+void MQTTInit(const bool Display)
+{
+    if (Display) 
+    {
+        DisplayPrint(0, 2, F("Server link ..."));
+    }
+    
     MQTTclient.setServer(MQTT_SERVER, MQTT_PORT);
-
     MQTTclient.setBufferSize(MQTT_MAX_PAYLOAD);
-
     MQTTclient.setCallback(MQTTCallback);
 
     MQTTReconnect();
 
-    if (MQTTclient.connect(ESPHOSTNAME))
+    bool status;
+    IPAddress ip = WiFi.localIP();
+    String Host = ESPHOSTNAME + ip[3];
+    status = MQTTclient.connect(Host.c_str());
+
+    if (Display)
     {
+        if (status)
+        {
         DisplayPrint(2, 3, F("Connected"));
-    }
-    else
-    {
+        }
+        else
+        {
         DisplayPrint(2, 3, F("FAILED"));
         delay(TEST_SEQ_STEP_ERROR_WAIT);
+        }
+        delay(TEST_SEQ_STEP_WAIT);
     }
-    delay(TEST_SEQ_STEP_WAIT);
 }
 
 void MQTTSendTelemetry()

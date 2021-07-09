@@ -4,6 +4,7 @@
 #include "OTA/OTA.h"
 #include "Utils/Utils.h"
 #include "MotionMotor/MotionMotor.h"
+#include "CutMotor/CutMotor.h"
 #include "MQTT/MQTT.h"
 #include "Display/Display.h"
 
@@ -46,26 +47,26 @@ void OTASetup(void)
 
   ArduinoOTA.onError([](ota_error_t error)
                      {
-                       MySERIAL.printf("Error[%u]: ", error);
+                       DebugPrint("Error[" + String(error) + "]: ", DBG_ERROR, true);
                        if (error == OTA_AUTH_ERROR)
                        {
-                         DebugPrintln("Auth Failed", DBG_ERROR, true);
+                         DebugPrintln("Auth Failed");
                        }
                        else if (error == OTA_BEGIN_ERROR)
                        {
-                         DebugPrintln("Begin Failed", DBG_ERROR, true);
+                         DebugPrintln("Begin Failed");
                        }
                        else if (error == OTA_CONNECT_ERROR)
                        {
-                         DebugPrintln("Connect Failed", DBG_ERROR, true);
+                         DebugPrintln("Connect Failed");
                        }
                        else if (error == OTA_RECEIVE_ERROR)
                        {
-                         DebugPrintln("Receive Failed", DBG_ERROR, true);
+                         DebugPrintln("Receive Failed");
                        }
                        else if (error == OTA_END_ERROR)
                        {
-                         DebugPrintln("End Failed", DBG_ERROR, true);
+                         DebugPrintln("End Failed");
                        }
                      });
 
@@ -91,12 +92,15 @@ void OTAHandle(void)
 
     MotionMotorStop(MOTION_MOTOR_RIGHT);
     MotionMotorStop(MOTION_MOTOR_LEFT);
+    CutMotorStop(true);
 
     setInterval(0); // no NTP update to avoid any interruption during upload
     
     DebugPrintln("Waiting for OTA upload ", DBG_INFO, true);
     SerialAndTelnet.handle();
-    MQTTUnSubscribe(); // no MQTT update to avoid any interruption during upload
+    MQTTDisconnect();
+//    MQTTUnSubscribe(); // no MQTT update to avoid any interruption during upload
+
     while (OTAelapsed < OTA_TIMEOUT)
     {
       ArduinoOTA.handle();
@@ -107,9 +111,10 @@ void OTAHandle(void)
     DisplayPrint(2, 3, F("   Timeout !    "));
     delay(TEST_SEQ_STEP_WAIT + TEST_SEQ_STEP_ERROR_WAIT);
 
-    MQTTReconnect();
-
-    MQTTSubscribe();
+    MQTTInit(false);
+//    MQTTReconnect();
+//    MQTTSubscribe();
+    delay(1000);
     LogPrintln("OTA upload request timeout", TAG_OTA, DBG_WARNING);
 
     otaFlag = false;

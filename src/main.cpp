@@ -26,9 +26,12 @@ void setup()
 
 void loop()
 {
-  static int speed = 0;
-  static int sens = 1;
-  static int direction = MOTION_MOTOR_STOPPED;
+  static int MotionSpeed = 0;
+  static int MotionSens = 1;
+  static int MotionDirection = MOTION_MOTOR_STOPPED;
+  static int CutSpeed = 0;
+  static int CutSens = 1;
+  static int CutDirection = MOTION_MOTOR_STOPPED;
 
   /*  DebugPrintln("loop Always", DBG_ALWAYS, true);
   DebugPrintln("loop Error", DBG_ERROR, true);
@@ -101,42 +104,79 @@ void loop()
 
   if ((millis() - LastRefresh > 500))
   {
-    speed = speed + (8 * sens);
-    if (speed > 4096 + 1024)
+
+// Motion motor loop
+    MotionSpeed = MotionSpeed + (12 * MotionSens);
+    if (MotionSpeed > 4096 + 1024)
     {
-      sens = -1;
+      MotionSens = -1;
     }
-    if (speed < -4096 - 1024)
+    if (MotionSpeed < -4096 - 1024)
     {
-      sens = 1;
+      MotionSens = 1;
     }
-    if (speed < 0)
+    if (MotionSpeed < 0)
     {
-      if (direction != MOTION_MOTOR_REVERSE)
+      if (MotionDirection != MOTION_MOTOR_REVERSE)
       {
-        direction = MOTION_MOTOR_REVERSE;
+        MotionDirection = MOTION_MOTOR_REVERSE;
         MotionMotorStop(MOTION_MOTOR_RIGHT);
-        CutMotorStop(true);
+        MotionMotorStop(MOTION_MOTOR_LEFT);
       }
     }
     else
     {
-      if (direction != MOTION_MOTOR_FORWARD)
+      if (MotionDirection != MOTION_MOTOR_FORWARD)
       {
-        direction = MOTION_MOTOR_FORWARD;
+        MotionDirection = MOTION_MOTOR_FORWARD;
         MotionMotorStop(MOTION_MOTOR_RIGHT);
-        CutMotorStop(true);
+        MotionMotorStop(MOTION_MOTOR_LEFT);
       }
     }
     if (!MotionMotorOn[MOTION_MOTOR_RIGHT])
     {
-      MotionMotorStart(MOTION_MOTOR_RIGHT, direction, abs(speed));
-      CutMotorStart(direction, abs(speed));
+      MotionMotorStart(MOTION_MOTOR_RIGHT, MotionDirection, abs(MotionSpeed));
+      MotionMotorStart(MOTION_MOTOR_LEFT, MotionDirection, abs(MotionSpeed));
     }
     else
     {
-      MotionMotorSetSpeed(MOTION_MOTOR_RIGHT, abs(speed));
-      CutMotorSetSpeed(abs(speed));
+      MotionMotorSetSpeed(MOTION_MOTOR_RIGHT, abs(MotionSpeed));
+      MotionMotorSetSpeed(MOTION_MOTOR_LEFT, abs(MotionSpeed));
+    }
+  
+// Cut motor loop
+    CutSpeed = CutSpeed + (16 * CutSens);
+    if (CutSpeed > 4096 + 1024)
+    {
+      CutSens = -1;
+    }
+    if (CutSpeed < -4096 - 1024)
+    {
+      CutSens = 1;
+    }
+    if (CutSpeed <= 0)
+    {
+      if (CutDirection != CUT_MOTOR_REVERSE)
+      {
+        CutDirection = CUT_MOTOR_REVERSE;
+        CutMotorStop(true);
+      }
+    }
+    else
+    {
+      if (CutDirection != CUT_MOTOR_FORWARD)
+      {
+        CutDirection = CUT_MOTOR_FORWARD;
+        CutMotorStop(true);
+      }
+    }
+    if (!CutMotorOn)
+    {
+      CutMotorStart(CutDirection, abs(CutSpeed));
+    }
+    else
+    {
+      CutMotorSetSpeed(abs(CutSpeed));
     }
   }
 
