@@ -1,6 +1,5 @@
 #include <Arduino.h>
 #include "myGlobals_definition.h"
-#include "states.h"
 #include "mySetup.h"
 #include "Utils/Utils.h"
 #include "MQTT/MQTT.h"
@@ -19,88 +18,9 @@
 #include <pin_definitions.h>
 #include "Display/Display.h"
 
-MowerState CurrentState = MowerState::idle;
-
 void setup()
 {
   MySetup();
-}
-
-void IDLE()
-{
-  // Waiting for input ?
-  // Send telemetry
-}
-
-void DOCKED()
-{
-  // wait for GO
-  // send telemetry
-  // if battery is egnoth
-  // GO
-  // else
-  // send error bat low
-}
-
-void turn(int angle, bool direction)
-{
-  // TODO : make an enum here
-  // stop motor
-  // one moto go forward
-  // one motor go back
-  // change dir
-  // go front
-}
-
-void uTurn()
-{
-  //TODO
-  turn(180, true);
-}
-
-void getMeUnstuck()
-{
-  // stop motor
-  // go back 10 cm
-  // turn right or left (by certain angle)
-  turn(15, true);
-  // go forward
-}
-
-void MOWING()
-{
-  // cutblade 100%
-  if (RightBumperTriggered || LeftBumperTriggered)
-  {
-    uTurn();
-  }
-  // if sonar
-  // if wire
-}
-
-void GOTOBASE()
-{
-  // stop motors
-  // find target with compas
-  // go forward
-  // detect perim
-  // folow perim to base
-}
-
-void LEAVEBASE()
-{
-  // go backward for 50 cm
-  uTurn();
-  //go forward
-  CurrentState = MowerState::mowing;
-}
-
-void MOWERERROR()
-{
-  // STOP all motors
-  // disable sensors
-  // send notification to phone
-  // send telemetry
 }
 
 void loop()
@@ -112,38 +32,24 @@ void loop()
   static int CutSens = 1;
   static int CutDirection = MOTION_MOTOR_STOPPED;
 
+  /*  DebugPrintln("loop Always", DBG_ALWAYS, true);
+  DebugPrintln("loop Error", DBG_ERROR, true);
+  DebugPrintln("loop Warning", DBG_WARNING, true);
+  DebugPrintln("loop Info", DBG_INFO, true);
+  DebugPrintln("loop Debug", DBG_DEBUG, true);
+  DebugPrintln("loop Verbose", DBG_VERBOSE, true);
+
+  TestVal1 = TestVal1 + 1;
+  TestVal2 = TestVal2 + 2;
+  TestVal3 = TestVal3 + 3;
+  TestVal4 = TestVal4 + 4;
+  
+  DebugPrint("TestVal1=" + String(TestVal1), DBG_INFO, true);
+  DebugPrint(" Val2=" + String(TestVal2));
+  DebugPrint(" Val3=" + String(TestVal3));
+  DebugPrintln(" Val4=" + String(TestVal4));
+*/
   EEPROMSave(false);
-
-  switch (CurrentState)
-  {
-  case MowerState::idle:
-    IDLE();
-    break;
-
-  case MowerState::docked:
-    DOCKED();
-    break;
-
-  case MowerState::mowing:
-    MOWING();
-    break;
-
-  case MowerState::going_to_base:
-    GOTOBASE();
-    break;
-
-  case MowerState::leaving_base:
-    LEAVEBASE();
-    break;
-
-  case MowerState::error:
-    MOWERERROR();
-
-    break;
-
-  default:
-    break;
-  }
 
   if (RightBumperTriggered)
   {
@@ -172,7 +78,7 @@ void loop()
   MotorCurrentRead(MOTOR_CURRENT_RIGHT);
   MotorCurrentRead(MOTOR_CURRENT_LEFT);
   MotorCurrentRead(MOTOR_CURRENT_CUT);
-
+  
   KeypadRead();
 
   //  TemperatureRead(TEMPERATURE_1_RED);   // not needed : Done by FanCheck()
@@ -198,7 +104,7 @@ void loop()
   if ((millis() - LastRefresh > 500))
   {
 
-    // Motion motor loop
+// Motion motor loop
     MotionSpeed = MotionSpeed + (12 * MotionSens);
     if (MotionSpeed > 4096 + 1024)
     {
@@ -236,8 +142,8 @@ void loop()
       MotionMotorSetSpeed(MOTION_MOTOR_RIGHT, abs(MotionSpeed));
       MotionMotorSetSpeed(MOTION_MOTOR_LEFT, abs(MotionSpeed));
     }
-
-    // Cut motor loop
+  
+// Cut motor loop
     CutSpeed = CutSpeed + (16 * CutSens);
     if (CutSpeed > 4096 + 1024)
     {
@@ -277,7 +183,7 @@ void loop()
 
   if ((millis() - LastRefresh > 500))
   {
-    DebugPrint("Temp 1: " + String(Temperature[TEMPERATURE_1_RED], 1) +        // " | Err1: " + String(Temp1ErrorCount) +
+    DebugPrint("Temp 1: " + String(Temperature[TEMPERATURE_1_RED], 1) +         // " | Err1: " + String(Temp1ErrorCount) +
                    " |Temp 2: " + String(Temperature[TEMPERATURE_2_BLUE], 1) + //" | Err2: " + String(Temp2ErrorCount) +
                    " |Charge: " + String(BatteryChargeCurrent, 0) +
                    " |MotorR: " + String(MotorCurrent[MOTOR_CURRENT_RIGHT], 2) +
@@ -288,11 +194,11 @@ void loop()
                    " |Heading: " + String(CompassHeading, 1),
                DBG_INFO, true);
 
-    //    DisplayClear();
+//    DisplayClear();
     DisplayPrint(0, 0, "T1: " + String(Temperature[TEMPERATURE_1_RED], 1) + " T2: " + String(Temperature[TEMPERATURE_2_BLUE], 1), true);
 
     for (uint8_t i = 0; i < SONAR_COUNT; i++)
-    { // Loop through each sensor and display results.
+    {            // Loop through each sensor and display results.
       DebugPrint(" | Sonar" + String(i + 1) + ": " + String(SonarDistance[i]));
       DisplayPrint(0 + i * 6, 1, "S" + String(i + 1) + ":" + String(SonarDistance[i]) + " ", true);
     }
@@ -313,11 +219,11 @@ void loop()
   }
 */
 
-  //  DisplayPrint(0, 3, "B:" + String(BatteryChargeCurrent, 0) + " ", true);
+//  DisplayPrint(0, 3, "B:" + String(BatteryChargeCurrent, 0) + " ", true);
   DisplayPrint(0, 3, "R:" + String(MotorCurrent[MOTOR_CURRENT_RIGHT], 0) + " ", true);
-  DisplayPrint(6, 3, "L:" + String(MotorCurrent[MOTOR_CURRENT_LEFT], 0) + " ", true);
-  DisplayPrint(12, 3, "C:" + String(MotorCurrent[MOTOR_CURRENT_CUT], 0) + " ", true);
-
+  DisplayPrint(6, 3 , "L:" + String(MotorCurrent[MOTOR_CURRENT_LEFT], 0) + " ", true);
+  DisplayPrint(12, 3 , "C:" + String(MotorCurrent[MOTOR_CURRENT_CUT], 0) + " ", true);
+  
   MQTTReconnect();
 
   MQTTSendTelemetry();
