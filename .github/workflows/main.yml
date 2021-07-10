@@ -28,4 +28,4 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: Build Artifact
-          path: .pio/build/
+          path: .pio/build/esp32dev/firmware.bin
