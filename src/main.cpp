@@ -54,7 +54,7 @@ void turn(int angle, bool direction)
 
 void uTurn()
 {
-  //TODO
+  // TODO
   turn(180, true);
 }
 
@@ -101,6 +101,11 @@ void MOWERERROR()
   // disable sensors
   // send notification to phone
   // send telemetry
+}
+
+void stopAllWheel(){
+  MotionMotorStop(MOTION_MOTOR_RIGHT);
+  MotionMotorStop(MOTION_MOTOR_LEFT);
 }
 
 void loop()
@@ -188,8 +193,8 @@ void loop()
 
   GPSRead(true);
 
-  FanCheck(fans::FAN_1_RED);
-  FanCheck(fans::FAN_2_BLUE);
+  FanCheck(FAN_1_RED);
+  FanCheck(FAN_2_BLUE);
 
   CutMotorCheck();
 
