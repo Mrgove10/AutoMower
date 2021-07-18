@@ -55,6 +55,7 @@ extern Timezone myTime;
 #define POSIXTZ "CET-1CEST,M3.5.0,M10.5.0/3"
 
 /************************* Display variables *********************************/
+// The type of screen connected is defined int he Environment_definitions.h file
 
 #ifdef LCD2004_DISPLAY
 #include <LiquidCrystal_I2C.h>
@@ -62,10 +63,8 @@ extern LiquidCrystal_I2C lcd;
 #endif
 
 #ifdef OLEDSSD1306_DISPLAY
-
 #include <SSD1306.h> 
 extern SSD1306Wire oled;
-
 #endif
 
 #define COLUMS 20

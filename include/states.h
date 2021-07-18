@@ -5,5 +5,6 @@ enum class MowerState
     mowing,
     going_to_base,
     leaving_base,
-    error
+    error,
+    test
 };
