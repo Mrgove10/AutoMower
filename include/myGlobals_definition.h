@@ -249,6 +249,10 @@ extern String g_MotionMotorStr[MOTION_MOTOR_COUNT];
 #define MOWER_MOVES_TURN_SPEED 75
 #define MOWER_MOVES_TURN_ANGLE_RATIO 360.0f / 15000.0f              // in Angle degrees per ms
 #define MOWER_MOVES_REVERSE_FOR_TURN_DURATION 3000                // in ms
+#define MOWER_MOWING_TRAVEL_SPEED 90
+
+#define SONAR_MIN_DISTANCE_FOR_TURN 30                  // in cm
+#define SONAR_MIN_DISTANCE_FOR_STOP 15                  // in cm
 
 /************************* CUT Motor variables *********************************/
 
@@ -267,6 +271,9 @@ extern String g_MotionMotorStr[MOTION_MOTOR_COUNT];
 
 #define CUT_MOTOR_CHECK_INTERVAL 2000   // in ms
 
+#define MOWER_MOWING_CUTTING_SPEED 90       // in %
+#define MOWER_MOWING_CUTTING_DIRECTION CUT_MOTOR_FORWARD
+
 extern bool g_CutMotorOn;
 extern int g_CutMotorDirection;
 extern int g_CutMotorSpeed;
@@ -284,5 +291,6 @@ extern bool g_CutMotorAlarm;
 #include "states.h"
 
 extern MowerState g_CurrentState;
+extern MowerState g_PreviousState;
 
 #define MOWER_DATA_DISPLAY_INTERVAL 1000            // in ms

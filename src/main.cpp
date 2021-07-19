@@ -19,87 +19,11 @@
 #include "Display/Display.h"
 #include "TestLoop.h"
 #include "DisplayMowerData.h"
+#include "MowerStates/MowerStates.h"
 
 void setup()
 {
   MySetup();
-}
-
-void IDLE()
-{
-  // Waiting for input ?
-  // Send telemetry
-}
-
-void DOCKED()
-{
-  // wait for GO
-  // send telemetry
-  // if battery is egnoth
-  // GO
-  // else
-  // send error bat low
-}
-
-void turn(int angle, bool direction)
-{
-  // TODO : make an enum here
-  // stop motor
-  // one moto go forward
-  // one motor go back
-  // change dir
-  // go front
-}
-
-void uTurn()
-{
-  // TODO
-  turn(180, true);
-}
-
-void getMeUnstuck()
-{
-  // stop motor
-  // go back 10 cm
-  // turn right or left (by certain angle)
-  turn(15, true);
-  // go forward
-}
-
-void MOWING()
-{
-  // cutblade 100%
-  if (g_RightBumperTriggered || g_LeftBumperTriggered)
-  {
-    uTurn();
-  }
-  // if sonar
-  // if wire
-}
-
-void GOTOBASE()
-{
-  // stop motors
-  // find target with compas
-  // go forward
-  // detect perim
-  // folow perim to base
-}
-
-void LEAVEBASE()
-{
-  // go backward for 50 cm
-  uTurn();
-  //go forward
-  g_CurrentState = MowerState::mowing;
-}
-
-void MOWERERROR()
-{
-  // STOP all motors
-  // disable sensors
-  // send notification to phone
-  // send telemetry
 }
 
 void loop()
@@ -108,31 +32,33 @@ void loop()
 
   FanCheck(FAN_1_RED);        // Read temperature and activate or stop Cutting fan
   FanCheck(FAN_2_BLUE);       // Read temperature and activate or stop Motion fan
-
+  
+  bool stateChange = g_CurrentState != g_PreviousState;
+  
   switch (g_CurrentState)
   {
   case MowerState::idle:
-    IDLE();
+    MowerIdle(stateChange);
     break;
 
   case MowerState::docked:
-    DOCKED();
+    MowerDocked(stateChange);
     break;
 
   case MowerState::mowing:
-    MOWING();
+    MowerMowing(stateChange);
     break;
 
   case MowerState::going_to_base:
-    GOTOBASE();
+    MowerGoingToBase(stateChange);
     break;
 
   case MowerState::leaving_base:
-    LEAVEBASE();
+    MowerLeavingBase(stateChange);
     break;
 
   case MowerState::error:
-    MOWERERROR();
+    MowerInError(stateChange);
     break;
 
   case MowerState::test:
@@ -142,6 +68,8 @@ void loop()
   default:
     break;
   }
+
+  g_PreviousState = g_CurrentState;
 
 // Display Mower Data
 

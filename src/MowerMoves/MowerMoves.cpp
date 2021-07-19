@@ -91,3 +91,14 @@ void MowerReserseAndTurn(const int Angle, const int Duration, const bool OnSpot)
   MowerReverse(MOWER_MOVES_SPEED_SLOW, MOWER_MOVES_REVERSE_FOR_TURN_DURATION);
   MowerTurn(Angle,OnSpot);
 }
+
+/*
+void getMeUnstuck()
+{
+  // stop motor
+  // go back 10 cm
+  // turn right or left (by certain angle)
+  turn(15, true);
+  // go forward
+}
+*/

@@ -173,3 +173,4 @@ bool g_CutMotorAlarm = false;
 /************************* Program variables *********************************/
 
 MowerState g_CurrentState = MowerState::idle;
+MowerState g_PreviousState = MowerState::idle;
