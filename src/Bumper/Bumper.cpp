@@ -19,7 +19,7 @@ ICACHE_RAM_ATTR void LeftBumperISR(void)
 
   if (millis() - LastLeftBumperChange > BUMPER_DEBOUNCE_TIMEOUT)
   {
-    LeftBumperTriggered = (LastLeftBumperStatus == HIGH);
+    g_LeftBumperTriggered = (LastLeftBumperStatus == HIGH);
     LastLeftBumperChange = millis();
   }
 }
@@ -37,7 +37,7 @@ ICACHE_RAM_ATTR void RightBumperISR(void)
 
   if (millis() - LastRightBumperChange > BUMPER_DEBOUNCE_TIMEOUT)
   {
-    RightBumperTriggered = (LastRightBumperStatus == HIGH);
+    g_RightBumperTriggered = (LastRightBumperStatus == HIGH);
     LastRightBumperChange = millis();
   }
 }

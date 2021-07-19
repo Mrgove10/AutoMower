@@ -75,10 +75,10 @@ void OTASetup(void)
 
 void OTAHandle(void)
 {
-  if (otaFlag)
+  if (g_otaFlag)
   {
     unsigned long otaStart;
-    OTAelapsed = 0;
+    g_OTAelapsed = 0;
     otaStart = millis();
 
     IPAddress ip = WiFi.localIP();
@@ -101,10 +101,10 @@ void OTAHandle(void)
     MQTTDisconnect();
 //    MQTTUnSubscribe(); // no MQTT update to avoid any interruption during upload
 
-    while (OTAelapsed < OTA_TIMEOUT)
+    while (g_OTAelapsed < OTA_TIMEOUT)
     {
       ArduinoOTA.handle();
-      OTAelapsed = millis() - otaStart;
+      g_OTAelapsed = millis() - otaStart;
       delay(250);
     }
     DebugPrintln("Upload timeout", DBG_ERROR, true);
@@ -117,7 +117,7 @@ void OTAHandle(void)
     delay(1000);
     LogPrintln("OTA upload request timeout", TAG_OTA, DBG_WARNING);
 
-    otaFlag = false;
+    g_otaFlag = false;
 
     setInterval(NTP_REFRESH); // NTP updates back on
   }

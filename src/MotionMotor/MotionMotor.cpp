@@ -42,29 +42,29 @@ void MotionMotorStart(const int Motor, const int Direction, const int Speed)
 {
   // check to see if motor is not already running in a different direction. If it is the case, stop the motor.
 
-  if (MotionMotorOn[Motor] && MotionMotorDirection[Motor] != Direction)
+  if (g_MotionMotorOn[Motor] && g_MotionMotorDirection[Motor] != Direction)
   {
     MotionMotorStop(Motor);
   }
 
   if (Direction == MOTION_MOTOR_FORWARD)
   {
-    IOExtend.digitalWrite(MotionMotorIn1Pin[Motor], LOW);
-    IOExtend.digitalWrite(MotionMotorIn2Pin[Motor], HIGH);
+    IOExtend.digitalWrite(g_MotionMotorIn1Pin[Motor], LOW);
+    IOExtend.digitalWrite(g_MotionMotorIn2Pin[Motor], HIGH);
     MotionMotorSetSpeed(Motor, Speed);
-    MotionMotorOn[Motor] = true;
-    MotionMotorDirection[Motor] = MOTION_MOTOR_FORWARD;
-    DebugPrintln("Motion Motor " + MotionMotorStr[Motor] + " start Forward", DBG_VERBOSE, true);
+    g_MotionMotorOn[Motor] = true;
+    g_MotionMotorDirection[Motor] = MOTION_MOTOR_FORWARD;
+    DebugPrintln("Motion Motor " + g_MotionMotorStr[Motor] + " start Forward", DBG_VERBOSE, true);
   }
 
   if (Direction == MOTION_MOTOR_REVERSE)
   {
-    IOExtend.digitalWrite(MotionMotorIn1Pin[Motor], HIGH);
-    IOExtend.digitalWrite(MotionMotorIn2Pin[Motor], LOW);
+    IOExtend.digitalWrite(g_MotionMotorIn1Pin[Motor], HIGH);
+    IOExtend.digitalWrite(g_MotionMotorIn2Pin[Motor], LOW);
     MotionMotorSetSpeed(Motor, Speed);
-    MotionMotorOn[Motor] = true;
-    MotionMotorDirection[Motor] = MOTION_MOTOR_REVERSE;
-    DebugPrintln("Motion Motor " + MotionMotorStr[Motor] + " start Reverse", DBG_VERBOSE, true);
+    g_MotionMotorOn[Motor] = true;
+    g_MotionMotorDirection[Motor] = MOTION_MOTOR_REVERSE;
+    DebugPrintln("Motion Motor " + g_MotionMotorStr[Motor] + " start Reverse", DBG_VERBOSE, true);
   }
 }
 
@@ -79,16 +79,16 @@ void MotionMotorSetSpeed(const int Motor, const int Speed)
   {
     if ((Speed < MOTION_MOTOR_MIN_SPEED) && (Speed != 0))
     {
-      DebugPrintln("Motion Motor " + MotionMotorStr[Motor] + " speed " + String(Speed) + " too low : not applied", DBG_VERBOSE, true);
-      ledcWrite(MotionMotorPWMChannel[Motor], 0);
-      MotionMotorSpeed[Motor] = 0;
+      DebugPrintln("Motion Motor " + g_MotionMotorStr[Motor] + " speed " + String(Speed) + " too low : not applied", DBG_VERBOSE, true);
+      ledcWrite(g_MotionMotorPWMChannel[Motor], 0);
+      g_MotionMotorSpeed[Motor] = 0;
     }
     else
     {
-      ledcWrite(MotionMotorPWMChannel[Motor], Speed);
-      MotionMotorSpeed[Motor] = Speed;
+      ledcWrite(g_MotionMotorPWMChannel[Motor], Speed);
+      g_MotionMotorSpeed[Motor] = Speed;
 
-      DebugPrintln("Motion Motor " + MotionMotorStr[Motor] + " @ " + String(Speed) + " on Channel " + String(MotionMotorPWMChannel[Motor]), DBG_VERBOSE, true);
+      DebugPrintln("Motion Motor " + g_MotionMotorStr[Motor] + " @ " + String(Speed) + " on Channel " + String(g_MotionMotorPWMChannel[Motor]), DBG_VERBOSE, true);
     }
   }
 };
@@ -99,12 +99,12 @@ void MotionMotorSetSpeed(const int Motor, const int Speed)
  */
 void MotionMotorStop(const int Motor)
 {
-  IOExtend.digitalWrite(MotionMotorIn1Pin[Motor], LOW);
-  IOExtend.digitalWrite(MotionMotorIn2Pin[Motor], LOW);
+  IOExtend.digitalWrite(g_MotionMotorIn1Pin[Motor], LOW);
+  IOExtend.digitalWrite(g_MotionMotorIn2Pin[Motor], LOW);
   MotionMotorSetSpeed(Motor, 0);
-  MotionMotorOn[Motor] = false;
-  MotionMotorDirection[Motor] = MOTION_MOTOR_STOPPED;
-  DebugPrintln("Motion Motor " + MotionMotorStr[Motor] + " Stopped", DBG_VERBOSE, true);
+  g_MotionMotorOn[Motor] = false;
+  g_MotionMotorDirection[Motor] = MOTION_MOTOR_STOPPED;
+  DebugPrintln("Motion Motor " + g_MotionMotorStr[Motor] + " Stopped", DBG_VERBOSE, true);
 }
 
 /**
@@ -113,14 +113,14 @@ void MotionMotorStop(const int Motor)
  */
 void MotionMotorTest(const int Motor)
 {
-  DebugPrintln("Motion Motor Test for " + MotionMotorStr[Motor] + " started", DBG_INFO, true);
+  DebugPrintln("Motion Motor Test for " + g_MotionMotorStr[Motor] + " started", DBG_INFO, true);
 
   if (Motor == 0)
   {
     DisplayClear();
     DisplayPrint(0, 0, F("Motion Motor Test"));
   }
-  DisplayPrint(2, 2 + Motor, MotionMotorStr[Motor]);
+  DisplayPrint(2, 2 + Motor, g_MotionMotorStr[Motor]);
 
 #define CRAWL 4096 * 30 / 100
 #define SLOW 4096 * 45 / 100

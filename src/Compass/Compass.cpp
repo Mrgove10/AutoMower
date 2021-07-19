@@ -75,18 +75,18 @@ void CompassRead(const bool Now)
     float headingDegrees = heading * 180 / M_PI;
     float headingDegreesCorr = headingCorr * 180 / M_PI;
 
-    CompassHeading = headingDegrees;
-    CompassHeadingCorrected = headingDegreesCorr;
-    CompassXField = event.magnetic.x;
-    CompassYField = event.magnetic.y;
+    g_CompassHeading = headingDegrees;
+    g_CompassHeadingCorrected = headingDegreesCorr;
+    g_CompassXField = event.magnetic.x;
+    g_CompassYField = event.magnetic.y;
 
-    DebugPrintln("Compass readings: X:" + String(CompassXField, COMPASS_PRECISION) +
-                     "(uT) Y:" + String(CompassYField, COMPASS_PRECISION) +
+    DebugPrintln("Compass readings: X:" + String(g_CompassXField, COMPASS_PRECISION) +
+                     "(uT) Y:" + String(g_CompassYField, COMPASS_PRECISION) +
                      "(uT) Z:" + String(event.magnetic.z, COMPASS_PRECISION) + "(uT)",
                  DBG_VERBOSE, true);
 
-    DebugPrintln("Compass Heading:" + String(CompassHeading, COMPASS_PRECISION) +
-                     " Corrected: " + String(CompassHeadingCorrected, COMPASS_PRECISION),
+    DebugPrintln("Compass Heading:" + String(g_CompassHeading, COMPASS_PRECISION) +
+                     " Corrected: " + String(g_CompassHeadingCorrected, COMPASS_PRECISION),
                  DBG_INFO, true);
 
     LastCompassRead = millis();
@@ -112,7 +112,7 @@ bool CompassSensorCheck(void)
   {
     DebugPrintln("Compass Sensor ok", DBG_INFO, true);
     DisplayPrint(2, 2, "Sensor Ok");
-    DisplayPrint(2, 3, "Heading: " + String(CompassHeading, 1));
+    DisplayPrint(2, 3, "Heading: " + String(g_CompassHeading, 1));
     delay(TEST_SEQ_STEP_WAIT);
     return true;
   }

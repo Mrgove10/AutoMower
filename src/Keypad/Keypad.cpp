@@ -32,6 +32,7 @@ void KeypadRead(void)
 {
   static unsigned long LastKeypadRead = 0;
   uint8_t IOregister;
+  const uint8_t KeyMasks[KEYPAD_MAX_KEYS] = {0X2, 0X1, 0X8, 0x4};
 
   if ((millis() - LastKeypadRead > KEYPAD_READ_INTERVAL))
   {
@@ -39,7 +40,7 @@ void KeypadRead(void)
 
     for (uint8_t key = 0; key < KEYPAD_MAX_KEYS; key++)
     {
-      KeyPressed[key] = ((IOregister & KeyMasks[key]) ^ KeyMasks[key]) == KeyMasks[key]; // logical AND to isolate bit of interest
+      g_KeyPressed[key] = ((IOregister & KeyMasks[key]) ^ KeyMasks[key]) == KeyMasks[key]; // logical AND to isolate bit of interest
     }
 
     LastKeypadRead = millis();

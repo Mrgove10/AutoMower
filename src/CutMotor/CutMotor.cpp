@@ -38,23 +38,23 @@ void CutMotorStart(const int Direction, const int Speed)
 {
   // check to see if motor is not already running in a different direction. If it is the case, stop the motor.
 
-  if (CutMotorOn && CutMotorDirection != Direction)
+  if (g_CutMotorOn && g_CutMotorDirection != Direction)
   {
     CutMotorStop(true);
   }
 
   if (Direction == CUT_MOTOR_FORWARD)
   {
-    CutMotorOn = true;
-    CutMotorDirection = CUT_MOTOR_FORWARD;
+    g_CutMotorOn = true;
+    g_CutMotorDirection = CUT_MOTOR_FORWARD;
     CutMotorSetSpeed(Speed);
     DebugPrintln("Cut Motor start Forward", DBG_VERBOSE, true);
   }
 
   if (Direction == CUT_MOTOR_REVERSE)
   {
-    CutMotorOn = true;
-    CutMotorDirection = CUT_MOTOR_REVERSE;
+    g_CutMotorOn = true;
+    g_CutMotorDirection = CUT_MOTOR_REVERSE;
     CutMotorSetSpeed(Speed);
     DebugPrintln("Cut Motor start Reverse", DBG_VERBOSE, true);
   }
@@ -69,7 +69,7 @@ void CutMotorStart(const int Direction, const int Speed)
  */
 void CutMotorStop(const bool Immedate)
 {
-  int CutSpeed = CutMotorSpeed;
+  int CutSpeed = g_CutMotorSpeed;
 
   CutMotorSetSpeed(0);
 
@@ -77,13 +77,13 @@ void CutMotorStop(const bool Immedate)
   {
     // A fast stop is acheived by injecting a brief opposite direction rotation order
 
-    if (CutMotorDirection == CUT_MOTOR_FORWARD)
+    if (g_CutMotorDirection == CUT_MOTOR_FORWARD)
     {
       ledcWrite(CUT_MOTOR_PWM_CHANNEL_REVERSE, min(CUT_MOTOR_FAST_STOP_INVERSE_SPEED, CutSpeed));
       delay(CUT_MOTOR_FAST_STOP_INVERSE_DURATION);
       ledcWrite(CUT_MOTOR_PWM_CHANNEL_REVERSE, 0);
     }
-    if (CutMotorDirection == CUT_MOTOR_REVERSE)
+    if (g_CutMotorDirection == CUT_MOTOR_REVERSE)
     {
       ledcWrite(CUT_MOTOR_PWM_CHANNEL_FORWARD, min(CUT_MOTOR_FAST_STOP_INVERSE_SPEED, CutSpeed));
       delay(CUT_MOTOR_FAST_STOP_INVERSE_DURATION);
@@ -94,8 +94,8 @@ void CutMotorStop(const bool Immedate)
   IOExtend.digitalWrite(PIN_MCP_MOTOR_CUT_LN1, LOW);
   IOExtend.digitalWrite(PIN_MCP_MOTOR_CUT_LN2, LOW);
 
-  CutMotorOn = false;
-  CutMotorDirection = CUT_MOTOR_STOPPED;
+  g_CutMotorOn = false;
+  g_CutMotorDirection = CUT_MOTOR_STOPPED;
   DebugPrintln("Cut Motor Stopped", DBG_VERBOSE, true);
 }
 
@@ -111,29 +111,29 @@ void CutMotorSetSpeed(const int Speed)
     {
       DebugPrintln("Cut Motor speed " + String(Speed) + " too low : not applied", DBG_VERBOSE, true);
 
-      if (CutMotorDirection == CUT_MOTOR_FORWARD)
+      if (g_CutMotorDirection == CUT_MOTOR_FORWARD)
       {
         ledcWrite(CUT_MOTOR_PWM_CHANNEL_FORWARD, 0);
       }
-      if (CutMotorDirection == CUT_MOTOR_REVERSE)
+      if (g_CutMotorDirection == CUT_MOTOR_REVERSE)
       {
         ledcWrite(CUT_MOTOR_PWM_CHANNEL_REVERSE, 0);
       }
-      CutMotorSpeed = 0;
+      g_CutMotorSpeed = 0;
     }
     else
     {
       DebugPrintln("Cut Motor @ " + String(Speed), DBG_VERBOSE, true);
 
-      if (CutMotorDirection == CUT_MOTOR_FORWARD)
+      if (g_CutMotorDirection == CUT_MOTOR_FORWARD)
       {
         ledcWrite(CUT_MOTOR_PWM_CHANNEL_FORWARD, Speed);
       }
-      if (CutMotorDirection == CUT_MOTOR_REVERSE)
+      if (g_CutMotorDirection == CUT_MOTOR_REVERSE)
       {
         ledcWrite(CUT_MOTOR_PWM_CHANNEL_REVERSE, Speed);
       }
-      CutMotorSpeed = Speed;
+      g_CutMotorSpeed = Speed;
     }
   }
 };
@@ -231,8 +231,8 @@ void CutMotorCheck(const bool Now)
   
   if ((millis() - LastCutMotorCheck > CUT_MOTOR_CHECK_INTERVAL)  || Now)
   {
-    CutMotorAlarm = (IOExtend.digitalRead(PIN_MCP_MOTOR_CUT_HIGH_AMP) == 1);
-    DebugPrintln("Cut Motor Status: " + String(CutMotorAlarm), DBG_VERBOSE, true);
+    g_CutMotorAlarm = (IOExtend.digitalRead(PIN_MCP_MOTOR_CUT_HIGH_AMP) == 1);
+    DebugPrintln("Cut Motor Status: " + String(g_CutMotorAlarm), DBG_VERBOSE, true);
     LastCutMotorCheck = millis();
   }
 }

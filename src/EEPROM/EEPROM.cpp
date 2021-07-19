@@ -26,16 +26,16 @@ void EEPROMSetup(void)
     {
       //      Serial.print(i); Serial.print(" "); Serial.println(EEPROM.readByte(EEPROMBaseAdd+i));
 
-      EEPROMLoad.LoadBuffer[i] = EEPROM.read(EEPROM_BASE_ADDRESS + i);
+      g_EEPROMLoad.LoadBuffer[i] = EEPROM.read(EEPROM_BASE_ADDRESS + i);
 
       if (false)
       {
         DebugPrint("[" + String(i) + "]x", DBG_VERBOSE, true);
-        if (EEPROMLoad.LoadBuffer[i] <= 0X0F)
+        if (g_EEPROMLoad.LoadBuffer[i] <= 0X0F)
         {
           DebugPrint("0");
         }
-        DebugPrint(String(EEPROMLoad.LoadBuffer[i], HEX));
+        DebugPrint(String(g_EEPROMLoad.LoadBuffer[i], HEX));
         DebugPrint(" ");
         count = count + 1;
         if (count > 15)
@@ -52,35 +52,35 @@ void EEPROMSetup(void)
 
   for (int i = 0; i < EEPROM_SIZE - 1; i++)
   {
-    calculatedChecksum = calculatedChecksum + EEPROMLoad.LoadBuffer[i];
+    calculatedChecksum = calculatedChecksum + g_EEPROMLoad.LoadBuffer[i];
   }
   calculatedChecksum = (calculatedChecksum & 0x3F) + 0x20;
 
-  if (calculatedChecksum != EEPROMLoad.LoadBuffer[EEPROM_SIZE - 1])
+  if (calculatedChecksum != g_EEPROMLoad.LoadBuffer[EEPROM_SIZE - 1])
   {
-    DebugPrintln("EEPROM Checksum = 0x" + String(EEPROMLoad.LoadBuffer[EEPROM_SIZE - 1], HEX) + " invalid (should be 0x" + String(calculatedChecksum, HEX) + "): initialising EEPROM !", DBG_ERROR);
+    DebugPrintln("EEPROM Checksum = 0x" + String(g_EEPROMLoad.LoadBuffer[EEPROM_SIZE - 1], HEX) + " invalid (should be 0x" + String(calculatedChecksum, HEX) + "): initialising EEPROM !", DBG_ERROR);
     EEPROMInitialise();
     EEPROMWrite();
   }
   else
   {
-    DebugPrintln("EEPROM Checksum ok (0x" + String(EEPROMLoad.LoadBuffer[EEPROM_SIZE - 1], HEX) + ")", DBG_INFO);
+    DebugPrintln("EEPROM Checksum ok (0x" + String(g_EEPROMLoad.LoadBuffer[EEPROM_SIZE - 1], HEX) + ")", DBG_INFO);
 
     char buf[128];
     sprintf(buf, "Last EEPROM update Time: %02d/%02d/%04d %02d:%02d:%02d ",
-            EEPROMLoad.Load.Data.LastEepromSaveTime.day,
-            EEPROMLoad.Load.Data.LastEepromSaveTime.month,
-            EEPROMLoad.Load.Data.LastEepromSaveTime.year,
-            EEPROMLoad.Load.Data.LastEepromSaveTime.hour,
-            EEPROMLoad.Load.Data.LastEepromSaveTime.minute,
-            EEPROMLoad.Load.Data.LastEepromSaveTime.second);
+            g_EEPROMLoad.Load.Data.LastEepromSaveTime.day,
+            g_EEPROMLoad.Load.Data.LastEepromSaveTime.month,
+            g_EEPROMLoad.Load.Data.LastEepromSaveTime.year,
+            g_EEPROMLoad.Load.Data.LastEepromSaveTime.hour,
+            g_EEPROMLoad.Load.Data.LastEepromSaveTime.minute,
+            g_EEPROMLoad.Load.Data.LastEepromSaveTime.second);
     DebugPrintln(String(buf), DBG_INFO);
 
-    EEPROMValid = true;
-    TestVal1 = EEPROMLoad.Load.Data.val1;
-    TestVal2 = EEPROMLoad.Load.Data.val2;
-    TestVal3 = EEPROMLoad.Load.Data.val3;
-    TestVal4 = EEPROMLoad.Load.Data.val4;
+    g_EEPROMValid = true;
+    TestVal1 = g_EEPROMLoad.Load.Data.val1;
+    TestVal2 = g_EEPROMLoad.Load.Data.val2;
+    TestVal3 = g_EEPROMLoad.Load.Data.val3;
+    TestVal4 = g_EEPROMLoad.Load.Data.val4;
   }
 }
 
@@ -95,22 +95,22 @@ void EEPROMWrite(void)
 
   for (int i = 0; i < EEPROM_SIZE - 1; i++)
   {
-    calculatedChecksum = calculatedChecksum + EEPROMLoad.LoadBuffer[i];
+    calculatedChecksum = calculatedChecksum + g_EEPROMLoad.LoadBuffer[i];
   }
   calculatedChecksum = (calculatedChecksum & 0x3F) + 0x20;
 
-  EEPROMLoad.LoadBuffer[EEPROM_SIZE - 1] = calculatedChecksum;
+  g_EEPROMLoad.LoadBuffer[EEPROM_SIZE - 1] = calculatedChecksum;
 
   for (int i = 0; i < EEPROM_SIZE; i++)
   {
     if (false)
     {
       DebugPrint("[" + String(i) + "]x");
-      if (EEPROMLoad.LoadBuffer[i] <= 0X0F)
+      if (g_EEPROMLoad.LoadBuffer[i] <= 0X0F)
       {
         DebugPrint("0");
       }
-      DebugPrint(String(EEPROMLoad.LoadBuffer[i], HEX));
+      DebugPrint(String(g_EEPROMLoad.LoadBuffer[i], HEX));
       DebugPrint(" ");
       count = count + 1;
       if (count > 15)
@@ -120,15 +120,15 @@ void EEPROMWrite(void)
       }
     }
 
-    EEPROM.write(EEPROM_BASE_ADDRESS + i, EEPROMLoad.LoadBuffer[i]);
-    //    Serial.print(i); Serial.print(" "); Serial.print(EEPROMLoad.LoadBuffer[i]); Serial.print(" "); Serial.println(EEPROM.readByte(EEPROMBaseAdd+i));
+    EEPROM.write(EEPROM_BASE_ADDRESS + i, g_EEPROMLoad.LoadBuffer[i]);
+    //    Serial.print(i); Serial.print(" "); Serial.print(g_EEPROMLoad.LoadBuffer[i]); Serial.print(" "); Serial.println(EEPROM.readByte(EEPROMBaseAdd+i));
   }
 
   EEPROM.commit();
 
-  LastEepromWriteTime = millis();
+  g_LastEepromWriteTime = millis();
 
-  DebugPrintln("EEPROM updated, CheckSum=0x" + String(EEPROMLoad.LoadBuffer[EEPROM_SIZE - 1], HEX), DBG_INFO, true);
+  DebugPrintln("EEPROM updated, CheckSum=0x" + String(g_EEPROMLoad.LoadBuffer[EEPROM_SIZE - 1], HEX), DBG_INFO, true);
 }
 
 /**
@@ -137,19 +137,19 @@ void EEPROMWrite(void)
  */
 void EEPROMSave(boolean immediatly)
 {
-  if (immediatly || millis() - LastEepromWriteTime > EEPROM_WRITE_FREQUENCY)
+  if (immediatly || millis() - g_LastEepromWriteTime > EEPROM_WRITE_FREQUENCY)
   {
-    EEPROMLoad.Load.Data.val1 = TestVal1; // just for tests
-    EEPROMLoad.Load.Data.val2 = TestVal2; // just for tests
-    EEPROMLoad.Load.Data.val3 = TestVal3; // just for tests
-    EEPROMLoad.Load.Data.val4 = TestVal4; // just for tests
+    g_EEPROMLoad.Load.Data.val1 = TestVal1; // just for tests
+    g_EEPROMLoad.Load.Data.val2 = TestVal2; // just for tests
+    g_EEPROMLoad.Load.Data.val3 = TestVal3; // just for tests
+    g_EEPROMLoad.Load.Data.val4 = TestVal4; // just for tests
 
-    EEPROMLoad.Load.Data.LastEepromSaveTime.year = myTime.year();
-    EEPROMLoad.Load.Data.LastEepromSaveTime.month = myTime.month();
-    EEPROMLoad.Load.Data.LastEepromSaveTime.day = myTime.day();
-    EEPROMLoad.Load.Data.LastEepromSaveTime.hour = myTime.hour();
-    EEPROMLoad.Load.Data.LastEepromSaveTime.minute = myTime.minute();
-    EEPROMLoad.Load.Data.LastEepromSaveTime.second = myTime.second();
+    g_EEPROMLoad.Load.Data.LastEepromSaveTime.year = myTime.year();
+    g_EEPROMLoad.Load.Data.LastEepromSaveTime.month = myTime.month();
+    g_EEPROMLoad.Load.Data.LastEepromSaveTime.day = myTime.day();
+    g_EEPROMLoad.Load.Data.LastEepromSaveTime.hour = myTime.hour();
+    g_EEPROMLoad.Load.Data.LastEepromSaveTime.minute = myTime.minute();
+    g_EEPROMLoad.Load.Data.LastEepromSaveTime.second = myTime.second();
 
     EEPROMWrite();
   }
@@ -161,18 +161,18 @@ void EEPROMSave(boolean immediatly)
  */
 void EEPROMInitialise(void)
 {
-  EEPROMLoad.Load.Data.val1 = 1;
-  EEPROMLoad.Load.Data.val2 = 2;
-  EEPROMLoad.Load.Data.val3 = 3;
-  EEPROMLoad.Load.Data.val4 = 32000;
+  g_EEPROMLoad.Load.Data.val1 = 1;
+  g_EEPROMLoad.Load.Data.val2 = 2;
+  g_EEPROMLoad.Load.Data.val3 = 3;
+  g_EEPROMLoad.Load.Data.val4 = 32000;
   for (int i = 0; i < EEPROM_SPARE_SIZE - 1; i++)
   {
-    EEPROMLoad.Load.Sparebuffer[i] = 0xFF;
+    g_EEPROMLoad.Load.Sparebuffer[i] = 0xFF;
   }
-  EEPROMLoad.Load.Data.LastEepromSaveTime.year = myTime.year();
-  EEPROMLoad.Load.Data.LastEepromSaveTime.month = myTime.month();
-  EEPROMLoad.Load.Data.LastEepromSaveTime.day = myTime.day();
-  EEPROMLoad.Load.Data.LastEepromSaveTime.hour = myTime.hour();
-  EEPROMLoad.Load.Data.LastEepromSaveTime.minute = myTime.minute();
-  EEPROMLoad.Load.Data.LastEepromSaveTime.second = myTime.second();
+  g_EEPROMLoad.Load.Data.LastEepromSaveTime.year = myTime.year();
+  g_EEPROMLoad.Load.Data.LastEepromSaveTime.month = myTime.month();
+  g_EEPROMLoad.Load.Data.LastEepromSaveTime.day = myTime.day();
+  g_EEPROMLoad.Load.Data.LastEepromSaveTime.hour = myTime.hour();
+  g_EEPROMLoad.Load.Data.LastEepromSaveTime.minute = myTime.minute();
+  g_EEPROMLoad.Load.Data.LastEepromSaveTime.second = myTime.second();
 }

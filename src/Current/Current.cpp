@@ -25,7 +25,7 @@ void MotorCurrentSensorSetup()
     }
 
     MotorCurrentSensor[sensor].setCalibration_32V_1A();
-    //  MotorCurrent[sensor].setCalibration_16V_400mA();
+    //  g_MotorCurrent[sensor].setCalibration_16V_400mA();
     delay(100);
     MotorCurrentRead(sensor);
   }
@@ -78,17 +78,17 @@ bool MotorCurrentRead(const int sensor, const bool Now)
 
   if ((millis() - LastMotorCurrentRead[sensor] > MOTOR_CURRENT_READ_INTERVAL) || Now)
   {
-    float shuntvoltage = 0;
-    float busvoltage = 0;
+//    float shuntvoltage = 0;
+//    float busvoltage = 0;
     float current_mA = 0;
-    float loadvoltage = 0;
-    float power_mW = 0;
+//    float loadvoltage = 0;
+//    float power_mW = 0;
 
-    shuntvoltage = MotorCurrentSensor[sensor].getShuntVoltage_mV();
-    busvoltage = MotorCurrentSensor[sensor].getBusVoltage_V();
+//    shuntvoltage = MotorCurrentSensor[sensor].getShuntVoltage_mV();
+//    busvoltage = MotorCurrentSensor[sensor].getBusVoltage_V();
     current_mA = MotorCurrentSensor[sensor].getCurrent_mA();
-    power_mW = MotorCurrentSensor[sensor].getPower_mW();
-    loadvoltage = busvoltage + (shuntvoltage / 1000);
+//    power_mW = MotorCurrentSensor[sensor].getPower_mW();
+//    loadvoltage = busvoltage + (shuntvoltage / 1000);
 
     /*
     DebugPrintln("Sensor" + String(sensor) + " Bus Voltage: " + String(busvoltage) + " V" + 
@@ -97,7 +97,7 @@ bool MotorCurrentRead(const int sensor, const bool Now)
               " Current: " + String(current_mA) + " mA" + 
               " Power: " + String(power_mW) + " mW" , DBG_VERBOSE, true);
   */
-    MotorCurrent[sensor] = current_mA;
+    g_MotorCurrent[sensor] = current_mA;
     LastMotorCurrentRead[sensor] = millis();
   }
   return true;
@@ -117,9 +117,9 @@ bool BatteryCurrentSensorCheck(void)
 
   if (readStatus)
   {
-    DebugPrintln("Charge Sensor , Value: " + String(BatteryChargeCurrent, 3), DBG_INFO, true);
+    DebugPrintln("Charge Sensor , Value: " + String(g_BatteryChargeCurrent, 3), DBG_INFO, true);
     DisplayPrint(2, 2, F("Charge OK: "));
-    DisplayPrint(7, 3, String(BatteryChargeCurrent, 0) + F(" mA"));
+    DisplayPrint(7, 3, String(g_BatteryChargeCurrent, 0) + F(" mA"));
     delay(TEST_SEQ_STEP_WAIT);
     return true;
   }
@@ -163,15 +163,15 @@ bool BatteryChargeCurrentRead(const bool Now)
         current = 0;
       }
 
-      BatteryChargeCurrent = current * 1000; //  to convert to mA
+      g_BatteryChargeCurrent = current * 1000; //  to convert to mA
       LastBatteryChargeCurrentRead = millis();
 
-      //    DebugPrintln("Charge current value: " + String(BatteryChargeCurrent,3), DBG_VERBOSE, true);
+      //    DebugPrintln("Charge current value: " + String(g_BatteryChargeCurrent,3), DBG_VERBOSE, true);
       return true;
     }
     else
     {
-      BatteryChargeCurrent = UNKNOWN_FLOAT;
+      g_BatteryChargeCurrent = UNKNOWN_FLOAT;
       return false;
     }
   }

@@ -103,30 +103,30 @@ String DebugLevelChar(const int level)
 void DebugPrint(String message, int level, boolean time)
 {
   String timeStr = "";
-  String debugLevelStr = "";
+  String g_debugLevelStr = "";
 
   if (time)
   {
     timeStr = myTime.dateTime("H:i:s");
   }
 
-  debugLevelStr = String(DebugLevelChar(level));
+  g_debugLevelStr = String(DebugLevelChar(level));
 
   /*
   Serial.print ("Level:"+String(Level));
-  Serial.print (" | debugLevel:"+String(debugLevel));
-  Serial.print (" | debugLevelStr:<"+debugLevelStr+">");
+  Serial.print (" | g_debugLevel:"+String(g_debugLevel));
+  Serial.print (" | g_debugLevelStr:<"+g_debugLevelStr+">");
   Serial.println (" | timeStr:<"+timeStr+">");
 */
-  if (level <= debugLevel)
+  if (level <= g_debugLevel)
   {
-    if (debugLevelStr == " " && timeStr == "")
+    if (g_debugLevelStr == " " && timeStr == "")
     {
       MySERIAL.print(message);
     }
     else
     {
-      MySERIAL.print(timeStr + "-" + debugLevelStr + "-" + message);
+      MySERIAL.print(timeStr + "-" + g_debugLevelStr + "-" + message);
     }
     SerialAndTelnet.handle();
   }

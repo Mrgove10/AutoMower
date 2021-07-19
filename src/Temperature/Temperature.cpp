@@ -167,7 +167,7 @@ float TemperatureRead(int sensor, const bool Now)
       if (!TemperatureSensors.isConnected(temp_1_RedSensor))
       {
         TemperatureSensors.begin();
-        TempErrorCount[sensor] = TempErrorCount[sensor] + 1;
+        g_TempErrorCount[sensor] = g_TempErrorCount[sensor] + 1;
       }
       TemperatureSensors.requestTemperaturesByAddress(temp_1_RedSensor);
       tempC = TemperatureSensors.getTempC(temp_1_RedSensor);
@@ -177,7 +177,7 @@ float TemperatureRead(int sensor, const bool Now)
       if (!TemperatureSensors.isConnected(temp_2_BlueSensor))
       {
         TemperatureSensors.begin();
-        TempErrorCount[sensor] = TempErrorCount[sensor] + 1;
+        g_TempErrorCount[sensor] = g_TempErrorCount[sensor] + 1;
       }
       TemperatureSensors.requestTemperaturesByAddress(temp_2_BlueSensor);
       tempC = TemperatureSensors.getTempC(temp_2_BlueSensor);
@@ -189,15 +189,15 @@ float TemperatureRead(int sensor, const bool Now)
 
     if (tempC > -127.0f && tempC < 85.0f)
     {
-      Temperature[sensor] = tempC;
+      g_Temperature[sensor] = tempC;
       return tempC;
     }
     else
     {
-      TempErrorCount[sensor] = TempErrorCount[sensor] + 1;
-      Temperature[sensor] = UNKNOWN_FLOAT;
+      g_TempErrorCount[sensor] = g_TempErrorCount[sensor] + 1;
+      g_Temperature[sensor] = UNKNOWN_FLOAT;
       return UNKNOWN_FLOAT;
     }
   }
-  return Temperature[sensor];
+  return g_Temperature[sensor];
 }

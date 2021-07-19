@@ -54,8 +54,8 @@ void FanTest(const int Fan)
  */
 void FanStart(const int Fan)
 {
-  IOExtend.digitalWrite(FanPin[Fan], HIGH);
-  FanOn[Fan] = true;
+  IOExtend.digitalWrite(g_FanPin[Fan], HIGH);
+  g_FanOn[Fan] = true;
 }
 
 /**
@@ -64,9 +64,9 @@ void FanStart(const int Fan)
  */
 void FanStop(const int Fan)
 {
-  IOExtend.digitalWrite(FanPin[Fan], LOW);
+  IOExtend.digitalWrite(g_FanPin[Fan], LOW);
 
-  FanOn[Fan] = false;
+  g_FanOn[Fan] = false;
 }
 
 /**
@@ -81,16 +81,16 @@ void FanCheck(const int Fan, const bool Now)
   if ((millis() - LastFanCheck[Fan] > FAN_UPDATE_INTERVAL) || Now)
   {
     float temperature = TemperatureRead(Fan, true);
-    if (!FanOn[Fan] && (temperature != UNKNOWN_FLOAT) && (temperature > FAN_START_THRESHOLD))
+    if (!g_FanOn[Fan] && (temperature != UNKNOWN_FLOAT) && (temperature > FAN_START_THRESHOLD))
     {
       DebugPrintln("Fan " + String(Fan + 1) + " Started", DBG_INFO, true);
-      FanOn[Fan] = true;
+      g_FanOn[Fan] = true;
       FanStart(Fan);
     }
-    if (FanOn[Fan] && (temperature != UNKNOWN_FLOAT) && (temperature < FAN_STOP_THRESHOLD))
+    if (g_FanOn[Fan] && (temperature != UNKNOWN_FLOAT) && (temperature < FAN_STOP_THRESHOLD))
     {
       DebugPrintln("Fan " + String(Fan + 1) + " Stopped", DBG_INFO, true);
-      FanOn[Fan] = false;
+      g_FanOn[Fan] = false;
       FanStop(Fan);
     }
     LastFanCheck[Fan] = millis();

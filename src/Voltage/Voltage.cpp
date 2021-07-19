@@ -22,7 +22,7 @@ bool BatteryVoltageCheck(void)
   DisplayClear();
   DisplayPrint(0, 0, F("Battery Test"));
   DisplayPrint(2, 2, "Battery " + StatusStr[status]);
-  DisplayPrint(7, 3, String(float(BatteryVotlage / 1000.0f), 1) + " V");
+  DisplayPrint(7, 3, String(float(g_BatteryVotlage / 1000.0f), 1) + " V");
 
   if (status > BATTERY_VOLTAGE_LOW_THRESHOLD)
   {
@@ -31,7 +31,7 @@ bool BatteryVoltageCheck(void)
   }
   else
   {
-    LogPrintln("Battery Level low:" + String(float(BatteryVotlage / 1000.0f), 1) + " V", TAG_CHECK, DBG_ERROR);
+    LogPrintln("Battery Level low:" + String(float(g_BatteryVotlage / 1000.0f), 1) + " V", TAG_CHECK, DBG_ERROR);
     delay(TEST_SEQ_STEP_WAIT + TEST_SEQ_STEP_ERROR_WAIT);
     return false;
   }
@@ -51,29 +51,29 @@ int BatteryVoltageRead(const bool Now)
     int voltraw = analogRead(PIN_ESP_BAT_VOLT);
     int volt = map(voltraw, 0, 4095, 0, VOLTAGE_RANGE_MAX);
 
-    BatteryVotlage = volt;
+    g_BatteryVotlage = volt;
     LastVoltageRead = millis();
 
     if (volt < BATTERY_VOLTAGE_LOW_THRESHOLD)
     {
-      BatteryStatus = BATTERY_VOLTAGE_CRITICAL;
+      g_BatteryStatus = BATTERY_VOLTAGE_CRITICAL;
       return BATTERY_VOLTAGE_CRITICAL;
     }
     else if (volt < BATTERY_VOLTAGE_MEDIUM_THRESHOLD)
     {
-      BatteryStatus = BATTERY_VOLTAGE_LOW;
+      g_BatteryStatus = BATTERY_VOLTAGE_LOW;
       return BATTERY_VOLTAGE_LOW;
     }
     else if (volt < VOLTAGE_NORMAL_THRESHOLD)
     {
-      BatteryStatus = BATTERY_VOLTAGE_MEDIUM;
+      g_BatteryStatus = BATTERY_VOLTAGE_MEDIUM;
       return BATTERY_VOLTAGE_MEDIUM;
     }
     else
     {
-      BatteryStatus = BATTERY_VOLTAGE_OK;
+      g_BatteryStatus = BATTERY_VOLTAGE_OK;
       return BATTERY_VOLTAGE_OK;
     }
   }
-  return BatteryStatus;
+  return g_BatteryStatus;
 }

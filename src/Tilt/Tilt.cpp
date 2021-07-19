@@ -19,7 +19,7 @@ ICACHE_RAM_ATTR void horizontalTiltISR(void)
 
   if (millis() - LastHorizontalTiltChange > TILT_DEBOUNCE_TIMEOUT)
   {
-    HorizontalTiltTriggered = (LastHorizontalTitltStatus == LOW);
+    g_HorizontalTiltTriggered = (LastHorizontalTitltStatus == LOW);
     LastHorizontalTiltChange = millis();
   }
 }
@@ -37,7 +37,7 @@ ICACHE_RAM_ATTR void verticalTiltISR(void)
 
   if (millis() - LastVerticalTiltChange > TILT_DEBOUNCE_TIMEOUT)
   {
-    VerticalTiltTriggered = (LastVerticalTiltStatus == LOW);
+    g_VerticalTiltTriggered = (LastVerticalTiltStatus == LOW);
     LastVerticalTiltChange = millis();
   }
 }

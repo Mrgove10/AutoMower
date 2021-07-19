@@ -72,8 +72,8 @@ int SonarRead(const int sensor, const bool Now)
     //    DebugPrintln("TemperatureRead value " + String(tempC,2), DBG_VERBOSE, true);
 
     LastSonarRead[sensor] = millis();
-    SonarDistance[sensor] = Distance;
+    g_SonarDistance[sensor] = Distance;
     return Distance;
   }
-  return SonarDistance[sensor];
+  return g_SonarDistance[sensor];
 }

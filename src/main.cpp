@@ -71,7 +71,7 @@ void getMeUnstuck()
 void MOWING()
 {
   // cutblade 100%
-  if (RightBumperTriggered || LeftBumperTriggered)
+  if (g_RightBumperTriggered || g_LeftBumperTriggered)
   {
     uTurn();
   }

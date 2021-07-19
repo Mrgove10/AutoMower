@@ -5,12 +5,10 @@
 #include <PubSubClient.h>
 
 extern PubSubClient MQTTclient;
-extern int MQTTErrorCount;
+extern int g_MQTTErrorCount;
 
 #define MQTT_TELEMETRY_SEND_INTERVAL 30000 // in ms
 #define MQTT_MAX_PAYLOAD 512
-
-extern char MQTTpayload[MQTT_MAX_PAYLOAD];
 
 /************************* JSON *********************************/
 #include <FirebaseJson.h>
@@ -25,7 +23,7 @@ extern String JSONDataPayloadStr;
 extern WiFiServer tcpServer;
 extern TelnetSpy SerialAndTelnet;
 
-extern int debugLevel;
+extern int g_debugLevel;
 
 /************************* OTA *********************************/
 #include <ArduinoOTA.h>
@@ -33,19 +31,19 @@ extern int debugLevel;
 #define OTA_PORT 3232
 #define OTA_TIMEOUT 180000
 
-extern bool otaFlag;
-extern unsigned long OTAelapsed;
+extern bool g_otaFlag;
+extern unsigned long g_OTAelapsed;
 
 /************************* EEPROM Management *********************************/
 
 #include "EEPROM.h"
 #include "EEPROM/EEPROM_Struct.h"
 
-extern EEPROMLoadStruct EEPROMLoad;
-extern bool EEPROMValid;
-extern bool EEPROMUpdate;
+extern EEPROMLoadStruct g_EEPROMLoad;
+extern bool g_EEPROMValid;
+extern bool g_EEPROMUpdate;
 
-extern unsigned long LastEepromWriteTime;
+extern unsigned long g_LastEepromWriteTime;
 
 /************************* Eztime *********************************/
 // do not place before EEprom definition section or causes conflict !!
@@ -79,9 +77,8 @@ extern SSD1306Wire oled;
 #define KEYPAD_MAX_KEYS 4
 #define KEYPAD_GPIO 1 // GPIO B
 
-extern const uint8_t KeyMasks[KEYPAD_MAX_KEYS];
-extern const int KeyPins[KEYPAD_MAX_KEYS];
-extern bool KeyPressed[KEYPAD_MAX_KEYS];
+//extern const int g_KeyPins[KEYPAD_MAX_KEYS];
+extern bool g_KeyPressed[KEYPAD_MAX_KEYS];
 
 /************************* MCP23017 I2C IO Extender variables *********************************/
 #include <Adafruit_MCP23017.h>
@@ -100,10 +97,10 @@ extern Adafruit_HMC5883_Unified Compass;
 #define COMPASS_Y_HEADING_CORRECTION -6.5f
 #define COMPASS_READ_INTERVAL 4000
 
-extern float CompassHeading;          // in Degrees
-extern float CompassHeadingCorrected; // in Degrees
-extern float CompassXField;
-extern float CompassYField;
+extern float g_CompassHeading;          // in Degrees
+extern float g_CompassHeadingCorrected; // in Degrees
+extern float g_CompassXField;
+extern float g_CompassYField;
 
 /************************* UART NEO-N8M GPS variables *********************************/
 #include <TinyGPS++.h>
@@ -116,13 +113,13 @@ extern float CompassYField;
 extern TinyGPSPlus GPS; // The TinyGPS++ object
 extern HardwareSerial Serial2;
 
-extern float GPSHeading; // in Degrees
-extern int GPSSatellitesFix;
-extern double GPSHdop;
-extern double GPSSpeed;
-extern double GPSAltitude;
-extern double GPSLatitude;
-extern double GPSLongitude;
+extern float g_GPSHeading; // in Degrees
+extern int g_GPSSatellitesFix;
+extern double g_GPSHdop;
+extern double g_GPSSpeed;
+extern double g_GPSAltitude;
+extern double g_GPSLatitude;
+extern double g_GPSLongitude;
 
 /************************* DS18D20 temperature sensor variables *********************************/
 #include <DallasTemperature.h>
@@ -136,11 +133,11 @@ extern DeviceAddress temp_2_BlueSensor;
 #define TEMPERATURE_2_BLUE 1
 #define TEMPERATURE_READ_INTERVAL 5000 // in ms
 
-extern int TempErrorCount[TEMPERATURE_COUNT];
-extern float Temperature[TEMPERATURE_COUNT];
+extern int g_TempErrorCount[TEMPERATURE_COUNT];
+extern float g_Temperature[TEMPERATURE_COUNT];
 
 /************************* ACS712 Battery Charge current sensor variables *********************************/
-extern float BatteryChargeCurrent;
+extern float g_BatteryChargeCurrent;
 
 #define BATTERY_CHARGE_READ_INTERVAL 2000   // in ms
 #define CHARGE_CURRENT_CHECK_THRESHOLD 1000 // in raw AnalogRead points
@@ -160,7 +157,7 @@ extern Adafruit_INA219 MotorCurrentSensor[MOTOR_CURRENT_COUNT];
 #define MOTOR_CURRENT_LEFT 1
 #define MOTOR_CURRENT_CUT 2
 #define MOTOR_CURRENT_READ_INTERVAL 500 // in ms
-extern float MotorCurrent[MOTOR_CURRENT_COUNT];
+extern float g_MotorCurrent[MOTOR_CURRENT_COUNT];
 
 /************************* Voltage variables *********************************/
 
@@ -172,8 +169,8 @@ extern float MotorCurrent[MOTOR_CURRENT_COUNT];
 #define BATTERY_VOLTAGE_CRITICAL 3         // if below BATTERY_VOLTAGE_LOW_THRESHOLD
 #define BATTERY_VOLTAGE_READ_INTERVAL 5000 // in ms
 
-extern float BatteryVotlage;
-extern int BatteryStatus;
+extern float g_BatteryVotlage;
+extern int g_BatteryStatus;
 
 /************************* HC-SR04 Sonar sensor variables *********************************/
 #include <Wire.h>
@@ -188,17 +185,17 @@ extern int BatteryStatus;
 #define SONAR_RIGHT 2
 
 extern NewPing sonar[SONAR_COUNT];
-extern int SonarDistance[SONAR_COUNT]; // in cm
+extern int g_SonarDistance[SONAR_COUNT]; // in cm
 
 /************************* Bumper variables *********************************/
 
-extern bool LeftBumperTriggered;
-extern bool RightBumperTriggered;
+extern bool g_LeftBumperTriggered;
+extern bool g_RightBumperTriggered;
 
 /************************* Tilt variables *********************************/
 
-extern bool HorizontalTiltTriggered;
-extern bool VerticalTiltTriggered;
+extern bool g_HorizontalTiltTriggered;
+extern bool g_VerticalTiltTriggered;
 
 /************************* Fan variables *********************************/
 
@@ -210,8 +207,8 @@ extern bool VerticalTiltTriggered;
 #define FAN_STOP_THRESHOLD 26.0f  // in deg C
 #define FAN_TEST_DURATION 5000    // in ms
 
-extern const int FanPin[FAN_COUNT];
-extern bool FanOn[FAN_COUNT];
+extern const int g_FanPin[FAN_COUNT];
+extern bool g_FanOn[FAN_COUNT];
 
 /************************* Motion Motor variables *********************************/
 
@@ -232,13 +229,13 @@ extern bool FanOn[FAN_COUNT];
 #define MOTION_MOTOR_REVERSE -1
 #define MOTION_MOTOR_MIN_SPEED 4096 / 4
 
-extern const int MotionMotorIn1Pin[MOTION_MOTOR_COUNT];
-extern const int MotionMotorIn2Pin[MOTION_MOTOR_COUNT];
-extern const int MotionMotorPWMChannel[MOTION_MOTOR_COUNT];
-extern bool MotionMotorOn[MOTION_MOTOR_COUNT];
-extern int MotionMotorDirection[MOTION_MOTOR_COUNT];
-extern int MotionMotorSpeed[MOTION_MOTOR_COUNT];
-extern String MotionMotorStr[MOTION_MOTOR_COUNT];
+extern const int g_MotionMotorIn1Pin[MOTION_MOTOR_COUNT];
+extern const int g_MotionMotorIn2Pin[MOTION_MOTOR_COUNT];
+extern const int g_MotionMotorPWMChannel[MOTION_MOTOR_COUNT];
+extern bool g_MotionMotorOn[MOTION_MOTOR_COUNT];
+extern int g_MotionMotorDirection[MOTION_MOTOR_COUNT];
+extern int g_MotionMotorSpeed[MOTION_MOTOR_COUNT];
+extern String g_MotionMotorStr[MOTION_MOTOR_COUNT];
 
 /************************* CUT Motor variables *********************************/
 
@@ -257,10 +254,10 @@ extern String MotionMotorStr[MOTION_MOTOR_COUNT];
 
 #define CUT_MOTOR_CHECK_INTERVAL 2000   // in ms
 
-extern bool CutMotorOn;
-extern int CutMotorDirection;
-extern int CutMotorSpeed;
-extern bool CutMotorAlarm;
+extern bool g_CutMotorOn;
+extern int g_CutMotorDirection;
+extern int g_CutMotorSpeed;
+extern bool g_CutMotorAlarm;
 
 /************************* Test sequence variables *********************************/
 #define TEST_SEQ_STEP_WAIT 1000
