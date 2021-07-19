@@ -5,6 +5,7 @@
 #include "Utils/Utils.h"
 #include "MotionMotor/MotionMotor.h"
 #include "CutMotor/CutMotor.h"
+#include "Fan/Fan.h"
 #include "MQTT/MQTT.h"
 #include "Display/Display.h"
 
@@ -38,7 +39,7 @@ void OTASetup(void)
                      });
 
   ArduinoOTA.onEnd([]()
-                   { DebugPrintln("\nEnd", DBG_ALWAYS, true); });
+                   { DebugPrintln("OTA End", DBG_ALWAYS, true); });
 
   ArduinoOTA.onProgress([](unsigned int progress, unsigned int total)
                         {
@@ -93,7 +94,9 @@ void OTAHandle(void)
     MotionMotorStop(MOTION_MOTOR_RIGHT);
     MotionMotorStop(MOTION_MOTOR_LEFT);
     CutMotorStop(true);
-
+    FanStop(FAN_1_RED);
+    FanStop(FAN_2_BLUE);
+    
     setInterval(0); // no NTP update to avoid any interruption during upload
     
     DebugPrintln("Waiting for OTA upload ", DBG_INFO, true);

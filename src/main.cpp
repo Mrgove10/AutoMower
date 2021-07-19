@@ -1,6 +1,5 @@
 #include <Arduino.h>
 #include "myGlobals_definition.h"
-#include "states.h"
 #include "mySetup.h"
 #include "Utils/Utils.h"
 #include "MQTT/MQTT.h"
@@ -19,8 +18,7 @@
 #include <pin_definitions.h>
 #include "Display/Display.h"
 #include "TestLoop.h"
-
-MowerState CurrentState = MowerState::test;
+#include "DisplayMowerData.h"
 
 void setup()
 {
@@ -93,7 +91,7 @@ void LEAVEBASE()
   // go backward for 50 cm
   uTurn();
   //go forward
-  CurrentState = MowerState::mowing;
+  g_CurrentState = MowerState::mowing;
 }
 
 void MOWERERROR()
@@ -104,17 +102,14 @@ void MOWERERROR()
   // send telemetry
 }
 
-void stopAllWheel(){
-  MotionMotorStop(MOTION_MOTOR_RIGHT);
-  MotionMotorStop(MOTION_MOTOR_LEFT);
-}
-
 void loop()
 {
+  // Common routine mower tasks
 
-  EEPROMSave(false);
+  FanCheck(FAN_1_RED);        // Read temperature and activate or stop Cutting fan
+  FanCheck(FAN_2_BLUE);       // Read temperature and activate or stop Motion fan
 
-  switch (CurrentState)
+  switch (g_CurrentState)
   {
   case MowerState::idle:
     IDLE();
@@ -147,4 +142,24 @@ void loop()
   default:
     break;
   }
+
+// Display Mower Data
+
+  DisplayMowerData();
+
+// Routine system operating tasks
+
+  EEPROMSave(false);        // Update EEPROM
+
+  MQTTReconnect();          // Check MQTT Status ans reconnect
+
+  MQTTSendTelemetry();      // Send Mower Telemetry
+
+  MQTTclient.loop();        // Update MQTT
+
+  SerialAndTelnet.handle(); // Refresh Telnet Session
+
+  events();                 // eztime refresh
+
+  delay(50);
 }

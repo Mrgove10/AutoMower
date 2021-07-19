@@ -16,7 +16,7 @@ void MotionMotorStart(const int Motor, const int Direction, const int Speed);
 
 /**
  * Motion Motor speed setting function
- * @param Motor to set speed
+ * @param Motor to set speed (in %)
  * @param Speed to set
  */
 void MotionMotorSetSpeed(const int Motor, const int Speed);

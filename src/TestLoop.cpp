@@ -27,25 +27,6 @@ void TestLoop()
   static int CutSens = 1;
   static int CutDirection = MOTION_MOTOR_STOPPED;
 
-  /*  DebugPrintln("loop Always", DBG_ALWAYS, true);
-  DebugPrintln("loop Error", DBG_ERROR, true);
-  DebugPrintln("loop Warning", DBG_WARNING, true);
-  DebugPrintln("loop Info", DBG_INFO, true);
-  DebugPrintln("loop Debug", DBG_DEBUG, true);
-  DebugPrintln("loop Verbose", DBG_VERBOSE, true);
-
-  TestVal1 = TestVal1 + 1;
-  TestVal2 = TestVal2 + 2;
-  TestVal3 = TestVal3 + 3;
-  TestVal4 = TestVal4 + 4;
-  
-  DebugPrint("TestVal1=" + String(TestVal1), DBG_INFO, true);
-  DebugPrint(" Val2=" + String(TestVal2));
-  DebugPrint(" Val3=" + String(TestVal3));
-  DebugPrintln(" Val4=" + String(TestVal4));
-*/
-  EEPROMSave(false);
-
   if (g_RightBumperTriggered)
   {
     DebugPrintln("Right Bumper Triggered !", DBG_INFO, true);
@@ -89,23 +70,20 @@ void TestLoop()
 
   GPSRead(true);
 
-  FanCheck(FAN_1_RED);
-  FanCheck(FAN_2_BLUE);
-
   CutMotorCheck();
 
   static unsigned long LastRefresh = 0;
 
-  if ((millis() - LastRefresh > 500))
+  if ((millis() - LastRefresh > 2000))
   {
 
 // Motion motor loop
-    MotionSpeed = MotionSpeed + (12 * MotionSens);
-    if (MotionSpeed > 4096 + 1024)
+    MotionSpeed = MotionSpeed + (1 * MotionSens);
+    if (MotionSpeed > 120)
     {
       MotionSens = -1;
     }
-    if (MotionSpeed < -4096 - 1024)
+    if (MotionSpeed < -120)
     {
       MotionSens = 1;
     }
@@ -139,7 +117,7 @@ void TestLoop()
     }
   
 // Cut motor loop
-    CutSpeed = CutSpeed + (16 * CutSens);
+    CutSpeed = CutSpeed + (24 * CutSens);
     if (CutSpeed > 4096 + 1024)
     {
       CutSens = -1;
@@ -172,62 +150,7 @@ void TestLoop()
     {
       CutMotorSetSpeed(abs(CutSpeed));
     }
+  LastRefresh = millis();
   }
-
   SerialAndTelnet.handle();
-
-  if ((millis() - LastRefresh > 500))
-  {
-    DebugPrint("Temp 1: " + String(g_Temperature[TEMPERATURE_1_RED], 1) +         // " | Err1: " + String(Temp1ErrorCount) +
-                   " |Temp 2: " + String(g_Temperature[TEMPERATURE_2_BLUE], 1) + //" | Err2: " + String(Temp2ErrorCount) +
-                   " |Charge: " + String(g_BatteryChargeCurrent, 0) +
-                   " |MotorR: " + String(g_MotorCurrent[MOTOR_CURRENT_RIGHT], 2) +
-                   " |MotorL: " + String(g_MotorCurrent[MOTOR_CURRENT_LEFT], 2) +
-                   " |MotorC: " + String(g_MotorCurrent[MOTOR_CURRENT_CUT], 2) +
-                   " |MotorCAlm: " + String(g_CutMotorAlarm) +
-                   " |Volt: " + String(float(g_BatteryVotlage) / 1000.0f, 2) +
-                   " |Heading: " + String(g_CompassHeading, 1),
-               DBG_INFO, true);
-
-//    DisplayClear();
-    DisplayPrint(0, 0, "T1: " + String(g_Temperature[TEMPERATURE_1_RED], 1) + " T2: " + String(g_Temperature[TEMPERATURE_2_BLUE], 1), true);
-
-    for (uint8_t i = 0; i < SONAR_COUNT; i++)
-    {            // Loop through each sensor and display results.
-      DebugPrint(" | Sonar" + String(i + 1) + ": " + String(g_SonarDistance[i]));
-      DisplayPrint(0 + i * 6, 1, "S" + String(i + 1) + ":" + String(g_SonarDistance[i]) + " ", true);
-    }
-    DebugPrintln("");
-    LastRefresh = millis();
-  }
-  for (int i = 0; i < KEYPAD_MAX_KEYS; i++)
-  {
-    //    if (!key) {DebugPrintln("Keypad key" + String(i-7) + " pressed", DBG_INFO, true);}
-    DisplayPrint(0 + i * 5, 2, "K" + String(i + 1) + ":" + String(g_KeyPressed[i]) + " ", true);
-  }
-
-  /*
-  for (uint8_t i = 8; i < 12; i++){
-    int key = IOExtend.digitalRead(i);
-    if (!key) {DebugPrintln("Keypad key" + String(i-7) + " pressed", DBG_INFO, true);}
-    lcd.print("K" + String(i-7) + ":" + String(key) + " ");
-  }
-*/
-
-//  DisplayPrint(0, 3, "B:" + String(g_BatteryChargeCurrent, 0) + " ", true);
-  DisplayPrint(0, 3, "R:" + String(g_MotorCurrent[MOTOR_CURRENT_RIGHT], 0) + " ", true);
-  DisplayPrint(6, 3 , "L:" + String(g_MotorCurrent[MOTOR_CURRENT_LEFT], 0) + " ", true);
-  DisplayPrint(12, 3 , "C:" + String(g_MotorCurrent[MOTOR_CURRENT_CUT], 0) + " ", true);
-  
-  MQTTReconnect();
-
-  MQTTSendTelemetry();
-
-  MQTTclient.loop();
-
-  SerialAndTelnet.handle();
-
-  events(); // eztime refresh
-
-  delay(50);
 }

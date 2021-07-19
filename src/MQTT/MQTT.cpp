@@ -5,6 +5,8 @@
 #include "OTA/OTA.h"
 #include "Temperature/Temperature.h"
 #include "MotionMotor/MotionMotor.h"
+#include "CutMotor/CutMotor.h"
+#include "MowerMoves/MowerMoves.h"
 #include "StartupChecks.h"
 #include "Display/Display.h"
 
@@ -78,70 +80,132 @@ void MQTTCallback(char *topic, byte *message, unsigned int length)
 
     for (unsigned int i = 0; i < length; i++)
     {
-        DebugPrint(String((char)message[i]));
-        messageTemp += (char)message[i];
+      DebugPrint(String((char)message[i]));
+      messageTemp += (char)message[i];
     }
     DebugPrintln("");
 
     if (String(topic) == String(MQTT_COMMAND_CHANNEL))
     {
-        if (String(messageTemp) == "OTA" &&
-            String(messageTemp) != lastCommand)
-        {
-            LogPrintln("Request for OTA update", TAG_OTA, DBG_INFO);
-            lastCommand = String(messageTemp);
-            g_otaFlag = true;
-            OTAHandle();
-        }
-        else if (String(messageTemp) == "TEST" &&
-                 String(messageTemp) != lastCommand)
-        {
-            LogPrintln("Request for AutoMower Test", TAG_CHECK, DBG_INFO);
-            lastCommand = String(messageTemp);
-            StartupChecks();
-        }
+      FirebaseJson JSONDataPayload;
+      FirebaseJsonData JSONData;
+      String JSONDataPayloadStr;
 
-        else if (String(messageTemp) == "DBG_VERBOSE" &&
-                 String(messageTemp) != lastCommand)
-        {
-            g_debugLevel = DBG_VERBOSE;
-            DebugPrintln("Debug level to VERBOSE", DBG_INFO, true);
-            lastCommand = String(messageTemp);
-        }
+      JSONDataPayload.setJsonData(messageTemp);
+      JSONDataPayload.get(JSONData, "Command");
+      String Command = JSONData.stringValue;
 
-        else if (String(messageTemp) == "DBG_DEBUG" &&
-                 String(messageTemp) != lastCommand)
-        {
-            g_debugLevel = DBG_DEBUG;
-            DebugPrintln("Debug level to DEBUG", DBG_INFO, true);
-            lastCommand = String(messageTemp);
-        }
+      JSONDataPayload.get(JSONData, "Val1");
+      String Val1Str = JSONData.stringValue;
+      float Val1 = Val1Str.toFloat();
 
-        else if (String(messageTemp) == "DBG_INFO" &&
-                 String(messageTemp) != lastCommand)
-        {
-            g_debugLevel = DBG_INFO;
-            DebugPrintln("Debug level to INFO", DBG_INFO, true);
-            lastCommand = String(messageTemp);
-        }
+      JSONDataPayload.get(JSONData, "Val2");
+      String Val2Str = JSONData.stringValue;
+      float Val2 = Val2Str.toFloat();
 
-        else if (String(messageTemp) == "TEST_MOTOR" &&
-                 String(messageTemp) != lastCommand)
-        {
-            MotionMotorTest(MOTION_MOTOR_RIGHT); //TEMPORAIRE
-                                                 //            MotionMotorTest(MOTION_MOTOR_LEFT);            //TEMPORAIRE
-            lastCommand = String(messageTemp);
-        }
+      if (Command == "OTA")
+      {
+        LogPrintln("Request for OTA update", TAG_OTA, DBG_INFO);
+        g_otaFlag = true;
+        OTAHandle();
+      }
 
-        else if (String(messageTemp) == lastCommand)
-        {
-            DebugPrintln(" ...... Nothing (same command) !!!!", DBG_DEBUG, true);
-        }
+      else if (Command == "TEST")
+      {
+        LogPrintln("Request for AutoMower Test", TAG_CHECK, DBG_INFO);
+        StartupChecks();
+      }
 
-        else
+      else if (Command == "DEBUG")
+      {
+        if (Val1Str == "VERBOSE")
         {
-            DebugPrintln(" ...... MQTTcommand not recognised !!!!", DBG_WARNING, true);
+          g_debugLevel = DBG_VERBOSE;
+          DebugPrintln("Debug level to VERBOSE", DBG_INFO, true);
         }
+        else if (Val1Str == "DEBUG")
+        {
+          g_debugLevel = DBG_DEBUG;
+          DebugPrintln("Debug level to DEBUG", DBG_INFO, true);
+        }
+        else if (Val1Str == "INFO")
+        {
+          g_debugLevel = DBG_INFO;
+          DebugPrintln("Debug level to INFO", DBG_INFO, true);
+        }
+      }
+
+      else if (Command == "TEST_MOTOR")
+      {
+        MotionMotorTest(MOTION_MOTOR_RIGHT); //TEMPORAIRE
+        MotionMotorTest(MOTION_MOTOR_LEFT);  //TEMPORAIRE
+      }
+
+      else if (Command == "TEST_CUTMOTOR")
+      {
+        CutMotorTest();
+      }
+
+      else if (Command == "TEST_STOP")
+      {
+        MowerStop();
+      }
+
+      else if (Command == "TEST_FORWARD")
+      {
+        MowerForward(int(Val1));
+        delay(int(Val2*1000));
+        MowerStop();
+      }
+
+      else if (Command == "TEST_REVERSE")
+      {
+        MowerReverse(int(Val1), int(Val2 * 1000));
+      }
+
+      else if (Command == "TEST_TURN")
+      {
+        MowerTurn(int(Val1),bool(Val2));
+      }
+
+      else if (Command == "STATE_CHANGE")
+      {
+        DebugPrintln("State Change to " + Val1Str, DBG_INFO, true);
+
+        if (Val1Str == "IDLE")
+        {
+          g_CurrentState = MowerState::idle;
+        }
+        else if (Val1Str == "DOCKED")
+        {
+          g_CurrentState = MowerState::docked;
+        }
+        else if (Val1Str == "MOWING")
+        {
+          g_CurrentState = MowerState::mowing;
+        }
+        else if (Val1Str == "TO_BASE")
+        {
+          g_CurrentState = MowerState::going_to_base;
+        }
+        else if (Val1Str == "FROM_BASE")
+        {
+          g_CurrentState = MowerState::leaving_base;
+        }
+        else if (Val1Str == "ERROR")
+        {
+          g_CurrentState = MowerState::error;
+        }
+        else if (Val1Str == "TEST")
+        {
+          g_CurrentState = MowerState::test;
+        }
+      }
+
+      else
+      {
+        DebugPrintln(" ...... MQTTcommand not recognised !!!!", DBG_WARNING, true);
+      }
     }
 
     /* other channel */
@@ -153,32 +217,7 @@ void MQTTCallback(char *topic, byte *message, unsigned int length)
 
   }
 */
-    /*
-  if (String(topic) == String(MQTTLinkyChan)) {
-      String Payload_String;
-      FirebaseJson JSONDataPayload;
-      FirebaseJsonData JSONData;
-      
-      String JSONDataPayloadStr;
-
-      JSONDataPayload.setJsonData(messageTemp);
-//      JSONDataPayload.toString(JSONDataPayloadStr,false);
-      JSONDataPayload.get(JSONData, "URMS1");
-      String Value = JSONData.stringValue;
-      URMS1 = Value.toFloat();
-      MySERIAL.print("URMS1: "); MySERIAL.println(URMS1);
-      if (ResetPRMS) {
-        PRMSAvg = 0;
-        NbvalPRMS = 0;
-        ResetPRMS = false;
-      }
-      PRMSAvg =  PRMSAvg * double (NbvalPRMS) / double(NbvalPRMS + 1) + double (URMS1) / double (NbvalPRMS + 1);
-      NbvalPRMS = NbvalPRMS + 1; 
-      MySERIAL.print("PRMS: "); MySERIAL.println(PRMSAvg,3);
-  }
-*/
-
-    DebugPrintln("End of MQTTCallback...", DBG_VERBOSE, true);
+  DebugPrintln("End of MQTTCallback...", DBG_VERBOSE, true);
 }
 
 void MQTTReconnect()
@@ -265,9 +304,9 @@ void MQTTSendTelemetry()
         JSONDataPayload.add("DrvMotTemp", String(g_Temperature[TEMPERATURE_2_BLUE], 1));
         JSONDataPayload.add("DrvMotTempEr", String(g_TempErrorCount[TEMPERATURE_2_BLUE]));
         JSONDataPayload.add("RMotCur", String(g_MotorCurrent[MOTOR_CURRENT_RIGHT]));
-        JSONDataPayload.add("RMotSpd", String(float(g_MotionMotorSpeed[MOTION_MOTOR_RIGHT] * g_MotionMotorDirection[MOTION_MOTOR_RIGHT] * 100) / 4096, 2));
+        JSONDataPayload.add("RMotSpd", String(g_MotionMotorSpeed[MOTION_MOTOR_RIGHT] * g_MotionMotorDirection[MOTION_MOTOR_RIGHT]));
         JSONDataPayload.add("LMotCur", String(g_MotorCurrent[MOTOR_CURRENT_LEFT], 2));
-        JSONDataPayload.add("LMotSpd", String(float(g_MotionMotorSpeed[MOTION_MOTOR_LEFT] * g_MotionMotorDirection[MOTION_MOTOR_LEFT] * 100) / 4096, 2));
+        JSONDataPayload.add("LMotSpd", String(g_MotionMotorSpeed[MOTION_MOTOR_LEFT] * g_MotionMotorDirection[MOTION_MOTOR_LEFT]));
         JSONDataPayload.add("DrvMotFan", String(g_FanOn[FAN_2_BLUE]));
 
         JSONDataPayload.add("CMotTemp", String(g_Temperature[TEMPERATURE_1_RED], 1));

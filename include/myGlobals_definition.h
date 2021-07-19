@@ -203,8 +203,8 @@ extern bool g_VerticalTiltTriggered;
 #define FAN_1_RED 0
 #define FAN_2_BLUE 1
 #define FAN_UPDATE_INTERVAL 15000 // in ms
-#define FAN_START_THRESHOLD 27.5f // in deg C
-#define FAN_STOP_THRESHOLD 26.0f  // in deg C
+#define FAN_START_THRESHOLD 29.5f // in deg C
+#define FAN_STOP_THRESHOLD FAN_START_THRESHOLD - 1.5f  // in deg C
 #define FAN_TEST_DURATION 5000    // in ms
 
 extern const int g_FanPin[FAN_COUNT];
@@ -227,7 +227,9 @@ extern bool g_FanOn[FAN_COUNT];
 #define MOTION_MOTOR_STOPPED 0
 #define MOTION_MOTOR_FORWARD 1
 #define MOTION_MOTOR_REVERSE -1
-#define MOTION_MOTOR_MIN_SPEED 4096 / 4
+
+#define MOTION_MOTOR_POINTS 4096            // depending on MOTION_MOTOR_PWM_RESOLUTION
+#define MOTION_MOTOR_MIN_SPEED 25           // in %
 
 extern const int g_MotionMotorIn1Pin[MOTION_MOTOR_COUNT];
 extern const int g_MotionMotorIn2Pin[MOTION_MOTOR_COUNT];
@@ -236,6 +238,17 @@ extern bool g_MotionMotorOn[MOTION_MOTOR_COUNT];
 extern int g_MotionMotorDirection[MOTION_MOTOR_COUNT];
 extern int g_MotionMotorSpeed[MOTION_MOTOR_COUNT];
 extern String g_MotionMotorStr[MOTION_MOTOR_COUNT];
+
+/************************* Mower Moves variables *********************************/
+
+#define MOWER_MOVES_SPEED_CRAWL 40             // in %
+#define MOWER_MOVES_SPEED_SLOW 50              // in %
+#define MOWER_MOVES_SPEED_NORMAL 80            // in %
+#define MOWER_MOVES_SPEED_MAX 100              // in %
+
+#define MOWER_MOVES_TURN_SPEED 75
+#define MOWER_MOVES_TURN_ANGLE_RATIO 360.0f / 15000.0f              // in Angle degrees per ms
+#define MOWER_MOVES_REVERSE_FOR_TURN_DURATION 3000                // in ms
 
 /************************* CUT Motor variables *********************************/
 
@@ -268,7 +281,8 @@ extern bool g_CutMotorAlarm;
 #define UNKNOWN_FLOAT -999.99F
 #define UNKNOWN_INT -999
 
-extern byte TestVal1;
-extern byte TestVal2;
-extern byte TestVal3;
-extern int TestVal4;
+#include "states.h"
+
+extern MowerState g_CurrentState;
+
+#define MOWER_DATA_DISPLAY_INTERVAL 1000            // in ms

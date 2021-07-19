@@ -70,26 +70,27 @@ void MotionMotorStart(const int Motor, const int Direction, const int Speed)
 
 /**
  * Motion Motor speed setting function
- * @param Motor to set speed
+ * @param Motor to set speed (in %)
  * @param Speed to set
  */
 void MotionMotorSetSpeed(const int Motor, const int Speed)
 {
-  if (Speed > 0 && Speed < 4096)
-  {
-    if ((Speed < MOTION_MOTOR_MIN_SPEED) && (Speed != 0))
-    {
-      DebugPrintln("Motion Motor " + g_MotionMotorStr[Motor] + " speed " + String(Speed) + " too low : not applied", DBG_VERBOSE, true);
-      ledcWrite(g_MotionMotorPWMChannel[Motor], 0);
-      g_MotionMotorSpeed[Motor] = 0;
-    }
-    else
-    {
-      ledcWrite(g_MotionMotorPWMChannel[Motor], Speed);
-      g_MotionMotorSpeed[Motor] = Speed;
+  int checkedspeed = max(0,Speed);          // make sure speed is in 0-100% range
+  checkedspeed = min(100, Speed);          // make sure speed is in 0-100% range
+  int SpeedPoints = int(map(checkedspeed,0,100,0,MOTION_MOTOR_POINTS));      // convert speed (in %) into PWM range
 
-      DebugPrintln("Motion Motor " + g_MotionMotorStr[Motor] + " @ " + String(Speed) + " on Channel " + String(g_MotionMotorPWMChannel[Motor]), DBG_VERBOSE, true);
-    }
+  if ((Speed < MOTION_MOTOR_MIN_SPEED) && (Speed != 0))
+  {
+    DebugPrintln("Motion Motor " + g_MotionMotorStr[Motor] + " speed " + String(checkedspeed) + " too low : not applied", DBG_VERBOSE, true);
+    ledcWrite(g_MotionMotorPWMChannel[Motor], 0);
+    g_MotionMotorSpeed[Motor] = 0;
+  }
+  else
+  {
+    ledcWrite(g_MotionMotorPWMChannel[Motor], SpeedPoints);
+    g_MotionMotorSpeed[Motor] = checkedspeed;
+
+    DebugPrintln("Motion Motor " + g_MotionMotorStr[Motor] + " @ " + String(checkedspeed) + "% on Channel " + String(g_MotionMotorPWMChannel[Motor]) + " (" + String(SpeedPoints) + ")", DBG_VERBOSE, true);
   }
 };
 
@@ -122,38 +123,34 @@ void MotionMotorTest(const int Motor)
   }
   DisplayPrint(2, 2 + Motor, g_MotionMotorStr[Motor]);
 
-#define CRAWL 4096 * 30 / 100
-#define SLOW 4096 * 45 / 100
-#define NORMAL 4096 * 70 / 100
-#define FAST 4090
-#define DURATION 2000
+#define MOTION_MOTOR_TEST_STEP_DURATION 2000
 
   //Forward
 
   DisplayPrint(8, 2 + Motor, "Crawl FWD ");
-  MotionMotorStart(Motor, MOTION_MOTOR_FORWARD, CRAWL);
+  MotionMotorStart(Motor, MOTION_MOTOR_FORWARD, MOWER_MOVES_SPEED_CRAWL);
   SerialAndTelnet.handle();
-  delay(DURATION);
+  delay(MOTION_MOTOR_TEST_STEP_DURATION);
 
   DisplayPrint(8, 2 + Motor, "Slow FWD  ", true);
-  MotionMotorSetSpeed(Motor, SLOW);
+  MotionMotorSetSpeed(Motor, MOWER_MOVES_SPEED_SLOW);
   SerialAndTelnet.handle();
-  delay(DURATION);
+  delay(MOTION_MOTOR_TEST_STEP_DURATION);
 
   DisplayPrint(8, 2 + Motor, "Normal FWD", true);
-  MotionMotorSetSpeed(Motor, NORMAL);
+  MotionMotorSetSpeed(Motor, MOWER_MOVES_SPEED_NORMAL);
   SerialAndTelnet.handle();
-  delay(DURATION);
+  delay(MOTION_MOTOR_TEST_STEP_DURATION);
 
-  DisplayPrint(8, 2 + Motor, "Fast FWD  ", true);
-  MotionMotorSetSpeed(Motor, FAST);
+  DisplayPrint(8, 2 + Motor, "Max FWD  ", true);
+  MotionMotorSetSpeed(Motor, MOWER_MOVES_SPEED_MAX);
   SerialAndTelnet.handle();
-  delay(DURATION);
+  delay(MOTION_MOTOR_TEST_STEP_DURATION);
 
   DisplayPrint(8, 2 + Motor, "Slow FWD  ", true);
-  MotionMotorSetSpeed(Motor, SLOW);
+  MotionMotorSetSpeed(Motor, MOWER_MOVES_SPEED_SLOW);
   SerialAndTelnet.handle();
-  delay(DURATION);
+  delay(MOTION_MOTOR_TEST_STEP_DURATION);
 
   //Reverse
 
@@ -161,29 +158,29 @@ void MotionMotorTest(const int Motor)
   delay(250);
 
   DisplayPrint(8, 2 + Motor, "Crawl REV ", true);
-  MotionMotorStart(Motor, MOTION_MOTOR_REVERSE, CRAWL);
+  MotionMotorStart(Motor, MOTION_MOTOR_REVERSE, MOWER_MOVES_SPEED_CRAWL);
   SerialAndTelnet.handle();
-  delay(DURATION);
+  delay(MOTION_MOTOR_TEST_STEP_DURATION);
 
   DisplayPrint(8, 2 + Motor, "Slow REV  ", true);
-  MotionMotorSetSpeed(Motor, SLOW);
+  MotionMotorSetSpeed(Motor, MOWER_MOVES_SPEED_SLOW);
   SerialAndTelnet.handle();
-  delay(DURATION);
+  delay(MOTION_MOTOR_TEST_STEP_DURATION);
 
   DisplayPrint(8, 2 + Motor, "Normal REV", true);
-  MotionMotorSetSpeed(Motor, NORMAL);
+  MotionMotorSetSpeed(Motor, MOWER_MOVES_SPEED_NORMAL);
   SerialAndTelnet.handle();
-  delay(DURATION);
+  delay(MOTION_MOTOR_TEST_STEP_DURATION);
 
-  DisplayPrint(8, 2 + Motor, "Fast REV  ", true);
-  MotionMotorSetSpeed(Motor, FAST);
+  DisplayPrint(8, 2 + Motor, "Max REV  ", true);
+  MotionMotorSetSpeed(Motor, MOWER_MOVES_SPEED_MAX);
   SerialAndTelnet.handle();
-  delay(DURATION);
+  delay(MOTION_MOTOR_TEST_STEP_DURATION);
 
   DisplayPrint(8, 2 + Motor, "Slow REV  ", true);
-  MotionMotorSetSpeed(Motor, SLOW);
+  MotionMotorSetSpeed(Motor, MOWER_MOVES_SPEED_SLOW);
   SerialAndTelnet.handle();
-  delay(DURATION);
+  delay(MOTION_MOTOR_TEST_STEP_DURATION);
 
   DisplayPrint(8, 2 + Motor, "Stopped   ", true);
   MotionMotorStop(Motor);

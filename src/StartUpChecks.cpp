@@ -131,13 +131,13 @@ bool StartupChecks(void)
 
   DebugPrintln(" ");
 
-  MotionMotorTest(MOTION_MOTOR_RIGHT); //TEMPORAIRE
-  DebugPrintln(" ");
-  MotionMotorTest(MOTION_MOTOR_LEFT);  //TEMPORAIRE
-  DebugPrintln(" ");
+//  MotionMotorTest(MOTION_MOTOR_RIGHT); //TEMPORAIRE
+//  DebugPrintln(" ");
+//  MotionMotorTest(MOTION_MOTOR_LEFT);  //TEMPORAIRE
+//  DebugPrintln(" ");
 
-  CutMotorTest(); //TEMPORAIRE
-  DebugPrintln(" ");
+//  CutMotorTest(); //TEMPORAIRE
+//  DebugPrintln(" ");
 
   // insert here all other startup checks
 

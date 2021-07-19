@@ -172,7 +172,4 @@ bool g_CutMotorAlarm = false;
 
 /************************* Program variables *********************************/
 
-byte TestVal1 = 0;
-byte TestVal2 = 0;
-byte TestVal3 = 0;
-int TestVal4 = 0;
+MowerState g_CurrentState = MowerState::idle;
