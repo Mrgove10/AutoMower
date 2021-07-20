@@ -13,6 +13,12 @@ void MowerStop();
 void MowerForward(const int Speed);
 
 /**
+ * Sets/changes Mower speed
+ * @param Speed to travel
+ */
+void MowerSpeed(const int Speed);
+
+/**
  * Mower reverse move
  * @param Speed to reverse
  * @param Duration of reverse (in ms)

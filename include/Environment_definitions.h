@@ -22,6 +22,7 @@
 
 // -------------------- Tags ------------------------
 #define TAG_RESET "RESET"
+#define TAG_MOWING "MOWING"
 #define TAG_OTA "OTA"
 #define TAG_CHECK "CHECK"
 #define TAG_ERROR "ERROR"

@@ -64,15 +64,15 @@ void DisplayMowerData()
 
   if ((millis() - LastRefreshed > MOWER_DATA_DISPLAY_INTERVAL))
   {
-    DebugPrint("Temp 1: " + String(g_Temperature[TEMPERATURE_1_RED], 1) +         // " | Err1: " + String(Temp1ErrorCount) +
-                   " |Temp 2: " + String(g_Temperature[TEMPERATURE_2_BLUE], 1) + //" | Err2: " + String(Temp2ErrorCount) +
-                   " |Charge: " + String(g_BatteryChargeCurrent, 0) +
-                   " |MotorR: " + String(g_MotorCurrent[MOTOR_CURRENT_RIGHT], 1) +
-                   " |MotorL: " + String(g_MotorCurrent[MOTOR_CURRENT_LEFT], 1) +
-                   " |MotorC: " + String(g_MotorCurrent[MOTOR_CURRENT_CUT], 1) +
-                   " |MotorCAlm: " + String(g_CutMotorAlarm) +
-                   " |Volt: " + String(float(g_BatteryVotlage) / 1000.0f, 1) +
-                   " |Heading: " + String(g_CompassHeading, 1),
+    DebugPrint("T1:" + String(g_Temperature[TEMPERATURE_1_RED], 1) +         // " | Err1: " + String(Temp1ErrorCount) +
+                   " |T2:" + String(g_Temperature[TEMPERATURE_2_BLUE], 1) + //" | Err2: " + String(Temp2ErrorCount) +
+                   " |Charge:" + String(g_BatteryChargeCurrent, 0) +
+                   " |MR:" + String(g_MotorCurrent[MOTOR_CURRENT_RIGHT], 1) +
+                   " |ML:" + String(g_MotorCurrent[MOTOR_CURRENT_LEFT], 1) +
+                   " |MC:" + String(g_MotorCurrent[MOTOR_CURRENT_CUT], 1) +
+                   " |MCAlm:" + String(g_CutMotorAlarm) +
+                   " |Volt:" + String(float(g_BatteryVotlage) / 1000.0f, 1) +
+                   " |Head:" + String(g_CompassHeading, 1),
                DBG_INFO, true);
 
 //    DisplayClear();
@@ -80,7 +80,7 @@ void DisplayMowerData()
 
     for (uint8_t i = 0; i < SONAR_COUNT; i++)
     {            // Loop through each sensor and display results.
-      DebugPrint(" | Sonar" + String(i + 1) + ": " + String(g_SonarDistance[i]));
+      DebugPrint(" | " + g_sensorStr[i] + ":" + String(g_SonarDistance[i]));
       DisplayPrint(0 + i * 6, 1, "S" + String(i + 1) + ":" + String(g_SonarDistance[i]) + " ", true);
     }
     DebugPrintln("");

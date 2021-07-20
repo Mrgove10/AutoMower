@@ -29,6 +29,18 @@ void MowerForward(const int Speed)
 }
 
 /**
+ * Sets/changes Mower speed
+ * @param Speed to travel
+ */
+void MowerSpeed(const int Speed)
+{
+  DebugPrintln("Mower speed at " + String(Speed) + "%", DBG_INFO, true);
+  MotionMotorSetSpeed(MOTION_MOTOR_RIGHT, Speed);
+  MotionMotorSetSpeed(MOTION_MOTOR_LEFT, Speed);
+}
+
+
+/**
  * Mower reverse move
  * @param Speed to reverse
  * @param Duration of reverse (in ms)
@@ -53,7 +65,7 @@ void MowerTurn(const int Angle, const bool OnSpot)
   int LimitedAngle = min(Angle,360);
   LimitedAngle = max(LimitedAngle,-360);
   float turnDuration = float(abs(LimitedAngle) / (MOWER_MOVES_TURN_ANGLE_RATIO));
-  DebugPrintln("Mower turn of " + String(Angle) + " Deg => " + String(turnDuration,0) + " ms", DBG_INFO, true);
+  DebugPrintln("Mower turn of " + String(Angle) + " Deg => " + String(turnDuration,0) + " ms", DBG_VERBOSE, true);
 
   if (LimitedAngle < 0)         // Left turn
   {

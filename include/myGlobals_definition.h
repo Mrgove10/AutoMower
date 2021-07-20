@@ -178,13 +178,17 @@ extern int g_BatteryStatus;
 
 #define SONAR_COUNT 3            // Number of sensors.
 #define SONAR_MAX_DISTANCE 200   // Maximum distance (in cm) to ping.
-#define SONAR_READ_INTERVAL 1000 // in ms
+#define SONAR_READ_INTERVAL 500 // in ms
+#define SONAR_READ_ITERATIONS 9
 
 #define SONAR_FRONT 0
 #define SONAR_LEFT 1
 #define SONAR_RIGHT 2
 
 extern NewPing sonar[SONAR_COUNT];
+
+extern String g_sensorStr[SONAR_COUNT];
+
 extern int g_SonarDistance[SONAR_COUNT]; // in cm
 
 /************************* Bumper variables *********************************/
@@ -247,12 +251,13 @@ extern String g_MotionMotorStr[MOTION_MOTOR_COUNT];
 #define MOWER_MOVES_SPEED_MAX 100              // in %
 
 #define MOWER_MOVES_TURN_SPEED 75
-#define MOWER_MOVES_TURN_ANGLE_RATIO 360.0f / 15000.0f              // in Angle degrees per ms
+#define MOWER_MOVES_TURN_ANGLE_RATIO 360.0f / 6000.0f              // in Angle degrees per ms
 #define MOWER_MOVES_REVERSE_FOR_TURN_DURATION 3000                // in ms
 #define MOWER_MOWING_TRAVEL_SPEED 90
 
-#define SONAR_MIN_DISTANCE_FOR_TURN 30                  // in cm
-#define SONAR_MIN_DISTANCE_FOR_STOP 15                  // in cm
+#define SONAR_MIN_DISTANCE_FOR_SLOWING 60                  // in cm
+#define SONAR_MIN_DISTANCE_FOR_TURN 40                  // in cm
+#define SONAR_MIN_DISTANCE_FOR_STOP 25                  // in cm
 
 /************************* CUT Motor variables *********************************/
 

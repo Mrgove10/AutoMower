@@ -21,7 +21,6 @@ void SonarSensorSetup(void)
 bool SonarSensorCheck(int sensor)
 {
   bool sensorCheck = false;
-  String sensorStr[SONAR_COUNT] = {"Front", "Left", "Right"};
   unsigned int Distance = UNKNOWN_INT;
 
   DebugPrintln("SonarSensorCheck start #" + String(sensor + 1), DBG_VERBOSE, true);
@@ -31,23 +30,24 @@ bool SonarSensorCheck(int sensor)
     DisplayPrint(0, 0, F("Sonar Tests"));
   }
 
-  Distance = sonar[sensor].ping_cm(SONAR_MAX_DISTANCE);
+//  Distance = sonar[sensor].ping_cm(SONAR_MAX_DISTANCE);
+  Distance = sonar[sensor].convert_cm(sonar[sensor].ping_median(SONAR_READ_ITERATIONS));
   sensorCheck = Distance != 0;
 
-  DebugPrintln(sensorStr[sensor] + " Distance " + String(Distance), DBG_INFO, true);
+  DebugPrintln(g_sensorStr[sensor] + " Distance " + String(Distance), DBG_INFO, true);
 
   if (sensorCheck)
   {
-    DebugPrintln(sensorStr[sensor] + " Sonar sensor Ok : " + String(Distance), DBG_INFO, true);
-    DisplayPrint(2, sensor + 1, sensorStr[sensor]);
+    DebugPrintln(g_sensorStr[sensor] + " Sonar sensor Ok : " + String(Distance), DBG_INFO, true);
+    DisplayPrint(2, sensor + 1, g_sensorStr[sensor]);
     DisplayPrint(8, sensor + 1, "OK " + String(Distance) + " cm");
     delay(TEST_SEQ_STEP_WAIT);
     return true;
   }
   else
   {
-    LogPrintln(sensorStr[sensor] + " No sensor echo", TAG_CHECK, DBG_WARNING);
-    DisplayPrint(2, sensor + 1, sensorStr[sensor]);
+    LogPrintln(g_sensorStr[sensor] + " No sensor echo", TAG_CHECK, DBG_WARNING);
+    DisplayPrint(2, sensor + 1, g_sensorStr[sensor]);
     DisplayPrint(8, sensor + 1, F("NO ECHO"));
     delay(TEST_SEQ_STEP_WAIT + TEST_SEQ_STEP_ERROR_WAIT);
     return false;
@@ -67,13 +67,21 @@ int SonarRead(const int sensor, const bool Now)
   if ((millis() - LastSonarRead[sensor] > SONAR_READ_INTERVAL) || Now)
   {
     unsigned int Distance = UNKNOWN_INT;
-    Distance = sonar[sensor].ping_cm(SONAR_MAX_DISTANCE);
+//    Distance = sonar[sensor].ping_cm(SONAR_MAX_DISTANCE);
+    Distance = sonar[sensor].convert_cm(sonar[sensor].ping_median(SONAR_READ_ITERATIONS));
 
-    //    DebugPrintln("TemperatureRead value " + String(tempC,2), DBG_VERBOSE, true);
+
+    DebugPrintln("Sonar "+ g_sensorStr[sensor] + " value: " + String(Distance) + " cm", DBG_VERBOSE, true);
 
     LastSonarRead[sensor] = millis();
-    g_SonarDistance[sensor] = Distance;
-    return Distance;
+    if (Distance == 0)
+    {
+      g_SonarDistance[sensor] = SONAR_MAX_DISTANCE;
+    }
+    else
+    {
+      g_SonarDistance[sensor] = Distance;
+    }
   }
   return g_SonarDistance[sensor];
 }

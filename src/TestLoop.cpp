@@ -60,9 +60,9 @@ void TestLoop()
   //  TemperatureRead(TEMPERATURE_1_RED);   // not needed : Done by FanCheck()
   //  TemperatureRead(TEMPERATURE_2_BLUE);   // not needed : Done by FanCheck()
 
-  SonarRead(SONAR_FRONT);
-  SonarRead(SONAR_LEFT);
-  SonarRead(SONAR_RIGHT);
+//  SonarRead(SONAR_RIGHT, true);
+//  SonarRead(SONAR_FRONT, true);
+//  SonarRead(SONAR_LEFT, true);
 
   BatteryVoltageRead();
 

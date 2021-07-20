@@ -134,6 +134,9 @@ NewPing sonar[SONAR_COUNT] = {                                               // 
     NewPing(PIN_ESP_SONAR_LEFT, PIN_ESP_SONAR_LEFT, SONAR_MAX_DISTANCE),
     NewPing(PIN_ESP_SONAR_RIGHT, PIN_ESP_SONAR_RIGHT, SONAR_MAX_DISTANCE)};
 
+
+String g_sensorStr[SONAR_COUNT] = {"Front", "Left", "Right"};
+
 int g_SonarDistance[SONAR_COUNT] = {0, 0, 0}; // in cm
 
 /************************* Bumper variables *********************************/
