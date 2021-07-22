@@ -1,7 +1,22 @@
 {
-	"folders": [{
-		"path": "."
-	}],
+	"folders": [
+		{
+			"name": "mower",
+			"path": "MOWER"
+		},
+		{
+			"name": "base station",
+			"path": "BASE"
+		},
+		{
+			"name": "other files",
+			"path": "OTHER"
+		},
+		{
+			"name": "root",
+			"path": "."
+		}
+	],
 	"settings": {
 		"files.associations": {
 			"*.h": "cpp",
