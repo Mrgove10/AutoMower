@@ -27,29 +27,6 @@ void TestLoop()
   static int CutSens = 1;
   static int CutDirection = MOTION_MOTOR_STOPPED;
 
-  if (g_RightBumperTriggered)
-  {
-    DebugPrintln("Right Bumper Triggered !", DBG_INFO, true);
-    g_RightBumperTriggered = false;
-  }
-  if (g_LeftBumperTriggered)
-  {
-    DebugPrintln("Left Bumper Triggered !", DBG_INFO, true);
-    g_LeftBumperTriggered = false;
-  }
-
-  if (g_HorizontalTiltTriggered)
-  {
-    DebugPrintln("Horizontal Tilt sensor Triggered !", DBG_INFO, true);
-    g_HorizontalTiltTriggered = false;
-  }
-
-  if (g_VerticalTiltTriggered)
-  {
-    DebugPrintln("Vertical Tilt sensor Triggered !", DBG_INFO, true);
-    g_VerticalTiltTriggered = false;
-  }
-
   BatteryChargeCurrentRead(false);
   MotorCurrentRead(MOTOR_CURRENT_RIGHT);
   MotorCurrentRead(MOTOR_CURRENT_LEFT);

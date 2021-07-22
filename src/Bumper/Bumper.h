@@ -1,11 +1,6 @@
 #ifndef bumper_h
 #define bumper_h
 
-#define BUMPER_LEFT 1
-#define BUMPER_RIGHT 2
-
-#define BUMPER_DEBOUNCE_TIMEOUT 100 // in ms
-
 /**
  * Left Bumper ISR function
  * 
@@ -30,5 +25,12 @@ void BumperSetup(void);
  * @return boolean true if sensor check is ok
  */
 bool BumperSensorCheck(int bumper);
+
+/**
+ * Read, in a protected way, the status of a bumper sensor
+ * @param bumper int bumper number
+ * @return boolean true if bumper activated, false if not
+ */
+bool BumperRead(int bumper);
 
 #endif

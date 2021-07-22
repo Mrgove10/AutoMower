@@ -19,8 +19,10 @@ ICACHE_RAM_ATTR void horizontalTiltISR(void)
 
   if (millis() - LastHorizontalTiltChange > TILT_DEBOUNCE_TIMEOUT)
   {
-    g_HorizontalTiltTriggered = (LastHorizontalTitltStatus == LOW);
+    portENTER_CRITICAL_ISR(&g_TiltMux[TILT_HORIZONTAL]);
+    g_TiltTriggered[TILT_HORIZONTAL] = (LastHorizontalTitltStatus == LOW);
     LastHorizontalTiltChange = millis();
+    portEXIT_CRITICAL_ISR(&g_TiltMux[TILT_HORIZONTAL]);
   }
 }
 
@@ -37,8 +39,10 @@ ICACHE_RAM_ATTR void verticalTiltISR(void)
 
   if (millis() - LastVerticalTiltChange > TILT_DEBOUNCE_TIMEOUT)
   {
-    g_VerticalTiltTriggered = (LastVerticalTiltStatus == LOW);
+    portENTER_CRITICAL_ISR(&g_TiltMux[TILT_VERTICAL]);
+    g_TiltTriggered[TILT_VERTICAL] = (LastVerticalTiltStatus == LOW);
     LastVerticalTiltChange = millis();
+    portEXIT_CRITICAL_ISR(&g_TiltMux[TILT_VERTICAL]);
   }
 }
 
@@ -64,45 +68,45 @@ void TiltSetup(void)
  */
 bool TiltSensorCheck(int tilt)
 {
-  int tiltPin = 0;
-  String tiltStr = "";
-
   DebugPrintln("TiltSensorCheck start " + String(tilt), DBG_VERBOSE, true);
 
-  if (tilt == 1)
+  if (tilt == TILT_HORIZONTAL)
   {
     DisplayClear();
   }
   DisplayPrint(0, 0, F("Tilt Tests"));
 
-  if (tilt == TILT_HORIZONTAL)
-  {
-    tiltPin = PIN_ESP_TILT_HORIZONTAL;
-    tiltStr = "Horizontal ";
-  }
+  int raw = digitalRead(g_tiltPin[tilt]);
 
-  if (tilt == TILT_VERTICAL)
-  {
-    tiltPin = PIN_ESP_TILT_VERTICAL;
-    tiltStr = "Vertical";
-  }
-
-  int raw = digitalRead(tiltPin);
-
-  DebugPrintln(tiltStr + " tilt input value: " + String(raw), DBG_VERBOSE, true);
+  DebugPrintln(g_tiltStr[tilt] + " tilt input value: " + String(raw), DBG_VERBOSE, true);
 
   if (raw)
   {
-    DebugPrintln(tiltStr + " tilt sensor Ok", DBG_INFO, true);
-    DisplayPrint(2, 1 + tilt, tiltStr + " OK");
+    DebugPrintln(g_tiltStr[tilt] + " tilt sensor Ok", DBG_INFO, true);
+    DisplayPrint(2, 2 + tilt, g_tiltStr[tilt] + " OK");
     delay(TEST_SEQ_STEP_WAIT);
     return true;
   }
   else
   {
-    LogPrintln(tiltStr + " tilt sensor is triggered", TAG_CHECK, DBG_ERROR);
-    DisplayPrint(2, 1 + tilt, tiltStr + " ACTIVE");
+    LogPrintln(g_tiltStr[tilt] + " tilt sensor is triggered", TAG_CHECK, DBG_ERROR);
+    DisplayPrint(2, 2 + tilt, g_tiltStr[tilt] + " ACTIVE");
     delay(TEST_SEQ_STEP_WAIT + TEST_SEQ_STEP_ERROR_WAIT);
     return false;
   }
+}
+
+/**
+ * Read, in a protected way, the status of the tilt sensor
+ * @param Tilt int tilt number
+ * @return boolean true if tilt activated, false if not
+ */
+bool TiltRead(int tilt)
+{
+  bool returnVal;
+  portENTER_CRITICAL_ISR(&g_TiltMux[tilt]);
+  returnVal = g_TiltTriggered[tilt];
+  g_TiltTriggered[tilt] = false;
+  portEXIT_CRITICAL_ISR(&g_TiltMux[tilt]);
+  return returnVal;
 }

@@ -1,11 +1,6 @@
 #ifndef tilt_h
 #define tilt_h
 
-#define TILT_HORIZONTAL 1
-#define TILT_VERTICAL 2
-
-#define TILT_DEBOUNCE_TIMEOUT 100 // in ms
-
 /**
  * Horizontal Tilt sensor ISR function
  * 
@@ -30,5 +25,12 @@ void TiltSetup(void);
  * @return boolean true if sensor check is ok
  */
 bool TiltSensorCheck(int tilt);
+
+/**
+ * Read, in a protected way, the status of the tilt sensor
+ * @param Tilt int tilt number
+ * @return boolean true if tilt activated, false if not
+ */
+bool TiltRead(int tilt);
 
 #endif

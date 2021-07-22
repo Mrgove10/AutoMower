@@ -7,6 +7,7 @@
 #include "MowerStates/MowerStates.h"
 #include "CutMotor/CutMotor.h"
 #include "Sonar/Sonar.h"
+#include "Bumper/Bumper.h"
 #include "Utils/Utils.h"
 #include "Display/Display.h"
 
@@ -59,9 +60,8 @@ void MowerMowing(const bool StateChange)
   // Bumper Collision dection
   //--------------------------------
 
-  if (g_RightBumperTriggered || g_LeftBumperTriggered)
+  if (BumperRead(BUMPER_RIGHT) || BumperRead(BUMPER_LEFT))
   {
-
     DebugPrintln("Bumper collision detected ! ", DBG_DEBUG, true);
     MowerStop();
     CutMotorStop(true);
@@ -86,10 +86,6 @@ void MowerMowing(const bool StateChange)
         MowerReserseAndTurn(135,MOWER_MOVES_REVERSE_FOR_TURN_DURATION*2,true);    // reverse and turn right 135 degrees....and hope for the best !
       }
     }
-    
-    g_RightBumperTriggered = false;
-    g_LeftBumperTriggered = false;
-
     MowerForward(MOWER_MOWING_TRAVEL_SPEED);
     CutMotorStart(MOWER_MOWING_CUTTING_DIRECTION, MOWER_MOWING_CUTTING_SPEED);
   }  
@@ -102,7 +98,6 @@ void MowerMowing(const bool StateChange)
 
   if (g_SonarDistance[SONAR_FRONT] < SONAR_MIN_DISTANCE_FOR_STOP)
   {
-
     DebugPrintln("Font sonar proximity ! (" + String(g_SonarDistance[SONAR_FRONT]) + "cm)", DBG_DEBUG, true);
 
     MowerStop();

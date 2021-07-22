@@ -134,20 +134,27 @@ NewPing sonar[SONAR_COUNT] = {                                               // 
     NewPing(PIN_ESP_SONAR_LEFT, PIN_ESP_SONAR_LEFT, SONAR_MAX_DISTANCE),
     NewPing(PIN_ESP_SONAR_RIGHT, PIN_ESP_SONAR_RIGHT, SONAR_MAX_DISTANCE)};
 
-
 String g_sensorStr[SONAR_COUNT] = {"Front", "Left", "Right"};
 
 int g_SonarDistance[SONAR_COUNT] = {0, 0, 0}; // in cm
 
 /************************* Bumper variables *********************************/
 
-bool g_LeftBumperTriggered = false;
-bool g_RightBumperTriggered = false;
+String g_bumperStr[BUMPER_COUNT] = {"Left", "Right"};
+int g_bumperPin[BUMPER_COUNT] = {PIN_ESP_BUMPER_LEFT, PIN_ESP_BUMPER_RIGHT};
+
+portMUX_TYPE g_BumperMux[BUMPER_COUNT] = {portMUX_INITIALIZER_UNLOCKED, portMUX_INITIALIZER_UNLOCKED};
+
+volatile bool g_BumperTriggered[BUMPER_COUNT] = {false, false};
 
 /************************* Tilt variables *********************************/
 
-bool g_HorizontalTiltTriggered = false;
-bool g_VerticalTiltTriggered = false;
+String g_tiltStr[TILT_COUNT] = {"Horizontal", "Vertical"};
+int g_tiltPin[TILT_COUNT] = {PIN_ESP_TILT_HORIZONTAL, PIN_ESP_TILT_VERTICAL};
+
+portMUX_TYPE g_TiltMux[TILT_COUNT] = {portMUX_INITIALIZER_UNLOCKED, portMUX_INITIALIZER_UNLOCKED};
+
+volatile bool g_TiltTriggered[TILT_COUNT] = {false, false};
 
 /************************* Fan variables *********************************/
 

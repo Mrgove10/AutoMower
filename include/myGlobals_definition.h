@@ -193,13 +193,33 @@ extern int g_SonarDistance[SONAR_COUNT]; // in cm
 
 /************************* Bumper variables *********************************/
 
-extern bool g_LeftBumperTriggered;
-extern bool g_RightBumperTriggered;
+#define BUMPER_COUNT 2            // Number of sensors
+#define BUMPER_LEFT 0
+#define BUMPER_RIGHT 1
+
+#define BUMPER_DEBOUNCE_TIMEOUT 100 // in ms
+
+extern String g_bumperStr[BUMPER_COUNT];
+extern int g_bumperPin[BUMPER_COUNT];
+
+extern portMUX_TYPE g_BumperMux[BUMPER_COUNT];
+
+extern volatile bool g_BumperTriggered[BUMPER_COUNT];
 
 /************************* Tilt variables *********************************/
 
-extern bool g_HorizontalTiltTriggered;
-extern bool g_VerticalTiltTriggered;
+#define TILT_COUNT 2            // Number of sensors
+#define TILT_HORIZONTAL 0
+#define TILT_VERTICAL 1
+
+#define TILT_DEBOUNCE_TIMEOUT 100 // in ms
+
+extern String g_tiltStr[TILT_COUNT];
+extern int g_tiltPin[TILT_COUNT];
+
+extern portMUX_TYPE g_TiltMux[TILT_COUNT];
+
+extern volatile bool g_TiltTriggered[TILT_COUNT];
 
 /************************* Fan variables *********************************/
 

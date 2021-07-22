@@ -19,8 +19,10 @@ ICACHE_RAM_ATTR void LeftBumperISR(void)
 
   if (millis() - LastLeftBumperChange > BUMPER_DEBOUNCE_TIMEOUT)
   {
-    g_LeftBumperTriggered = (LastLeftBumperStatus == HIGH);
+    portENTER_CRITICAL_ISR(&g_BumperMux[BUMPER_LEFT]);
+    g_BumperTriggered[BUMPER_LEFT] = (LastLeftBumperStatus == HIGH);
     LastLeftBumperChange = millis();
+    portEXIT_CRITICAL_ISR(&g_BumperMux[BUMPER_LEFT]);
   }
 }
 
@@ -37,8 +39,11 @@ ICACHE_RAM_ATTR void RightBumperISR(void)
 
   if (millis() - LastRightBumperChange > BUMPER_DEBOUNCE_TIMEOUT)
   {
-    g_RightBumperTriggered = (LastRightBumperStatus == HIGH);
+    portENTER_CRITICAL_ISR(&g_BumperMux[BUMPER_RIGHT]);
+    g_BumperTriggered[BUMPER_RIGHT] = (LastRightBumperStatus == HIGH);
     LastRightBumperChange = millis();
+    portEXIT_CRITICAL_ISR(&g_BumperMux[BUMPER_RIGHT]);
+
   }
 }
 
@@ -64,44 +69,44 @@ void BumperSetup(void)
  */
 bool BumperSensorCheck(int bumper)
 {
-  int bumperPin = 0;
-  String bumperStr = "";
-
   DebugPrintln("BumperSensorCheck start " + String(bumper), DBG_VERBOSE, true);
-  if (bumper == 1)
+  if (bumper == BUMPER_LEFT)
   {
     DisplayClear();
   }
   DisplayPrint(0, 0, F("Bumper Tests"));
 
-  if (bumper == BUMPER_LEFT)
-  {
-    bumperPin = PIN_ESP_BUMPER_LEFT;
-    bumperStr = "Left";
-  }
+  int raw = digitalRead(g_bumperPin[bumper]);
 
-  if (bumper == BUMPER_RIGHT)
-  {
-    bumperPin = PIN_ESP_BUMPER_RIGHT;
-    bumperStr = "Right";
-  }
-
-  int raw = digitalRead(bumperPin);
-
-  DebugPrintln(bumperStr + " bumper input value: " + String(raw), DBG_VERBOSE, true);
+  DebugPrintln(g_bumperStr[bumper] + " bumper input value: " + String(raw), DBG_VERBOSE, true);
 
   if (!raw)
   {
-    DebugPrintln(bumperStr + " bumper Ok", DBG_INFO, true);
-    DisplayPrint(2, 1 + bumper, bumperStr + " OK");
+    DebugPrintln(g_bumperStr[bumper] + " bumper Ok", DBG_INFO, true);
+    DisplayPrint(2, 2 + bumper, g_bumperStr[bumper] + " OK");
     delay(TEST_SEQ_STEP_WAIT);
     return true;
   }
   else
   {
-    LogPrintln(bumperStr + " bumper not found or is triggered", TAG_CHECK, DBG_ERROR);
-    DisplayPrint(2, 1 + bumper, bumperStr + " ERROR");
+    LogPrintln(g_bumperStr[bumper] + " bumper not found or is triggered", TAG_CHECK, DBG_ERROR);
+    DisplayPrint(2, 2 + bumper, g_bumperStr[bumper] + " ERROR");
     delay(TEST_SEQ_STEP_WAIT + TEST_SEQ_STEP_ERROR_WAIT);
     return false;
   }
+}
+
+/**
+ * Read, in a protected way, the status of a bumper sensor
+ * @param bumper int bumper number
+ * @return boolean true if bumper activated, false if not
+ */
+bool BumperRead(int bumper)
+{
+  bool returnVal;
+  portENTER_CRITICAL_ISR(&g_BumperMux[bumper]);
+  returnVal = g_BumperTriggered[bumper];
+  g_BumperTriggered[bumper] = false;
+  portEXIT_CRITICAL_ISR(&g_BumperMux[bumper]);
+  return returnVal;
 }

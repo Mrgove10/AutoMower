@@ -7,6 +7,8 @@
 #include "Current/Current.h"
 #include "Voltage/Voltage.h"
 #include "Sonar/Sonar.h"
+#include "Bumper/Bumper.h"
+#include "Tilt/Tilt.h"
 #include "Keypad/Keypad.h"
 #include "Compass/Compass.h"
 #include "GPS/GPS.h"
@@ -18,27 +20,23 @@
 
 void DisplayMowerData()
 {
-  if (g_RightBumperTriggered)
+  if (BumperRead(BUMPER_RIGHT))
   {
     DebugPrintln("Right Bumper Triggered !", DBG_INFO, true);
-    g_RightBumperTriggered = false;
   }
-  if (g_LeftBumperTriggered)
+  if (BumperRead(BUMPER_LEFT))
   {
     DebugPrintln("Left Bumper Triggered !", DBG_INFO, true);
-    g_LeftBumperTriggered = false;
   }
 
-  if (g_HorizontalTiltTriggered)
+  if (TiltRead(TILT_HORIZONTAL))
   {
     DebugPrintln("Horizontal Tilt sensor Triggered !", DBG_INFO, true);
-    g_HorizontalTiltTriggered = false;
   }
 
-  if (g_VerticalTiltTriggered)
+  if (TiltRead(TILT_VERTICAL))
   {
     DebugPrintln("Vertical Tilt sensor Triggered !", DBG_INFO, true);
-    g_VerticalTiltTriggered = false;
   }
 
   BatteryChargeCurrentRead(false);
