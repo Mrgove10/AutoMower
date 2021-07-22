@@ -1,0 +1,86 @@
+[
+    {
+        "id": "3d929d33.cbe2fa",
+        "type": "tab",
+        "label": "Mower",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "39d009f.134b876",
+        "type": "inject",
+        "z": "3d929d33.cbe2fa",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payloadType": "date",
+        "x": 250,
+        "y": 120,
+        "wires": [
+            [
+                "a6d5a8da.893ec8"
+            ]
+        ]
+    },
+    {
+        "id": "a6d5a8da.893ec8",
+        "type": "mqtt out",
+        "z": "3d929d33.cbe2fa",
+        "name": "",
+        "topic": "startMow",
+        "qos": "",
+        "retain": "",
+        "broker": "af28118d.47535",
+        "x": 440,
+        "y": 120,
+        "wires": []
+    },
+    {
+        "id": "f3c769c2.3f047",
+        "type": "mqtt in",
+        "z": "3d929d33.cbe2fa",
+        "name": "",
+        "topic": "error",
+        "qos": "2",
+        "datatype": "auto",
+        "broker": "af28118d.47535",
+        "x": 240,
+        "y": 220,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "af28118d.47535",
+        "type": "mqtt-broker",
+        "name": "localhost",
+        "broker": "localhost",
+        "port": "1883",
+        "clientid": "",
+        "usetls": false,
+        "compatmode": false,
+        "keepalive": "60",
+        "cleansession": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": "",
+        "closeTopic": "",
+        "closeQos": "0",
+        "closePayload": "",
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": ""
+    }
+]

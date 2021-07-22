@@ -1,6 +1,5 @@
 {
-	"folders": [
-		{
+	"folders": [{
 			"name": "mower",
 			"path": "MOWER"
 		},
@@ -17,6 +16,9 @@
 			"path": "."
 		}
 	],
+	"extensions": {
+		"recommendations": ["platformio.platformio-ide"]
+	},
 	"settings": {
 		"files.associations": {
 			"*.h": "cpp",
