@@ -24,6 +24,7 @@ extern WiFiServer tcpServer;
 extern TelnetSpy SerialAndTelnet;
 
 extern int g_debugLevel;
+extern SemaphoreHandle_t g_MySerialSemaphore;
 
 /************************* OTA *********************************/
 #include <ArduinoOTA.h>
@@ -33,6 +34,30 @@ extern int g_debugLevel;
 
 extern bool g_otaFlag;
 extern unsigned long g_OTAelapsed;
+
+/************************* Timer ISR *********************************/
+
+extern hw_timer_t * g_FastTimer;
+extern hw_timer_t * g_SlowTimer;
+
+#define TIMER_FAST_NUMBER 0
+#define TIMER_SLOW_NUMBER 1
+
+#define TIMER_PRESCALER 80                      // timer counts every microseconds
+#define TIMER_FAST_FREQUENCY 25                 // 38647 Hz => 1 000 000 microseconds / 38 647 = 25.87522 microseconds
+#define TIMER_SLOW_FREQUENCY 1000 * 1000        // in microseconds
+
+extern portMUX_TYPE g_FastTimerMux;
+extern portMUX_TYPE g_SlowTimerMux;
+
+extern volatile int g_FastTimerCount;
+extern volatile int g_SlowTimerCount;
+
+/************************* Analog Read loop task *********************************/
+
+#define ESP_ANA_READ_TASK_CORE 1
+
+extern TaskHandle_t g_AnaReadTask;
 
 /************************* EEPROM Management *********************************/
 

@@ -20,10 +20,13 @@
 #include "GPS/GPS.h"
 #include "MotionMotor/MotionMotor.h"
 #include "CutMotor/CutMotor.h"
+#include "AnaReadTask/AnaReadTask.h"
 #include "StartupChecks.h"
 
 void MySetup(void)
 {
+  g_MySerialSemaphore = xSemaphoreCreateMutex();
+
   Serial.begin(SERIAL_BAUD);
   delay(500);
 
@@ -55,6 +58,8 @@ void MySetup(void)
   String Resetreason = "Reset core 1:" + String(char_reset_reason(0)) + " core 2:" + String(char_reset_reason(1)) + " - Sketch compiled: " + String(__DATE__) + " " + String(__TIME__);
   DebugPrintln(Resetreason, true);
   DebugPrintln("Serial Baud:" + String(Serial.baudRate()));
+  DebugPrintln("Running on Core:" + String(xPortGetCoreID()));
+  DebugPrintln("Chip temperature:" + String(temperatureRead(),1));
 
   EEPROMSetup();
 
@@ -97,9 +102,21 @@ void MySetup(void)
 
   GPSSetup();
 
-  bool startupChecksOk = StartupChecks();
+  AnaReadSetup();
 
-  DebugPrintln("End of Setup() - Status:" + String(startupChecksOk), DBG_VERBOSE, true);
+  SerialAndTelnet.handle();
+
+  delay(15000);     // temporary
+
+  DebugPrintln("");
+  DebugPrintln("End of Setup---------", DBG_VERBOSE, true);
+  DebugPrintln("");
+
+  bool startupChecksOk = StartupChecks();
+  
+  DebugPrintln("");
+  DebugPrintln("End of Startupchecks - Status:" + String(startupChecksOk), DBG_VERBOSE, true);
+  DebugPrintln("");
 
   SerialAndTelnet.handle();
 

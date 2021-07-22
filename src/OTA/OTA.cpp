@@ -102,6 +102,8 @@ void OTAHandle(void)
     DebugPrintln("Waiting for OTA upload ", DBG_INFO, true);
     SerialAndTelnet.handle();
     MQTTDisconnect();
+    vTaskSuspend(g_AnaReadTask);
+
 //    MQTTUnSubscribe(); // no MQTT update to avoid any interruption during upload
 
     while (g_OTAelapsed < OTA_TIMEOUT)
@@ -123,5 +125,7 @@ void OTAHandle(void)
     g_otaFlag = false;
 
     setInterval(NTP_REFRESH); // NTP updates back on
+    vTaskResume(g_AnaReadTask);
+
   }
 }

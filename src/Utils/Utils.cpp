@@ -122,11 +122,15 @@ void DebugPrint(String message, int level, boolean time)
   {
     if (g_debugLevelStr == " " && timeStr == "")
     {
+      xSemaphoreTake(g_MySerialSemaphore, portMAX_DELAY);
       MySERIAL.print(message);
+      xSemaphoreGive(g_MySerialSemaphore);
     }
     else
     {
+      xSemaphoreTake(g_MySerialSemaphore, portMAX_DELAY);
       MySERIAL.print(timeStr + "-" + g_debugLevelStr + "-" + message);
+      xSemaphoreGive(g_MySerialSemaphore);
     }
     SerialAndTelnet.handle();
   }

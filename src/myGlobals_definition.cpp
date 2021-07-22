@@ -25,11 +25,27 @@ TelnetSpy SerialAndTelnet;
 WiFiServer tcpServer(TCP_PORT);
 
 int g_debugLevel = DBG_VERBOSE;
+SemaphoreHandle_t g_MySerialSemaphore;
 
 /************************* OTA *********************************/
 
 bool g_otaFlag = false;
 unsigned long g_OTAelapsed = 0;
+
+/************************* Timer ISR *********************************/
+
+hw_timer_t * g_FastTimer = NULL;
+hw_timer_t * g_SlowTimer = NULL;
+
+portMUX_TYPE g_FastTimerMux = portMUX_INITIALIZER_UNLOCKED;
+portMUX_TYPE g_SlowTimerMux = portMUX_INITIALIZER_UNLOCKED;
+
+volatile int g_FastTimerCount = 0;
+volatile int g_SlowTimerCount = 0;
+
+/************************* Analog Read loop task *********************************/
+
+TaskHandle_t g_AnaReadTask;
 
 /************************* EEPROM Management *********************************/
 

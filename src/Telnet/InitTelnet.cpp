@@ -20,7 +20,11 @@ void InitTelnet()
   delay(100); // Wait for serial port
 
   MySERIAL.setDebugOutput(false);
+  SerialAndTelnet.handle();
+
 }
+
+
 void telnetConnected()
 {
   char ipoutBuf[18];
