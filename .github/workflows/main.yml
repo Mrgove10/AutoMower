@@ -22,11 +22,11 @@ jobs:
         run: mv include/Credentials_definitions.h.sample include/Credentials_definitions.h
         working-directory: MOWER
 
-      - name: Run PlatformIO MOWER
+      - name: Run PlatformIO
         run: platformio run
         working-directory: MOWER
 
-      - name: Upload artifacts MOWER
+      - name: Upload artifacts
         uses: actions/upload-artifact@v2
         with:
           name: MOWER - Build Artifact
@@ -51,11 +51,11 @@ jobs:
         run: mv include/Credentials_definitions.h.sample include/Credentials_definitions.h
         working-directory: BASE
 
-      - name: Run PlatformIO BASE
+      - name: Run PlatformIO
         run: platformio run
         working-directory: BASE
 
-      - name: Upload artifacts BASE
+      - name: Upload artifacts
         uses: actions/upload-artifact@v2
         with:
           name: BASE - Build Artifact
