@@ -3,9 +3,9 @@ name: PlatformIO CI
 on: [push]
 
 jobs:
-  build:
+  build_MOWER:
     runs-on: ubuntu-latest
-
+    
     steps:
       - name: Clone repo
         uses: actions/checkout@v2
@@ -20,12 +20,43 @@ jobs:
 
       - name: Rename file
         run: mv include/Credentials_definitions.h.sample include/Credentials_definitions.h
+        working-directory: MOWER
 
-      - name: Run PlatformIO
+      - name: Run PlatformIO MOWER
         run: platformio run
+        working-directory: MOWER
 
-      - name: Upload artifacts
+      - name: Upload artifacts MOWER
         uses: actions/upload-artifact@v2
         with:
-          name: Build Artifact
-          path: .pio/build/esp32dev/firmware.bin
+          name: MOWER - Build Artifact
+          path: MOWER/.pio/build/esp32dev/firmware.bin
+  
+  build_BASE:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Clone repo
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install platformio
+
+      - name: Rename file
+        run: mv include/Credentials_definitions.h.sample include/Credentials_definitions.h
+        working-directory: BASE
+
+      - name: Run PlatformIO BASE
+        run: platformio run
+        working-directory: BASE
+
+      - name: Upload artifacts BASE
+        uses: actions/upload-artifact@v2
+        with:
+          name: BASE - Build Artifact
+          path: BASE/.pio/build/esp32dev/firmware.bin
