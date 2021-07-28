@@ -2,6 +2,11 @@
 #ifndef anareadtask_h
 #define anareadtask_h
 
+int I2SAnalogRead(void);
+
+void initI2S(void);
+//void dacTask(void *params);
+
 /**
  * Fast timer ISR function
  * 

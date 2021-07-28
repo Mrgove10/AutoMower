@@ -44,20 +44,35 @@ extern hw_timer_t * g_SlowTimer;
 #define TIMER_SLOW_NUMBER 1
 
 #define TIMER_PRESCALER 80                      // timer counts every microseconds
-#define TIMER_FAST_FREQUENCY 25                 // 38647 Hz => 1 000 000 microseconds / 38 647 = 25.87522 microseconds
-#define TIMER_SLOW_FREQUENCY 1000 * 1000        // in microseconds
+#define TIMER_FAST_FREQUENCY 1000                 // 38647 Hz => 1 000 000 microseconds / 38 647 = 25.87522 microseconds
+#define TIMER_SLOW_FREQUENCY 1000 * 1000        // in microseconds => 1 second
+
+extern SemaphoreHandle_t g_FastTimerSemaphore;
 
 extern portMUX_TYPE g_FastTimerMux;
 extern portMUX_TYPE g_SlowTimerMux;
 
-extern volatile int g_FastTimerCount;
+extern volatile unsigned long g_FastTimerCount;
 extern volatile int g_SlowTimerCount;
 
 /************************* Analog Read loop task *********************************/
 
-#define ESP_ANA_READ_TASK_CORE 1
+#define ANA_READ_TASK_ESP_CORE 1
+#define ANA_READ_TASK_SAMPLE_RATE 120000     // to be merged with TIMER_FAST_FREQUENCY
+#define ANA_READ_TASK_ADC_CHANNEL ADC1_CHANNEL_3
+#define ANA_READ_BUFFER_SIZE 512
 
 extern TaskHandle_t g_AnaReadTask;
+extern portMUX_TYPE g_AnaReadMux;
+
+extern volatile int g_readAnaBuffer[ANA_READ_BUFFER_SIZE];
+extern volatile int g_readAnaBufferPtr;
+extern volatile int g_timerCallCounter;
+extern volatile unsigned long g_AnalogReadMicrosTotal;
+
+extern volatile long g_MissedReadings;
+extern volatile float g_rate;
+extern volatile long g_Triggers;
 
 /************************* EEPROM Management *********************************/
 
@@ -343,4 +358,4 @@ extern bool g_CutMotorAlarm;
 extern MowerState g_CurrentState;
 extern MowerState g_PreviousState;
 
-#define MOWER_DATA_DISPLAY_INTERVAL 1000            // in ms
+#define MOWER_DATA_DISPLAY_INTERVAL 2000            // in ms

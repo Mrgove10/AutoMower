@@ -20,7 +20,7 @@ void setup_wifi()
 
   int count = 0;
 
-  while (WiFi.status() != WL_CONNECTED && count < 15)
+  while (WiFi.status() != WL_CONNECTED && count < 30)
   {
     delay(500);
     count = count + 1;
@@ -34,7 +34,7 @@ void setup_wifi()
 
     WiFi.begin(WiFissid[1], WiFipassword[1]);
     count = 0;
-    while (WiFi.status() != WL_CONNECTED && count < 15)
+    while (WiFi.status() != WL_CONNECTED && count < 30)
     {
       delay(500);
       count = count + 1;

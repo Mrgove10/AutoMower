@@ -40,12 +40,25 @@ hw_timer_t * g_SlowTimer = NULL;
 portMUX_TYPE g_FastTimerMux = portMUX_INITIALIZER_UNLOCKED;
 portMUX_TYPE g_SlowTimerMux = portMUX_INITIALIZER_UNLOCKED;
 
-volatile int g_FastTimerCount = 0;
+SemaphoreHandle_t g_FastTimerSemaphore;
+
+volatile unsigned long g_FastTimerCount = 0;
 volatile int g_SlowTimerCount = 0;
 
 /************************* Analog Read loop task *********************************/
 
 TaskHandle_t g_AnaReadTask;
+portMUX_TYPE g_AnaReadMux = portMUX_INITIALIZER_UNLOCKED;
+
+volatile int g_readAnaBuffer[ANA_READ_BUFFER_SIZE];
+volatile int g_readAnaBufferPtr = 0;
+volatile int g_timerCallCounter = 0;
+volatile unsigned long g_AnalogReadMicrosTotal = 0;
+
+volatile long g_MissedReadings = 0;
+volatile float g_rate = 0;
+volatile long g_Triggers = 0;
+
 
 /************************* EEPROM Management *********************************/
 

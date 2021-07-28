@@ -70,7 +70,10 @@ void DisplayMowerData()
                    " |MC:" + String(g_MotorCurrent[MOTOR_CURRENT_CUT], 1) +
                    " |MCAlm:" + String(g_CutMotorAlarm) +
                    " |Volt:" + String(float(g_BatteryVotlage) / 1000.0f, 1) +
-                   " |Head:" + String(g_CompassHeading, 1),
+                   " |Head:" + String(g_CompassHeading, 1) +
+                   "|TimCalls:" + String(g_Triggers)  +
+                   " |Missed:" + String(g_MissedReadings) +
+                   " |Rate:" + String(g_rate, 3) + "KHz ",
                DBG_INFO, true);
 
 //    DisplayClear();
