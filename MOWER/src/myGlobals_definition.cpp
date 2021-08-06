@@ -34,30 +34,62 @@ unsigned long g_OTAelapsed = 0;
 
 /************************* Timer ISR *********************************/
 
-hw_timer_t * g_FastTimer = NULL;
-hw_timer_t * g_SlowTimer = NULL;
+// hw_timer_t * g_FastTimer = NULL;
+// hw_timer_t * g_SlowTimer = NULL;
 
-portMUX_TYPE g_FastTimerMux = portMUX_INITIALIZER_UNLOCKED;
-portMUX_TYPE g_SlowTimerMux = portMUX_INITIALIZER_UNLOCKED;
+// portMUX_TYPE g_FastTimerMux = portMUX_INITIALIZER_UNLOCKED;
+// portMUX_TYPE g_SlowTimerMux = portMUX_INITIALIZER_UNLOCKED;
 
-SemaphoreHandle_t g_FastTimerSemaphore;
+// SemaphoreHandle_t g_FastTimerSemaphore;
 
-volatile unsigned long g_FastTimerCount = 0;
-volatile int g_SlowTimerCount = 0;
+// volatile unsigned long g_FastTimerCount = 0;
+// volatile int g_SlowTimerCount = 0;
+
+/************************* Perimeter signal code *********************************/
+
+// Based on Ardumower project :http://grauonline.de/alexwww/ardumower/filter/filter.html    
+// "pseudonoise4_pw" signal
+// if using reconstructed sender signal, use this
+int8_t g_sigcode_norm[PERIMETER_SIGNAL_CODE_LENGTH] = { 1,1,-1,-1,1,-1,1,-1,-1,1,-1,1,1,-1,-1,1,-1,-1,1,-1,-1,1,1,-1 };   
+// "pseudonoise4_pw" signal (differential)
+// if using the coil differential signal, use this
+int8_t g_sigcode_diff[PERIMETER_SIGNAL_CODE_LENGTH] = { 1,0,-1, 0,1,-1,1,-1, 0,1,-1,1,0,-1, 0,1,-1, 0,1,-1, 0,1,0,-1 };   
+
+// pseudonoise5_nrz  signal
+// if using reconstructed sender signal, use this
+// int8_t g_sigcode_norm[PERIMETER_SIGNAL_CODE_LENGTH] = {1, 1, 1, -1, -1, -1, 1, 1, -1, 1, 1, 1, -1, 1, -1, 1, -1, -1, -1, -1, 1, -1, -1, 1, -1, 1, 1, -1, -1, 1, 1}; // pseudonoise5_nrz
+// "pseudonoise5_nrz" signal (differential)
+// if using the coil differential signal, use this
+// int8_t g_sigcode_diff[PERIMETER_SIGNAL_CODE_LENGTH] = {1, 0, 0, -1,  0,  0, 1, 0, -1, 1, 0, 0, -1, 1, -1, 1, -1,  0,  0,  0, 1, -1,  0, 1, -1, 0, 0, -1,  0, 1, 0};   
+
+/************************* High speed Analog Read task *********************************/
+
+SemaphoreHandle_t g_ADCinUse;               // to protect access to ADC between I2S driver and other analogRead calls
+SemaphoreHandle_t g_RawValuesSemaphore;  // to protect access to shared global variables used in Perimter data Processing task
+
+QueueHandle_t g_I2SQueueHandle; // Queue used by I2S driver to notify for availability of new samples in a full DMA buffer
+TaskHandle_t g_FastAnaReadTaskHandle;    // High speed analog read RTOS task handle
+
+uint16_t g_raw[PERIMETER_RAW_SAMPLES];   // Circular Buffer containing last samples read from I2S DMA buffers
+int g_rawWritePtr = 0;  // Pointer to last value written to g_raw circular buffer
+
+unsigned int g_FastAnaReadTimeout = 0; // Counter of I2S read time outs, indication incorrect situation
+unsigned int g_inQueueMax = 0;    // Max I2S notification queue waiting events (should be 0)
+unsigned int g_inQueue = 0;       // Accumulated I2S notification queue waiting events (should be 0)
 
 /************************* Analog Read loop task *********************************/
 
-TaskHandle_t g_AnaReadTask;
-portMUX_TYPE g_AnaReadMux = portMUX_INITIALIZER_UNLOCKED;
+// TaskHandle_t g_AnaReadTask;
+// portMUX_TYPE g_AnaReadMux = portMUX_INITIALIZER_UNLOCKED;
 
-volatile int g_readAnaBuffer[ANA_READ_BUFFER_SIZE];
-volatile int g_readAnaBufferPtr = 0;
-volatile int g_timerCallCounter = 0;
-volatile unsigned long g_AnalogReadMicrosTotal = 0;
+// volatile int g_readAnaBuffer[ANA_READ_BUFFER_SIZE];
+// volatile int g_readAnaBufferPtr = 0;
+// volatile int g_timerCallCounter = 0;
+// volatile unsigned long g_AnalogReadMicrosTotal = 0;
 
-volatile long g_MissedReadings = 0;
-volatile float g_rate = 0;
-volatile long g_Triggers = 0;
+// volatile long g_MissedReadings = 0;
+// volatile float g_rate = 0;
+// volatile long g_Triggers = 0;
 
 
 /************************* EEPROM Management *********************************/

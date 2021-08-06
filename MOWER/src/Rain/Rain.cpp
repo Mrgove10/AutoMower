@@ -5,6 +5,7 @@
 #include "Rain/Rain.h"
 #include "Utils/Utils.h"
 #include "Display/Display.h"
+#include "FastAnaReadTsk/FastAnaReadTsk.h"
 
 /**
  * Checks to see if rain sensor is connected (and hopefully functionning)
@@ -12,7 +13,7 @@
  */
 bool RainSensorCheck(void)
 {
-  int raw = analogRead(PIN_ESP_RAIN);
+  int raw = ProtectedAnalogRead(PIN_ESP_RAIN);
 
   DebugPrintln("Raw Rain value: " + String(raw), DBG_VERBOSE, true);
 
@@ -47,7 +48,7 @@ bool RainSensorCheck(void)
  */
 bool isRaining(void)
 {
-  int raw = analogRead(PIN_ESP_RAIN);
+  int raw = ProtectedAnalogRead(PIN_ESP_RAIN);
   DebugPrintln("Raining check value: " + String(raw), DBG_VERBOSE, true);
 
   return raw > RAIN_SENSOR_RAINING_THRESHOLD;

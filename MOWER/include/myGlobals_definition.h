@@ -37,42 +37,93 @@ extern unsigned long g_OTAelapsed;
 
 /************************* Timer ISR *********************************/
 
-extern hw_timer_t * g_FastTimer;
-extern hw_timer_t * g_SlowTimer;
+// extern hw_timer_t * g_FastTimer;
+// extern hw_timer_t * g_SlowTimer;
 
-#define TIMER_FAST_NUMBER 0
-#define TIMER_SLOW_NUMBER 1
+// #define TIMER_FAST_NUMBER 0
+// #define TIMER_SLOW_NUMBER 1
 
-#define TIMER_PRESCALER 80                      // timer counts every microseconds
-#define TIMER_FAST_FREQUENCY 1000                 // 38647 Hz => 1 000 000 microseconds / 38 647 = 25.87522 microseconds
-#define TIMER_SLOW_FREQUENCY 1000 * 1000        // in microseconds => 1 second
+// #define TIMER_PRESCALER 80                      // timer counts every microseconds
+// #define TIMER_FAST_FREQUENCY 1000                 // 38647 Hz => 1 000 000 microseconds / 38 647 = 25.87522 microseconds
+// #define TIMER_SLOW_FREQUENCY 1000 * 1000        // in microseconds => 1 second
 
-extern SemaphoreHandle_t g_FastTimerSemaphore;
+// extern SemaphoreHandle_t g_FastTimerSemaphore;
 
-extern portMUX_TYPE g_FastTimerMux;
-extern portMUX_TYPE g_SlowTimerMux;
+// extern portMUX_TYPE g_FastTimerMux;
+// extern portMUX_TYPE g_SlowTimerMux;
 
-extern volatile unsigned long g_FastTimerCount;
-extern volatile int g_SlowTimerCount;
+// extern volatile unsigned long g_FastTimerCount;
+// extern volatile int g_SlowTimerCount;
 
-/************************* Analog Read loop task *********************************/
+/************************* Perimeter signal code *********************************/
 
-#define ANA_READ_TASK_ESP_CORE 1
-#define ANA_READ_TASK_SAMPLE_RATE 120000     // to be merged with TIMER_FAST_FREQUENCY
-#define ANA_READ_TASK_ADC_CHANNEL ADC1_CHANNEL_3
-#define ANA_READ_BUFFER_SIZE 512
+// Based on Ardumower project :http://grauonline.de/alexwww/ardumower/filter/filter.html    
+// "pseudonoise4_pw" signal
+#define PERIMETER_SIGNAL_CODE_LENGTH 24
+// pseudonoise5_nrz  signal
+// #define PERIMETER_SIGNAL_CODE_LENGTH 31
 
-extern TaskHandle_t g_AnaReadTask;
-extern portMUX_TYPE g_AnaReadMux;
+extern int8_t g_sigcode_norm[PERIMETER_SIGNAL_CODE_LENGTH];
+extern int8_t g_sigcode_diff[PERIMETER_SIGNAL_CODE_LENGTH];
 
-extern volatile int g_readAnaBuffer[ANA_READ_BUFFER_SIZE];
-extern volatile int g_readAnaBufferPtr;
-extern volatile int g_timerCallCounter;
-extern volatile unsigned long g_AnalogReadMicrosTotal;
+/************************* High speed Analog Read task *********************************/
+#define I2S_PORT I2S_NUM_0
+#define I2S_READ_TIMEOUT 1 // in RTOS ticks
+#define I2S_ADC_UNIT ADC_UNIT_1 // ADC Unit used
+#define I2S_ADC_CHANNEL ADC1_CHANNEL_3 /*!< ADC1 channel 3 is GPIO39 */
 
-extern volatile long g_MissedReadings;
-extern volatile float g_rate;
-extern volatile long g_Triggers;
+// The principle is to capture in one buffer at least 2 Perimeter cable codes
+// Additinnaly, the code is over-sampled 4 times as it is red 4 times faster than the sender sends the code.
+// This oversamplin is needed as the coil detects the change of magnetic field cause by the chnage of direction(because the change of field)
+// of the current in the perimeter wire and this field does not last very long.
+// In practice, the sender sends a 1 or 0 or -1 at 9 kHz (the pulse is therefore 104 microseconds long) and the mower sensing function read the 
+// signal at ~38 kHz (4 times faster) and aims to capture 4 values for each "pulse" emited by the sender.
+// For example, if the pulse sequence is 24 values long, the DMA buffer is 24 * 4 * 2 = 1 samples long.
+// To avoid having to read the buffer too often (and effectively impacting cpu use) the DMA buffer is dimentioned to hold 2 complete sequences
+// Therefore, the DMA buffer read frequency is reduced. For example, for a 24 pulse sequence, a complete sequence takes 24*104=2496 us to send and the read 
+// frequency for 2 sequences is 24*104*2=4992 us or approximately 200 times (1,000,000/4992) per second.
+// To limit any loss of data dues to temporary slow DMA buffer read, 4 buffers are allocated.
+
+#define I2S_SAMPLE_RATE 38400       // I2S scanning rate in samples per second
+#define I2S_DMA_BUFFERS 4           // number of allocated I2S DMA buffers
+#define I2S_DMA_BUFFER_LENGTH PERIMETER_SIGNAL_CODE_LENGTH * 4 * 2 // in number of samples
+#define PERIMETER_RAW_SAMPLES I2S_DMA_BUFFER_LENGTH * 5 // We store more samples than just one DMA buffer to have more data to process
+
+#define FAST_ANA_READ_TASK_ESP_CORE 1           // Core assigned to task
+#define FAST_ANA_READ_TASK_PRIORITY 1           // Priority assigned to task
+#define FAST_ANA_READ_TASK_STACK_SIZE 12000     // Stack assigned to task (in bytes)
+#define FAST_ANA_READ_TASK_NAME "FastAnaReadTsk"     // Task name
+
+extern SemaphoreHandle_t g_ADCinUse;        // to protect access to ADC between I2S driver and other analogRead calls
+extern SemaphoreHandle_t g_RawValuesSemaphore;  // to protect access to shared global variables used in Perimter data Processing task
+
+extern QueueHandle_t g_I2SQueueHandle; // Queue used by I2S driver to notify for availability of new samples in a full DMA buffer
+
+extern TaskHandle_t g_FastAnaReadTaskHandle;    // High speed analog read RTOS task handle
+
+extern uint16_t g_raw[PERIMETER_RAW_SAMPLES];   // Circular Buffer containing last samples read from I2S DMA buffers
+extern int g_rawWritePtr;  // Pointer to last value written to g_raw circular buffer
+
+extern unsigned int g_FastAnaReadTimeout; // Counter of I2S read time outs, indication incorrect situation
+extern unsigned int g_inQueueMax;    // Max I2S notification queue waiting events (should be 0)
+extern unsigned int g_inQueue;       // Accumulated I2S notification queue waiting events (should be 0)
+
+// #define ANA_READ_TASK_ESP_CORE 1
+// #define ANA_READ_TASK_SAMPLE_RATE 120000     // to be merged with TIMER_FAST_FREQUENCY
+// #define ANA_READ_TASK_ADC_CHANNEL ADC1_CHANNEL_3
+// #define ANA_READ_BUFFER_SIZE 512
+
+// extern TaskHandle_t g_AnaReadTask;
+// extern portMUX_TYPE g_AnaReadMux;
+
+// extern volatile int g_readAnaBuffer[ANA_READ_BUFFER_SIZE];
+// extern volatile int g_readAnaBufferPtr;
+// extern volatile int g_timerCallCounter;
+// extern volatile unsigned long g_AnalogReadMicrosTotal;
+
+// extern volatile long g_MissedReadings;
+// extern volatile float g_rate;
+// extern volatile long g_Triggers;
 
 /************************* EEPROM Management *********************************/
 

@@ -5,6 +5,7 @@
 #include "Current/Current.h"
 #include "Utils/Utils.h"
 #include "Display/Display.h"
+#include "FastAnaReadTsk/FastAnaReadTsk.h"
 
 /**
  * I2C INA219 Current Sensor Setup function
@@ -144,9 +145,9 @@ bool BatteryChargeCurrentRead(const bool Now)
 
   if ((millis() - LastBatteryChargeCurrentRead > BATTERY_CHARGE_READ_INTERVAL) || Now)
   {
-    int raw1 = analogRead(PIN_ESP_AMP_CHARGE);
-    int raw2 = analogRead(PIN_ESP_AMP_CHARGE);
-    int raw3 = analogRead(PIN_ESP_AMP_CHARGE);
+    int raw1 = ProtectedAnalogRead(PIN_ESP_AMP_CHARGE);
+    int raw2 = ProtectedAnalogRead(PIN_ESP_AMP_CHARGE);
+    int raw3 = ProtectedAnalogRead(PIN_ESP_AMP_CHARGE);
     int raw = (raw1 + raw2 + raw3) / 3;
 
     //  DebugPrintln("Raw Charge current value: " + String(raw), DBG_VERBOSE, true);

@@ -20,7 +20,7 @@
 #include "GPS/GPS.h"
 #include "MotionMotor/MotionMotor.h"
 #include "CutMotor/CutMotor.h"
-#include "AnaReadTask/AnaReadTask.h"
+#include "FastAnaReadTsk/FastAnaReadTsk.h"
 #include "StartupChecks.h"
 
 void MySetup(void)
@@ -102,7 +102,7 @@ void MySetup(void)
 
   GPSSetup();
 
-  AnaReadSetup();
+  FastAnaReadLoopTaskCreate();
 
   SerialAndTelnet.handle();
 

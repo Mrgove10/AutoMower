@@ -71,10 +71,13 @@ void DisplayMowerData()
                    " |MCAlm:" + String(g_CutMotorAlarm) +
                    " |Volt:" + String(float(g_BatteryVotlage) / 1000.0f, 1) +
                    " |Head:" + String(g_CompassHeading, 1) +
-                   "|TimCalls:" + String(g_Triggers)  +
-                   " |Missed:" + String(g_MissedReadings) +
-                   " |Rate:" + String(g_rate, 3) + "KHz ",
+                   " |Timouts:" + String(g_FastAnaReadTimeout)  +
+                   " |MaxQ:" + String(g_inQueueMax),
                DBG_INFO, true);
+    
+    g_FastAnaReadTimeout = 0;
+    g_inQueueMax = 0;
+    g_inQueue = 0;
 
 //    DisplayClear();
     DisplayPrint(0, 0, "T1: " + String(g_Temperature[TEMPERATURE_1_RED], 1) + " T2: " + String(g_Temperature[TEMPERATURE_2_BLUE], 1), true);

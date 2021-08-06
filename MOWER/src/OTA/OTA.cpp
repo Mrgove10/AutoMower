@@ -7,6 +7,7 @@
 #include "CutMotor/CutMotor.h"
 #include "Fan/Fan.h"
 #include "MQTT/MQTT.h"
+#include "FastAnaReadTsk/FastAnaReadTsk.h"
 #include "Display/Display.h"
 
 /* OTA init procedure */
@@ -102,7 +103,7 @@ void OTAHandle(void)
     DebugPrintln("Waiting for OTA upload ", DBG_INFO, true);
     SerialAndTelnet.handle();
     MQTTDisconnect();
-    vTaskSuspend(g_AnaReadTask);
+    FastAnaReadLoopTaskSuspend();
 
 //    MQTTUnSubscribe(); // no MQTT update to avoid any interruption during upload
 
@@ -125,7 +126,6 @@ void OTAHandle(void)
     g_otaFlag = false;
 
     setInterval(NTP_REFRESH); // NTP updates back on
-    vTaskResume(g_AnaReadTask);
-
+    FastAnaReadLoopTaskResume();
   }
 }

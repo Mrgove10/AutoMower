@@ -5,6 +5,7 @@
 #include "Voltage/Voltage.h"
 #include "Utils/Utils.h"
 #include "Display/Display.h"
+#include "FastAnaReadTsk/FastAnaReadTsk.h"
 
 /**
  * Checks to see if voltage is connected and its level
@@ -48,7 +49,7 @@ int BatteryVoltageRead(const bool Now)
 
   if ((millis() - LastVoltageRead > BATTERY_VOLTAGE_READ_INTERVAL) || Now)
   {
-    int voltraw = analogRead(PIN_ESP_BAT_VOLT);
+    int voltraw = ProtectedAnalogRead(PIN_ESP_BAT_VOLT);
     int volt = map(voltraw, 0, 4095, 0, VOLTAGE_RANGE_MAX);
 
     g_BatteryVotlage = volt;
