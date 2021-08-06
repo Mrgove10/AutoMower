@@ -13,18 +13,21 @@
 
 /**
  * Mower in idle state
+ * @param StateChange boolean indicating this is the first call to this state after a state change
+ * @param PreviousState MowerState indicating previous state
  */
-void MowerIdle(const bool StateChange)
+void MowerIdle(const bool StateChange, const MowerState PreviousState)
 {
   // Waiting for input ?
   // Send telemetry
 }
 
-
 /**
  * Mower docked
+ * @param StateChange boolean indicating this is the first call to this state after a state change
+ * @param PreviousState MowerState indicating previous state
  */
-void MowerDocked(const bool StateChange)
+void MowerDocked(const bool StateChange, const MowerState PreviousState)
 {
   // wait for GO
   // send telemetry
@@ -36,9 +39,52 @@ void MowerDocked(const bool StateChange)
 
 /**
  * Mower in mowing mode
+ * @param StateChange boolean indicating this is the first call to this state after a state change
+ * @param PreviousState MowerState indicating previous state
  */
-void MowerMowing(const bool StateChange)
+void MowerMowing(const bool StateChange, const MowerState PreviousState)
 {
+
+
+  //--------------------------------
+  // Actions to take when entering the state
+  //--------------------------------
+
+  if (StateChange) 
+  {
+    DebugPrintln("");
+    LogPrintln("Mowing Started", TAG_MOWING, DBG_INFO);
+
+    //change Telemetry frequency
+    //Initialise Mowing start time
+    //
+
+
+  //--------------------------------
+  // Sonar environement sensing to check if surounding is clear
+  //--------------------------------
+
+    SonarRead(SONAR_FRONT, true);
+    SonarRead(SONAR_LEFT, true);
+    SonarRead(SONAR_RIGHT, true);
+
+// if no obstacles detected and all conditions ok, start motors
+    if (!BumperRead(BUMPER_RIGHT) && 
+        !BumperRead(BUMPER_LEFT) &&
+        // need to add condition on Tilt sensors
+        g_SonarDistance[SONAR_FRONT] > SONAR_MIN_DISTANCE_FOR_TURN &&
+        g_SonarDistance[SONAR_LEFT] > SONAR_MIN_DISTANCE_FOR_TURN &&
+        g_SonarDistance[SONAR_RIGHT] > SONAR_MIN_DISTANCE_FOR_TURN)
+    {
+      MowerForward(MOWER_MOVES_SPEED_SLOW);
+//    CutMotorStart(MOWER_MOWING_CUTTING_DIRECTION, MOWER_MOWING_CUTTING_SPEED);
+    }
+  }
+
+  //--------------------------------
+  // Sonar environement sensing for approaching objects
+  //--------------------------------
+
   SonarRead(SONAR_FRONT, true);
   SonarRead(SONAR_LEFT, true);
   SonarRead(SONAR_RIGHT, true);
@@ -57,7 +103,7 @@ void MowerMowing(const bool StateChange)
   }
 
   //--------------------------------
-  // Bumper Collision dection
+  // Bumper Collision detection
   //--------------------------------
 
   if (BumperRead(BUMPER_RIGHT) || BumperRead(BUMPER_LEFT))
@@ -91,7 +137,7 @@ void MowerMowing(const bool StateChange)
   }  
 
   //--------------------------------
-  // Front Sonar Collision dection
+  // Front Sonar Collision detection
   //--------------------------------
 
   SonarRead(SONAR_FRONT, true);
@@ -131,7 +177,7 @@ void MowerMowing(const bool StateChange)
   }
 
   //--------------------------------
-  // Left Sonar Collision dection
+  // Left Sonar Collision detection
   //--------------------------------
 
   SonarRead(SONAR_LEFT, true);
@@ -194,29 +240,14 @@ void MowerMowing(const bool StateChange)
 
     // TO DO
 
-  //--------------------------------
-  // Actions to take when entering the state
-  //--------------------------------
-
-  if (StateChange) 
-  {
-    DebugPrintln("");
-    LogPrintln("Mowing Started", TAG_MOWING, DBG_INFO);
-
-    MowerForward(MOWER_MOWING_TRAVEL_SPEED);
-    CutMotorStart(MOWER_MOWING_CUTTING_DIRECTION, MOWER_MOWING_CUTTING_SPEED);
-    //change Telemetry frequency
-    //Initialise Mowing start time
-    //
-  }
-
 }
 
 /**
  * Mower returning to base
- * 
+ * @param StateChange boolean indicating this is the first call to this state after a state change
+ * @param PreviousState MowerState indicating previous state
  */
-void MowerGoingToBase(const bool StateChange)
+void MowerGoingToBase(const bool StateChange, const MowerState PreviousState)
 {
   // stop motors
   // find target with compas
@@ -227,9 +258,10 @@ void MowerGoingToBase(const bool StateChange)
 
 /**
  * Mower leaving base
- * 
+ * @param StateChange boolean indicating this is the first call to this state after a state change
+ * @param PreviousState MowerState indicating previous state
  */
-void MowerLeavingBase(const bool StateChange)
+void MowerLeavingBase(const bool StateChange, const MowerState PreviousState)
 {
   // go backward for 50 cm
 //  uTurn();
@@ -239,13 +271,23 @@ void MowerLeavingBase(const bool StateChange)
 
 /**
  * Mower in error
- * 
+ * @param StateChange boolean indicating this is the first call to this state after a state change
+ * @param PreviousState MowerState indicating previous state
  */
-void MowerInError(const bool StateChange)
+void MowerInError(const bool StateChange, const MowerState PreviousState)
 {
+  if (StateChange) 
+  {
   // STOP all motors
+    MowerStop();
+    CutMotorStop(true);
+
+    DebugPrintln("");
+    LogPrintln("Mowing stopped on Error # " + String(g_CurrentErrorCode), TAG_ERROR, DBG_ERROR);
+  }
   // disable sensors
   // send notification to phone
   // send telemetry
+  // sound SOS beep
   // wait for user action
 }

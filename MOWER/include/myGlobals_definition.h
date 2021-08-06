@@ -344,6 +344,13 @@ extern int g_CutMotorDirection;
 extern int g_CutMotorSpeed;
 extern bool g_CutMotorAlarm;
 
+/************************* Error variables *********************************/
+#define ERROR_NO_ERROR 0
+#define ERROR_BATTERY_CRITICAL 1 
+#define ERROR_UNDEFINED 999
+
+extern int g_CurrentErrorCode;      // Current Error code 
+
 /************************* Test sequence variables *********************************/
 #define TEST_SEQ_STEP_WAIT 1000
 #define TEST_SEQ_STEP_ERROR_WAIT 1000

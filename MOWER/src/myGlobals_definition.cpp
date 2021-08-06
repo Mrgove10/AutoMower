@@ -209,6 +209,9 @@ int g_CutMotorDirection = CUT_MOTOR_STOPPED;
 int g_CutMotorSpeed = 0;
 bool g_CutMotorAlarm = false;
 
+/************************* Error variables *********************************/
+int g_CurrentErrorCode = ERROR_NO_ERROR;      // Current Error code 
+
 /************************* Program variables *********************************/
 
 MowerState g_CurrentState = MowerState::idle;

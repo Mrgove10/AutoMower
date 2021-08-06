@@ -38,27 +38,27 @@ void loop()
   switch (g_CurrentState)
   {
   case MowerState::idle:
-    MowerIdle(stateChange);
+    MowerIdle(stateChange, g_PreviousState);
     break;
 
   case MowerState::docked:
-    MowerDocked(stateChange);
+    MowerDocked(stateChange, g_PreviousState);
     break;
 
   case MowerState::mowing:
-    MowerMowing(stateChange);
+    MowerMowing(stateChange, g_PreviousState);
     break;
 
   case MowerState::going_to_base:
-    MowerGoingToBase(stateChange);
+    MowerGoingToBase(stateChange, g_PreviousState);
     break;
 
   case MowerState::leaving_base:
-    MowerLeavingBase(stateChange);
+    MowerLeavingBase(stateChange, g_PreviousState);
     break;
 
   case MowerState::error:
-    MowerInError(stateChange);
+    MowerInError(stateChange, g_PreviousState);
     break;
 
   case MowerState::test:
