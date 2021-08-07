@@ -75,9 +75,9 @@ void MotionMotorStart(const int Motor, const int Direction, const int Speed)
  */
 void MotionMotorSetSpeed(const int Motor, const int Speed)
 {
-  int checkedspeed = max(0,Speed);          // make sure speed is in 0-100% range
-  checkedspeed = min(100, Speed);          // make sure speed is in 0-100% range
-  int SpeedPoints = int(map(checkedspeed,0,100,0,MOTION_MOTOR_POINTS));      // convert speed (in %) into PWM range
+  int checkedspeed = max(0, Speed);                                         // make sure speed is in 0-100% range
+  checkedspeed = min(100, Speed);                                           // make sure speed is in 0-100% range
+  int SpeedPoints = int(map(checkedspeed, 0, 100, 0, MOTION_MOTOR_POINTS)); // convert speed (in %) into PWM range
 
   if ((Speed < MOTION_MOTOR_MIN_SPEED) && (Speed != 0))
   {

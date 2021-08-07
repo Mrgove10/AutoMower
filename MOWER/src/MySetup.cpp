@@ -60,7 +60,7 @@ void MySetup(void)
   DebugPrintln(Resetreason, true);
   DebugPrintln("Serial Baud:" + String(Serial.baudRate()));
   DebugPrintln("Running on Core:" + String(xPortGetCoreID()));
-  DebugPrintln("Chip temperature:" + String(temperatureRead(),1));
+  DebugPrintln("Chip temperature:" + String(temperatureRead(), 1));
 
   EEPROMSetup();
 
@@ -92,7 +92,7 @@ void MySetup(void)
   MotionMotorSetup();
 
   CutMotorSetup();
-  
+
   MotorCurrentSensorSetup();
 
   CompassSensorSetup();
@@ -109,14 +109,14 @@ void MySetup(void)
 
   SerialAndTelnet.handle();
 
-  delay(15000);     // temporary
+  delay(15000); // temporary
 
   DebugPrintln("");
   DebugPrintln("End of Setup---------", DBG_VERBOSE, true);
   DebugPrintln("");
 
   bool startupChecksOk = StartupChecks();
-  
+
   DebugPrintln("");
   DebugPrintln("End of Startupchecks - Status:" + String(startupChecksOk), DBG_VERBOSE, true);
   DebugPrintln("");

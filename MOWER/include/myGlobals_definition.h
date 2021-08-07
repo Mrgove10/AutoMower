@@ -56,7 +56,7 @@ extern unsigned long g_OTAelapsed;
 
 /************************* Perimeter signal code *********************************/
 
-// Based on Ardumower project :http://grauonline.de/alexwww/ardumower/filter/filter.html    
+// Based on Ardumower project :http://grauonline.de/alexwww/ardumower/filter/filter.html
 // "pseudonoise4_pw" signal
 #define PERIMETER_SIGNAL_CODE_LENGTH 24
 // pseudonoise5_nrz  signal
@@ -68,45 +68,45 @@ extern int8_t g_sigcode_diff[PERIMETER_SIGNAL_CODE_LENGTH];
 #define PERIMETER_SUBSAMPLE 4
 /************************* High speed Analog Read task *********************************/
 #define I2S_PORT I2S_NUM_0
-#define I2S_READ_TIMEOUT 1 // in RTOS ticks
-#define I2S_ADC_UNIT ADC_UNIT_1 // ADC Unit used
+#define I2S_READ_TIMEOUT 1             // in RTOS ticks
+#define I2S_ADC_UNIT ADC_UNIT_1        // ADC Unit used
 #define I2S_ADC_CHANNEL ADC1_CHANNEL_3 /*!< ADC1 channel 3 is GPIO39 */
 
 // The principle is to capture in one buffer at least 2 Perimeter cable codes
 // Additinnaly, the code is over-sampled 4 times as it is red 4 times faster than the sender sends the code.
 // This oversamplin is needed as the coil detects the change of magnetic field cause by the chnage of direction(because the change of field)
 // of the current in the perimeter wire and this field does not last very long.
-// In practice, the sender sends a 1 or 0 or -1 at 9 kHz (the pulse is therefore 104 microseconds long) and the mower sensing function read the 
+// In practice, the sender sends a 1 or 0 or -1 at 9 kHz (the pulse is therefore 104 microseconds long) and the mower sensing function read the
 // signal at ~38 kHz (4 times faster) and aims to capture 4 values for each "pulse" emited by the sender.
 // For example, if the pulse sequence is 24 values long, the DMA buffer is 24 * 4 * 2 = 1 samples long.
 // To avoid having to read the buffer too often (and effectively impacting cpu use) the DMA buffer is dimentioned to hold 2 complete sequences
-// Therefore, the DMA buffer read frequency is reduced. For example, for a 24 pulse sequence, a complete sequence takes 24*104=2496 us to send and the read 
+// Therefore, the DMA buffer read frequency is reduced. For example, for a 24 pulse sequence, a complete sequence takes 24*104=2496 us to send and the read
 // frequency for 2 sequences is 24*104*2=4992 us or approximately 200 times (1,000,000/4992) per second.
 // To limit any loss of data dues to temporary slow DMA buffer read, 4 buffers are allocated.
 
-#define I2S_SAMPLE_RATE 38400       // I2S scanning rate in samples per second
-#define I2S_DMA_BUFFERS 4           // number of allocated I2S DMA buffers
-#define I2S_DMA_BUFFER_LENGTH PERIMETER_SIGNAL_CODE_LENGTH * PERIMETER_SUBSAMPLE * 2 // in number of samples
-#define PERIMETER_RAW_SAMPLES I2S_DMA_BUFFER_LENGTH * 5 // We store more samples than just one DMA buffer to have more data to process
+#define I2S_SAMPLE_RATE 38400                                                       // I2S scanning rate in samples per second
+#define I2S_DMA_BUFFERS 4                                                           // number of allocated I2S DMA buffers
+#define I2S_DMA_BUFFER_LENGTH PERIMETER_SIGNAL_CODE_LENGTH *PERIMETER_SUBSAMPLE * 2 // in number of samples
+#define PERIMETER_RAW_SAMPLES I2S_DMA_BUFFER_LENGTH * 5                             // We store more samples than just one DMA buffer to have more data to process
 
-#define FAST_ANA_READ_TASK_ESP_CORE 1           // Core assigned to task
-#define FAST_ANA_READ_TASK_PRIORITY 1           // Priority assigned to task
-#define FAST_ANA_READ_TASK_STACK_SIZE 12000     // Stack assigned to task (in bytes)
-#define FAST_ANA_READ_TASK_NAME "FastAnaReadTsk"     // Task name
+#define FAST_ANA_READ_TASK_ESP_CORE 1            // Core assigned to task
+#define FAST_ANA_READ_TASK_PRIORITY 1            // Priority assigned to task
+#define FAST_ANA_READ_TASK_STACK_SIZE 12000      // Stack assigned to task (in bytes)
+#define FAST_ANA_READ_TASK_NAME "FastAnaReadTsk" // Task name
 
-extern SemaphoreHandle_t g_ADCinUse;        // to protect access to ADC between I2S driver and other analogRead calls
-extern SemaphoreHandle_t g_RawValuesSemaphore;  // to protect access to shared global variables used in Perimter data Processing task
+extern SemaphoreHandle_t g_ADCinUse;           // to protect access to ADC between I2S driver and other analogRead calls
+extern SemaphoreHandle_t g_RawValuesSemaphore; // to protect access to shared global variables used in Perimter data Processing task
 
 extern QueueHandle_t g_I2SQueueHandle; // Queue used by I2S driver to notify for availability of new samples in a full DMA buffer
 
-extern TaskHandle_t g_FastAnaReadTaskHandle;    // High speed analog read RTOS task handle
+extern TaskHandle_t g_FastAnaReadTaskHandle; // High speed analog read RTOS task handle
 
-extern uint16_t g_raw[PERIMETER_RAW_SAMPLES];   // Circular Buffer containing last samples read from I2S DMA buffers
-extern int g_rawWritePtr;  // Pointer to last value written to g_raw circular buffer
+extern uint16_t g_raw[PERIMETER_RAW_SAMPLES]; // Circular Buffer containing last samples read from I2S DMA buffers
+extern int g_rawWritePtr;                     // Pointer to last value written to g_raw circular buffer
 
 extern unsigned int g_FastAnaReadTimeout; // Counter of I2S read time outs, indication incorrect situation
-extern unsigned int g_inQueueMax;    // Max I2S notification queue waiting events (should be 0)
-extern unsigned int g_inQueue;       // Accumulated I2S notification queue waiting events (should be 0)
+extern unsigned int g_inQueueMax;         // Max I2S notification queue waiting events (should be 0)
+extern unsigned int g_inQueue;            // Accumulated I2S notification queue waiting events (should be 0)
 
 // #define ANA_READ_TASK_ESP_CORE 1
 // #define ANA_READ_TASK_SAMPLE_RATE 120000     // to be merged with TIMER_FAST_FREQUENCY
@@ -127,32 +127,32 @@ extern unsigned int g_inQueue;       // Accumulated I2S notification queue waiti
 
 /************************* Perimeter data processing task *********************************/
 #define PERIMETER_PROCESSING_TASK_ESP_CORE 1
-#define TIMER_PRESCALER 80                    // timer counts every microseconds
+#define TIMER_PRESCALER 80                // timer counts every microseconds
 #define PERIMETER_TIMER_PERIOD 250 * 1000 // in microseconds
-#define PERIMETER_TIMER_NUMBER 0        // Timer used
-#define PERIMETER_QUEUE_LEN 5           // Queue length. Not one to enable some latency to processing task
+#define PERIMETER_TIMER_NUMBER 0          // Timer used
+#define PERIMETER_QUEUE_LEN 5             // Queue length. Not one to enable some latency to processing task
 
-#define PERIMETER_TASK_ESP_CORE 1           // Core assigned to task
-#define PERIMETER_TASK_PRIORITY 1           // Priority assigned to task
-#define PERIMETER_TASK_STACK_SIZE 12000     // Stack assigned to task (in bytes)
-#define PERIMETER_TASK_NAME "PerimProcTsk"     // Task name
+#define PERIMETER_TASK_ESP_CORE 1          // Core assigned to task
+#define PERIMETER_TASK_PRIORITY 1          // Priority assigned to task
+#define PERIMETER_TASK_STACK_SIZE 12000    // Stack assigned to task (in bytes)
+#define PERIMETER_TASK_NAME "PerimProcTsk" // Task name
 
-#define PERIMETER_TASK_PROCESSING_TRIGGER 1 // for perimeter data processing
+#define PERIMETER_TASK_PROCESSING_TRIGGER 1     // for perimeter data processing
 #define PERIMETER_TASK_PROCESSING_CALIBRATION 2 // for calibration offset determination
 
 #define PERIMETER_USE_DIFFERENTIAL_SIGNAL true
 #define PERIMETER_SWAP_COIL_POLARITY false
 #define PERIMETER_IN_OUT_DETECTION_THRESHOLD 1000
 
-extern hw_timer_t *g_PerimeterTimerhandle;  // Perimeter processing task timer based trigger ISR handle
+extern hw_timer_t *g_PerimeterTimerhandle; // Perimeter processing task timer based trigger ISR handle
 
 extern QueueHandle_t g_PerimeterTimerQueue; // Queue red by Perimeter processing task
 
 extern TaskHandle_t g_PerimeterProcTaskHandle; // Perimeter processing task RTOS task handle
 
-extern unsigned int g_PerimeterQueuefull; // Assumulated count of full Perimeter queue events
-extern unsigned int g_inPerimeterQueueMax;    // Max Perimeter queue waiting events (should be 0)
-extern unsigned int g_inPerimeterQueue;       // Accumulated Perimeter queue waiting events (should be 0)
+extern unsigned int g_PerimeterQueuefull;  // Assumulated count of full Perimeter queue events
+extern unsigned int g_inPerimeterQueueMax; // Max Perimeter queue waiting events (should be 0)
+extern unsigned int g_inPerimeterQueue;    // Accumulated Perimeter queue waiting events (should be 0)
 
 // Values comming as output of Perimeter processing made available to other tasks through global variables
 extern int8_t g_PerimeterRawMax;
@@ -166,8 +166,8 @@ extern float g_PerimeterFilterQuality;
 extern int16_t g_PerimeterOffset;
 extern int g_signalCounter;
 
-extern uint16_t g_RawCopy[PERIMETER_RAW_SAMPLES];   //  Copy of circular Buffer containing last samples read from I2S DMA buffers
-extern int g_rawWritePtrCopy;  // Pointer to last value written to g_RawCopy circular buffer copy
+extern uint16_t g_RawCopy[PERIMETER_RAW_SAMPLES]; //  Copy of circular Buffer containing last samples read from I2S DMA buffers
+extern int g_rawWritePtrCopy;                     // Pointer to last value written to g_RawCopy circular buffer copy
 extern int8_t g_PerimeterSamplesForMatchedFilter[I2S_DMA_BUFFER_LENGTH];
 
 /************************* EEPROM Management *********************************/
@@ -197,13 +197,13 @@ extern LiquidCrystal_I2C lcd;
 #endif
 
 #ifdef OLEDSSD1306_DISPLAY
-#include <SSD1306.h> 
+#include <SSD1306.h>
 extern SSD1306Wire oled;
 #endif
 
 #define COLUMS 20
 #define ROWS 4
-#define OLED_PIXEL_PER_LINE 16 // to reproduce LCD "form factor" on OLED display : 64/4
+#define OLED_PIXEL_PER_LINE 16  // to reproduce LCD "form factor" on OLED display : 64/4
 #define OLED_PIXEL_PER_COLUMN 7 // to reproduce LCD "form factor" on OLED display : 128/20 => 6.4 rounded up to 7
 #define OLED_BRIGHTNESS 200
 
@@ -312,8 +312,8 @@ extern int g_BatteryStatus;
 #include <Wire.h>
 #include <NewPing.h>
 
-#define SONAR_COUNT 3            // Number of sensors.
-#define SONAR_MAX_DISTANCE 200   // Maximum distance (in cm) to ping.
+#define SONAR_COUNT 3           // Number of sensors.
+#define SONAR_MAX_DISTANCE 200  // Maximum distance (in cm) to ping.
 #define SONAR_READ_INTERVAL 500 // in ms
 #define SONAR_READ_ITERATIONS 9
 
@@ -329,7 +329,7 @@ extern int g_SonarDistance[SONAR_COUNT]; // in cm
 
 /************************* Bumper variables *********************************/
 
-#define BUMPER_COUNT 2            // Number of sensors
+#define BUMPER_COUNT 2 // Number of sensors
 #define BUMPER_LEFT 0
 #define BUMPER_RIGHT 1
 
@@ -344,7 +344,7 @@ extern volatile bool g_BumperTriggered[BUMPER_COUNT];
 
 /************************* Tilt variables *********************************/
 
-#define TILT_COUNT 2            // Number of sensors
+#define TILT_COUNT 2 // Number of sensors
 #define TILT_HORIZONTAL 0
 #define TILT_VERTICAL 1
 
@@ -362,10 +362,10 @@ extern volatile bool g_TiltTriggered[TILT_COUNT];
 #define FAN_COUNT 2 // Number of Fans
 #define FAN_1_RED 0
 #define FAN_2_BLUE 1
-#define FAN_UPDATE_INTERVAL 15000 // in ms
-#define FAN_START_THRESHOLD 29.5f // in deg C
-#define FAN_STOP_THRESHOLD FAN_START_THRESHOLD - 1.5f  // in deg C
-#define FAN_TEST_DURATION 5000    // in ms
+#define FAN_UPDATE_INTERVAL 15000                     // in ms
+#define FAN_START_THRESHOLD 29.5f                     // in deg C
+#define FAN_STOP_THRESHOLD FAN_START_THRESHOLD - 1.5f // in deg C
+#define FAN_TEST_DURATION 5000                        // in ms
 
 extern const int g_FanPin[FAN_COUNT];
 extern bool g_FanOn[FAN_COUNT];
@@ -388,8 +388,8 @@ extern bool g_FanOn[FAN_COUNT];
 #define MOTION_MOTOR_FORWARD 1
 #define MOTION_MOTOR_REVERSE -1
 
-#define MOTION_MOTOR_POINTS 4096            // depending on MOTION_MOTOR_PWM_RESOLUTION
-#define MOTION_MOTOR_MIN_SPEED 25           // in %
+#define MOTION_MOTOR_POINTS 4096  // depending on MOTION_MOTOR_PWM_RESOLUTION
+#define MOTION_MOTOR_MIN_SPEED 25 // in %
 
 extern const int g_MotionMotorIn1Pin[MOTION_MOTOR_COUNT];
 extern const int g_MotionMotorIn2Pin[MOTION_MOTOR_COUNT];
@@ -401,19 +401,19 @@ extern String g_MotionMotorStr[MOTION_MOTOR_COUNT];
 
 /************************* Mower Moves variables *********************************/
 
-#define MOWER_MOVES_SPEED_CRAWL 40             // in %
-#define MOWER_MOVES_SPEED_SLOW 50              // in %
-#define MOWER_MOVES_SPEED_NORMAL 80            // in %
-#define MOWER_MOVES_SPEED_MAX 100              // in %
+#define MOWER_MOVES_SPEED_CRAWL 40  // in %
+#define MOWER_MOVES_SPEED_SLOW 50   // in %
+#define MOWER_MOVES_SPEED_NORMAL 80 // in %
+#define MOWER_MOVES_SPEED_MAX 100   // in %
 
 #define MOWER_MOVES_TURN_SPEED 75
-#define MOWER_MOVES_TURN_ANGLE_RATIO 360.0f / 6000.0f              // in Angle degrees per ms
-#define MOWER_MOVES_REVERSE_FOR_TURN_DURATION 3000                // in ms
+#define MOWER_MOVES_TURN_ANGLE_RATIO 360.0f / 6000.0f // in Angle degrees per ms
+#define MOWER_MOVES_REVERSE_FOR_TURN_DURATION 3000    // in ms
 #define MOWER_MOWING_TRAVEL_SPEED 90
 
-#define SONAR_MIN_DISTANCE_FOR_SLOWING 60                  // in cm
-#define SONAR_MIN_DISTANCE_FOR_TURN 40                  // in cm
-#define SONAR_MIN_DISTANCE_FOR_STOP 25                  // in cm
+#define SONAR_MIN_DISTANCE_FOR_SLOWING 60 // in cm
+#define SONAR_MIN_DISTANCE_FOR_TURN 40    // in cm
+#define SONAR_MIN_DISTANCE_FOR_STOP 25    // in cm
 
 /************************* CUT Motor variables *********************************/
 
@@ -427,12 +427,12 @@ extern String g_MotionMotorStr[MOTION_MOTOR_COUNT];
 #define CUT_MOTOR_REVERSE -1
 #define CUT_MOTOR_MIN_SPEED 4096 / 10
 
-#define CUT_MOTOR_FAST_STOP_INVERSE_SPEED 4096      // full inverse speed
-#define CUT_MOTOR_FAST_STOP_INVERSE_DURATION  750 // in ms
+#define CUT_MOTOR_FAST_STOP_INVERSE_SPEED 4096   // full inverse speed
+#define CUT_MOTOR_FAST_STOP_INVERSE_DURATION 750 // in ms
 
-#define CUT_MOTOR_CHECK_INTERVAL 2000   // in ms
+#define CUT_MOTOR_CHECK_INTERVAL 2000 // in ms
 
-#define MOWER_MOWING_CUTTING_SPEED 90       // in %
+#define MOWER_MOWING_CUTTING_SPEED 90 // in %
 #define MOWER_MOWING_CUTTING_DIRECTION CUT_MOTOR_FORWARD
 
 extern bool g_CutMotorOn;
@@ -442,10 +442,10 @@ extern bool g_CutMotorAlarm;
 
 /************************* Error variables *********************************/
 #define ERROR_NO_ERROR 0
-#define ERROR_BATTERY_CRITICAL 1 
+#define ERROR_BATTERY_CRITICAL 1
 #define ERROR_UNDEFINED 999
 
-extern int g_CurrentErrorCode;      // Current Error code 
+extern int g_CurrentErrorCode; // Current Error code
 
 /************************* Test sequence variables *********************************/
 #define TEST_SEQ_STEP_WAIT 1000
@@ -461,4 +461,4 @@ extern int g_CurrentErrorCode;      // Current Error code
 extern MowerState g_CurrentState;
 extern MowerState g_PreviousState;
 
-#define MOWER_DATA_DISPLAY_INTERVAL 2000            // in ms
+#define MOWER_DATA_DISPLAY_INTERVAL 2000 // in ms

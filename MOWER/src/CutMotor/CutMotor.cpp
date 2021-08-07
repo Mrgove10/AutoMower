@@ -22,12 +22,11 @@ void CutMotorSetup()
   // attach the channel to the GPIO to be controlled
   ledcAttachPin(PIN_ESP_MOTOR_CUT_PWM_FORWARD, CUT_MOTOR_PWM_CHANNEL_FORWARD);
   ledcAttachPin(PIN_ESP_MOTOR_CUT_PWM_REVERSE, CUT_MOTOR_PWM_CHANNEL_REVERSE);
-  
+
   CutMotorStop();
 
   DebugPrintln("Cut Motor setup Done", DBG_VERBOSE, true);
 }
-
 
 /**
  * Cut Motor Start function
@@ -179,7 +178,7 @@ void CutMotorTest(void)
   DisplayPrint(4, 2, "Slow FWD  ", true);
   CutMotorSetSpeed(SLOW);
   SerialAndTelnet.handle();
-  delay(2*DURATION);
+  delay(2 * DURATION);
 
   //Reverse
 
@@ -213,7 +212,7 @@ void CutMotorTest(void)
 
   // Stop
 
-  DisplayPrint(4, 2 , "Stopped   ", true);
+  DisplayPrint(4, 2, "Stopped   ", true);
   CutMotorStop();
   SerialAndTelnet.handle();
   delay(TEST_SEQ_STEP_WAIT);
@@ -228,8 +227,8 @@ void CutMotorTest(void)
 void CutMotorCheck(const bool Now)
 {
   static unsigned long LastCutMotorCheck = 0;
-  
-  if ((millis() - LastCutMotorCheck > CUT_MOTOR_CHECK_INTERVAL)  || Now)
+
+  if ((millis() - LastCutMotorCheck > CUT_MOTOR_CHECK_INTERVAL) || Now)
   {
     g_CutMotorAlarm = (IOExtend.digitalRead(PIN_MCP_MOTOR_CUT_HIGH_AMP) == 1);
     DebugPrintln("Cut Motor Status: " + String(g_CutMotorAlarm), DBG_VERBOSE, true);

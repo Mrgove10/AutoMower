@@ -30,11 +30,11 @@ void loop()
 {
   // Common routine mower tasks
 
-  FanCheck(FAN_1_RED);        // Read temperature and activate or stop Cutting fan
-  FanCheck(FAN_2_BLUE);       // Read temperature and activate or stop Motion fan
-  
+  FanCheck(FAN_1_RED);  // Read temperature and activate or stop Cutting fan
+  FanCheck(FAN_2_BLUE); // Read temperature and activate or stop Motion fan
+
   bool stateChange = g_CurrentState != g_PreviousState;
-  
+
   switch (g_CurrentState)
   {
   case MowerState::idle:
@@ -71,23 +71,23 @@ void loop()
 
   g_PreviousState = g_CurrentState;
 
-// Display Mower Data
+  // Display Mower Data
 
   DisplayMowerData();
 
-// Routine system operating tasks
+  // Routine system operating tasks
 
-  EEPROMSave(false);        // Update EEPROM
+  EEPROMSave(false); // Update EEPROM
 
-  MQTTReconnect();          // Check MQTT Status ans reconnect
+  MQTTReconnect(); // Check MQTT Status ans reconnect
 
-  MQTTSendTelemetry();      // Send Mower Telemetry
+  MQTTSendTelemetry(); // Send Mower Telemetry
 
-  MQTTclient.loop();        // Update MQTT
+  MQTTclient.loop(); // Update MQTT
 
   SerialAndTelnet.handle(); // Refresh Telnet Session
 
-  events();                 // eztime refresh
+  events(); // eztime refresh
 
   delay(50);
 }

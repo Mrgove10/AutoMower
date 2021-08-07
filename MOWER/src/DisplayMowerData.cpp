@@ -43,7 +43,7 @@ void DisplayMowerData()
   MotorCurrentRead(MOTOR_CURRENT_RIGHT);
   MotorCurrentRead(MOTOR_CURRENT_LEFT);
   MotorCurrentRead(MOTOR_CURRENT_CUT);
-  
+
   KeypadRead();
 
   SonarRead(SONAR_FRONT);
@@ -62,7 +62,7 @@ void DisplayMowerData()
 
   if ((millis() - LastRefreshed > MOWER_DATA_DISPLAY_INTERVAL))
   {
-    DebugPrint("T1:" + String(g_Temperature[TEMPERATURE_1_RED], 1) +         // " | Err1: " + String(Temp1ErrorCount) +
+    DebugPrint("T1:" + String(g_Temperature[TEMPERATURE_1_RED], 1) +        // " | Err1: " + String(Temp1ErrorCount) +
                    " |T2:" + String(g_Temperature[TEMPERATURE_2_BLUE], 1) + //" | Err2: " + String(Temp2ErrorCount) +
                    " |Charge:" + String(g_BatteryChargeCurrent, 0) +
                    " |MR:" + String(g_MotorCurrent[MOTOR_CURRENT_RIGHT], 1) +
@@ -71,19 +71,19 @@ void DisplayMowerData()
                    " |MCAlm:" + String(g_CutMotorAlarm) +
                    " |Volt:" + String(float(g_BatteryVotlage) / 1000.0f, 1) +
                    " |Head:" + String(g_CompassHeading, 1) +
-                   " |Timouts:" + String(g_FastAnaReadTimeout)  +
+                   " |Timouts:" + String(g_FastAnaReadTimeout) +
                    " |MaxQ:" + String(g_inQueueMax),
                DBG_VERBOSE, true);
-    
+
     g_FastAnaReadTimeout = 0;
     g_inQueueMax = 0;
     g_inQueue = 0;
 
-//    DisplayClear();
+    //    DisplayClear();
     DisplayPrint(0, 0, "T1: " + String(g_Temperature[TEMPERATURE_1_RED], 1) + " T2: " + String(g_Temperature[TEMPERATURE_2_BLUE], 1), true);
 
     for (uint8_t i = 0; i < SONAR_COUNT; i++)
-    {            // Loop through each sensor and display results.
+    { // Loop through each sensor and display results.
       DebugPrint(" | " + g_sensorStr[i] + ":" + String(g_SonarDistance[i]));
       DisplayPrint(0 + i * 6, 1, "S" + String(i + 1) + ":" + String(g_SonarDistance[i]) + " ", true);
     }
@@ -96,8 +96,8 @@ void DisplayMowerData()
     DisplayPrint(0 + i * 5, 2, "K" + String(i + 1) + ":" + String(g_KeyPressed[i]) + " ", true);
   }
 
-//  DisplayPrint(0, 3, "B:" + String(g_BatteryChargeCurrent, 0) + " ", true);
+  //  DisplayPrint(0, 3, "B:" + String(g_BatteryChargeCurrent, 0) + " ", true);
   DisplayPrint(0, 3, "R:" + String(g_MotorCurrent[MOTOR_CURRENT_RIGHT], 0) + " ", true);
-  DisplayPrint(6, 3 , "L:" + String(g_MotorCurrent[MOTOR_CURRENT_LEFT], 0) + " ", true);
-  DisplayPrint(12, 3 , "C:" + String(g_MotorCurrent[MOTOR_CURRENT_CUT], 0) + " ", true);
+  DisplayPrint(6, 3, "L:" + String(g_MotorCurrent[MOTOR_CURRENT_LEFT], 0) + " ", true);
+  DisplayPrint(12, 3, "C:" + String(g_MotorCurrent[MOTOR_CURRENT_CUT], 0) + " ", true);
 }

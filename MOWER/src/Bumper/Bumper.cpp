@@ -43,7 +43,6 @@ ICACHE_RAM_ATTR void RightBumperISR(void)
     g_BumperTriggered[BUMPER_RIGHT] = (LastRightBumperStatus == HIGH);
     LastRightBumperChange = millis();
     portEXIT_CRITICAL_ISR(&g_BumperMux[BUMPER_RIGHT]);
-
   }
 }
 

@@ -30,7 +30,7 @@ bool SonarSensorCheck(int sensor)
     DisplayPrint(0, 0, F("Sonar Tests"));
   }
 
-//  Distance = sonar[sensor].ping_cm(SONAR_MAX_DISTANCE);
+  //  Distance = sonar[sensor].ping_cm(SONAR_MAX_DISTANCE);
   Distance = sonar[sensor].convert_cm(sonar[sensor].ping_median(SONAR_READ_ITERATIONS));
   sensorCheck = Distance != 0;
 
@@ -67,11 +67,10 @@ int SonarRead(const int sensor, const bool Now)
   if ((millis() - LastSonarRead[sensor] > SONAR_READ_INTERVAL) || Now)
   {
     unsigned int Distance = UNKNOWN_INT;
-//    Distance = sonar[sensor].ping_cm(SONAR_MAX_DISTANCE);
+    //    Distance = sonar[sensor].ping_cm(SONAR_MAX_DISTANCE);
     Distance = sonar[sensor].convert_cm(sonar[sensor].ping_median(SONAR_READ_ITERATIONS));
 
-
-    DebugPrintln("Sonar "+ g_sensorStr[sensor] + " value: " + String(Distance) + " cm", DBG_VERBOSE, true);
+    DebugPrintln("Sonar " + g_sensorStr[sensor] + " value: " + String(Distance) + " cm", DBG_VERBOSE, true);
 
     LastSonarRead[sensor] = millis();
     if (Distance == 0)

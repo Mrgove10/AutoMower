@@ -20,7 +20,7 @@
 #define PIN_ESP_TILT_HORIZONTAL 4
 #define PIN_ESP_TILT_VERTICAL 5
 
-//#define PIN_ESP_MOTOR_CUT_RELAY 12    // replaced by 
+//#define PIN_ESP_MOTOR_CUT_RELAY 12    // replaced by
 #define PIN_ESP_MOTOR_CUT_PWM_REVERSE 12
 
 #define PIN_ESP_SONAR_LEFT 13
@@ -49,4 +49,4 @@
 #define PIN_ESP_RAIN 34
 #define PIN_ESP_AMP_CHARGE 35
 #define PIN_ESP_BAT_VOLT 36
-#define PIN_ESP_PERIMETER 39        // This pin is to be read by I2S Driver. Refer to I2S_ADC_CHANNEL definition
+#define PIN_ESP_PERIMETER 39 // This pin is to be read by I2S Driver. Refer to I2S_ADC_CHANNEL definition

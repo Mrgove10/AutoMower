@@ -39,7 +39,6 @@ void MowerSpeed(const int Speed)
   MotionMotorSetSpeed(MOTION_MOTOR_LEFT, Speed);
 }
 
-
 /**
  * Mower reverse move
  * @param Speed to reverse
@@ -62,12 +61,12 @@ void MowerReverse(const int Speed, const int Duration)
  */
 void MowerTurn(const int Angle, const bool OnSpot)
 {
-  int LimitedAngle = min(Angle,360);
-  LimitedAngle = max(LimitedAngle,-360);
+  int LimitedAngle = min(Angle, 360);
+  LimitedAngle = max(LimitedAngle, -360);
   float turnDuration = float(abs(LimitedAngle) / (MOWER_MOVES_TURN_ANGLE_RATIO));
-  DebugPrintln("Mower turn of " + String(Angle) + " Deg => " + String(turnDuration,0) + " ms", DBG_VERBOSE, true);
+  DebugPrintln("Mower turn of " + String(Angle) + " Deg => " + String(turnDuration, 0) + " ms", DBG_VERBOSE, true);
 
-  if (LimitedAngle < 0)         // Left turn
+  if (LimitedAngle < 0) // Left turn
   {
     MotionMotorStart(MOTION_MOTOR_RIGHT, MOTION_MOTOR_FORWARD, MOWER_MOVES_TURN_SPEED);
     if (OnSpot)
@@ -101,7 +100,7 @@ void MowerTurn(const int Angle, const bool OnSpot)
 void MowerReserseAndTurn(const int Angle, const int Duration, const bool OnSpot)
 {
   MowerReverse(MOWER_MOVES_SPEED_SLOW, MOWER_MOVES_REVERSE_FOR_TURN_DURATION);
-  MowerTurn(Angle,OnSpot);
+  MowerTurn(Angle, OnSpot);
 }
 
 /*

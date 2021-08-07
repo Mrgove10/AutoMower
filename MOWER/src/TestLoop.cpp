@@ -31,15 +31,15 @@ void TestLoop()
   MotorCurrentRead(MOTOR_CURRENT_RIGHT);
   MotorCurrentRead(MOTOR_CURRENT_LEFT);
   MotorCurrentRead(MOTOR_CURRENT_CUT);
-  
+
   KeypadRead();
 
   //  TemperatureRead(TEMPERATURE_1_RED);   // not needed : Done by FanCheck()
   //  TemperatureRead(TEMPERATURE_2_BLUE);   // not needed : Done by FanCheck()
 
-//  SonarRead(SONAR_RIGHT, true);
-//  SonarRead(SONAR_FRONT, true);
-//  SonarRead(SONAR_LEFT, true);
+  //  SonarRead(SONAR_RIGHT, true);
+  //  SonarRead(SONAR_FRONT, true);
+  //  SonarRead(SONAR_LEFT, true);
 
   BatteryVoltageRead();
 
@@ -54,7 +54,7 @@ void TestLoop()
   if ((millis() - LastRefresh > 2000))
   {
 
-// Motion motor loop
+    // Motion motor loop
     MotionSpeed = MotionSpeed + (1 * MotionSens);
     if (MotionSpeed > 120)
     {
@@ -92,8 +92,8 @@ void TestLoop()
       MotionMotorSetSpeed(MOTION_MOTOR_RIGHT, abs(MotionSpeed));
       MotionMotorSetSpeed(MOTION_MOTOR_LEFT, abs(MotionSpeed));
     }
-  
-// Cut motor loop
+
+    // Cut motor loop
     CutSpeed = CutSpeed + (24 * CutSens);
     if (CutSpeed > 4096 + 1024)
     {
@@ -127,7 +127,7 @@ void TestLoop()
     {
       CutMotorSetSpeed(abs(CutSpeed));
     }
-  LastRefresh = millis();
+    LastRefresh = millis();
   }
   SerialAndTelnet.handle();
 }

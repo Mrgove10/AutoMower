@@ -18,12 +18,12 @@ bool RainSensorCheck(void)
   DebugPrintln("Raw Rain value: " + String(raw), DBG_VERBOSE, true);
 
   DisplayClear();
-  DisplayPrint(0 , 0, F("Rain Test"));
+  DisplayPrint(0, 0, F("Rain Test"));
 
   if (raw > RAIN_SENSOR_CHECK_THRESHOLD)
   {
     DebugPrintln("Rain Sensor Ok", DBG_INFO, true);
-    DisplayPrint(2 , 2, F("Rain OK"));
+    DisplayPrint(2, 2, F("Rain OK"));
     if (raw > RAIN_SENSOR_RAINING_THRESHOLD)
     {
       DisplayPrint(9, 2, F(" + rain"));
@@ -35,7 +35,7 @@ bool RainSensorCheck(void)
   else
   {
     LogPrintln("Rain Sensor not found", TAG_CHECK, DBG_ERROR);
-    DisplayPrint(2 , 2, F("Rain ERROR"));
+    DisplayPrint(2, 2, F("Rain ERROR"));
     delay(TEST_SEQ_STEP_WAIT + TEST_SEQ_STEP_ERROR_WAIT);
     return false;
   }

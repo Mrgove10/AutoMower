@@ -47,35 +47,35 @@ unsigned long g_OTAelapsed = 0;
 
 /************************* Perimeter signal code *********************************/
 
-// Based on Ardumower project :http://grauonline.de/alexwww/ardumower/filter/filter.html    
+// Based on Ardumower project :http://grauonline.de/alexwww/ardumower/filter/filter.html
 // "pseudonoise4_pw" signal
 // if using reconstructed sender signal, use this
-int8_t g_sigcode_norm[PERIMETER_SIGNAL_CODE_LENGTH] = { 1,1,-1,-1,1,-1,1,-1,-1,1,-1,1,1,-1,-1,1,-1,-1,1,-1,-1,1,1,-1 };   
+int8_t g_sigcode_norm[PERIMETER_SIGNAL_CODE_LENGTH] = {1, 1, -1, -1, 1, -1, 1, -1, -1, 1, -1, 1, 1, -1, -1, 1, -1, -1, 1, -1, -1, 1, 1, -1};
 // "pseudonoise4_pw" signal (differential)
 // if using the coil differential signal, use this
-int8_t g_sigcode_diff[PERIMETER_SIGNAL_CODE_LENGTH] = { 1,0,-1, 0,1,-1,1,-1, 0,1,-1,1,0,-1, 0,1,-1, 0,1,-1, 0,1,0,-1 };   
+int8_t g_sigcode_diff[PERIMETER_SIGNAL_CODE_LENGTH] = {1, 0, -1, 0, 1, -1, 1, -1, 0, 1, -1, 1, 0, -1, 0, 1, -1, 0, 1, -1, 0, 1, 0, -1};
 
 // pseudonoise5_nrz  signal
 // if using reconstructed sender signal, use this
 // int8_t g_sigcode_norm[PERIMETER_SIGNAL_CODE_LENGTH] = {1, 1, 1, -1, -1, -1, 1, 1, -1, 1, 1, 1, -1, 1, -1, 1, -1, -1, -1, -1, 1, -1, -1, 1, -1, 1, 1, -1, -1, 1, 1}; // pseudonoise5_nrz
 // "pseudonoise5_nrz" signal (differential)
 // if using the coil differential signal, use this
-// int8_t g_sigcode_diff[PERIMETER_SIGNAL_CODE_LENGTH] = {1, 0, 0, -1,  0,  0, 1, 0, -1, 1, 0, 0, -1, 1, -1, 1, -1,  0,  0,  0, 1, -1,  0, 1, -1, 0, 0, -1,  0, 1, 0};   
+// int8_t g_sigcode_diff[PERIMETER_SIGNAL_CODE_LENGTH] = {1, 0, 0, -1,  0,  0, 1, 0, -1, 1, 0, 0, -1, 1, -1, 1, -1,  0,  0,  0, 1, -1,  0, 1, -1, 0, 0, -1,  0, 1, 0};
 
 /************************* High speed Analog Read task *********************************/
 
-SemaphoreHandle_t g_ADCinUse;               // to protect access to ADC between I2S driver and other analogRead calls
-SemaphoreHandle_t g_RawValuesSemaphore;  // to protect access to shared global variables used in Perimter data Processing task
+SemaphoreHandle_t g_ADCinUse;           // to protect access to ADC between I2S driver and other analogRead calls
+SemaphoreHandle_t g_RawValuesSemaphore; // to protect access to shared global variables used in Perimter data Processing task
 
-QueueHandle_t g_I2SQueueHandle; // Queue used by I2S driver to notify for availability of new samples in a full DMA buffer
-TaskHandle_t g_FastAnaReadTaskHandle;    // High speed analog read RTOS task handle
+QueueHandle_t g_I2SQueueHandle;       // Queue used by I2S driver to notify for availability of new samples in a full DMA buffer
+TaskHandle_t g_FastAnaReadTaskHandle; // High speed analog read RTOS task handle
 
-uint16_t g_raw[PERIMETER_RAW_SAMPLES];   // Circular Buffer containing last samples read from I2S DMA buffers
-int g_rawWritePtr = 0;  // Pointer to last value written to g_raw circular buffer
+uint16_t g_raw[PERIMETER_RAW_SAMPLES]; // Circular Buffer containing last samples read from I2S DMA buffers
+int g_rawWritePtr = 0;                 // Pointer to last value written to g_raw circular buffer
 
 unsigned int g_FastAnaReadTimeout = 0; // Counter of I2S read time outs, indication incorrect situation
-unsigned int g_inQueueMax = 0;    // Max I2S notification queue waiting events (should be 0)
-unsigned int g_inQueue = 0;       // Accumulated I2S notification queue waiting events (should be 0)
+unsigned int g_inQueueMax = 0;         // Max I2S notification queue waiting events (should be 0)
+unsigned int g_inQueue = 0;            // Accumulated I2S notification queue waiting events (should be 0)
 
 /************************* Analog Read loop task *********************************/
 
@@ -92,15 +92,15 @@ unsigned int g_inQueue = 0;       // Accumulated I2S notification queue waiting 
 // volatile long g_Triggers = 0;
 
 /************************* Perimeter data processing task *********************************/
-hw_timer_t *g_PerimeterTimerhandle = NULL;  // Perimeter processing task timer based trigger ISR handle
+hw_timer_t *g_PerimeterTimerhandle = NULL; // Perimeter processing task timer based trigger ISR handle
 
 QueueHandle_t g_PerimeterTimerQueue; // Queue red by Perimeter processing task
 
 TaskHandle_t g_PerimeterProcTaskHandle; // Perimeter processing task RTOS task handle
 
-unsigned int g_PerimeterQueuefull = 0; // Assumulated count of full Perimeter queue events
-unsigned int g_inPerimeterQueueMax = 0;    // Max Perimeter queue waiting events (should be 0)
-unsigned int g_inPerimeterQueue = 0;       // Accumulated Perimeter queue waiting events (should be 0)
+unsigned int g_PerimeterQueuefull = 0;  // Assumulated count of full Perimeter queue events
+unsigned int g_inPerimeterQueueMax = 0; // Max Perimeter queue waiting events (should be 0)
+unsigned int g_inPerimeterQueue = 0;    // Accumulated Perimeter queue waiting events (should be 0)
 
 // Values comming as output of Perimeter processing made available to other tasks through global variables
 int8_t g_PerimeterRawMax = 0;
@@ -111,11 +111,11 @@ bool g_PerimetersignalTimedOut = false;
 int g_PerimeterMagnitude = 0;
 int g_PerimeterSmoothMagnitude = 0;
 float g_PerimeterFilterQuality = 0;
-int16_t g_PerimeterOffset=0;
+int16_t g_PerimeterOffset = 0;
 int g_signalCounter = 0;
 
-uint16_t g_RawCopy[PERIMETER_RAW_SAMPLES];   //  Copy of circular Buffer containing last samples read from I2S DMA buffers
-int g_rawWritePtrCopy;  // Pointer to last value written to g_RawCopy circular buffer copy
+uint16_t g_RawCopy[PERIMETER_RAW_SAMPLES]; //  Copy of circular Buffer containing last samples read from I2S DMA buffers
+int g_rawWritePtrCopy;                     // Pointer to last value written to g_RawCopy circular buffer copy
 int8_t g_PerimeterSamplesForMatchedFilter[I2S_DMA_BUFFER_LENGTH];
 
 /************************* EEPROM Management *********************************/
@@ -268,7 +268,7 @@ int g_CutMotorSpeed = 0;
 bool g_CutMotorAlarm = false;
 
 /************************* Error variables *********************************/
-int g_CurrentErrorCode = ERROR_NO_ERROR;      // Current Error code 
+int g_CurrentErrorCode = ERROR_NO_ERROR; // Current Error code
 
 /************************* Program variables *********************************/
 

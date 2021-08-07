@@ -79,17 +79,17 @@ bool MotorCurrentRead(const int sensor, const bool Now)
 
   if ((millis() - LastMotorCurrentRead[sensor] > MOTOR_CURRENT_READ_INTERVAL) || Now)
   {
-//    float shuntvoltage = 0;
-//    float busvoltage = 0;
+    //    float shuntvoltage = 0;
+    //    float busvoltage = 0;
     float current_mA = 0;
-//    float loadvoltage = 0;
-//    float power_mW = 0;
+    //    float loadvoltage = 0;
+    //    float power_mW = 0;
 
-//    shuntvoltage = MotorCurrentSensor[sensor].getShuntVoltage_mV();
-//    busvoltage = MotorCurrentSensor[sensor].getBusVoltage_V();
+    //    shuntvoltage = MotorCurrentSensor[sensor].getShuntVoltage_mV();
+    //    busvoltage = MotorCurrentSensor[sensor].getBusVoltage_V();
     current_mA = MotorCurrentSensor[sensor].getCurrent_mA();
-//    power_mW = MotorCurrentSensor[sensor].getPower_mW();
-//    loadvoltage = busvoltage + (shuntvoltage / 1000);
+    //    power_mW = MotorCurrentSensor[sensor].getPower_mW();
+    //    loadvoltage = busvoltage + (shuntvoltage / 1000);
 
     /*
     DebugPrintln("Sensor" + String(sensor) + " Bus Voltage: " + String(busvoltage) + " V" + 
@@ -114,7 +114,7 @@ bool BatteryCurrentSensorCheck(void)
   bool readStatus = BatteryChargeCurrentRead(true);
 
   DisplayClear();
-  DisplayPrint(0, 0 ,F("Charge sensor Test"));
+  DisplayPrint(0, 0, F("Charge sensor Test"));
 
   if (readStatus)
   {

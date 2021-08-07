@@ -77,10 +77,10 @@ void EEPROMSetup(void)
     DebugPrintln(String(buf), DBG_INFO);
 
     g_EEPROMValid = true;
-//    TestVal1 = g_EEPROMLoad.Load.Data.val1;
-//    TestVal2 = g_EEPROMLoad.Load.Data.val2;
-//    TestVal3 = g_EEPROMLoad.Load.Data.val3;
-//    TestVal4 = g_EEPROMLoad.Load.Data.val4;
+    //    TestVal1 = g_EEPROMLoad.Load.Data.val1;
+    //    TestVal2 = g_EEPROMLoad.Load.Data.val2;
+    //    TestVal3 = g_EEPROMLoad.Load.Data.val3;
+    //    TestVal4 = g_EEPROMLoad.Load.Data.val4;
   }
 }
 
@@ -139,10 +139,10 @@ void EEPROMSave(boolean immediatly)
 {
   if (immediatly || millis() - g_LastEepromWriteTime > EEPROM_WRITE_FREQUENCY)
   {
-//    g_EEPROMLoad.Load.Data.val1 = TestVal1; // just for tests
-//    g_EEPROMLoad.Load.Data.val2 = TestVal2; // just for tests
-//    g_EEPROMLoad.Load.Data.val3 = TestVal3; // just for tests
-//    g_EEPROMLoad.Load.Data.val4 = TestVal4; // just for tests
+    //    g_EEPROMLoad.Load.Data.val1 = TestVal1; // just for tests
+    //    g_EEPROMLoad.Load.Data.val2 = TestVal2; // just for tests
+    //    g_EEPROMLoad.Load.Data.val3 = TestVal3; // just for tests
+    //    g_EEPROMLoad.Load.Data.val4 = TestVal4; // just for tests
 
     g_EEPROMLoad.Load.Data.LastEepromSaveTime.year = myTime.year();
     g_EEPROMLoad.Load.Data.LastEepromSaveTime.month = myTime.month();

@@ -14,9 +14,9 @@
  */
 void I2SAnalogRead(int Samples)
 {
-  size_t bytesNeeded = Samples * sizeof(uint16_t); // Size of DMA buffer read: each sample is 2 bytes long 
-  uint16_t i2sData[Samples];    // Array to recevive content of DM buffer
-  size_t bytesRead = 0; // number of bytes red returned by I2S buffer read function
+  size_t bytesNeeded = Samples * sizeof(uint16_t); // Size of DMA buffer read: each sample is 2 bytes long
+  uint16_t i2sData[Samples];                       // Array to recevive content of DM buffer
+  size_t bytesRead = 0;                            // number of bytes red returned by I2S buffer read function
   size_t total_timeout = 0;
 
   // Ensure exlusive access to ADC
@@ -29,7 +29,7 @@ void I2SAnalogRead(int Samples)
   // Free access to ADC for other tasks
   xSemaphoreGive(g_ADCinUse);
 
-  // To monitor normal task behaviour, we check that the number of bytes transfered from the I2S 
+  // To monitor normal task behaviour, we check that the number of bytes transfered from the I2S
   // DMA buffer is consistent with the expected number of bytes.
   // If not, this is the sign of a timeout while reading teh buffer, which is not normal.
   if (bytesRead != bytesNeeded)
@@ -44,9 +44,9 @@ void I2SAnalogRead(int Samples)
   // Copy content of red DMA buffer to global shred variable for use by other tasks and update pointer to last value
   for (int i = 0; i < Samples; i++)
   {
-    g_raw[g_rawWritePtr] = i2sData[i] & 0x0FFF;     // raw data provided in [0, 4095] value range
+    g_raw[g_rawWritePtr] = i2sData[i] & 0x0FFF; // raw data provided in [0, 4095] value range
     // Serial.print(String(g_raw[g_rawWritePtr]) + " ");
-    g_rawWritePtr = g_rawWritePtr + 1;    // update pointer to last updated value in g_raw rotating buffer
+    g_rawWritePtr = g_rawWritePtr + 1; // update pointer to last updated value in g_raw rotating buffer
     if (g_rawWritePtr == PERIMETER_RAW_SAMPLES)
     {
       g_rawWritePtr = 0;
@@ -58,10 +58,9 @@ void I2SAnalogRead(int Samples)
   xSemaphoreGive(g_RawValuesSemaphore);
 
   // Decided not to protect with a semaphore the access to timeout counter as this a non critical variable and this avoids unecessary system overload
-//  xSemaphoreTake(g_MyglobalSemaphore, portMAX_DELAY);
+  //  xSemaphoreTake(g_MyglobalSemaphore, portMAX_DELAY);
   g_FastAnaReadTimeout = g_FastAnaReadTimeout + total_timeout;
-//  xSemaphoreGive(g_MyglobalSemaphore);
-
+  //  xSemaphoreGive(g_MyglobalSemaphore);
 }
 
 /**
@@ -74,16 +73,15 @@ void initI2S(void)
   i2s_config_t i2s_config = {
       .mode = (i2s_mode_t)(I2S_MODE_MASTER | I2S_MODE_RX | I2S_MODE_ADC_BUILT_IN),
       .sample_rate = I2S_SAMPLE_RATE,
-      .bits_per_sample = I2S_BITS_PER_SAMPLE_16BIT, // we use 16 bit depth sampling 
+      .bits_per_sample = I2S_BITS_PER_SAMPLE_16BIT, // we use 16 bit depth sampling
       .channel_format = I2S_CHANNEL_FMT_ONLY_RIGHT, // avoids the sample rate being doubled vs RIGHT_LEFT
       .communication_format = I2S_COMM_FORMAT_I2S_LSB,
       .intr_alloc_flags = 0,
-      .dma_buf_count = I2S_DMA_BUFFERS,  // must be between 2 and 128
+      .dma_buf_count = I2S_DMA_BUFFERS,     // must be between 2 and 128
       .dma_buf_len = I2S_DMA_BUFFER_LENGTH, // must between 8 and 1024
-      .use_apll = false,      // we do not use RTC clock timer
+      .use_apll = false,                    // we do not use RTC clock timer
       .tx_desc_auto_clear = false,
-      .fixed_mclk = 0
-  };
+      .fixed_mclk = 0};
 
   // Install and start I2S driver to write to a queue to notify for new data available
   i2s_driver_install(I2S_PORT, &i2s_config, 1, &g_I2SQueueHandle);
@@ -101,7 +99,7 @@ void initI2S(void)
   adc_set_data_inv(I2S_ADC_UNIT, true);
 
   DebugPrintln("I2S Clock rate:" + String(i2s_get_clk(I2S_PORT)), DBG_VERBOSE, true);
-//  DebugPrintln("initI2S I2Squeue:" + String(uxQueueMessagesWaiting(g_I2SQueueHandle)));
+  //  DebugPrintln("initI2S I2Squeue:" + String(uxQueueMessagesWaiting(g_I2SQueueHandle)));
 }
 
 /**
@@ -112,7 +110,7 @@ void FastAnaReadLoopTask(void *dummyParameter)
 {
   static bool SetupDone = false;
 
-  // Task is supposed to run forever 
+  // Task is supposed to run forever
   for (;;)
   {
     //------------------------------------------------------------------
@@ -121,17 +119,17 @@ void FastAnaReadLoopTask(void *dummyParameter)
     if (!SetupDone)
     {
       DebugPrintln("Fast analog aquisition Task started on Core " + String(xPortGetCoreID()), DBG_VERBOSE, true);
-      
+
       // Initialise I2S driver
       initI2S();
-      
+
       // initialise shared array containing raw sample values
       for (int i = 0; i < PERIMETER_RAW_SAMPLES; i++)
       {
         g_raw[i] = 0;
       }
- 
-      DebugPrintln("Fast analog aquisition Task setup complete: I2Squeue:" + String(uxQueueMessagesWaiting(g_I2SQueueHandle)) , DBG_VERBOSE, true);
+
+      DebugPrintln("Fast analog aquisition Task setup complete: I2Squeue:" + String(uxQueueMessagesWaiting(g_I2SQueueHandle)), DBG_VERBOSE, true);
       SetupDone = true;
     }
 
@@ -171,13 +169,13 @@ void FastAnaReadLoopTaskCreate(void)
   // Create RTOS high speed analog read task
   BaseType_t xReturned;
   xReturned = xTaskCreatePinnedToCore(
-      FastAnaReadLoopTask,          /* Task function. */
-      FAST_ANA_READ_TASK_NAME,      /* String with name of task. */
-      FAST_ANA_READ_TASK_STACK_SIZE,/* Stack size in bytes. */
-      NULL,                         /* Parameter passed as input of the task */
-      FAST_ANA_READ_TASK_PRIORITY,  /* Priority of the task */
-      &g_FastAnaReadTaskHandle,     /* Task handle */
-      FAST_ANA_READ_TASK_ESP_CORE); /* Task core */
+      FastAnaReadLoopTask,           /* Task function. */
+      FAST_ANA_READ_TASK_NAME,       /* String with name of task. */
+      FAST_ANA_READ_TASK_STACK_SIZE, /* Stack size in bytes. */
+      NULL,                          /* Parameter passed as input of the task */
+      FAST_ANA_READ_TASK_PRIORITY,   /* Priority of the task */
+      &g_FastAnaReadTaskHandle,      /* Task handle */
+      FAST_ANA_READ_TASK_ESP_CORE);  /* Task core */
 
   if (xReturned == pdPASS)
   {
@@ -220,7 +218,7 @@ int ProtectedAnalogRead(int pin)
   // Using I2S to read from the ADC causes conflict with normal analogRead function as it locks the ADC
   // This function is to be used to perform "usual" analog reads whilst managing the conflict with the I2S driver through the use on
   // application semaphore
-  // IMPORTANT NOTES: 
+  // IMPORTANT NOTES:
   // 1- This function may not be used before the semaphore has been initialised (initlisation is taken care of in the FastAnaReadLoopTaskCreate() function)
   // 2- This function only works for ADC1 (pins 32 to 39)
 
@@ -272,7 +270,7 @@ int ProtectedAnalogRead(int pin)
   // Restore I2S driver using ADC
   i2s_set_adc_mode(I2S_ADC_UNIT, I2S_ADC_CHANNEL);
 
-  // Clear I2S DMA buffers 
+  // Clear I2S DMA buffers
   i2s_zero_dma_buffer(I2S_PORT);
 
   // Assign ADC to I2S driver
@@ -286,4 +284,3 @@ int ProtectedAnalogRead(int pin)
 
   return rawval;
 }
-

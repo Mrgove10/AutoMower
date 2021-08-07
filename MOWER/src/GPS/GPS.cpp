@@ -82,7 +82,7 @@ bool GPSCheck(void)
   {
     DebugPrintln("GPS ok", DBG_INFO, true);
     DisplayPrint(2, 2, "GPS Ok");
-    DisplayPrint(2, 3 , "Statelites: " + String(GPS.satellites.value()));
+    DisplayPrint(2, 3, "Statelites: " + String(GPS.satellites.value()));
     delay(TEST_SEQ_STEP_WAIT);
     return true;
   }

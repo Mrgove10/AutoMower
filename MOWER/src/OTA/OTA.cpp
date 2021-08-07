@@ -44,9 +44,7 @@ void OTASetup(void)
                    { DebugPrintln("OTA End", DBG_ALWAYS, true); });
 
   ArduinoOTA.onProgress([](unsigned int progress, unsigned int total)
-                        {
-                          DisplayPrint(16, 2, (progress * 100) / total + String("%"));
-                        });
+                        { DisplayPrint(16, 2, (progress * 100) / total + String("%")); });
 
   ArduinoOTA.onError([](ota_error_t error)
                      {
@@ -98,16 +96,16 @@ void OTAHandle(void)
     CutMotorStop(true);
     FanStop(FAN_1_RED);
     FanStop(FAN_2_BLUE);
-    
+
     setInterval(0); // no NTP update to avoid any interruption during upload
-    
+
     DebugPrintln("Waiting for OTA upload ", DBG_INFO, true);
     SerialAndTelnet.handle();
     MQTTDisconnect();
     FastAnaReadLoopTaskSuspend();
     PerimeterProcessingLoopTaskSuspend();
 
-//    MQTTUnSubscribe(); // no MQTT update to avoid any interruption during upload
+    //    MQTTUnSubscribe(); // no MQTT update to avoid any interruption during upload
 
     while (g_OTAelapsed < OTA_TIMEOUT)
     {
@@ -120,8 +118,8 @@ void OTAHandle(void)
     delay(TEST_SEQ_STEP_WAIT + TEST_SEQ_STEP_ERROR_WAIT);
 
     MQTTInit(false);
-//    MQTTReconnect();
-//    MQTTSubscribe();
+    //    MQTTReconnect();
+    //    MQTTSubscribe();
     delay(1000);
     LogPrintln("OTA upload request timeout", TAG_OTA, DBG_WARNING);
 

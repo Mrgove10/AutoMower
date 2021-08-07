@@ -62,7 +62,8 @@ void DisplayPrint(int X, int Y, String Text, const bool OverWrite)
   lcd.print(Text);
 #endif
 #ifdef OLEDSSD1306_DISPLAY
-  if (OverWrite) {
+  if (OverWrite)
+  {
     int length = oled.getStringWidth(Text) * OLED_PIXEL_PER_COLUMN;
     oled.setColor(BLACK);
     oled.fillRect(X * OLED_PIXEL_PER_COLUMN, Y * OLED_PIXEL_PER_LINE, length, OLED_PIXEL_PER_LINE);

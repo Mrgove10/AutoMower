@@ -21,9 +21,7 @@ void InitTelnet()
 
   MySERIAL.setDebugOutput(false);
   SerialAndTelnet.handle();
-
 }
-
 
 void telnetConnected()
 {
