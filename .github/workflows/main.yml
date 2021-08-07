@@ -30,7 +30,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: MOWER - Build Artifact
-          path: MOWER/.pio/build/esp32dev/firmware.bin
+          path: MOWER/.pio/build/mower_esp32/firmware.bin
 
   build_BASE:
     runs-on: ubuntu-latest
@@ -59,4 +59,4 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: BASE - Build Artifact
-          path: BASE/.pio/build/esp32dev/firmware.bin
+          path: BASE/.pio/build/base_esp32/firmware.bin
