@@ -12,7 +12,7 @@
  */
 void MowerStop()
 {
-  DebugPrintln("Mower Stop", DBG_INFO, true);
+  DebugPrintln("Mower Stop", DBG_VERBOSE, true);
   MotionMotorStop(MOTION_MOTOR_RIGHT);
   MotionMotorStop(MOTION_MOTOR_LEFT);
 }
@@ -23,7 +23,7 @@ void MowerStop()
  */
 void MowerForward(const int Speed)
 {
-  DebugPrintln("Mower Forward at " + String(Speed) + "%", DBG_INFO, true);
+  DebugPrintln("Mower Forward at " + String(Speed) + "%", DBG_VERBOSE, true);
   MotionMotorStart(MOTION_MOTOR_RIGHT, MOTION_MOTOR_FORWARD, Speed);
   MotionMotorStart(MOTION_MOTOR_LEFT, MOTION_MOTOR_FORWARD, Speed);
 }
@@ -34,7 +34,7 @@ void MowerForward(const int Speed)
  */
 void MowerSpeed(const int Speed)
 {
-  DebugPrintln("Mower speed at " + String(Speed) + "%", DBG_INFO, true);
+  DebugPrintln("Mower speed at " + String(Speed) + "%", DBG_VERBOSE, true);
   MotionMotorSetSpeed(MOTION_MOTOR_RIGHT, Speed);
   MotionMotorSetSpeed(MOTION_MOTOR_LEFT, Speed);
 }
@@ -47,7 +47,7 @@ void MowerSpeed(const int Speed)
  */
 void MowerReverse(const int Speed, const int Duration)
 {
-  DebugPrintln("Mower Reverse at " + String(Speed) + "%", DBG_INFO, true);
+  DebugPrintln("Mower Reverse at " + String(Speed) + "%", DBG_VERBOSE, true);
   MotionMotorStart(MOTION_MOTOR_RIGHT, MOTION_MOTOR_REVERSE, Speed);
   MotionMotorStart(MOTION_MOTOR_LEFT, MOTION_MOTOR_REVERSE, Speed);
   delay(Duration);

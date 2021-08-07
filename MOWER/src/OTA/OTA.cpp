@@ -8,6 +8,7 @@
 #include "Fan/Fan.h"
 #include "MQTT/MQTT.h"
 #include "FastAnaReadTsk/FastAnaReadTsk.h"
+#include "PerimeterTsk/PerimeterTsk.h"
 #include "Display/Display.h"
 
 /* OTA init procedure */
@@ -104,6 +105,7 @@ void OTAHandle(void)
     SerialAndTelnet.handle();
     MQTTDisconnect();
     FastAnaReadLoopTaskSuspend();
+    PerimeterProcessingLoopTaskSuspend();
 
 //    MQTTUnSubscribe(); // no MQTT update to avoid any interruption during upload
 
@@ -127,5 +129,6 @@ void OTAHandle(void)
 
     setInterval(NTP_REFRESH); // NTP updates back on
     FastAnaReadLoopTaskResume();
+    PerimeterProcessingLoopTaskResume();
   }
 }

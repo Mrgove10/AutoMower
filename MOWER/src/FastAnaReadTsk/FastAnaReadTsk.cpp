@@ -45,18 +45,23 @@ void I2SAnalogRead(int Samples)
   for (int i = 0; i < Samples; i++)
   {
     g_raw[g_rawWritePtr] = i2sData[i] & 0x0FFF;     // raw data provided in [0, 4095] value range
+    // Serial.print(String(g_raw[g_rawWritePtr]) + " ");
     g_rawWritePtr = g_rawWritePtr + 1;    // update pointer to last updated value in g_raw rotating buffer
     if (g_rawWritePtr == PERIMETER_RAW_SAMPLES)
     {
       g_rawWritePtr = 0;
     }
   }
+  //  Serial.println();
 
   // Free access to shared global variables with Perimter data processing task
   xSemaphoreGive(g_RawValuesSemaphore);
 
   // Decided not to protect with a semaphore the access to timeout counter as this a non critical variable and this avoids unecessary system overload
+//  xSemaphoreTake(g_MyglobalSemaphore, portMAX_DELAY);
   g_FastAnaReadTimeout = g_FastAnaReadTimeout + total_timeout;
+//  xSemaphoreGive(g_MyglobalSemaphore);
+
 }
 
 /**

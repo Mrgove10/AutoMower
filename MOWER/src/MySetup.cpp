@@ -21,6 +21,7 @@
 #include "MotionMotor/MotionMotor.h"
 #include "CutMotor/CutMotor.h"
 #include "FastAnaReadTsk/FastAnaReadTsk.h"
+#include "PerimeterTsk/PerimeterTsk.h"
 #include "StartupChecks.h"
 
 void MySetup(void)
@@ -103,6 +104,8 @@ void MySetup(void)
   GPSSetup();
 
   FastAnaReadLoopTaskCreate();
+
+  PerimeterProcessingLoopTaskCreate();
 
   SerialAndTelnet.handle();
 

@@ -73,7 +73,7 @@ void DisplayMowerData()
                    " |Head:" + String(g_CompassHeading, 1) +
                    " |Timouts:" + String(g_FastAnaReadTimeout)  +
                    " |MaxQ:" + String(g_inQueueMax),
-               DBG_INFO, true);
+               DBG_VERBOSE, true);
     
     g_FastAnaReadTimeout = 0;
     g_inQueueMax = 0;

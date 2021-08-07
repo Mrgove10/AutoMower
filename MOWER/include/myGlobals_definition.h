@@ -43,7 +43,6 @@ extern unsigned long g_OTAelapsed;
 // #define TIMER_FAST_NUMBER 0
 // #define TIMER_SLOW_NUMBER 1
 
-// #define TIMER_PRESCALER 80                      // timer counts every microseconds
 // #define TIMER_FAST_FREQUENCY 1000                 // 38647 Hz => 1 000 000 microseconds / 38 647 = 25.87522 microseconds
 // #define TIMER_SLOW_FREQUENCY 1000 * 1000        // in microseconds => 1 second
 
@@ -66,6 +65,7 @@ extern unsigned long g_OTAelapsed;
 extern int8_t g_sigcode_norm[PERIMETER_SIGNAL_CODE_LENGTH];
 extern int8_t g_sigcode_diff[PERIMETER_SIGNAL_CODE_LENGTH];
 
+#define PERIMETER_SUBSAMPLE 4
 /************************* High speed Analog Read task *********************************/
 #define I2S_PORT I2S_NUM_0
 #define I2S_READ_TIMEOUT 1 // in RTOS ticks
@@ -86,7 +86,7 @@ extern int8_t g_sigcode_diff[PERIMETER_SIGNAL_CODE_LENGTH];
 
 #define I2S_SAMPLE_RATE 38400       // I2S scanning rate in samples per second
 #define I2S_DMA_BUFFERS 4           // number of allocated I2S DMA buffers
-#define I2S_DMA_BUFFER_LENGTH PERIMETER_SIGNAL_CODE_LENGTH * 4 * 2 // in number of samples
+#define I2S_DMA_BUFFER_LENGTH PERIMETER_SIGNAL_CODE_LENGTH * PERIMETER_SUBSAMPLE * 2 // in number of samples
 #define PERIMETER_RAW_SAMPLES I2S_DMA_BUFFER_LENGTH * 5 // We store more samples than just one DMA buffer to have more data to process
 
 #define FAST_ANA_READ_TASK_ESP_CORE 1           // Core assigned to task
@@ -124,6 +124,51 @@ extern unsigned int g_inQueue;       // Accumulated I2S notification queue waiti
 // extern volatile long g_MissedReadings;
 // extern volatile float g_rate;
 // extern volatile long g_Triggers;
+
+/************************* Perimeter data processing task *********************************/
+#define PERIMETER_PROCESSING_TASK_ESP_CORE 1
+#define TIMER_PRESCALER 80                    // timer counts every microseconds
+#define PERIMETER_TIMER_PERIOD 250 * 1000 // in microseconds
+#define PERIMETER_TIMER_NUMBER 0        // Timer used
+#define PERIMETER_QUEUE_LEN 5           // Queue length. Not one to enable some latency to processing task
+
+#define PERIMETER_TASK_ESP_CORE 1           // Core assigned to task
+#define PERIMETER_TASK_PRIORITY 1           // Priority assigned to task
+#define PERIMETER_TASK_STACK_SIZE 12000     // Stack assigned to task (in bytes)
+#define PERIMETER_TASK_NAME "PerimProcTsk"     // Task name
+
+#define PERIMETER_TASK_PROCESSING_TRIGGER 1 // for perimeter data processing
+#define PERIMETER_TASK_PROCESSING_CALIBRATION 2 // for calibration offset determination
+
+#define PERIMETER_USE_DIFFERENTIAL_SIGNAL true
+#define PERIMETER_SWAP_COIL_POLARITY false
+#define PERIMETER_IN_OUT_DETECTION_THRESHOLD 1000
+
+extern hw_timer_t *g_PerimeterTimerhandle;  // Perimeter processing task timer based trigger ISR handle
+
+extern QueueHandle_t g_PerimeterTimerQueue; // Queue red by Perimeter processing task
+
+extern TaskHandle_t g_PerimeterProcTaskHandle; // Perimeter processing task RTOS task handle
+
+extern unsigned int g_PerimeterQueuefull; // Assumulated count of full Perimeter queue events
+extern unsigned int g_inPerimeterQueueMax;    // Max Perimeter queue waiting events (should be 0)
+extern unsigned int g_inPerimeterQueue;       // Accumulated Perimeter queue waiting events (should be 0)
+
+// Values comming as output of Perimeter processing made available to other tasks through global variables
+extern int8_t g_PerimeterRawMax;
+extern int8_t g_PerimeterRawMin;
+extern uint16_t g_PerimeterRawAvg;
+extern bool g_isInsidePerimeter;
+extern bool g_PerimetersignalTimedOut;
+extern int g_PerimeterMagnitude;
+extern int g_PerimeterSmoothMagnitude;
+extern float g_PerimeterFilterQuality;
+extern int16_t g_PerimeterOffset;
+extern int g_signalCounter;
+
+extern uint16_t g_RawCopy[PERIMETER_RAW_SAMPLES];   //  Copy of circular Buffer containing last samples read from I2S DMA buffers
+extern int g_rawWritePtrCopy;  // Pointer to last value written to g_RawCopy circular buffer copy
+extern int8_t g_PerimeterSamplesForMatchedFilter[I2S_DMA_BUFFER_LENGTH];
 
 /************************* EEPROM Management *********************************/
 

@@ -18,6 +18,17 @@
  */
 void MowerIdle(const bool StateChange, const MowerState PreviousState)
 {
+  if (StateChange) 
+  {
+    DebugPrintln("");
+    LogPrintln("Mower Idle", TAG_MOWING, DBG_INFO);
+    // if (PreviousState == MowerState::mowing)
+    // {
+      MowerStop();
+      CutMotorStop(true);
+    // }
+  }
+
   // Waiting for input ?
   // Send telemetry
 }
@@ -44,8 +55,6 @@ void MowerDocked(const bool StateChange, const MowerState PreviousState)
  */
 void MowerMowing(const bool StateChange, const MowerState PreviousState)
 {
-
-
   //--------------------------------
   // Actions to take when entering the state
   //--------------------------------
@@ -58,7 +67,6 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
     //change Telemetry frequency
     //Initialise Mowing start time
     //
-
 
   //--------------------------------
   // Sonar environement sensing to check if surounding is clear
@@ -98,7 +106,7 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
   }
   else
   {
-    DebugPrintln("No approaching object : normal speed", DBG_DEBUG, true);
+    DebugPrintln("No approaching object : normal speed", DBG_VERBOSE, true);
     MowerSpeed(MOWER_MOWING_TRAVEL_SPEED);
   }
 
@@ -115,7 +123,7 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
     SonarRead(SONAR_LEFT, true);
     if (g_SonarDistance[SONAR_LEFT] > SONAR_MIN_DISTANCE_FOR_TURN)        // check if it's clear on left side
     {
-      DebugPrintln("Turning left", DBG_DEBUG, true);
+      DebugPrintln("Turning left", DBG_VERBOSE, true);
       MowerReserseAndTurn(-90,MOWER_MOVES_REVERSE_FOR_TURN_DURATION,true);    // reverse and turn left 90 degrees
     }
     else
@@ -123,18 +131,55 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
       SonarRead(SONAR_RIGHT, true);
       if (g_SonarDistance[SONAR_RIGHT] > SONAR_MIN_DISTANCE_FOR_TURN)          // check if it's clear on right side
       {
-        DebugPrintln("Reversing and turning right", DBG_DEBUG, true);
+        DebugPrintln("Reversing and turning right", DBG_VERBOSE, true);
         MowerReserseAndTurn(90,MOWER_MOVES_REVERSE_FOR_TURN_DURATION,true);    // reverse and turn right 90 degrees
       }
       else
       {
-        DebugPrintln("Reversing and going back", DBG_DEBUG, true);
+        DebugPrintln("Reversing and going back", DBG_VERBOSE, true);
         MowerReserseAndTurn(135,MOWER_MOVES_REVERSE_FOR_TURN_DURATION*2,true);    // reverse and turn right 135 degrees....and hope for the best !
       }
     }
     MowerForward(MOWER_MOWING_TRAVEL_SPEED);
     CutMotorStart(MOWER_MOWING_CUTTING_DIRECTION, MOWER_MOWING_CUTTING_SPEED);
   }  
+
+  //--------------------------------
+  // Perimeter wire dection
+  //--------------------------------
+
+  if (!g_isInsidePerimeter)
+  {
+    DebugPrintln("Outside Perimeter cable (mag:" + String(g_PerimeterMagnitude) + ")", DBG_DEBUG, true);
+
+    MowerStop();
+    CutMotorStop();
+
+    SonarRead(SONAR_LEFT, true);
+
+    if (g_SonarDistance[SONAR_LEFT] > SONAR_MIN_DISTANCE_FOR_TURN)        // check if it's clear on left side
+    {
+      DebugPrintln("Reversing and turning left", DBG_VERBOSE, true);
+      MowerReserseAndTurn(random(-90,-45),MOWER_MOVES_REVERSE_FOR_TURN_DURATION,true);    // reverse and turn left 90 degrees
+    }
+    else
+    {
+      SonarRead(SONAR_RIGHT, true);
+
+      if (g_SonarDistance[SONAR_RIGHT] > SONAR_MIN_DISTANCE_FOR_TURN)          // check if it's clear on right side
+      {
+        DebugPrintln("Reversing and turning right", DBG_VERBOSE, true);
+        MowerReserseAndTurn(random(45,90),MOWER_MOVES_REVERSE_FOR_TURN_DURATION,true);    // reverse and turn right 90 degrees
+      }
+      else
+      {
+        DebugPrintln("Reversing and going back", DBG_VERBOSE, true);
+        MowerReserseAndTurn(random(135,225),MOWER_MOVES_REVERSE_FOR_TURN_DURATION*2,true);    // reverse and turn right 135 degrees....and hope for the best !
+      }
+    }
+    MowerForward(MOWER_MOWING_TRAVEL_SPEED);
+    CutMotorStart(MOWER_MOWING_CUTTING_DIRECTION, MOWER_MOWING_CUTTING_SPEED);
+  }
 
   //--------------------------------
   // Front Sonar Collision detection
@@ -153,9 +198,9 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
 
     if (g_SonarDistance[SONAR_LEFT] > SONAR_MIN_DISTANCE_FOR_TURN)        // check if it's clear on left side
     {
-      DebugPrintln("Reversing and turning left", DBG_DEBUG, true);
+      DebugPrintln("Reversing and turning left", DBG_VERBOSE, true);
 
-      MowerReserseAndTurn(-90,MOWER_MOVES_REVERSE_FOR_TURN_DURATION,true);    // reverse and turn left 90 degrees
+      MowerReserseAndTurn(random(-90,-45),MOWER_MOVES_REVERSE_FOR_TURN_DURATION,true);    // reverse and turn left 90 degrees
     }
     else
     {
@@ -163,13 +208,13 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
 
       if (g_SonarDistance[SONAR_RIGHT] > SONAR_MIN_DISTANCE_FOR_TURN)          // check if it's clear on right side
       {
-        DebugPrintln("Reversing and turning right", DBG_DEBUG, true);
-        MowerReserseAndTurn(90,MOWER_MOVES_REVERSE_FOR_TURN_DURATION,true);    // reverse and turn right 90 degrees
+        DebugPrintln("Reversing and turning right", DBG_VERBOSE, true);
+        MowerReserseAndTurn(random(45,90),MOWER_MOVES_REVERSE_FOR_TURN_DURATION,true);    // reverse and turn right 90 degrees
       }
       else
       {
-        DebugPrintln("Reversing and going back", DBG_DEBUG, true);
-        MowerReserseAndTurn(135,MOWER_MOVES_REVERSE_FOR_TURN_DURATION*2,true);    // reverse and turn right 135 degrees....and hope for the best !
+        DebugPrintln("Reversing and going back", DBG_VERBOSE, true);
+        MowerReserseAndTurn(random(135,225),MOWER_MOVES_REVERSE_FOR_TURN_DURATION*2,true);    // reverse and turn right 135 degrees....and hope for the best !
       }
     }
     MowerForward(MOWER_MOWING_TRAVEL_SPEED);
@@ -193,13 +238,13 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
 
     if (g_SonarDistance[SONAR_RIGHT] > SONAR_MIN_DISTANCE_FOR_TURN)        // check if it's clear on right side
     {
-      DebugPrintln("Turning right", DBG_DEBUG, true);
-      MowerTurn(45,true);    // turn right 30 degrees
+      DebugPrintln("Turning right", DBG_VERBOSE, true);
+      MowerTurn(random(20,60),true);    // turn right 30 degrees
     }
     else
     {
-      DebugPrintln("Reversing and going back", DBG_DEBUG, true);
-      MowerReserseAndTurn(135,MOWER_MOVES_REVERSE_FOR_TURN_DURATION*2,true);    // reverse and turn right 135 degrees....and hope for the best !
+      DebugPrintln("Reversing and going back", DBG_VERBOSE, true);
+      MowerReserseAndTurn(random(135,225),MOWER_MOVES_REVERSE_FOR_TURN_DURATION*2,true);    // reverse and turn right 135 degrees....and hope for the best !
     }
     MowerForward(MOWER_MOWING_TRAVEL_SPEED);
     CutMotorStart(MOWER_MOWING_CUTTING_DIRECTION, MOWER_MOWING_CUTTING_SPEED);
@@ -222,21 +267,17 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
 
     if (g_SonarDistance[SONAR_LEFT] > SONAR_MIN_DISTANCE_FOR_TURN)        // check if it's clear on left side
     {
-      DebugPrintln("Turning left", DBG_DEBUG, true);
-      MowerTurn(-45,true);    // turn left 30 degrees
+      DebugPrintln("Turning left", DBG_VERBOSE, true);
+      MowerTurn(random(-60,-20),true);    // turn left 30 degrees
     }
     else
     {
-     DebugPrintln("Reversing and going back", DBG_DEBUG, true);
-     MowerReserseAndTurn(-135,MOWER_MOVES_REVERSE_FOR_TURN_DURATION*2,true);    // reverse and turn left 135 degrees....and hope for the best !
+     DebugPrintln("Reversing and going back", DBG_VERBOSE, true);
+     MowerReserseAndTurn(random(-225,-135),MOWER_MOVES_REVERSE_FOR_TURN_DURATION*2,true);    // reverse and turn left 135 degrees....and hope for the best !
     }
     MowerForward(MOWER_MOWING_TRAVEL_SPEED);
     CutMotorStart(MOWER_MOWING_CUTTING_DIRECTION, MOWER_MOWING_CUTTING_SPEED);
   }
-
-  //--------------------------------
-  // Perimeter wire dection
-  //--------------------------------
 
     // TO DO
 

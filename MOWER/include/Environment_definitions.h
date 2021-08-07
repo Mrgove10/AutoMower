@@ -26,6 +26,7 @@
 #define TAG_OTA "OTA"
 #define TAG_CHECK "CHECK"
 #define TAG_ERROR "ERROR"
+#define TAG_VALUE "VALUE"
 
 // -------------------- Serial communications ------------------------
 #define SERIAL_BAUD 115200
