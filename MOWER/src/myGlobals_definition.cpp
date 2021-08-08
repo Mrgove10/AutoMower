@@ -103,9 +103,9 @@ unsigned int g_inPerimeterQueueMax = 0; // Max Perimeter queue waiting events (s
 unsigned int g_inPerimeterQueue = 0;    // Accumulated Perimeter queue waiting events (should be 0)
 
 // Values comming as output of Perimeter processing made available to other tasks through global variables
-int8_t g_PerimeterRawMax = 0;
-int8_t g_PerimeterRawMin = SCHAR_MAX;
-uint16_t g_PerimeterRawAvg = 0;
+int16_t g_PerimeterRawMax = 0;
+int16_t g_PerimeterRawMin = SCHAR_MAX;
+int16_t g_PerimeterRawAvg = 0;
 bool g_isInsidePerimeter = false;
 bool g_PerimetersignalTimedOut = false;
 int g_PerimeterMagnitude = 0;
@@ -117,6 +117,8 @@ int g_signalCounter = 0;
 uint16_t g_RawCopy[PERIMETER_RAW_SAMPLES]; //  Copy of circular Buffer containing last samples read from I2S DMA buffers
 int g_rawWritePtrCopy;                     // Pointer to last value written to g_RawCopy circular buffer copy
 int8_t g_PerimeterSamplesForMatchedFilter[I2S_DMA_BUFFER_LENGTH];
+
+bool g_MQTTGraphDebug = false;
 
 /************************* EEPROM Management *********************************/
 

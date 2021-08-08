@@ -144,7 +144,7 @@ extern unsigned int g_inQueue;            // Accumulated I2S notification queue 
 #define PERIMETER_SWAP_COIL_POLARITY false
 #define PERIMETER_IN_OUT_DETECTION_THRESHOLD 1000
 
-extern hw_timer_t *g_PerimeterTimerhandle; // Perimeter processing task timer based trigger ISR handle
+extern hw_timer_t *g_PerimeterTimerhandle;  // Perimeter processing task timer based trigger ISR handle
 
 extern QueueHandle_t g_PerimeterTimerQueue; // Queue red by Perimeter processing task
 
@@ -155,9 +155,9 @@ extern unsigned int g_inPerimeterQueueMax; // Max Perimeter queue waiting events
 extern unsigned int g_inPerimeterQueue;    // Accumulated Perimeter queue waiting events (should be 0)
 
 // Values comming as output of Perimeter processing made available to other tasks through global variables
-extern int8_t g_PerimeterRawMax;
-extern int8_t g_PerimeterRawMin;
-extern uint16_t g_PerimeterRawAvg;
+extern int16_t g_PerimeterRawMax;
+extern int16_t g_PerimeterRawMin;
+extern int16_t g_PerimeterRawAvg;
 extern bool g_isInsidePerimeter;
 extern bool g_PerimetersignalTimedOut;
 extern int g_PerimeterMagnitude;
@@ -169,6 +169,8 @@ extern int g_signalCounter;
 extern uint16_t g_RawCopy[PERIMETER_RAW_SAMPLES]; //  Copy of circular Buffer containing last samples read from I2S DMA buffers
 extern int g_rawWritePtrCopy;                     // Pointer to last value written to g_RawCopy circular buffer copy
 extern int8_t g_PerimeterSamplesForMatchedFilter[I2S_DMA_BUFFER_LENGTH];
+
+extern bool g_MQTTGraphDebug;
 
 /************************* EEPROM Management *********************************/
 

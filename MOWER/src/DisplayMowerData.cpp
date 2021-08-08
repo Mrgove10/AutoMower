@@ -83,11 +83,11 @@ void DisplayMowerData()
     DisplayPrint(0, 0, "T1: " + String(g_Temperature[TEMPERATURE_1_RED], 1) + " T2: " + String(g_Temperature[TEMPERATURE_2_BLUE], 1), true);
 
     for (uint8_t i = 0; i < SONAR_COUNT; i++)
-    { // Loop through each sensor and display results.
-      DebugPrint(" | " + g_sensorStr[i] + ":" + String(g_SonarDistance[i]));
+    {            // Loop through each sensor and display results.
+      DebugPrint(" | " + g_sensorStr[i] + ":" + String(g_SonarDistance[i]),DBG_VERBOSE);
       DisplayPrint(0 + i * 6, 1, "S" + String(i + 1) + ":" + String(g_SonarDistance[i]) + " ", true);
     }
-    DebugPrintln("");
+//    DebugPrintln("");
     LastRefreshed = millis();
   }
   for (int i = 0; i < KEYPAD_MAX_KEYS; i++)

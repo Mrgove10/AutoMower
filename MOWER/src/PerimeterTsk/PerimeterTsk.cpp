@@ -153,13 +153,25 @@ void PerimeterRawValuesCalibration(int Samples)
  * */
 int8_t PerimeterRawValuesConvert(uint16_t rawVal, uint16_t offset)
 {
-  int16_t calibratedValue = 0;
+  int16_t OffsetedValue = 0;
   int8_t relativeValue = 0;
 
-  calibratedValue = rawVal - offset;
-  relativeValue = min(SCHAR_MAX, max(SCHAR_MIN, calibratedValue / 16));
-
-  return relativeValue;
+  OffsetedValue = rawVal - offset;
+  // relativeValue = min(SCHAR_MAX,  max(SCHAR_MIN, OffsetedValue / 16));
+  int16_t tempValue = OffsetedValue / 16;
+  if (tempValue > SCHAR_MAX) 
+  {
+    return SCHAR_MAX;
+  }
+  else if (tempValue < SCHAR_MIN)
+  {
+    return SCHAR_MIN;
+  }
+  else 
+  {
+    return tempValue;
+  }
+  // return relativeValue;
 }
 
 /**
@@ -196,8 +208,8 @@ void GetPerimeterRawValues(int Samples)
 
   // Get "Samples" values from g_RawCopy circular buffer, determine min/max/Total and convert values for preparation of values to be used by matched filter
   int8_t ConvertedValue = 0;
-  int8_t minBuf = SCHAR_MAX;
-  int8_t maxBuf = 0;
+  int16_t minBuf = INT16_MAX;
+  int16_t maxBuf = 0;
   for (int l = 0; l < Samples; l++)
   {
     // Convert value by appliying calibration offset and shifting to appropriate range and store in buffer to be used by matched filter
@@ -205,10 +217,14 @@ void GetPerimeterRawValues(int Samples)
     // Serial.print(String(g_RawCopy[i]) + " ");
 
     ConvertedValue = PerimeterRawValuesConvert(g_RawCopy[i], offset);
-    g_PerimeterSamplesForMatchedFilter[l] = ConvertedValue;
-    maxBuf = max(ConvertedValue, maxBuf);
-    minBuf = min(ConvertedValue, minBuf);
-    rawTotal = rawTotal + ConvertedValue;
+    g_PerimeterSamplesForMatchedFilter[l] = ConvertedValue; 
+    // maxBuf = max(ConvertedValue, maxBuf);
+    // minBuf = min(ConvertedValue, minBuf);
+    // rawTotal = rawTotal + ConvertedValue;
+    int16_t newval = g_RawCopy[i] - offset;
+    maxBuf = max(newval, maxBuf);
+    minBuf = min(newval, minBuf);
+    rawTotal = rawTotal + newval;
     i = i + 1;
     if (i == PERIMETER_RAW_SAMPLES)
     {
@@ -349,6 +365,10 @@ void MatchedFilter(int16_t Samples)
   if (mag > 0)
   {
     g_signalCounter = min(g_signalCounter + 1, 5);
+  if (mag > 0){
+    g_signalCounter = min(g_signalCounter + 1, 4);    
+  } else {
+    g_signalCounter = max(g_signalCounter - 1, -4);    
   }
   else
   {
@@ -429,6 +449,48 @@ void PerimeterProcessingLoopTask(void *dummyParameter)
         {
           // Get values from fast aquisition Task and Calculate Min/Max/Avg
           GetPerimeterRawValues(I2S_DMA_BUFFER_LENGTH);
+        // Run MatchFilter and Determine Perimeter status variables
+        MatchedFilter(I2S_DMA_BUFFER_LENGTH);
+
+          // Send debug data through MQTT
+#ifdef MQTT_GRAPH_DEBUG
+        if(g_MQTTGraphDebug)
+        {
+          String JsonPayload = "";
+          FirebaseJson JSONDBGPayload;
+          String JSONDBGPayloadStr;
+          char MQTTpayload[MQTT_MAX_PAYLOAD];
+
+          JSONDBGPayload.clear();
+
+          JSONDBGPayload.add("val1", String(g_PerimeterMagnitude));
+          JSONDBGPayload.add("val2", String(g_signalCounter*50));
+          JSONDBGPayload.add("val3", String(g_isInsidePerimeter*100));
+          JSONDBGPayload.toString(JSONDBGPayloadStr, false);
+          JSONDBGPayloadStr.toCharArray(MQTTpayload, JSONDBGPayloadStr.length() + 1);
+          bool result = MQTTclient.publish(MQTT_DEBUG_CHANNEL, MQTTpayload);
+          if (result != 1)
+          {
+              g_MQTTErrorCount = g_MQTTErrorCount + 1;
+          }
+          MQTTclient.loop();
+//          DebugPrintln("Sending to :[" + String(MQTT_DEBUG_CHANNEL) + "] " + String(MQTTpayload) + " => " + String(result), DBG_VERBOSE, true);
+        }
+#endif
+
+        // Display Perimeter task and filter summary information
+        count = count + 1;
+        if (count == 100 || abs(g_PerimeterMagnitude) > 200 ) {
+          DebugPrintln("Perim: inQ:" + String(g_inPerimeterQueue) +
+                     " QMax:" + String(g_inPerimeterQueueMax) +
+                     " Qfull:" + String(g_PerimeterQueuefull) +
+                     " |RawAvg " + String(g_PerimeterRawAvg) + " [" + String(g_PerimeterRawMin) + "," + String(g_PerimeterRawMax) + "]" +
+                     " |FiltMag:" + String(g_PerimeterMagnitude) +
+                     " SMag:" + String(g_PerimeterSmoothMagnitude) +
+                     " FiltQual:" + String(g_PerimeterFilterQuality,2) + 
+                     " Sigcount:" + String(g_signalCounter) +
+                     " in?:" + String(g_isInsidePerimeter),
+                 DBG_DEBUG, true);
 
           // Run MatchFilter and Determine Perimeter status variables
           MatchedFilter(I2S_DMA_BUFFER_LENGTH);
