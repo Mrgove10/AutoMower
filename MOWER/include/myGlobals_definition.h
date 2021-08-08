@@ -128,7 +128,7 @@ extern unsigned int g_inQueue;            // Accumulated I2S notification queue 
 /************************* Perimeter data processing task *********************************/
 #define PERIMETER_PROCESSING_TASK_ESP_CORE 1
 #define TIMER_PRESCALER 80                // timer counts every microseconds
-#define PERIMETER_TIMER_PERIOD 250 * 1000 // in microseconds
+#define PERIMETER_TIMER_PERIOD 150 * 1000 // in microseconds
 #define PERIMETER_TIMER_NUMBER 0          // Timer used
 #define PERIMETER_QUEUE_LEN 5             // Queue length. Not one to enable some latency to processing task
 
@@ -143,6 +143,8 @@ extern unsigned int g_inQueue;            // Accumulated I2S notification queue 
 #define PERIMETER_USE_DIFFERENTIAL_SIGNAL true
 #define PERIMETER_SWAP_COIL_POLARITY false
 #define PERIMETER_IN_OUT_DETECTION_THRESHOLD 1000
+
+#define MQTT_GRAPH_DEBUG true
 
 extern hw_timer_t *g_PerimeterTimerhandle;  // Perimeter processing task timer based trigger ISR handle
 

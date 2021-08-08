@@ -364,16 +364,13 @@ void MatchedFilter(int16_t Samples)
   // perimeter inside/outside detection
   if (mag > 0)
   {
-    g_signalCounter = min(g_signalCounter + 1, 5);
-  if (mag > 0){
     g_signalCounter = min(g_signalCounter + 1, 4);    
-  } else {
-    g_signalCounter = max(g_signalCounter - 1, -4);    
   }
   else
   {
-    g_signalCounter = max(g_signalCounter - 1, -5);
+    g_signalCounter = max(g_signalCounter - 1, -4);    
   }
+
   if (g_signalCounter < 0)
   {
     lastInsideTime = millis();
@@ -407,52 +404,53 @@ void MatchedFilter(int16_t Samples)
  */
 void PerimeterProcessingLoopTask(void *dummyParameter)
 {
+  static bool SetupDone = false;
+
+  for (;;)
   {
-    static bool SetupDone = false;
+    //------------------------------------------------------------------
+    // Task Setup (done only on 1st call)
+    //------------------------------------------------------------------
 
-    for (;;)
+    if (!SetupDone)
     {
-      //------------------------------------------------------------------
-      // Task Setup (done only on 1st call)
-      //------------------------------------------------------------------
+      DebugPrintln("Perimeter data processing Task Started on core " + String(xPortGetCoreID()), DBG_VERBOSE, true);
 
-      if (!SetupDone)
+      PerimeterQueueInit();       // Create queue used by timer based ISR
+      PerimeterTimerInit();       // Create and start Timer based ISR
+      PerimeterProcessingSetup(); // Initialise task value and results
+
+      SetupDone = true;
+      delayMicroseconds(PERIMETER_TIMER_PERIOD);
+
+      DebugPrintln("Perimeter data processing Task setup complete: Perimeterqueue:" + String(uxQueueMessagesWaiting(g_PerimeterTimerQueue)), DBG_VERBOSE, true);
+    }
+
+    //------------------------------------------------------------------
+    // Task Loop (done on each timer semaphore release)
+    //------------------------------------------------------------------
+
+    byte evt;
+    static int count = 0;
+
+    // Wait on queue event
+    while (xQueueReceive(g_PerimeterTimerQueue, &evt, portMAX_DELAY) == pdPASS)
+    {
+      // To monitor correct operation of the reading task, the number of unread events in the queue is monitored (should be zero)
+      unsigned int inPerimterQueue = uxQueueMessagesWaiting(g_PerimeterTimerQueue);
+      // Decided not to protect with a semaphore the access to monotoring shared variables as they are non critical variable and this avoids unecessary system overload
+      g_inPerimeterQueue = g_inPerimeterQueue + inPerimterQueue;
+      g_inPerimeterQueueMax = max(inPerimterQueue, g_inPerimeterQueueMax);
+
+      if (evt == PERIMETER_TASK_PROCESSING_TRIGGER) // Perimeter data processing
       {
-        DebugPrintln("Perimeter data processing Task Started on core " + String(xPortGetCoreID()), DBG_VERBOSE, true);
+        // Get values from fast aquisition Task and Calculate Min/Max/Avg
+        GetPerimeterRawValues(I2S_DMA_BUFFER_LENGTH);
 
-        PerimeterQueueInit();       // Create queue used by timer based ISR
-        PerimeterTimerInit();       // Create and start Timer based ISR
-        PerimeterProcessingSetup(); // Initialise task value and results
-
-        SetupDone = true;
-        delayMicroseconds(PERIMETER_TIMER_PERIOD);
-
-        DebugPrintln("Perimeter data processing Task setup complete: Perimeterqueue:" + String(uxQueueMessagesWaiting(g_PerimeterTimerQueue)), DBG_VERBOSE, true);
-      }
-
-      //------------------------------------------------------------------
-      // Task Loop (done on each timer semaphore release)
-      //------------------------------------------------------------------
-
-      byte evt;
-      static int count = 0;
-      // Wait on queue event
-      while (xQueueReceive(g_PerimeterTimerQueue, &evt, portMAX_DELAY) == pdPASS)
-      {
-        // To monitor correct operation of the reading task, the number of unread events in the queue is monitored (should be zero)
-        unsigned int inPerimterQueue = uxQueueMessagesWaiting(g_PerimeterTimerQueue);
-        // Decided not to protect with a semaphore the access to monotoring shared variables as they are non critical variable and this avoids unecessary system overload
-        g_inPerimeterQueue = g_inPerimeterQueue + inPerimterQueue;
-        g_inPerimeterQueueMax = max(inPerimterQueue, g_inPerimeterQueueMax);
-
-        if (evt == PERIMETER_TASK_PROCESSING_TRIGGER) // Perimeter data processing
-        {
-          // Get values from fast aquisition Task and Calculate Min/Max/Avg
-          GetPerimeterRawValues(I2S_DMA_BUFFER_LENGTH);
         // Run MatchFilter and Determine Perimeter status variables
         MatchedFilter(I2S_DMA_BUFFER_LENGTH);
 
-          // Send debug data through MQTT
+        // Send debug data through MQTT
 #ifdef MQTT_GRAPH_DEBUG
         if(g_MQTTGraphDebug)
         {
@@ -477,81 +475,57 @@ void PerimeterProcessingLoopTask(void *dummyParameter)
 //          DebugPrintln("Sending to :[" + String(MQTT_DEBUG_CHANNEL) + "] " + String(MQTTpayload) + " => " + String(result), DBG_VERBOSE, true);
         }
 #endif
-
         // Display Perimeter task and filter summary information
         count = count + 1;
-        if (count == 100 || abs(g_PerimeterMagnitude) > 200 ) {
+        if (count == 100 || abs(g_PerimeterMagnitude) > 200 ) 
+        {
           DebugPrintln("Perim: inQ:" + String(g_inPerimeterQueue) +
-                     " QMax:" + String(g_inPerimeterQueueMax) +
-                     " Qfull:" + String(g_PerimeterQueuefull) +
-                     " |RawAvg " + String(g_PerimeterRawAvg) + " [" + String(g_PerimeterRawMin) + "," + String(g_PerimeterRawMax) + "]" +
-                     " |FiltMag:" + String(g_PerimeterMagnitude) +
-                     " SMag:" + String(g_PerimeterSmoothMagnitude) +
-                     " FiltQual:" + String(g_PerimeterFilterQuality,2) + 
-                     " Sigcount:" + String(g_signalCounter) +
-                     " in?:" + String(g_isInsidePerimeter),
-                 DBG_DEBUG, true);
+                    " QMax:" + String(g_inPerimeterQueueMax) +
+                    " Qfull:" + String(g_PerimeterQueuefull) +
+                    " |RawAvg " + String(g_PerimeterRawAvg) + " [" + String(g_PerimeterRawMin) + "," + String(g_PerimeterRawMax) + "]" +
+                    " |FiltMag:" + String(g_PerimeterMagnitude) +
+                    " SMag:" + String(g_PerimeterSmoothMagnitude) +
+                    " FiltQual:" + String(g_PerimeterFilterQuality,2) + 
+                    " Sigcount:" + String(g_signalCounter) +
+                    " in?:" + String(g_isInsidePerimeter),
+                DBG_DEBUG, true);
 
-          // Run MatchFilter and Determine Perimeter status variables
-          MatchedFilter(I2S_DMA_BUFFER_LENGTH);
-
-          // Display Perimeter task and filter summary information
-          count = count + 1;
-          if (count == 6 || abs(g_PerimeterMagnitude) > 400)
-          {
-            DebugPrintln("Perim: inQ:" + String(g_inPerimeterQueue) +
-                             " QMax:" + String(g_inPerimeterQueueMax) +
-                             " Qfull:" + String(g_PerimeterQueuefull) +
-                             " |RawAvg " + String(g_PerimeterRawAvg) + " [" + String(g_PerimeterRawMin) + "," + String(g_PerimeterRawMax) + "]" +
-                             " |FiltMag:" + String(g_PerimeterMagnitude) +
-                             " SMag:" + String(g_PerimeterSmoothMagnitude) +
-                             " FiltQual:" + String(g_PerimeterFilterQuality, 2) +
-                             " Sigcount:" + String(g_signalCounter) +
-                             " in?:" + String(g_isInsidePerimeter),
-                         DBG_DEBUG, true);
-
-            // Reset displayed values
-            g_PerimeterQueuefull = 0;
-            g_inPerimeterQueueMax = 0;
-            g_inPerimeterQueue = 0;
-            count = 0;
-          }
 // plot Match filter results
 #ifdef SERIAL_PLOTTER
-          int Ptr = g_rawWritePtrCopy;
-          uint16_t offset = g_PerimeterOffset;
+        int Ptr = g_rawWritePtrCopy;
+        uint16_t offset = g_PerimeterOffset;
 
-          int endPtr = Ptr - 1;
-          if (endPtr < 0)
-          {
-            endPtr = PERIMETER_RAW_SAMPLES - 1;
-          }
-          int startPtr = endPtr - I2S_DMA_BUFFER_LENGTH;
-          if (startPtr < 0)
-          {
-            startPtr = PERIMETER_RAW_SAMPLES + startPtr;
-          }
-          int i = startPtr;
-
-          for (int l = 0; l < I2S_DMA_BUFFER_LENGTH; l++)
-          {
-            Serial2.println(String(micros() & 0x0FFFFF) + ";;;" +
-                            String(i) + ";" + String(l) + ";" + String(g_RawCopy[i]) + ";" +
-                            String(PerimeterRawValuesConvert(g_RawCopy[i], offset)) + ";" +
-                            String(g_PerimeterMagnitude) + ";" + String(g_PerimeterSmoothMagnitude) + ";" +
-                            String(g_PerimeterFilterQuality, 2) + ";" + String(g_signalCounter) + ";" + String(g_isInsidePerimeter));
-            i = i + 1;
-            if (i == PERIMETER_RAW_SAMPLES)
-            {
-              i = 0;
-            }
-          }
-#endif
-        }
-        else if (evt == PERIMETER_TASK_PROCESSING_CALIBRATION) // Calibration
+        int endPtr = Ptr - 1;
+        if (endPtr < 0)
         {
-          PerimeterRawValuesCalibration(PERIMETER_RAW_SAMPLES);
+          endPtr = PERIMETER_RAW_SAMPLES - 1;
         }
+        int startPtr = endPtr - I2S_DMA_BUFFER_LENGTH;
+        if (startPtr < 0)
+        {
+          startPtr = PERIMETER_RAW_SAMPLES + startPtr;
+        }
+        int i = startPtr;
+
+        for (int l = 0; l < I2S_DMA_BUFFER_LENGTH; l++)
+        {
+          Serial2.println(String(micros() & 0x0FFFFF) + ";;;" +
+                          String(i) + ";" + String(l) + ";" + String(g_RawCopy[i]) + ";" +
+                          String(PerimeterRawValuesConvert(g_RawCopy[i], offset)) + ";" +
+                          String(g_PerimeterMagnitude) + ";" + String(g_PerimeterSmoothMagnitude) + ";" +
+                          String(g_PerimeterFilterQuality, 2) + ";" + String(g_signalCounter) + ";" + String(g_isInsidePerimeter));
+          i = i + 1;
+          if (i == PERIMETER_RAW_SAMPLES)
+          {
+            i = 0;
+          }
+        }
+#endif
+      }
+      }
+      else if (evt == PERIMETER_TASK_PROCESSING_CALIBRATION) // Calibration
+      {
+        PerimeterRawValuesCalibration(PERIMETER_RAW_SAMPLES);
       }
     }
   }

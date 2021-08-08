@@ -197,36 +197,31 @@ void MQTTCallback(char *topic, byte *message, unsigned int length)
       {
         g_CurrentState = MowerState::error;
       }
-<<<<<<<
       else if (Val1Str == "TEST")
-=======
-
-      else if (Command == "START_MQTT_GRAPH_DEBUG")
-      {
-        g_MQTTGraphDebug = true;
-      }
-
-      else if (Command == "STOP_MQTT_GRAPH_DEBUG")
-      {
-        g_MQTTGraphDebug = false;
-      }
-
-      else if (Command == "CALIBRATE")
-      {
-        PerimeterRawValuesCalibration(PERIMETER_RAW_SAMPLES);
-        DebugPrintln("Calibration offset changed to " + String(g_PerimeterOffset), DBG_INFO, true);
-      }
-
-      else if (Command == "TUNE_OFFSET")
-      {
-        g_PerimeterOffset = g_PerimeterOffset + int(Val1);
-      }
-
-      else
->>>>>>>
       {
         g_CurrentState = MowerState::test;
       }
+    }
+
+    else if (Command == "START_MQTT_GRAPH_DEBUG")
+    {
+      g_MQTTGraphDebug = true;
+    }
+
+    else if (Command == "STOP_MQTT_GRAPH_DEBUG")
+    {
+      g_MQTTGraphDebug = false;
+    }
+
+    else if (Command == "CALIBRATE")
+    {
+      PerimeterRawValuesCalibration(PERIMETER_RAW_SAMPLES);
+      DebugPrintln("Calibration offset changed to " + String(g_PerimeterOffset), DBG_INFO, true);
+    }
+
+    else if (Command == "TUNE_OFFSET")
+    {
+      g_PerimeterOffset = g_PerimeterOffset + int(Val1);
     }
 
     else
