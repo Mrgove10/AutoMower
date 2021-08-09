@@ -225,6 +225,7 @@ void GetPerimeterRawValues(int Samples)
     maxBuf = max(newval, maxBuf);
     minBuf = min(newval, minBuf);
     rawTotal = rawTotal + newval;
+
     i = i + 1;
     if (i == PERIMETER_RAW_SAMPLES)
     {
@@ -382,6 +383,13 @@ void MatchedFilter(int16_t Samples)
     // Large signal, the in/out detection is reliable.
     // Using mag yields very fast in/out transition reporting.
     isInside = (mag < 0);
+        if(isInside){
+      g_signalCounter = -4;
+    }
+    else{
+      g_signalCounter = 4;
+    }
+
   }
   else
   {
@@ -450,6 +458,31 @@ void PerimeterProcessingLoopTask(void *dummyParameter)
         // Run MatchFilter and Determine Perimeter status variables
         MatchedFilter(I2S_DMA_BUFFER_LENGTH);
 
+#ifdef MQTT_GRAPH_DEBUG
+    if(g_MQTTGraphRawDebug)
+    {
+      String JsonPayload = "";
+      FirebaseJson JSONDBGPayload;
+      String JSONDBGPayloadStr;
+      char MQTTpayload[MQTT_MAX_PAYLOAD];
+
+      for (int l = 0; l < I2S_DMA_BUFFER_LENGTH; l++)
+      {
+        JSONDBGPayload.clear();
+        JSONDBGPayload.add("val5", g_RawCopy[l]);
+        // JSONDBGPayload.add("val6", (int) ConvertedValue);
+        JSONDBGPayload.toString(JSONDBGPayloadStr, false);
+        JSONDBGPayloadStr.toCharArray(MQTTpayload, JSONDBGPayloadStr.length() + 1);
+        bool result = MQTTclient.publish(MQTT_DEBUG_RAW_CHANNEL, MQTTpayload);
+        if (result != 1)
+        {
+            g_MQTTErrorCount = g_MQTTErrorCount + 1;
+        }
+        MQTTclient.loop();
+  //          DebugPrintln("Sending to :[" + String(MQTT_DEBUG_CHANNEL) + "] " + String(MQTTpayload) + " => " + String(result), DBG_VERBOSE, true);
+      }
+    }
+#endif
         // Send debug data through MQTT
 #ifdef MQTT_GRAPH_DEBUG
         if(g_MQTTGraphDebug)
@@ -461,9 +494,9 @@ void PerimeterProcessingLoopTask(void *dummyParameter)
 
           JSONDBGPayload.clear();
 
-          JSONDBGPayload.add("val1", String(g_PerimeterMagnitude));
-          JSONDBGPayload.add("val2", String(g_signalCounter*50));
-          JSONDBGPayload.add("val3", String(g_isInsidePerimeter*100));
+          JSONDBGPayload.add("val1", g_PerimeterMagnitude);
+          JSONDBGPayload.add("val2", g_signalCounter*50);
+          JSONDBGPayload.add("val3", g_isInsidePerimeter*100);
           JSONDBGPayload.toString(JSONDBGPayloadStr, false);
           JSONDBGPayloadStr.toCharArray(MQTTpayload, JSONDBGPayloadStr.length() + 1);
           bool result = MQTTclient.publish(MQTT_DEBUG_CHANNEL, MQTTpayload);
@@ -489,7 +522,13 @@ void PerimeterProcessingLoopTask(void *dummyParameter)
                     " Sigcount:" + String(g_signalCounter) +
                     " in?:" + String(g_isInsidePerimeter),
                 DBG_DEBUG, true);
-
+          count = 0;
+          g_PerimeterQueuefull = 0;
+          g_inPerimeterQueueMax = 0;
+          g_inPerimeterQueue = 0;
+          g_PerimeterRawAvg = 0;
+          g_PerimeterRawMin = INT16_MAX;
+          g_PerimeterRawMax = 0;
 // plot Match filter results
 #ifdef SERIAL_PLOTTER
         int Ptr = g_rawWritePtrCopy;

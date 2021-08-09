@@ -172,8 +172,10 @@ extern uint16_t g_RawCopy[PERIMETER_RAW_SAMPLES]; //  Copy of circular Buffer co
 extern int g_rawWritePtrCopy;                     // Pointer to last value written to g_RawCopy circular buffer copy
 extern int8_t g_PerimeterSamplesForMatchedFilter[I2S_DMA_BUFFER_LENGTH];
 
+#ifdef MQTT_GRAPH_DEBUG
 extern bool g_MQTTGraphDebug;
-
+extern bool g_MQTTGraphRawDebug;
+#endif
 /************************* EEPROM Management *********************************/
 
 #include "EEPROM.h"
