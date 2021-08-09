@@ -110,6 +110,17 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
     MowerSpeed(MOWER_MOWING_TRAVEL_SPEED);
   }
 
+  if (abs(g_PerimeterMagnitude) > 50)
+  {
+    DebugPrintln("Approaching perimeter : Slowing down ! (" + String(g_PerimeterMagnitude) + ")", DBG_DEBUG, true);
+    MowerForward(MOWER_MOVES_SPEED_SLOW);
+  }
+  else
+  {
+    DebugPrintln("No perimeter approaching : normal speed", DBG_VERBOSE, true);
+    MowerSpeed(MOWER_MOWING_TRAVEL_SPEED);
+  }
+
   //--------------------------------
   // Bumper Collision detection
   //--------------------------------
