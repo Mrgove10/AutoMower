@@ -115,10 +115,10 @@ void MySetup(void)
   DebugPrintln("End of Setup---------", DBG_VERBOSE, true);
   DebugPrintln("");
 
-  bool startupChecksOk = StartupChecks();
+  // bool startupChecksOk = StartupChecks();
 
   DebugPrintln("");
-  DebugPrintln("End of Startupchecks - Status:" + String(startupChecksOk), DBG_VERBOSE, true);
+  // DebugPrintln("End of Startupchecks - Status:" + String(startupChecksOk), DBG_VERBOSE, true);
   DebugPrintln("");
 
   SerialAndTelnet.handle();
