@@ -216,11 +216,11 @@ void FastAnaReadLoopTaskResume(void)
 int ProtectedAnalogRead(int pin)
 {
   // Using I2S to read from the ADC causes conflict with normal analogRead function as it locks the ADC
-  // This function is to be used to perform "usual" analog reads whilst managing the conflict with the I2S driver through the use on
+  // This function is to be used to perform "usual" (slow) analog reads whilst managing the conflict with the I2S driver through the use of an
   // application semaphore
   // IMPORTANT NOTES:
   // 1- This function may not be used before the semaphore has been initialised (initlisation is taken care of in the FastAnaReadLoopTaskCreate() function)
-  // 2- This function only works for ADC1 (pins 32 to 39)
+  // 2- This function only works for ADC1 connected pins (pins 32 to 39)
 
   // obtain exclusive access to ADC (or wait for it to be available)
   xSemaphoreTake(g_ADCinUse, portMAX_DELAY);
