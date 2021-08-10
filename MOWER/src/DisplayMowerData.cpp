@@ -29,15 +29,15 @@ void DisplayMowerData()
     DebugPrintln("Left Bumper Triggered !", DBG_INFO, true);
   }
 
-  if (TiltRead(TILT_HORIZONTAL))
-  {
-    DebugPrintln("Horizontal Tilt sensor Triggered !", DBG_INFO, true);
-  }
+  // if (TiltRead(TILT_HORIZONTAL))
+  // {
+  //   DebugPrintln("Horizontal Tilt sensor Triggered !", DBG_INFO, true);
+  // }
 
-  if (TiltRead(TILT_VERTICAL))
-  {
-    DebugPrintln("Vertical Tilt sensor Triggered !", DBG_INFO, true);
-  }
+  // if (TiltRead(TILT_VERTICAL))
+  // {
+  //   DebugPrintln("Vertical Tilt sensor Triggered !", DBG_INFO, true);
+  // }
 
   BatteryChargeCurrentRead(false);
   MotorCurrentRead(MOTOR_CURRENT_RIGHT);

@@ -33,4 +33,11 @@ bool TiltSensorCheck(int tilt);
  */
 bool TiltRead(int tilt);
 
+/**
+ * Read the status of the tilt sensors (both vertical and horizontal) and take immediate action if tilted
+ * @return boolean true if at least one tilt is activated, false if not
+ */
+
+bool TiltReadAndAct(void);
+
 #endif

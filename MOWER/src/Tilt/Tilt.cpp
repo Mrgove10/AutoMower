@@ -3,6 +3,8 @@
 #include "Environment_definitions.h"
 #include "myGlobals_definition.h"
 #include "Tilt/Tilt.h"
+#include "MowerMoves/MowerMoves.h"
+#include "CutMotor/CutMotor.h"
 #include "Utils/Utils.h"
 #include "Display/Display.h"
 
@@ -104,9 +106,42 @@ bool TiltSensorCheck(int tilt)
 bool TiltRead(int tilt)
 {
   bool returnVal;
-  portENTER_CRITICAL_ISR(&g_TiltMux[tilt]);
+  // portENTER_CRITICAL_ISR(&g_TiltMux[tilt]);
   returnVal = g_TiltTriggered[tilt];
   g_TiltTriggered[tilt] = false;
-  portEXIT_CRITICAL_ISR(&g_TiltMux[tilt]);
+  // portEXIT_CRITICAL_ISR(&g_TiltMux[tilt]);
   return returnVal;
+}
+
+/**
+ * Read the status of the tilt sensors (both vertical and horizontal) and take immediate action if tilted
+ * @return boolean true if at least one tilt is activated, false if not
+ */
+
+bool TiltReadAndAct(void)
+{
+  bool returnval = false;
+
+  // Check vertical tilt and react
+  if(TiltRead(TILT_VERTICAL))
+  {
+    DebugPrintln("Vertical Tilt sensor Triggered !", DBG_INFO, true);
+    g_CurrentState = MowerState::error;                   // Place mower in error state
+    g_CurrentErrorCode = ERROR_VERTICAL_TILT_ACTIVATED;   // Update error code
+    MowerStop();
+    CutMotorStop(true);
+    returnval = true;
+  }
+
+  // Check vertical tilt and react
+  if(TiltRead(TILT_HORIZONTAL))
+  {
+    DebugPrintln("Horizontal Tilt sensor Triggered !", DBG_INFO, true);
+    g_CurrentState = MowerState::error;                   // Place mower in error state
+    g_CurrentErrorCode = ERROR_HORIZONTAL_TILT_ACTIVATED; // Update error code
+    MowerStop();
+    CutMotorStop(true);
+    returnval = true;
+  }
+  return returnval;
 }
