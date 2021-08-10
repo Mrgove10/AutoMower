@@ -148,3 +148,45 @@ void LogPrintln(const String message, const String tags, const int level)
   DebugPrintln(messageStr, false);
   MQTTSendLogMessage(MQTT_LOG_CHANNEL, messageStr.c_str(), tags.c_str(), level);
 }
+
+/**
+ * Return a string containing a test description of the error
+ *  * 
+ * @param errorCode Error message number
+ * @return String error description
+ */
+String ErrorString(const int errorCode)
+{
+  switch (errorCode)
+  {
+  case ERROR_NO_ERROR:
+    return String("No Error");
+
+//General Error conditions
+
+  case ERROR_BATTERY_CRITICAL:
+    return String("Battery level below CRITICAL threshold");
+  case ERROR_VERTICAL_TILT_ACTIVATED:
+    return String("Vertical tilt sensor triggered");
+  case ERROR_HORIZONTAL_TILT_ACTIVATED:
+    return String("Horizontal tilt sensor triggered");
+
+//States-related Error conditions
+
+  case ERROR_MOWING_NO_START_BUMPER_ACTIVE:
+    return String("Mowing cannot start: bumper activated");
+  case ERROR_MOWING_NO_START_OBJECT_TOO_CLOSE:
+    return String("Mowing cannot start: object too close");
+  case ERROR_MOWING_NO_START_TILT_ACTIVE:
+    return String("Mowing cannot start: tilt sensor activated");
+  case ERROR_MOWING_NO_START_NO_PERIMETER_SIGNAL:
+    return String("Mowing cannot start: no perimeter signal");
+
+// Undefined errors
+
+  case ERROR_UNDEFINED:
+    return String("ERROR UNDEFINED");
+  default:
+    return String("ERROR UNDEFINED: Please update ErrorString() function");
+  }
+}

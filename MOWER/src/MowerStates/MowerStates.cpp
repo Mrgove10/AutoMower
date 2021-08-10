@@ -67,6 +67,8 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
     //change Telemetry frequency
     //Initialise Mowing start time
     //
+    // Reset mower error code (not needed after error acknowledgement implemented)
+    g_CurrentErrorCode = ERROR_NO_ERROR;
 
     //--------------------------------
     // Sonar environement sensing to check if surounding is clear
@@ -334,7 +336,7 @@ void MowerInError(const bool StateChange, const MowerState PreviousState)
     CutMotorStop(true);
 
     DebugPrintln("");
-    LogPrintln("Mowing stopped on Error # " + String(g_CurrentErrorCode), TAG_ERROR, DBG_ERROR);
+    LogPrintln("Mower stopped on Error #" + String(g_CurrentErrorCode) + "-" + ErrorString(g_CurrentErrorCode), TAG_ERROR, DBG_ERROR);
   }
   // disable sensors
   // send notification to phone

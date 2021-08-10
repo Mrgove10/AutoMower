@@ -54,4 +54,12 @@ void DebugPrintln(const String message, const int level = DBG_ALWAYS, const bool
  */
 void LogPrintln(const String message, const String tags, const int level = DBG_ALWAYS);
 
+/**
+ * Return a string containing a test description of the error
+ *  * 
+ * @param errorCode Error message number
+ * @return String error description
+ */
+String ErrorString(const int errorCode);
+
 #endif

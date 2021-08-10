@@ -447,8 +447,21 @@ extern int g_CutMotorSpeed;
 extern bool g_CutMotorAlarm;
 
 /************************* Error variables *********************************/
+// Please update ErrorString() function in Utils to include textual description to new error message
+
 #define ERROR_NO_ERROR 0
-#define ERROR_BATTERY_CRITICAL 1
+
+//General Error conditions
+#define ERROR_BATTERY_CRITICAL                      001
+#define ERROR_VERTICAL_TILT_ACTIVATED               002
+#define ERROR_HORIZONTAL_TILT_ACTIVATED             003
+
+//States-related Error conditions
+#define ERROR_MOWING_NO_START_BUMPER_ACTIVE         100
+#define ERROR_MOWING_NO_START_OBJECT_TOO_CLOSE      101
+#define ERROR_MOWING_NO_START_TILT_ACTIVE           102
+#define ERROR_MOWING_NO_START_NO_PERIMETER_SIGNAL   103
+
 #define ERROR_UNDEFINED 999
 
 extern int g_CurrentErrorCode; // Current Error code
