@@ -77,7 +77,7 @@ void MowerTurn(const int Angle, const bool OnSpot)
     MotionMotorStop(MOTION_MOTOR_RIGHT);
     MotionMotorStop(MOTION_MOTOR_LEFT);
   }
-  else
+  else    // Right turn
   {
     MotionMotorStart(MOTION_MOTOR_LEFT, MOTION_MOTOR_FORWARD, MOWER_MOVES_TURN_SPEED);
     if (OnSpot)
@@ -85,8 +85,8 @@ void MowerTurn(const int Angle, const bool OnSpot)
       MotionMotorStart(MOTION_MOTOR_RIGHT, MOTION_MOTOR_REVERSE, MOWER_MOVES_TURN_SPEED);
     }
     delay(turnDuration);
-    MotionMotorStop(MOTION_MOTOR_RIGHT);
     MotionMotorStop(MOTION_MOTOR_LEFT);
+    MotionMotorStop(MOTION_MOTOR_RIGHT);
   }
 }
 

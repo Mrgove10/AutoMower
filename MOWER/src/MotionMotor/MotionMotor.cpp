@@ -75,22 +75,27 @@ void MotionMotorStart(const int Motor, const int Direction, const int Speed)
  */
 void MotionMotorSetSpeed(const int Motor, const int Speed)
 {
+  static int previousSpeed = 0;
   int checkedspeed = max(0, Speed);                                         // make sure speed is in 0-100% range
   checkedspeed = min(100, Speed);                                           // make sure speed is in 0-100% range
   int SpeedPoints = int(map(checkedspeed, 0, 100, 0, MOTION_MOTOR_POINTS)); // convert speed (in %) into PWM range
 
-  if ((Speed < MOTION_MOTOR_MIN_SPEED) && (Speed != 0))
+  if (Speed != previousSpeed)
   {
-    DebugPrintln("Motion Motor " + g_MotionMotorStr[Motor] + " speed " + String(checkedspeed) + " too low : not applied", DBG_VERBOSE, true);
-    ledcWrite(g_MotionMotorPWMChannel[Motor], 0);
-    g_MotionMotorSpeed[Motor] = 0;
-  }
-  else
-  {
-    ledcWrite(g_MotionMotorPWMChannel[Motor], SpeedPoints);
-    g_MotionMotorSpeed[Motor] = checkedspeed;
+    if ((Speed < MOTION_MOTOR_MIN_SPEED) && (Speed != 0))
+    {
+      DebugPrintln("Motion Motor " + g_MotionMotorStr[Motor] + " speed " + String(checkedspeed) + " too low : not applied", DBG_VERBOSE, true);
+      ledcWrite(g_MotionMotorPWMChannel[Motor], 0);
+      g_MotionMotorSpeed[Motor] = 0;
+    }
+    else
+    {
+      ledcWrite(g_MotionMotorPWMChannel[Motor], SpeedPoints);
+      g_MotionMotorSpeed[Motor] = checkedspeed;
 
-    DebugPrintln("Motion Motor " + g_MotionMotorStr[Motor] + " @ " + String(checkedspeed) + "% on Channel " + String(g_MotionMotorPWMChannel[Motor]) + " (" + String(SpeedPoints) + ")", DBG_VERBOSE, true);
+      DebugPrintln("Motion Motor " + g_MotionMotorStr[Motor] + " @ " + String(checkedspeed) + "% on Channel " + String(g_MotionMotorPWMChannel[Motor]) + " (" + String(SpeedPoints) + ")", DBG_VERBOSE, true);
+    }
+    previousSpeed = Speed;
   }
 };
 
