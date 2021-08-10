@@ -66,6 +66,7 @@ extern int8_t g_sigcode_norm[PERIMETER_SIGNAL_CODE_LENGTH];
 extern int8_t g_sigcode_diff[PERIMETER_SIGNAL_CODE_LENGTH];
 
 #define PERIMETER_SUBSAMPLE 4
+
 /************************* High speed Analog Read task *********************************/
 #define I2S_PORT I2S_NUM_0
 #define I2S_READ_TIMEOUT 1             // in RTOS ticks
@@ -126,7 +127,7 @@ extern unsigned int g_inQueue;            // Accumulated I2S notification queue 
 // extern volatile long g_Triggers;
 
 /************************* Perimeter data processing task *********************************/
-#define PERIMETER_PROCESSING_TASK_ESP_CORE 1
+
 #define TIMER_PRESCALER 80                // timer counts every microseconds
 #define PERIMETER_TIMER_PERIOD 150 * 1000 // in microseconds
 #define PERIMETER_TIMER_NUMBER 0          // Timer used
@@ -314,13 +315,27 @@ extern float g_MotorCurrent[MOTOR_CURRENT_COUNT];
 extern float g_BatteryVotlage;
 extern int g_BatteryStatus;
 
+/************************* Sonar Read task *********************************/
+#define SONAR_READ_TASK_ESP_CORE 1          // Core assigned to task
+#define SONAR_READ_TASK_PRIORITY 1          // Priority assigned to task
+#define SONAR_READ_TASK_STACK_SIZE 4000     // Stack assigned to task (in bytes)
+#define SONAR_READ_TASK_NAME "SonarReadTsk" // Task name
+
+#define SONAR_READ_TASK_WAIT_ON_IDLE 500    // in ms
+#define SONAR_READ_TASK_LOOP_TIME 150       // in ms
+
+#define SONAR_READ_ACTIVATION_DELAY SONAR_READ_TASK_WAIT_ON_IDLE + SONAR_READ_TASK_LOOP_TIME
+extern TaskHandle_t g_SonarReadTaskHandle; // Sonar Read task RTOS task handle
+
+extern bool g_SonarReadEnabled;          // Global variable to suspend sonar sensor reading
+
 /************************* HC-SR04 Sonar sensor variables *********************************/
 #include <Wire.h>
 #include <NewPing.h>
 
 #define SONAR_COUNT 3           // Number of sensors.
 #define SONAR_MAX_DISTANCE 200  // Maximum distance (in cm) to ping.
-#define SONAR_READ_INTERVAL 500 // in ms
+#define SONAR_READ_INTERVAL 300 // in ms
 #define SONAR_READ_ITERATIONS 9
 
 #define SONAR_FRONT 0

@@ -24,4 +24,25 @@ bool SonarSensorCheck(int sensor);
  */
 int SonarRead(const int sensor, const bool Now = false);
 
+/**
+ * Sonar Read task main loop
+ * @param dummyParameter is unused but required
+ */
+void SonarReadLoopTask(void *dummyParameter);
+
+/**
+ * Sonar Read task creation function
+ */
+void SonarReadLoopTaskCreate(void);
+
+/**
+ * Sonar Read task suspension function
+ */
+void SonarReadLoopTaskSuspend(void);
+
+/**
+ * Sonar Read task resume from suspension function
+ */
+void SonarReadLoopTaskResume(void);
+
 #endif

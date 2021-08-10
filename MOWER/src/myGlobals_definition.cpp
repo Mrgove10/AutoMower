@@ -217,6 +217,12 @@ float g_MotorCurrent[MOTOR_CURRENT_COUNT] = {0, 0, 0};
 float g_BatteryVotlage = 0;
 int g_BatteryStatus = BATTERY_VOLTAGE_OK;
 
+/************************* Sonar Read task *********************************/
+
+TaskHandle_t g_SonarReadTaskHandle; // Sonar Read task RTOS task handle
+
+bool g_SonarReadEnabled = false;          // Global variable to suspend sonar sensor reading
+
 /************************* HC-SR04 Sonar sensor variables *********************************/
 #include <Wire.h>
 

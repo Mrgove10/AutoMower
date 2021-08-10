@@ -71,12 +71,15 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
     g_CurrentErrorCode = ERROR_NO_ERROR;
 
     //--------------------------------
-    // Sonar environement sensing to check if surounding is clear
+    // Activate Sonar reading
     //--------------------------------
 
-    SonarRead(SONAR_FRONT, true);
-    SonarRead(SONAR_LEFT, true);
-    SonarRead(SONAR_RIGHT, true);
+    g_SonarReadEnabled = true;          // activate Sonar readings
+    delay(SONAR_READ_ACTIVATION_DELAY); //wait for task to take 1st readings
+
+//    SonarRead(SONAR_FRONT, true);
+//    SonarRead(SONAR_LEFT, true);
+//    SonarRead(SONAR_RIGHT, true);
 
     // if no obstacles detected and all conditions ok, start motors
     if (!BumperRead(BUMPER_RIGHT) &&
@@ -95,9 +98,9 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
   // Sonar environement sensing for approaching objects
   //--------------------------------
 
-  SonarRead(SONAR_FRONT, true);
-  SonarRead(SONAR_LEFT, true);
-  SonarRead(SONAR_RIGHT, true);
+  // SonarRead(SONAR_FRONT, true);
+  // SonarRead(SONAR_LEFT, true);
+  // SonarRead(SONAR_RIGHT, true);
 
   if (g_SonarDistance[SONAR_FRONT] < SONAR_MIN_DISTANCE_FOR_SLOWING ||
       g_SonarDistance[SONAR_LEFT] < SONAR_MIN_DISTANCE_FOR_SLOWING ||
@@ -133,7 +136,7 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
     MowerStop();
     CutMotorStop(true);
 
-    SonarRead(SONAR_LEFT, true);
+    // SonarRead(SONAR_LEFT, true);
     if (g_SonarDistance[SONAR_LEFT] > SONAR_MIN_DISTANCE_FOR_TURN) // check if it's clear on left side
     {
       DebugPrintln("Turning left", DBG_VERBOSE, true);
@@ -141,7 +144,7 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
     }
     else
     {
-      SonarRead(SONAR_RIGHT, true);
+      // SonarRead(SONAR_RIGHT, true);
       if (g_SonarDistance[SONAR_RIGHT] > SONAR_MIN_DISTANCE_FOR_TURN) // check if it's clear on right side
       {
         DebugPrintln("Reversing and turning right", DBG_VERBOSE, true);
@@ -168,7 +171,7 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
     MowerStop();
     CutMotorStop();
 
-    SonarRead(SONAR_LEFT, true);
+    // SonarRead(SONAR_LEFT, true);
 
     if (g_SonarDistance[SONAR_LEFT] > SONAR_MIN_DISTANCE_FOR_TURN) // check if it's clear on left side
     {
@@ -177,7 +180,7 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
     }
     else
     {
-      SonarRead(SONAR_RIGHT, true);
+      // SonarRead(SONAR_RIGHT, true);
 
       if (g_SonarDistance[SONAR_RIGHT] > SONAR_MIN_DISTANCE_FOR_TURN) // check if it's clear on right side
       {
@@ -198,7 +201,7 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
   // Front Sonar Collision detection
   //--------------------------------
 
-  SonarRead(SONAR_FRONT, true);
+  // SonarRead(SONAR_FRONT, true);
 
   if (g_SonarDistance[SONAR_FRONT] < SONAR_MIN_DISTANCE_FOR_STOP)
   {
@@ -207,7 +210,7 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
     MowerStop();
     CutMotorStop();
 
-    SonarRead(SONAR_LEFT, true);
+    // SonarRead(SONAR_LEFT, true);
 
     if (g_SonarDistance[SONAR_LEFT] > SONAR_MIN_DISTANCE_FOR_TURN) // check if it's clear on left side
     {
@@ -217,7 +220,7 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
     }
     else
     {
-      SonarRead(SONAR_RIGHT, true);
+      // SonarRead(SONAR_RIGHT, true);
 
       if (g_SonarDistance[SONAR_RIGHT] > SONAR_MIN_DISTANCE_FOR_TURN) // check if it's clear on right side
       {
@@ -238,7 +241,7 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
   // Left Sonar Collision detection
   //--------------------------------
 
-  SonarRead(SONAR_LEFT, true);
+  // SonarRead(SONAR_LEFT, true);
 
   if (g_SonarDistance[SONAR_LEFT] < SONAR_MIN_DISTANCE_FOR_STOP)
   {
@@ -247,7 +250,7 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
     MowerStop();
     CutMotorStop();
 
-    SonarRead(SONAR_RIGHT, true);
+    // SonarRead(SONAR_RIGHT, true);
 
     if (g_SonarDistance[SONAR_RIGHT] > SONAR_MIN_DISTANCE_FOR_TURN) // check if it's clear on right side
     {
@@ -267,7 +270,7 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
   // Right Sonar Collision dection
   //--------------------------------
 
-  SonarRead(SONAR_RIGHT, true);
+  // SonarRead(SONAR_RIGHT, true);
 
   if (g_SonarDistance[SONAR_RIGHT] < SONAR_MIN_DISTANCE_FOR_STOP)
   {
@@ -276,7 +279,7 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
     MowerStop();
     CutMotorStop();
 
-    SonarRead(SONAR_LEFT, true);
+    // SonarRead(SONAR_LEFT, true);
 
     if (g_SonarDistance[SONAR_LEFT] > SONAR_MIN_DISTANCE_FOR_TURN) // check if it's clear on left side
     {
@@ -334,6 +337,9 @@ void MowerInError(const bool StateChange, const MowerState PreviousState)
     // STOP all motors
     MowerStop();
     CutMotorStop(true);
+
+    // Suspend Sonar readings
+    g_SonarReadEnabled = false;
 
     DebugPrintln("");
     LogPrintln("Mower stopped on Error #" + String(g_CurrentErrorCode) + "-" + ErrorString(g_CurrentErrorCode), TAG_ERROR, DBG_ERROR);

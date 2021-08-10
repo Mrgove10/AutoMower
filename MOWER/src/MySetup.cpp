@@ -16,6 +16,7 @@
 #include "Temperature/Temperature.h"
 #include "Current/Current.h"
 #include "Fan/Fan.h"
+#include "Sonar/Sonar.h"
 #include "Compass/Compass.h"
 #include "GPS/GPS.h"
 #include "MotionMotor/MotionMotor.h"
@@ -103,9 +104,13 @@ void MySetup(void)
 
   GPSSetup();
 
+  SonarReadLoopTaskCreate();
+  
   FastAnaReadLoopTaskCreate();
 
   PerimeterProcessingLoopTaskCreate();
+
+  g_debugLevel = DBG_DEBUG;
 
   SerialAndTelnet.handle();
 
