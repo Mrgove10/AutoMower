@@ -100,17 +100,18 @@ String DebugLevelChar(const int level)
   }
 }
 
-void DebugPrint(String message, int level, boolean time)
+void DebugPrint(const String message, const int level, const boolean time, const boolean append)
 {
   String timeStr = "";
   String g_debugLevelStr = "";
 
-  if (time)
+  if (time && !append)
   {
     timeStr = myTime.dateTime("H:i:s");
   }
 
   g_debugLevelStr = String(DebugLevelChar(level));
+
 
   /*
   Serial.print ("Level:"+String(Level));
@@ -120,7 +121,7 @@ void DebugPrint(String message, int level, boolean time)
 */
   if (level <= g_debugLevel)
   {
-    if (g_debugLevelStr == " " && timeStr == "")
+    if ((g_debugLevelStr == " " && timeStr == "") || append)
     {
       xSemaphoreTake(g_MySerialSemaphore, portMAX_DELAY);
       MySERIAL.print(message);
@@ -136,9 +137,9 @@ void DebugPrint(String message, int level, boolean time)
   }
 }
 
-void DebugPrintln(String message, int level, boolean time)
+void DebugPrintln(const String message, const int level, const boolean time, const boolean append)
 {
-  DebugPrint(message + String("\r\n"), level, time);
+  DebugPrint(message + String("\r\n"), level, time, append);
 }
 
 void LogPrintln(const String message, const String tags, const int level)

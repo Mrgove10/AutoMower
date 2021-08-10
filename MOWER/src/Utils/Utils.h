@@ -33,8 +33,9 @@ String DebugLevelChar(const int level);
  * @param message   String     Message to print
  * @param level     int        Debug message level.
  * @param time      boolean    True to print current time on message.
+ * @param append    boolean    True to print without time and level (to add to end of current line).
  */
-void DebugPrint(const String message, const int level = DBG_ALWAYS, const boolean time = false);
+void DebugPrint(const String message, const int level = DBG_ALWAYS, const boolean time = false, const boolean append = false);
 
 /**
  * Prints a debug message on Telnet and USB serial connection with new line
@@ -42,8 +43,9 @@ void DebugPrint(const String message, const int level = DBG_ALWAYS, const boolea
  * @param message   String     Message to print
  * @param level     int        Debug message level. 
  * @param time      boolean    True to print current time on message.
+ * @param append    boolean    True to print without time and level (to add to end of current line).
  */
-void DebugPrintln(const String message, const int level = DBG_ALWAYS, const boolean time = false);
+void DebugPrintln(const String message, const int level = DBG_ALWAYS, const boolean time = false, const boolean append = false);
 
 /**
  * Logs a message to server message log and prints a debug message on Telnet and USB serial connection (new line)

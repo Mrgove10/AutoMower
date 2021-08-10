@@ -84,10 +84,10 @@ void DisplayMowerData()
 
     for (uint8_t i = 0; i < SONAR_COUNT; i++)
     {            // Loop through each sensor and display results.
-      DebugPrint(" | " + g_sensorStr[i] + ":" + String(g_SonarDistance[i]),DBG_VERBOSE);
+      DebugPrint(" | " + g_sensorStr[i] + ":" + String(g_SonarDistance[i]),DBG_VERBOSE, false, true);
       DisplayPrint(0 + i * 6, 1, "S" + String(i + 1) + ":" + String(g_SonarDistance[i]) + " ", true);
     }
-//    DebugPrintln("");
+    DebugPrintln("",DBG_VERBOSE,false,true);
     LastRefreshed = millis();
   }
   for (int i = 0; i < KEYPAD_MAX_KEYS; i++)
