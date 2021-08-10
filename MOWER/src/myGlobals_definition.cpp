@@ -284,3 +284,8 @@ int g_CurrentErrorCode = ERROR_NO_ERROR; // Current Error code
 
 MowerState g_CurrentState = MowerState::idle;
 MowerState g_PreviousState = MowerState::idle;
+
+/************************* Mower State variables *********************************/
+
+// Mowing mode
+int g_MowingLoopCnt = 0;         // number of loops since mowing started

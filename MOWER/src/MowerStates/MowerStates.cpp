@@ -7,6 +7,7 @@
 #include "MowerStates/MowerStates.h"
 #include "CutMotor/CutMotor.h"
 #include "Sonar/Sonar.h"
+#include "Tilt/Tilt.h"
 #include "Bumper/Bumper.h"
 #include "Utils/Utils.h"
 #include "Display/Display.h"
@@ -69,7 +70,7 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
     //
     // Reset mower error code (not needed after error acknowledgement implemented)
     g_CurrentErrorCode = ERROR_NO_ERROR;
-
+    
     //--------------------------------
     // Activate Sonar reading
     //--------------------------------
@@ -81,17 +82,68 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
 //    SonarRead(SONAR_LEFT, true);
 //    SonarRead(SONAR_RIGHT, true);
 
-    // if no obstacles detected and all conditions ok, start motors
-    if (!BumperRead(BUMPER_RIGHT) &&
-        !BumperRead(BUMPER_LEFT) &&
-        // need to add condition on Tilt sensors
-        g_SonarDistance[SONAR_FRONT] > SONAR_MIN_DISTANCE_FOR_TURN &&
-        g_SonarDistance[SONAR_LEFT] > SONAR_MIN_DISTANCE_FOR_TURN &&
-        g_SonarDistance[SONAR_RIGHT] > SONAR_MIN_DISTANCE_FOR_TURN)
+    //--------------------------------
+    // Check if mowing conditions are met
+    //--------------------------------
+
+    // Bumpers not activated
+    if (BumperRead(BUMPER_RIGHT) && BumperRead(BUMPER_LEFT))
     {
-      MowerForward(MOWER_MOVES_SPEED_SLOW);
-      //    CutMotorStart(MOWER_MOWING_CUTTING_DIRECTION, MOWER_MOWING_CUTTING_SPEED);
+      g_CurrentState = MowerState::error;
+      g_CurrentErrorCode = ERROR_MOWING_NO_START_BUMPER_ACTIVE;
+      return;
     }
+    // Obstacles detected
+    if (g_SonarDistance[SONAR_FRONT] < SONAR_MIN_DISTANCE_FOR_TURN ||
+        g_SonarDistance[SONAR_LEFT] < SONAR_MIN_DISTANCE_FOR_TURN ||
+        g_SonarDistance[SONAR_RIGHT] < SONAR_MIN_DISTANCE_FOR_TURN
+        )
+    {
+      g_CurrentState = MowerState::error;
+      g_CurrentErrorCode = ERROR_MOWING_NO_START_OBJECT_TOO_CLOSE;
+      return;
+    }
+    // Tilt activated
+    if (TiltRead(TILT_HORIZONTAL) || TiltRead(TILT_VERTICAL))
+    {
+      g_CurrentState = MowerState::error;
+      g_CurrentErrorCode = ERROR_MOWING_NO_START_TILT_ACTIVE;
+      return;
+    }
+    // No perimeter signal
+    if (false)          // TO DO
+    {
+      g_CurrentState = MowerState::error;
+      g_CurrentErrorCode = ERROR_MOWING_NO_START_NO_PERIMETER_SIGNAL;
+      return;
+    }
+
+    //--------------------------------
+    // Start mowing (code below only executed if no error detected)
+    //--------------------------------
+
+    // Sound starting beep to notify environment
+    if (PreviousState == MowerState::idle)
+    {
+      // TO DO
+    }
+
+    MowerForward(MOWER_MOVES_SPEED_SLOW);
+    // CutMotorStart(MOWER_MOWING_CUTTING_DIRECTION, MOWER_MOWING_CUTTING_SPEED);
+
+    g_MowingLoopCnt = 0;
+
+  }
+
+  g_MowingLoopCnt = g_MowingLoopCnt + 1;
+
+  //--------------------------------
+  // Check tilt sensors and take immediate action
+  //--------------------------------
+
+  if (TiltReadAndAct())
+  {
+    return;
   }
 
   //--------------------------------
@@ -343,10 +395,14 @@ void MowerInError(const bool StateChange, const MowerState PreviousState)
 
     DebugPrintln("");
     LogPrintln("Mower stopped on Error #" + String(g_CurrentErrorCode) + "-" + ErrorString(g_CurrentErrorCode), TAG_ERROR, DBG_ERROR);
+  
+    // disable other sensors ?
+    // send notification to phone ? 
+    // send telemetry ?
   }
-  // disable sensors
-  // send notification to phone
-  // send telemetry
-  // sound SOS beep
-  // wait for user action
+  else
+  {
+    // wait for user action (keypad action)
+    // sound SOS beep
+  }
 }

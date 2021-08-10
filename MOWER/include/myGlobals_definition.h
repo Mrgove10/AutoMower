@@ -496,3 +496,8 @@ extern MowerState g_CurrentState;
 extern MowerState g_PreviousState;
 
 #define MOWER_DATA_DISPLAY_INTERVAL 2000 // in ms
+
+/************************* Mower State variables *********************************/
+
+// Mowing mode
+extern int g_MowingLoopCnt;         // number of loops since mowing started

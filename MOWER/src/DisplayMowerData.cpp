@@ -72,12 +72,14 @@ void DisplayMowerData()
                    " |Volt:" + String(float(g_BatteryVotlage) / 1000.0f, 1) +
                    " |Head:" + String(g_CompassHeading, 1) +
                    " |Timouts:" + String(g_FastAnaReadTimeout) +
-                   " |MaxQ:" + String(g_inQueueMax),
-               DBG_VERBOSE, true);
+                   " |MaxQ:" + String(g_inQueueMax) +
+                   " |MowCnt" + String(g_MowingLoopCnt),
+                DBG_VERBOSE, true);
 
     g_FastAnaReadTimeout = 0;
     g_inQueueMax = 0;
     g_inQueue = 0;
+    g_MowingLoopCnt = 0;
 
     //    DisplayClear();
     DisplayPrint(0, 0, "T1: " + String(g_Temperature[TEMPERATURE_1_RED], 1) + " T2: " + String(g_Temperature[TEMPERATURE_2_BLUE], 1), true);

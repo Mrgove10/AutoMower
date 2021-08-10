@@ -24,16 +24,28 @@
 void setup()
 {
   MySetup();
+
+// Set mower to idle mode
+  MowerIdle(true, g_PreviousState);
 }
 
 void loop()
 {
+
+  static MowerState StateOnCall = MowerState::idle;
+
   // Common routine mower tasks
 
   FanCheck(FAN_1_RED);  // Read temperature and activate or stop Cutting fan
   FanCheck(FAN_2_BLUE); // Read temperature and activate or stop Motion fan
 
-  bool stateChange = g_CurrentState != g_PreviousState;
+  bool stateChange = g_CurrentState != StateOnCall;
+
+  if (stateChange){
+      g_PreviousState = g_CurrentState;
+  }
+
+  StateOnCall = g_CurrentState;
 
   switch (g_CurrentState)
   {
@@ -68,8 +80,6 @@ void loop()
   default:
     break;
   }
-
-  g_PreviousState = g_CurrentState;
 
   // Display Mower Data
 
