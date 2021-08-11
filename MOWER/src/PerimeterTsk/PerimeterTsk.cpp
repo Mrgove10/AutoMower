@@ -90,6 +90,7 @@ void PerimeterProcessingSetup(void)
   g_PerimeterSmoothMagnitude = 0;
   g_PerimeterFilterQuality = 0;
   g_signalCounter = 0;
+  g_lastIsInsidePerimeterTime = 0;
 
   // Trigger calibration to calculate offset
   BaseType_t xHigherPriorityTaskWoken = pdFALSE;
@@ -125,7 +126,6 @@ void PerimeterRawValuesCalibration(int Samples)
   // Get exclusive access to shared global variable and get a copy of the g_Raw circular buffer and associated pointer
   xSemaphoreTake(g_RawValuesSemaphore, portMAX_DELAY);
   memcpy(&RawCopy, &g_raw, PERIMETER_RAW_SAMPLES * sizeof(uint16_t));
-  int Ptr = g_rawWritePtr;
   xSemaphoreGive(g_RawValuesSemaphore);
 
   // Get "Samples" values from g_Raw circular buffer and determine min/max/Total
@@ -157,21 +157,21 @@ int8_t PerimeterRawValuesConvert(uint16_t rawVal, uint16_t offset)
   int8_t relativeValue = 0;
 
   OffsetedValue = rawVal - offset;
-  // relativeValue = min(SCHAR_MAX,  max(SCHAR_MIN, OffsetedValue / 16));
-  int16_t tempValue = OffsetedValue / 16;
-  if (tempValue > SCHAR_MAX) 
-  {
-    return SCHAR_MAX;
-  }
-  else if (tempValue < SCHAR_MIN)
-  {
-    return SCHAR_MIN;
-  }
-  else 
-  {
-    return tempValue;
-  }
-  // return relativeValue;
+  relativeValue = min(SCHAR_MAX,  max(SCHAR_MIN, OffsetedValue / 16));
+  // int16_t tempValue = OffsetedValue / 16;
+  // if (tempValue > SCHAR_MAX) 
+  // {
+  //   return SCHAR_MAX;
+  // }
+  // else if (tempValue < SCHAR_MIN)
+  // {
+  //   return SCHAR_MIN;
+  // }
+  // else 
+  // {
+  //   return tempValue;
+  // }
+  return relativeValue;
 }
 
 /**
@@ -322,9 +322,10 @@ void MatchedFilter(int16_t Samples)
 {
   // int16_t sampleCount = Samples;
   int16_t mag; // perimeter magnitude
+  static int16_t magPrev; // perimeter magnitude
+  int16_t magAvg; // perimeter magnitude
   static float smoothMag;
   float FilterQuality = 0;
-  static unsigned long lastInsideTime;
   //  static int callCounter;
 
   // int8_t *samples = ADCMan.getCapture(idxPin[idx]);
@@ -358,6 +359,7 @@ void MatchedFilter(int16_t Samples)
     mag = mag * -1;
   }
 
+  
   // smoothed magnitude used for signal-off detection
   smoothMag = 0.99 * smoothMag + 0.01 * ((float)abs(mag));
   //smoothMag[idx] = 0.99 * smoothMag[idx] + 0.01 * ((float)mag[idx]);
@@ -372,34 +374,37 @@ void MatchedFilter(int16_t Samples)
     g_signalCounter = max(g_signalCounter - 1, -4);    
   }
 
-  if (g_signalCounter < 0)
-  {
-    lastInsideTime = millis();
-  }
-
+  magAvg = (mag + magPrev)/2;
+  magPrev = mag;
+  
   boolean isInside;
   if (abs(mag) > PERIMETER_IN_OUT_DETECTION_THRESHOLD)
   {
     // Large signal, the in/out detection is reliable.
     // Using mag yields very fast in/out transition reporting.
     isInside = (mag < 0);
-        if(isInside){
+    if(isInside){
       g_signalCounter = -4;
     }
-    else{
+    else
+    {
       g_signalCounter = 4;
     }
-
   }
   else
   {
     // Low signal, use filtered value for increased reliability
-    isInside = (g_signalCounter < 0);
+    isInside = (g_signalCounter <= 0);
   }
 
   // Decided not to protect with a semaphore the access match filter values as these values are only written here and this avoids unecessary system overload
   //  xSemaphoreTake(g_MyglobalSemaphore, portMAX_DELAY);
+  if(isInside)
+  {
+    g_lastIsInsidePerimeterTime = millis();
+  }
   g_PerimeterMagnitude = mag;
+  g_PerimeterMagnitudeAvg = magAvg;
   g_PerimeterSmoothMagnitude = smoothMag;
   g_isInsidePerimeter = isInside;
   g_PerimeterFilterQuality = FilterQuality;
@@ -494,9 +499,10 @@ void PerimeterProcessingLoopTask(void *dummyParameter)
 
           JSONDBGPayload.clear();
 
-          JSONDBGPayload.add("val1", g_PerimeterMagnitude);
-          JSONDBGPayload.add("val2", g_signalCounter*50);
-          JSONDBGPayload.add("val3", g_isInsidePerimeter*100);
+          JSONDBGPayload.add("Mag", g_PerimeterMagnitude);
+          JSONDBGPayload.add("MagAvg", g_PerimeterMagnitudeAvg);        
+          JSONDBGPayload.add("Cnt", g_signalCounter*50);
+          JSONDBGPayload.add("In?", g_isInsidePerimeter*100);
           JSONDBGPayload.toString(JSONDBGPayloadStr, false);
           JSONDBGPayloadStr.toCharArray(MQTTpayload, JSONDBGPayloadStr.length() + 1);
           bool result = MQTTclient.publish(MQTT_DEBUG_CHANNEL, MQTTpayload);

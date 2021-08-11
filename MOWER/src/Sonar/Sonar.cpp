@@ -12,7 +12,7 @@ void SonarSensorSetup(void)
 {
   DebugPrintln("Sonar Sensor Setup start", DBG_VERBOSE, true);
 
-  g_SonarReadEnabled = false;     // By default, sonar readings are disabled
+  g_SonarReadEnabled = true;     // By default, sonar readings are enabled
 }
 
 /**
@@ -57,7 +57,7 @@ bool SonarSensorCheck(int sensor)
     return false;
   }
 
-  g_SonarReadEnabled = false;       // Stop sonar readings
+  // g_SonarReadEnabled = false;       // Stop sonar readings
 }
 
 /**

@@ -46,9 +46,9 @@ void DisplayMowerData()
 
   KeypadRead();
 
-  SonarRead(SONAR_FRONT, true);   // force sonar read as reading task may not be activated
-  SonarRead(SONAR_LEFT); // force sonar read as reading task may not be activated
-  SonarRead(SONAR_RIGHT); // force sonar read as reading task may not be activated
+  // SonarRead(SONAR_FRONT, true);   // force sonar read as reading task may not be activated
+  // SonarRead(SONAR_LEFT, true); // force sonar read as reading task may not be activated
+  // SonarRead(SONAR_RIGHT, true); // force sonar read as reading task may not be activated
 
   BatteryVoltageRead();
 

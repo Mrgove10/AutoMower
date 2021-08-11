@@ -31,7 +31,6 @@ void setup()
 
 void loop()
 {
-
   static MowerState StateOnCall = MowerState::idle;
 
   // Common routine mower tasks

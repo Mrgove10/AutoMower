@@ -43,4 +43,12 @@ void MowerLeavingBase(const bool StateChange, const MowerState PreviousState);
  */
 void MowerInError(const bool StateChange, const MowerState PreviousState);
 
+/**
+ * Mower finds perimeter wire according to heading given and, when found, orient right or left
+ * @param heading integer indicating the heading to follows to try to find the wire
+ * @param clockwise boolean indicating the direction in which the mower should face if it finds the wire
+ * @return Success boolean depending on whether it found the wire or not
+ */
+bool MowerFindWire(const int heading, const bool clockwise);
+
 #endif

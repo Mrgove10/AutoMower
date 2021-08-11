@@ -143,7 +143,9 @@ extern unsigned int g_inQueue;            // Accumulated I2S notification queue 
 
 #define PERIMETER_USE_DIFFERENTIAL_SIGNAL true
 #define PERIMETER_SWAP_COIL_POLARITY false
-#define PERIMETER_IN_OUT_DETECTION_THRESHOLD 1000
+// #define PERIMETER_IN_OUT_DETECTION_THRESHOLD 1000
+#define PERIMETER_IN_OUT_DETECTION_THRESHOLD 400
+#define PERIMETER_APPROACHING_THRESHOLD PERIMETER_IN_OUT_DETECTION_THRESHOLD/5
 
 #define MQTT_GRAPH_DEBUG true
 
@@ -162,8 +164,10 @@ extern int16_t g_PerimeterRawMax;
 extern int16_t g_PerimeterRawMin;
 extern int16_t g_PerimeterRawAvg;
 extern bool g_isInsidePerimeter;
+extern unsigned long g_lastIsInsidePerimeterTime;
 extern bool g_PerimetersignalTimedOut;
 extern int g_PerimeterMagnitude;
+extern int g_PerimeterMagnitudeAvg;
 extern int g_PerimeterSmoothMagnitude;
 extern float g_PerimeterFilterQuality;
 extern int16_t g_PerimeterOffset;
@@ -324,7 +328,7 @@ extern int g_BatteryStatus;
 #define SONAR_READ_TASK_WAIT_ON_IDLE 500    // in ms
 #define SONAR_READ_TASK_LOOP_TIME 150       // in ms
 
-#define SONAR_READ_ACTIVATION_DELAY SONAR_READ_TASK_WAIT_ON_IDLE + SONAR_READ_TASK_LOOP_TIME
+#define SONAR_READ_ACTIVATION_DELAY SONAR_READ_TASK_WAIT_ON_IDLE + SONAR_READ_TASK_LOOP_TIME * 2
 extern TaskHandle_t g_SonarReadTaskHandle; // Sonar Read task RTOS task handle
 
 extern bool g_SonarReadEnabled;          // Global variable to suspend sonar sensor reading
@@ -427,14 +431,35 @@ extern String g_MotionMotorStr[MOTION_MOTOR_COUNT];
 #define MOWER_MOVES_SPEED_NORMAL 80 // in %
 #define MOWER_MOVES_SPEED_MAX 100   // in %
 
-#define MOWER_MOVES_TURN_SPEED 75
+#define MOWER_MOVES_REVERSE 75   // in %
+
+#define MOWER_MOVES_TURN_SPEED 80
 #define MOWER_MOVES_TURN_ANGLE_RATIO 360.0f / 6000.0f // in Angle degrees per ms
-#define MOWER_MOVES_REVERSE_FOR_TURN_DURATION 3000    // in ms
+#define MOWER_MOVES_REVERSE_FOR_TURN_DURATION 2500    // in ms
 #define MOWER_MOWING_TRAVEL_SPEED 90
 
 #define SONAR_MIN_DISTANCE_FOR_SLOWING 60 // in cm
 #define SONAR_MIN_DISTANCE_FOR_TURN 40    // in cm
 #define SONAR_MIN_DISTANCE_FOR_STOP 25    // in cm
+
+// Perimeter search function
+
+#define PERIMETER_SEARCH_REVERSE_MAX_TIME 4000 // in ms
+#define PERIMETER_SEARCH_REVERSE_SPEED 80 // in %
+#define PERIMETER_SEARCH_REVERSE_TIME 1000 // in %
+#define PERIMETER_SEARCH_FORWARD_MAX_TIME_1 30000 // in ms
+#define PERIMETER_SEARCH_FORWARD_MAX_TIME_2 5000 // in ms
+#define PERIMETER_SEARCH_FORWARD_SPEED 80 // in %
+#define PERIMETER_SEARCH_FORWARD_TIME 1000 // in %
+// #define PERIMETER_SEARCH_CLOCKWISE_TURN_ANGLE 135 // in deg
+// #define PERIMETER_SEARCH_COUNTER_CLOCKWISE_TURN_ANGLE -135 // in deg
+#define PERIMETER_SEARCH_ANGLE_INCREMENT 15 // in deg
+// #define PERIMETER_SEARCH_TURN_MAX_TIME 10000 // in ms
+#define PERIMETER_SEARCH_TURN_MAX_ITERATIONS 180/PERIMETER_SEARCH_ANGLE_INCREMENT // in loop counts. It should not be necessary to turn more than 150 deg depending on wire approach angle
+
+// Back to base function
+#define BACK_TO_BASE_HEADING 0  // in deg 0=North
+#define BACK_TO_BASE_CLOCKWISE true  // in which direction to follow wire
 
 /************************* CUT Motor variables *********************************/
 
@@ -476,6 +501,15 @@ extern bool g_CutMotorAlarm;
 #define ERROR_MOWING_NO_START_OBJECT_TOO_CLOSE      101
 #define ERROR_MOWING_NO_START_TILT_ACTIVE           102
 #define ERROR_MOWING_NO_START_NO_PERIMETER_SIGNAL   103
+
+#define ERROR_WIRE_SEARCH_NO_START_BUMPER_ACTIVE         200
+#define ERROR_WIRE_SEARCH_NO_START_OBJECT_TOO_CLOSE      201
+#define ERROR_WIRE_SEARCH_NO_START_TILT_ACTIVE           202
+#define ERROR_WIRE_SEARCH_NO_START_NO_PERIMETER_SIGNAL   203
+#define ERROR_WIRE_SEARCH_PHASE_1_FAILLED                204
+#define ERROR_WIRE_SEARCH_PHASE_2_FAILLED                205
+#define ERROR_WIRE_SEARCH_PHASE_3_FAILLED                206
+#define ERROR_WIRE_SEARCH_PHASE_4_FAILLED                207
 
 #define ERROR_UNDEFINED 999
 

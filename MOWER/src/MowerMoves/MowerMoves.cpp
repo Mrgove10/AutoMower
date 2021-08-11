@@ -99,7 +99,7 @@ void MowerTurn(const int Angle, const bool OnSpot)
  */
 void MowerReserseAndTurn(const int Angle, const int Duration, const bool OnSpot)
 {
-  MowerReverse(MOWER_MOVES_SPEED_SLOW, MOWER_MOVES_REVERSE_FOR_TURN_DURATION);
+  MowerReverse(MOWER_MOVES_REVERSE, MOWER_MOVES_REVERSE_FOR_TURN_DURATION);
   MowerTurn(Angle, OnSpot);
 }
 

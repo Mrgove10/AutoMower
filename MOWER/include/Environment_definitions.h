@@ -29,6 +29,8 @@
 #define TAG_CHECK "CHECK"
 #define TAG_ERROR "ERROR"
 #define TAG_VALUE "VALUE"
+#define TAG_SEARCH "WIRE_SEARCH"
+#define TAG_TO_BASE "BACK2BASE"
 
 // -------------------- Serial communications ------------------------
 #define SERIAL_BAUD 115200
