@@ -51,4 +51,13 @@ void MowerInError(const bool StateChange, const MowerState PreviousState);
  */
 bool MowerFindWire(const int heading, const bool clockwise);
 
+/**
+ * @brief Mower follows perimeter wire back to charging station
+ * @param reset boolean indicating the wire trakcing function and PID needs to be reset
+ * @param heading integer indicating the heading to follow to get to charging station
+ * @param clockwise boolean indicating the direction in which the mower is following the wire
+ * @return Success boolean depending on whether it found the wire or not
+ */
+bool MowerFollowWire(const bool reset, const int heading, const bool clockwise);
+
 #endif

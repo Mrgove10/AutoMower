@@ -77,10 +77,11 @@ void EEPROMSetup(void)
     DebugPrintln(String(buf), DBG_INFO);
 
     g_EEPROMValid = true;
-    //    TestVal1 = g_EEPROMLoad.Load.Data.val1;
-    //    TestVal2 = g_EEPROMLoad.Load.Data.val2;
-    //    TestVal3 = g_EEPROMLoad.Load.Data.val3;
-    //    TestVal4 = g_EEPROMLoad.Load.Data.val4;
+    g_PerimeterOffset = g_EEPROMLoad.Load.Data.PerimeterSignalOffset;
+    g_ParamPerimeterTrackPIDKp = g_EEPROMLoad.Load.Data.ParamPerimeterTrackPIDKp;
+    g_ParamPerimeterTrackPIDKi = g_EEPROMLoad.Load.Data.ParamPerimeterTrackPIDKi;
+    g_ParamPerimeterTrackPIDKd = g_EEPROMLoad.Load.Data.ParamPerimeterTrackPIDKd;
+    g_PerimeterTrackSetpoint = g_EEPROMLoad.Load.Data.PerimeterTrackSetpoint;
   }
 }
 
@@ -139,10 +140,6 @@ void EEPROMSave(boolean immediatly)
 {
   if (immediatly || millis() - g_LastEepromWriteTime > EEPROM_WRITE_FREQUENCY)
   {
-    //    g_EEPROMLoad.Load.Data.val1 = TestVal1; // just for tests
-    //    g_EEPROMLoad.Load.Data.val2 = TestVal2; // just for tests
-    //    g_EEPROMLoad.Load.Data.val3 = TestVal3; // just for tests
-    //    g_EEPROMLoad.Load.Data.val4 = TestVal4; // just for tests
 
     g_EEPROMLoad.Load.Data.LastEepromSaveTime.year = myTime.year();
     g_EEPROMLoad.Load.Data.LastEepromSaveTime.month = myTime.month();
@@ -150,6 +147,12 @@ void EEPROMSave(boolean immediatly)
     g_EEPROMLoad.Load.Data.LastEepromSaveTime.hour = myTime.hour();
     g_EEPROMLoad.Load.Data.LastEepromSaveTime.minute = myTime.minute();
     g_EEPROMLoad.Load.Data.LastEepromSaveTime.second = myTime.second();
+
+    g_EEPROMLoad.Load.Data.PerimeterSignalOffset = g_PerimeterOffset;
+    g_EEPROMLoad.Load.Data.ParamPerimeterTrackPIDKp = g_ParamPerimeterTrackPIDKp;
+    g_EEPROMLoad.Load.Data.ParamPerimeterTrackPIDKi = g_ParamPerimeterTrackPIDKi;
+    g_EEPROMLoad.Load.Data.ParamPerimeterTrackPIDKd = g_ParamPerimeterTrackPIDKd;
+    g_EEPROMLoad.Load.Data.PerimeterTrackSetpoint = g_PerimeterTrackSetpoint;
 
     EEPROMWrite();
   }
@@ -161,18 +164,21 @@ void EEPROMSave(boolean immediatly)
  */
 void EEPROMInitialise(void)
 {
-  g_EEPROMLoad.Load.Data.val1 = 1;
-  g_EEPROMLoad.Load.Data.val2 = 2;
-  g_EEPROMLoad.Load.Data.val3 = 3;
-  g_EEPROMLoad.Load.Data.val4 = 32000;
-  for (int i = 0; i < EEPROM_SPARE_SIZE - 1; i++)
-  {
-    g_EEPROMLoad.Load.Sparebuffer[i] = 0xFF;
-  }
   g_EEPROMLoad.Load.Data.LastEepromSaveTime.year = myTime.year();
   g_EEPROMLoad.Load.Data.LastEepromSaveTime.month = myTime.month();
   g_EEPROMLoad.Load.Data.LastEepromSaveTime.day = myTime.day();
   g_EEPROMLoad.Load.Data.LastEepromSaveTime.hour = myTime.hour();
   g_EEPROMLoad.Load.Data.LastEepromSaveTime.minute = myTime.minute();
   g_EEPROMLoad.Load.Data.LastEepromSaveTime.second = myTime.second();
+
+  g_EEPROMLoad.Load.Data.PerimeterSignalOffset = 0;
+  g_EEPROMLoad.Load.Data.ParamPerimeterTrackPIDKp = 0;
+  g_EEPROMLoad.Load.Data.ParamPerimeterTrackPIDKi = 0;
+  g_EEPROMLoad.Load.Data.ParamPerimeterTrackPIDKd = 0;
+  g_EEPROMLoad.Load.Data.PerimeterTrackSetpoint = 0;
+
+  for (int i = 0; i < EEPROM_SPARE_SIZE - 1; i++)
+  {
+    g_EEPROMLoad.Load.Sparebuffer[i] = 0x00;
+  }
 }

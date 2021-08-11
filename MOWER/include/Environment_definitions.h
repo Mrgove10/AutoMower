@@ -7,6 +7,7 @@
 #define MQTT_TELEMETRY_CHANNEL "AutoMower/Telemetry"
 #define MQTT_DEBUG_CHANNEL "MQTTest/Data"
 #define MQTT_DEBUG_RAW_CHANNEL "MQTTest/DataRaw"
+#define MQTT_PID_DEBUG_CHANNEL "Automower/PIDDebug"
 #define MQTT_SERVER "192.168.1.3"
 #define MQTT_PORT 1883
 

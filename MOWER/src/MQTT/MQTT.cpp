@@ -240,6 +240,18 @@ void MQTTCallback(char *topic, byte *message, unsigned int length)
       g_MQTTGraphRawDebug = false;
     }
 #endif
+
+#ifdef MQTT_PID_GRAPH_DEBUG
+    else if (Command == "START_MQTT_PID_GRAPH_DEBUG")
+    {
+      g_MQTTPIDGraphDebug = true;
+    }
+    else if (Command == "STOP_MQTT_PID_GRAPH_DEBUG")
+    {
+      g_MQTTPIDGraphDebug = false;
+    }
+#endif
+
     else if (Command == "CALIBRATE")
     {
       PerimeterRawValuesCalibration(PERIMETER_RAW_SAMPLES);

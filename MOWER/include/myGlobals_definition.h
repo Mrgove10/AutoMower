@@ -170,7 +170,7 @@ extern int g_PerimeterMagnitude;
 extern int g_PerimeterMagnitudeAvg;
 extern int g_PerimeterSmoothMagnitude;
 extern float g_PerimeterFilterQuality;
-extern int16_t g_PerimeterOffset;
+extern int16_t g_PerimeterOffset;                   // (Saved to EEPROM)
 extern int g_signalCounter;
 
 extern uint16_t g_RawCopy[PERIMETER_RAW_SAMPLES]; //  Copy of circular Buffer containing last samples read from I2S DMA buffers
@@ -178,8 +178,8 @@ extern int g_rawWritePtrCopy;                     // Pointer to last value writt
 extern int8_t g_PerimeterSamplesForMatchedFilter[I2S_DMA_BUFFER_LENGTH];
 
 #ifdef MQTT_GRAPH_DEBUG
-extern bool g_MQTTGraphDebug;
-extern bool g_MQTTGraphRawDebug;
+extern bool g_MQTTGraphDebug;               // to start/stop the transmission of MQTT debug data
+extern bool g_MQTTGraphRawDebug;            // to start/stop the transmission of MQTT debug data
 #endif
 /************************* EEPROM Management *********************************/
 
@@ -460,6 +460,29 @@ extern String g_MotionMotorStr[MOTION_MOTOR_COUNT];
 // Back to base function
 #define BACK_TO_BASE_HEADING 0  // in deg 0=North
 #define BACK_TO_BASE_CLOCKWISE true  // in which direction to follow wire
+
+// Perimeter tracking function
+
+#include <PID_v1.h>
+
+//Define Variables used by PID library
+extern double g_PIDSetpoint, g_PIDInput, g_PIDOutput;
+
+  //Specify the links and initial tuning parameters
+extern PID g_PerimeterTrackPID;
+
+#define PERIMETER_TRACKING_PID_INTERVAL 500  // in ms
+
+#define MQTT_PID_GRAPH_DEBUG true
+
+#ifdef MQTT_PID_GRAPH_DEBUG
+extern bool g_MQTTPIDGraphDebug;                    // to start/stop the transmission of MQTT debug data
+#endif
+
+extern double g_PerimeterTrackSetpoint;             // Setpoint for PID wire tracking (Saved to EEPROM)
+extern double g_ParamPerimeterTrackPIDKp;           // Kp PID Parameter for wire tracking (Saved to EEPROM)
+extern double g_ParamPerimeterTrackPIDKi;           // Ki PID Parameter for wire tracking (Saved to EEPROM)
+extern double g_ParamPerimeterTrackPIDKd;           // Kd PID Parameter for wire tracking (Saved to EEPROM)
 
 /************************* CUT Motor variables *********************************/
 

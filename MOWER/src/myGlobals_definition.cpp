@@ -113,7 +113,7 @@ int g_PerimeterMagnitude = 0;
 int g_PerimeterMagnitudeAvg = 0;
 int g_PerimeterSmoothMagnitude = 0;
 float g_PerimeterFilterQuality = 0;
-int16_t g_PerimeterOffset = 0;
+int16_t g_PerimeterOffset = 0;                   // (Saved to EEPROM)
 int g_signalCounter = 0;
 
 uint16_t g_RawCopy[PERIMETER_RAW_SAMPLES]; //  Copy of circular Buffer containing last samples read from I2S DMA buffers
@@ -271,6 +271,27 @@ int g_MotionMotorDirection[MOTION_MOTOR_COUNT] = {MOTION_MOTOR_STOPPED, MOTION_M
 int g_MotionMotorSpeed[MOTION_MOTOR_COUNT] = {0, 0};
 
 String g_MotionMotorStr[MOTION_MOTOR_COUNT] = {"Right", "Left"};
+
+/************************* Mower Moves variables *********************************/
+
+// Perimeter tracking function
+
+#include <PID_v1.h>
+
+//Define Variables used by PID library
+double g_PIDSetpoint, g_PIDInput, g_PIDOutput;
+
+  //Specify the links and initial tuning parameters
+PID g_PerimeterTrackPID(&g_PIDInput, &g_PIDOutput, &g_PIDSetpoint, 0, 0, 0, DIRECT);
+
+#ifdef MQTT_PID_GRAPH_DEBUG
+bool g_MQTTPIDGraphDebug = false;
+#endif
+
+double g_PerimeterTrackSetpoint = 0;             // Setpoint for PID wire tracking
+double g_ParamPerimeterTrackPIDKp = 0;           // Kp PID Parameter for wire tracking
+double g_ParamPerimeterTrackPIDKi = 0;           // Ki PID Parameter for wire tracking
+double g_ParamPerimeterTrackPIDKd = 0;           // Kd PID Parameter for wire tracking
 
 /************************* CUT Motor variables *********************************/
 

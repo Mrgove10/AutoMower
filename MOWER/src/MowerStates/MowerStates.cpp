@@ -356,6 +356,9 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
  */
 void MowerGoingToBase(const bool StateChange, const MowerState PreviousState)
 {
+  bool PIDReset = false;
+  static bool FindWire = false;
+
   //--------------------------------
   // Actions to take when entering the state
   //--------------------------------
@@ -380,6 +383,11 @@ void MowerGoingToBase(const bool StateChange, const MowerState PreviousState)
 
     // just in case, stop cut motor
     CutMotorStop();
+
+    // Ensure wire finding function is called on first call
+    FindWire = true;
+    // Ensure wire tracking PID is reset on first call
+    PIDReset = true;
   }
 
   // find target with compas
@@ -387,18 +395,25 @@ void MowerGoingToBase(const bool StateChange, const MowerState PreviousState)
   //--------------------------------
   // Find perimeter wire
   //--------------------------------
-
-  if (!MowerFindWire(BACK_TO_BASE_HEADING, BACK_TO_BASE_CLOCKWISE))
+  if (FindWire)
   {
-    return;
+    if (!MowerFindWire(BACK_TO_BASE_HEADING, BACK_TO_BASE_CLOCKWISE))
+    {
+      return;
+    }
+    FindWire = false;
   }
   
-  g_CurrentState = MowerState::idle;
-
   //--------------------------------
   // Follow perim to base
   //--------------------------------
+  MowerFollowWire(PIDReset, BACK_TO_BASE_HEADING, BACK_TO_BASE_CLOCKWISE);
+
+
   // TO DO
+
+  g_CurrentState = MowerState::idle;
+
 }
 
 /**
@@ -644,4 +659,74 @@ bool MowerFindWire(const int heading, const bool clockwise)
   //--------------------------------------------------------------
 
   return true;
+}
+
+/**
+ * @brief Mower follows perimeter wire back to charging station
+ * @param reset boolean indicating the wire trakcing function and PID needs to be reset
+ * @param heading integer indicating the heading to follow to get to charging station
+ * @param clockwise boolean indicating the direction in which the mower is following the wire
+ * @return Success boolean depending on whether it found the wire or not
+ */
+bool MowerFollowWire(const bool reset, const int heading, const bool clockwise)
+{
+  static unsigned long lastPIDUpdate = 0;
+
+  if (reset)
+  {
+    //initialize the variables we're linked to
+    g_PIDSetpoint = g_PerimeterTrackSetpoint;
+    g_PIDInput = 0;
+
+    //turn the PID on
+    g_PerimeterTrackPID.SetMode(AUTOMATIC);
+    g_PerimeterTrackPID.SetTunings(g_ParamPerimeterTrackPIDKp, g_ParamPerimeterTrackPIDKi , g_ParamPerimeterTrackPIDKd);
+    g_PerimeterTrackPID.SetOutputLimits(-100, 100);   // in %
+    // g_PerimeterTrackPID.SetControllerDirection(REVERSE);
+    g_PerimeterTrackPID.SetSampleTime(PERIMETER_TRACKING_PID_INTERVAL);
+  }
+
+  if (millis() - lastPIDUpdate < PERIMETER_TRACKING_PID_INTERVAL)
+  {
+    // update PID with new input
+    g_PIDInput = g_PerimeterMagnitude;
+    g_PerimeterTrackPID.Compute();
+    lastPIDUpdate = millis();
+
+    // convert PID output into motor commands
+    // TO DO !!!!!!
+
+#ifdef MQTT_PID_GRAPH_DEBUG
+//  send debug information through MQTT
+    if(g_MQTTPIDGraphDebug)
+    {
+      String JsonPayload = "";
+      FirebaseJson JSONDBGPayload;
+      String JSONDBGPayloadStr;
+      char MQTTpayload[MQTT_MAX_PAYLOAD];
+
+      JSONDBGPayload.clear();
+      JSONDBGPayload.add("In", g_PIDInput);
+      JSONDBGPayload.add("Out", g_PIDOutput);
+      JSONDBGPayload.toString(JSONDBGPayloadStr, false);
+      JSONDBGPayloadStr.toCharArray(MQTTpayload, JSONDBGPayloadStr.length() + 1);
+      bool result = MQTTclient.publish(MQTT_PID_DEBUG_CHANNEL, MQTTpayload);
+      if (result != 1)
+      {
+        g_MQTTErrorCount = g_MQTTErrorCount + 1;
+      }
+      MQTTclient.loop();
+  //    DebugPrintln("Sending to :[" + String(MQTT_PID_DEBUG_CHANNEL) + "] " + String(MQTTpayload) + " => " + String(result), DBG_VERBOSE, true);
+    }
+#endif
+
+  }
+
+  return true;
+  
+// transform output into motor commands (tuning PWM for small values or turning for large values ?)
+// detect objects and decide what to do
+// when to stop ????? When charging has started ??
+// check changes of orders
+
 }

@@ -21,11 +21,12 @@ typedef struct
 
 typedef struct
 {
-    byte val1;
-    byte val2;
-    byte val3;
-    int val4;
     DateTimeStruct LastEepromSaveTime;
+    int16_t PerimeterSignalOffset;
+    double PerimeterTrackSetpoint;
+    double ParamPerimeterTrackPIDKp;
+    double ParamPerimeterTrackPIDKi;
+    double ParamPerimeterTrackPIDKd;
 } DataStruct;
 
 #define EEPROM_SPARE_SIZE EEPROM_SIZE - sizeof(DataStruct) - EEPROM_CRC_SIZE
