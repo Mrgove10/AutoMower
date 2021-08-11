@@ -171,9 +171,15 @@ void MQTTCallback(char *topic, byte *message, unsigned int length)
 
     else if (Command == "STATE_CHANGE")
     {
-      DebugPrintln("State Change to " + Val1Str, DBG_INFO, true);
+      DebugPrintln("State Change to " + Val1Str + " requested", DBG_INFO, true);
 
-      if (Val1Str == "IDLE")
+      if (Val1Str == "ACKNOWLEDGE")
+      {
+        DebugPrintln("Mower Acknowledgement requested", DBG_ERROR, true);
+        g_CurrentState = MowerState::idle;
+        g_CurrentErrorCode = ERROR_NO_ERROR;
+      }
+      else if (Val1Str == "IDLE")
       {
         g_CurrentState = MowerState::idle;
       }
@@ -183,17 +189,31 @@ void MQTTCallback(char *topic, byte *message, unsigned int length)
       }
       else if (Val1Str == "MOWING")
       {
-        g_CurrentState = MowerState::mowing;
+        if (g_CurrentState == MowerState::error)
+        {
+          DebugPrintln("Mower Acknowledgement required first !", DBG_ERROR, true);
+        }
+        else
+        {
+          g_CurrentState = MowerState::mowing;
+        }
       }
       else if (Val1Str == "TO_BASE")
       {
-        g_CurrentState = MowerState::going_to_base;
+        if (g_CurrentState == MowerState::error)
+        {
+          DebugPrintln("Mower Acknowledgement required first !", DBG_ERROR, true);
+        }
+        else
+        {
+          g_CurrentState = MowerState::going_to_base;
+        }
       }
       else if (Val1Str == "FROM_BASE")
       {
         g_CurrentState = MowerState::leaving_base;
       }
-      else if (Val1Str == "ERROR")
+      else if (Val1Str == "ERROR")    // only for testing purposes
       {
         g_CurrentState = MowerState::error;
       }
