@@ -26,11 +26,26 @@ This Project
   - [License](#license)
   - [Contribution](#contribution)
 
-## Communicating with the Mower
+## Sending Commands and values to the Mower
 
-Communication is done with MQTT, the folowing topics are used :
+Communication is done through MQTT, and the following topics are used:
 
-### IDLE
+### Automower/Command
+
+ The messages in this topic are in JSON format and should follow this structure:
+
+ ```json
+{
+  "Command":"<Command>",
+  "Val1":"<Command_Dependant_String_1",
+  "Val2":"<Command_Dependant_String_2"
+}
+```
+The list of Commands and their expected associated values are as describes below:
+
+ channel following topics are used :
+
+#### IDLE
 
 **Description** : This is used to put the mower in the idle state. In this state the mower is doing nthing and wait for the next command.
 
@@ -81,6 +96,8 @@ Communication is done with MQTT, the folowing topics are used :
 ### TEST_MOTOR
 
 ### TEST_CUTMOTOR
+
+## Receiving informationfrom the Mower
 
 ## License
 
