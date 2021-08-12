@@ -74,6 +74,9 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
     //
     // Reset mower error code (not needed after error acknowledgement implemented)
     g_CurrentErrorCode = ERROR_NO_ERROR;
+
+    // Cancel any outstanding wheel speed corrections
+    MotionMotorsTrackingAdjustSpeed(0, 0);
     
     //--------------------------------
     // Activate Sonar reading
@@ -370,7 +373,10 @@ void MowerGoingToBase(const bool StateChange, const MowerState PreviousState)
 
     // Reset mower error code (not needed after error acknowledgement implemented)
     g_CurrentErrorCode = ERROR_NO_ERROR;
-    
+
+    // Cancel any outstanding wheel speed corrections
+    MotionMotorsTrackingAdjustSpeed(0, 0);
+
     // Activate Sonar reading
     g_SonarReadEnabled = true;          // activate Sonar readings
     delay(SONAR_READ_ACTIVATION_DELAY); //wait for task to take 1st readings
@@ -410,9 +416,9 @@ void MowerGoingToBase(const bool StateChange, const MowerState PreviousState)
   MowerFollowWire(PIDReset, BACK_TO_BASE_HEADING, BACK_TO_BASE_CLOCKWISE);
 
 
-  // TO DO
+  // TO DO conditions to end wire tracking
 
-  g_CurrentState = MowerState::idle;
+//  g_CurrentState = MowerState::idle;
 
 }
 
@@ -423,10 +429,16 @@ void MowerGoingToBase(const bool StateChange, const MowerState PreviousState)
  */
 void MowerLeavingBase(const bool StateChange, const MowerState PreviousState)
 {
+  if (StateChange)
+  {
+    // Cancel any outstanding wheel speed corrections
+    MotionMotorsTrackingAdjustSpeed(0, 0);
+  }
+
   // go backward for 50 cm
   //  uTurn();
   //go forward
-  g_CurrentState = MowerState::mowing;
+  // g_CurrentState = MowerState::mowing;
 }
 
 /**
@@ -674,26 +686,72 @@ bool MowerFollowWire(const bool reset, const int heading, const bool clockwise)
 
   if (reset)
   {
+    DebugPrintln("Starting to follow wire....", DBG_DEBUG, true);
+
+    DebugPrintln("Kp:" + String(g_ParamPerimeterTrackPIDKp) + " Ki:" + String(g_ParamPerimeterTrackPIDKi) + " Kd:" + String(g_ParamPerimeterTrackPIDKd), DBG_DEBUG, true);
+    DebugPrintln("");
+
     //initialize the variables we're linked to
     g_PIDSetpoint = g_PerimeterTrackSetpoint;
-    g_PIDInput = 0;
+    g_PIDInput = g_PerimeterMagnitudeAvg;
 
     //turn the PID on
     g_PerimeterTrackPID.SetMode(AUTOMATIC);
     g_PerimeterTrackPID.SetTunings(g_ParamPerimeterTrackPIDKp, g_ParamPerimeterTrackPIDKi , g_ParamPerimeterTrackPIDKd);
     g_PerimeterTrackPID.SetOutputLimits(-100, 100);   // in %
-    // g_PerimeterTrackPID.SetControllerDirection(REVERSE);
+    g_PerimeterTrackPID.SetControllerDirection(DIRECT);
     g_PerimeterTrackPID.SetSampleTime(PERIMETER_TRACKING_PID_INTERVAL);
+    
+    // Cancel any outstanding wheel speed corrections
+    MotionMotorsTrackingAdjustSpeed(0, 0);
   }
 
-  if (millis() - lastPIDUpdate < PERIMETER_TRACKING_PID_INTERVAL)
+  if (millis() - lastPIDUpdate > PERIMETER_TRACKING_PID_INTERVAL)
   {
     // update PID with new input
-    g_PIDInput = g_PerimeterMagnitude;
-    g_PerimeterTrackPID.Compute();
+    g_PIDInput = g_PerimeterMagnitudeAvg;
+    bool PIDReturn = g_PerimeterTrackPID.Compute();
+    if (!PIDReturn)
+    {
+      DebugPrintln("PID Returned false...", DBG_DEBUG, true);
+    }
     lastPIDUpdate = millis();
 
     // convert PID output into motor commands
+    //
+    // Assuming we have a 0 setpoint (assuming that when straight above wire mag = 0) :
+    // If Mag value goes negative, we are going towards the inside and PID controller will give a positive output value
+    //    If we aim to follow the wire in a clockwise direction, we should turn the mower to the left (by slowing down the left wheel)
+    //    If we aim to follow the wire in a anticlockwise direction, we should turn the mower to the right (by slowing down the right wheel)
+    // If Mag value goes positive, we are going towards the ouside and PID controller will give a negative output value
+    //    If we aim to follow the wire in a clockwise direction, we should turn the mower to the right (by slowing down the right wheel)
+    //    If we aim to follow the wire in a anticlockwise direction, we should turn the mower to the left (by slowing down the left wheel)
+    //
+    // Action on wheels to generate turn is by reducing the speed of the inner wheel because if motor is allready at full speed, it is not posible to increase speed of outter wheel
+
+    if (g_PIDOutput >= 0)     // Mag is negative and PID output positive, so we are inside and need to move towards the outside
+    {
+      if (clockwise)          // we need to go towards the left
+      {
+        MotionMotorsTrackingAdjustSpeed(- g_PIDOutput/10, 0);
+      }
+      else                    // we need to go towards the right
+      {
+        MotionMotorsTrackingAdjustSpeed(0,- g_PIDOutput/10);
+      }
+    }
+    else      // Mag is positive and PID output negative, so we are outside and need to move towards the inside
+    {
+      if (clockwise)          // we need to go towards the right
+      {
+        MotionMotorsTrackingAdjustSpeed(0, g_PIDOutput/10);
+      }
+      else                    // we need to go towards the left
+      {
+        MotionMotorsTrackingAdjustSpeed(g_PIDOutput/10, 0);
+      }
+    }
+
     // TO DO !!!!!!
 
 #ifdef MQTT_PID_GRAPH_DEBUG
@@ -706,8 +764,14 @@ bool MowerFollowWire(const bool reset, const int heading, const bool clockwise)
       char MQTTpayload[MQTT_MAX_PAYLOAD];
 
       JSONDBGPayload.clear();
-      JSONDBGPayload.add("In", g_PIDInput);
-      JSONDBGPayload.add("Out", g_PIDOutput);
+      JSONDBGPayload.add("S", g_PIDSetpoint);
+      JSONDBGPayload.add("I", g_PIDInput);
+      JSONDBGPayload.add("O", g_PIDOutput);
+      JSONDBGPayload.add("CL", g_WheelPerimeterTrackingCorrection[MOTION_MOTOR_LEFT]);
+      JSONDBGPayload.add("CR", g_WheelPerimeterTrackingCorrection[MOTION_MOTOR_RIGHT]);
+      JSONDBGPayload.add("ML", g_MotionMotorSpeed[MOTION_MOTOR_LEFT]);
+      JSONDBGPayload.add("MR", g_MotionMotorSpeed[MOTION_MOTOR_RIGHT]);
+
       JSONDBGPayload.toString(JSONDBGPayloadStr, false);
       JSONDBGPayloadStr.toCharArray(MQTTpayload, JSONDBGPayloadStr.length() + 1);
       bool result = MQTTclient.publish(MQTT_PID_DEBUG_CHANNEL, MQTTpayload);
@@ -721,12 +785,22 @@ bool MowerFollowWire(const bool reset, const int heading, const bool clockwise)
 #endif
 
   }
-
   return true;
   
-// transform output into motor commands (tuning PWM for small values or turning for large values ?)
+// TO DO
 // detect objects and decide what to do
 // when to stop ????? When charging has started ??
-// check changes of orders
+}
 
+/**
+ * Enables the perimeter tracking adjustment of the speed of both motors
+ * @param leftMotorAjustment adjustment to apply to left Motor (in %)
+ * @param rightMotorAjustment adjustment to apply to right Motor (in %)
+ */
+void MotionMotorsTrackingAdjustSpeed(const int leftMotorAjustment, const int rightMotorAjustment)
+{
+  g_WheelPerimeterTrackingCorrection[MOTION_MOTOR_LEFT] = leftMotorAjustment;
+  MotionMotorSetSpeed(MOTION_MOTOR_LEFT, BACK_TO_BASE_SPEED); // function will apply correction and set new speed
+  g_WheelPerimeterTrackingCorrection[MOTION_MOTOR_RIGHT] = rightMotorAjustment;
+  MotionMotorSetSpeed(MOTION_MOTOR_RIGHT, BACK_TO_BASE_SPEED); // function will apply correction and set new speed
 }

@@ -424,6 +424,8 @@ extern int g_MotionMotorDirection[MOTION_MOTOR_COUNT];
 extern int g_MotionMotorSpeed[MOTION_MOTOR_COUNT];
 extern String g_MotionMotorStr[MOTION_MOTOR_COUNT];
 
+extern float g_WheelPerimeterTrackingCorrection[MOTION_MOTOR_COUNT];         // from perimeter tracking PID control
+
 /************************* Mower Moves variables *********************************/
 
 #define MOWER_MOVES_SPEED_CRAWL 40  // in %
@@ -460,6 +462,7 @@ extern String g_MotionMotorStr[MOTION_MOTOR_COUNT];
 // Back to base function
 #define BACK_TO_BASE_HEADING 0  // in deg 0=North
 #define BACK_TO_BASE_CLOCKWISE true  // in which direction to follow wire
+#define BACK_TO_BASE_SPEED 90 // in %
 
 // Perimeter tracking function
 
@@ -471,7 +474,7 @@ extern double g_PIDSetpoint, g_PIDInput, g_PIDOutput;
   //Specify the links and initial tuning parameters
 extern PID g_PerimeterTrackPID;
 
-#define PERIMETER_TRACKING_PID_INTERVAL 500  // in ms
+#define PERIMETER_TRACKING_PID_INTERVAL 1000  // in ms
 
 #define MQTT_PID_GRAPH_DEBUG true
 

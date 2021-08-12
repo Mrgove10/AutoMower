@@ -272,6 +272,8 @@ int g_MotionMotorSpeed[MOTION_MOTOR_COUNT] = {0, 0};
 
 String g_MotionMotorStr[MOTION_MOTOR_COUNT] = {"Right", "Left"};
 
+float g_WheelPerimeterTrackingCorrection[MOTION_MOTOR_COUNT] = {0, 0};         // from perimeter tracking PID control
+
 /************************* Mower Moves variables *********************************/
 
 // Perimeter tracking function

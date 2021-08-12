@@ -76,13 +76,15 @@ void MotionMotorStart(const int Motor, const int Direction, const int Speed)
 void MotionMotorSetSpeed(const int Motor, const int Speed)
 {
 //  static int previousSpeed = 0;
-  int checkedspeed = max(0, Speed);                                         // make sure speed is in 0-100% range
-  checkedspeed = min(100, Speed);                                           // make sure speed is in 0-100% range
+  int adjustedSpeed = Speed + int(g_WheelPerimeterTrackingCorrection[Motor]);
+
+  int checkedspeed = max(0, adjustedSpeed);                                         // make sure speed is in 0-100% range
+  checkedspeed = min(100, checkedspeed);                                           // make sure speed is in 0-100% range
   int SpeedPoints = int(map(checkedspeed, 0, 100, 0, MOTION_MOTOR_POINTS)); // convert speed (in %) into PWM range
 
 //  if (Speed != previousSpeed)
   // {
-    if ((Speed < MOTION_MOTOR_MIN_SPEED) && (Speed != 0))
+    if ((checkedspeed < MOTION_MOTOR_MIN_SPEED) && (checkedspeed != 0))
     {
       DebugPrintln("Motion Motor " + g_MotionMotorStr[Motor] + " speed " + String(checkedspeed) + " too low : not applied", DBG_VERBOSE, true);
       ledcWrite(g_MotionMotorPWMChannel[Motor], 0);
