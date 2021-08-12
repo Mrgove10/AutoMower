@@ -151,12 +151,15 @@ In this state the mower is doing nthing and wait for the next command.
 
 **Val1** : Val1 contains the string code of the parameter. Possible values are:
 
-`PerimTtrkngKp` : PID control Kp (proportional )parameter for perimeter wire tracking
-`PerimTtrkngKi` : PID control Ki (integral) parameter for perimeter wire tracking
-`PerimTtrkngKd` : PID control Kd (derivative) parameter for perimeter wire tracking
+`PerimTtrkngKp` : PID control Kp (proportional )parameter for perimeter wire tracking,
+
+`PerimTtrkngKi` : PID control Ki (integral) parameter for perimeter wire tracking,
+
+`PerimTtrkngKd` : PID control Kd (derivative) parameter for perimeter wire tracking,
+
 `PerimTtrkSetPt` : PID control setpoint for perimeter tracking
 
-**Note** Incorrectly spelt or unknown parameter codes are rejected.
+**Note** : Incorrectly spelt or unknown parameter codes are rejected.
 
 **Val2** : Val2 contains the parameter value as a decimal point (float) value. If the paramater is an integer value and a float value is sent, it will be truncated.
 
