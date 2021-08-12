@@ -32,6 +32,7 @@
 #define TAG_VALUE "VALUE"
 #define TAG_SEARCH "WIRE_SEARCH"
 #define TAG_TO_BASE "BACK2BASE"
+#define TAG_PARAM "PARAMETER"
 
 // -------------------- Serial communications ------------------------
 #define SERIAL_BAUD 115200
