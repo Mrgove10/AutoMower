@@ -45,13 +45,31 @@ The list of Commands and their expected associated values are as describes below
 
  channel following topics are used :
 
-#### IDLE
+#### STATE_CHANGE
 
-**Description** : This is used to put the mower in the idle state. In this state the mower is doing nthing and wait for the next command.
+**Description** : This command is used to put the mower in a given state. 
 
-**Topic** : `IDLE`
+In this state the mower is doing nthing and wait for the next command.
 
-**Message** :
+**Command** : `STATE_CHANGE`
+
+**Val1** : Possible values for Val1 are:
+
+`IDLE` : In this state the mower is doing nothing and waits for the next command. No Val2 value expected (any value sent will be ignored)
+
+`DOCKED` : In this state the mower is docked. No Val2 value expected (any value sent will be ignored)
+
+`MOWING` : In this state the mower is doing it's primary work....mowing the lawn ! No Val2 value expected (any value sent will be ignored)
+
+`TO_BASE` : In this state the mower is returning to its base/charging station. No Val2 value expected (any value sent will be ignored)
+
+`FROM_BASE` : In this state the mower is leaving its base/charging station and going to the mowing zone. No Val2 value expected (any value sent will be ignored)
+
+`ERROR` : This is the state when the Mower has identified an error condition and is stopped and waiting for an acknowledgement from the user. This command is not for operational use and only for testing purposes. No Val2 value expected (any value sent will be ignored)
+
+`ACKNOWLEDGE` : This is the command to acknoledge an error. Upon acknowledgement, the mower will retun to Idle state. Acknowledgement can also be performed directly on the mower's HMI. No Val2 value expected (any value sent will be ignored)
+
+**Message Example** :
 
 ```json
 {
