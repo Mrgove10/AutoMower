@@ -128,8 +128,12 @@ void OTAHandle(void)
     g_otaFlag = false;
 
     setInterval(NTP_REFRESH); // NTP updates back on
+    // Resume RTOS tasks
     FastAnaReadLoopTaskResume();
     PerimeterProcessingLoopTaskResume();
     SonarReadLoopTaskResume();
+
+    // Set mower back to Idle state
+    g_CurrentState = MowerState::idle;
   }
 }
