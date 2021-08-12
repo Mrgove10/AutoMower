@@ -258,9 +258,14 @@ void MQTTCallback(char *topic, byte *message, unsigned int length)
       DebugPrintln("Calibration offset changed to " + String(g_PerimeterOffset), DBG_INFO, true);
     }
 
+    else if (Command == "PARAMETER")
+    {
+      ParameterChangeValue(Val1Str, Val2);    // Value changed and saved in EEPROM
+    }
+
     else if (Command == "TUNE_OFFSET")
     {
-      g_PerimeterOffset = g_PerimeterOffset + int(Val1);
+      g_PerimeterOffset = g_PerimeterOffset + int(Val1);   // only for testing purposes
     }
 
     else

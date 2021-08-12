@@ -3,6 +3,7 @@
 #include "Environment_definitions.h"
 #include "Utils/Utils.h"
 #include "MQTT/MQTT.h"
+#include "EEPROM/EEPROM.h"
 
 // ESP32 Reset reason codes
 
@@ -206,4 +207,48 @@ String ErrorString(const int errorCode)
   default:
     return String("ERROR UNDEFINED: Please update ErrorString() function");
   }
+}
+
+ /**
+ * Set the value of a parameter and save to EEPROM
+ *  * 
+ * @param parameterCode Code of paramater as a string
+ * @param parameterValue Value of paramater as a float
+ * @return true is parameter was updated anf false if not (ParmaterCode invalid)
+ */
+bool ParameterChangeValue(const String parameterCode, const float parameterValue)
+{
+  bool found = true;
+
+  if (parameterCode == "PerimTtrkngKp")
+  {
+    g_ParamPerimeterTrackPIDKp = parameterValue;
+  }
+  else if (parameterCode == "PerimTtrkngKi")
+  {
+    g_ParamPerimeterTrackPIDKi = parameterValue;
+  }
+  else if (parameterCode == "PerimTtrkngKd")
+  {
+    g_ParamPerimeterTrackPIDKd = parameterValue;
+  }
+    else if (parameterCode == "PerimTtrkSetPt")
+  {
+    g_PerimeterTrackSetpoint = parameterValue;
+  }
+  else    // Paramater Code not configured or found
+  {
+    found = false;
+  }
+
+  if (found)
+  {
+    LogPrintln("Parameter " + parameterCode + " updated to " + String(parameterValue,3), TAG_PARAM, DBG_INFO);
+    EEPROMSave(true);
+  }
+  else
+  {
+    DebugPrintln("Parameter " + parameterCode + " not found or configured, check code or update ParameterChangeValue() function !", DBG_ERROR, true);
+  }
+  return found;
 }

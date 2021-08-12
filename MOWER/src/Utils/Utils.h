@@ -64,4 +64,13 @@ void LogPrintln(const String message, const String tags, const int level = DBG_A
  */
 String ErrorString(const int errorCode);
 
+/**
+ * Set the value of a parameter and save to EEPROM
+ *  * 
+ * @param parameterCode Code of paramater as a string
+ * @param parameterValue Value of paramater as a float
+ * @return true is parameter was updated anf false if not (ParmaterCode invalid)
+ */
+bool ParameterChangeValue(const String parameterCode, const float parameterValue);
+
 #endif

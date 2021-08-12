@@ -114,7 +114,7 @@ void MySetup(void)
 
   SerialAndTelnet.handle();
 
-  delay(15000); // temporary
+  delay(1000); // temporary
 
   DebugPrintln("");
   DebugPrintln("End of Setup---------", DBG_VERBOSE, true);
