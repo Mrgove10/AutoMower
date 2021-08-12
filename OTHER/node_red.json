@@ -590,7 +590,7 @@
         "topic": "",
         "payload": "{\"Command\":\"TEST_STOP\"}",
         "payloadType": "str",
-        "x": 1280,
+        "x": 1190,
         "y": 120,
         "wires": [
             [
@@ -1331,7 +1331,9 @@
         "x": 720,
         "y": 560,
         "wires": [
-            []
+            [
+                "e1cac4ab.44a4f8"
+            ]
         ]
     },
     {
