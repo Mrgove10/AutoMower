@@ -61,7 +61,7 @@ bool MowerFindWire(const int heading, const bool clockwise);
 bool MowerFollowWire(const bool reset, const int heading, const bool clockwise);
 
 /**
- * Enables the perimeter tracking adjustment of the speed of both motors
+ * Enables the perimeter tracking adjustment of the speed for both motors
  * @param leftMotorAjustment adjustment to apply to left Motor (in %)
  * @param rightMotorAjustment adjustment to apply to right Motor (in %)
  */

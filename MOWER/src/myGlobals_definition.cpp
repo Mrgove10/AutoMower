@@ -111,6 +111,8 @@ unsigned long g_lastIsInsidePerimeterTime = 0;
 bool g_PerimetersignalTimedOut = false;
 int g_PerimeterMagnitude = 0;
 int g_PerimeterMagnitudeAvg = 0;
+int g_PerimeterMagnitudeAvgPID=0;
+
 int g_PerimeterSmoothMagnitude = 0;
 float g_PerimeterFilterQuality = 0;
 int16_t g_PerimeterOffset = 0;                   // (Saved to EEPROM)
@@ -287,7 +289,7 @@ double g_PIDSetpoint, g_PIDInput, g_PIDOutput;
 PID g_PerimeterTrackPID(&g_PIDInput, &g_PIDOutput, &g_PIDSetpoint, 0, 0, 0, DIRECT);
 
 #ifdef MQTT_PID_GRAPH_DEBUG
-bool g_MQTTPIDGraphDebug = false;
+bool g_MQTTPIDGraphDebug = true;
 #endif
 
 double g_PerimeterTrackSetpoint = 0;             // Setpoint for PID wire tracking

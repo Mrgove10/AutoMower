@@ -323,7 +323,9 @@ void MatchedFilter(int16_t Samples)
   // int16_t sampleCount = Samples;
   int16_t mag; // perimeter magnitude
   static int16_t magPrev; // perimeter magnitude
-  int16_t magAvg; // perimeter magnitude
+  int16_t magAvg; // perimeter magnitude 2 value rolling average
+  int16_t magAvg5; // perimeter magnitude 5 value rolling average
+  static int16_t magPrev1=0, magPrev2=0, magPrev3=0, magPrev4=0; 
   static float smoothMag;
   float FilterQuality = 0;
   //  static int callCounter;
@@ -377,6 +379,12 @@ void MatchedFilter(int16_t Samples)
   magAvg = (mag + magPrev)/2;
   magPrev = mag;
   
+  magAvg5 = (mag + magPrev1 + magPrev2 + magPrev3 + magPrev4) /5;
+  magPrev4 = magPrev3;
+  magPrev3 = magPrev2;
+  magPrev2 = magPrev1;
+  magPrev1 = mag;
+  
   boolean isInside;
   if (abs(mag) > PERIMETER_IN_OUT_DETECTION_THRESHOLD)
   {
@@ -405,6 +413,7 @@ void MatchedFilter(int16_t Samples)
   }
   g_PerimeterMagnitude = mag;
   g_PerimeterMagnitudeAvg = magAvg;
+  g_PerimeterMagnitudeAvgPID = magAvg5;
   g_PerimeterSmoothMagnitude = smoothMag;
   g_isInsidePerimeter = isInside;
   g_PerimeterFilterQuality = FilterQuality;
@@ -501,6 +510,7 @@ void PerimeterProcessingLoopTask(void *dummyParameter)
 
           JSONDBGPayload.add("Mag", g_PerimeterMagnitude);
           JSONDBGPayload.add("MagAvg", g_PerimeterMagnitudeAvg);        
+          JSONDBGPayload.add("MagAvg5", g_PerimeterMagnitudeAvgPID);        
           JSONDBGPayload.add("Cnt", g_signalCounter*50);
           JSONDBGPayload.add("In?", g_isInsidePerimeter*100);
           JSONDBGPayload.toString(JSONDBGPayloadStr, false);
@@ -523,6 +533,8 @@ void PerimeterProcessingLoopTask(void *dummyParameter)
                     " Qfull:" + String(g_PerimeterQueuefull) +
                     " |RawAvg " + String(g_PerimeterRawAvg) + " [" + String(g_PerimeterRawMin) + "," + String(g_PerimeterRawMax) + "]" +
                     " |FiltMag:" + String(g_PerimeterMagnitude) +
+                    " |AvgMag:" + String(g_PerimeterMagnitudeAvg) +
+                    " |AvgMagPID:" + String(g_PerimeterMagnitudeAvgPID) +
                     " SMag:" + String(g_PerimeterSmoothMagnitude) +
                     " FiltQual:" + String(g_PerimeterFilterQuality,2) + 
                     " Sigcount:" + String(g_signalCounter) +

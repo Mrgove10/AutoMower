@@ -87,8 +87,8 @@ extern int8_t g_sigcode_diff[PERIMETER_SIGNAL_CODE_LENGTH];
 
 #define I2S_SAMPLE_RATE 38400                                                       // I2S scanning rate in samples per second
 #define I2S_DMA_BUFFERS 4                                                           // number of allocated I2S DMA buffers
-#define I2S_DMA_BUFFER_LENGTH PERIMETER_SIGNAL_CODE_LENGTH *PERIMETER_SUBSAMPLE * 2 // in number of samples
-#define PERIMETER_RAW_SAMPLES I2S_DMA_BUFFER_LENGTH * 5                             // We store more samples than just one DMA buffer to have more data to process
+#define I2S_DMA_BUFFER_LENGTH PERIMETER_SIGNAL_CODE_LENGTH * PERIMETER_SUBSAMPLE * 3 // in number of samples
+#define PERIMETER_RAW_SAMPLES I2S_DMA_BUFFER_LENGTH * 3                             // We store more samples than just one DMA buffer to have more data to process
 
 #define FAST_ANA_READ_TASK_ESP_CORE 1            // Core assigned to task
 #define FAST_ANA_READ_TASK_PRIORITY 1            // Priority assigned to task
@@ -168,6 +168,7 @@ extern unsigned long g_lastIsInsidePerimeterTime;
 extern bool g_PerimetersignalTimedOut;
 extern int g_PerimeterMagnitude;
 extern int g_PerimeterMagnitudeAvg;
+extern int g_PerimeterMagnitudeAvgPID;
 extern int g_PerimeterSmoothMagnitude;
 extern float g_PerimeterFilterQuality;
 extern int16_t g_PerimeterOffset;                   // (Saved to EEPROM)
@@ -474,7 +475,7 @@ extern double g_PIDSetpoint, g_PIDInput, g_PIDOutput;
   //Specify the links and initial tuning parameters
 extern PID g_PerimeterTrackPID;
 
-#define PERIMETER_TRACKING_PID_INTERVAL 1000  // in ms
+#define PERIMETER_TRACKING_PID_INTERVAL 250  // in ms
 
 #define MQTT_PID_GRAPH_DEBUG true
 

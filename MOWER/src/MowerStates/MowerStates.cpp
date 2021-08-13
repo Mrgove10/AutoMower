@@ -27,6 +27,10 @@ void MowerIdle(const bool StateChange, const MowerState PreviousState)
     // Reset mower error code (not needed after error acknowledgement implemented)
     g_CurrentErrorCode = ERROR_NO_ERROR;
 
+#ifdef MQTT_PID_GRAPH_DEBUG
+    g_MQTTPIDGraphDebug = false;  // for testing
+#endif
+
     // if (PreviousState == MowerState::mowing)
     // {
     MowerStop();
@@ -409,7 +413,7 @@ void MowerGoingToBase(const bool StateChange, const MowerState PreviousState)
     }
     FindWire = false;
   }
-  
+ 
   //--------------------------------
   // Follow perim to base
   //--------------------------------
@@ -621,7 +625,7 @@ bool MowerFindWire(const int heading, const bool clockwise)
   {
     // Turn on the spot by steps
     MowerTurn(turnIncrement, true);
-    delay(PERIMETER_TIMER_PERIOD / 1000);  // wait to make sure that Perimeter signal read task can refresh g_isInsidePerimeter status
+    delay(PERIMETER_TIMER_PERIOD * 2 / 1000);  // wait to make sure that Perimeter signal read task can refresh g_isInsidePerimeter status
     turnCount = turnCount + 1;
   }
 //  MowerStop();
@@ -697,19 +701,31 @@ bool MowerFollowWire(const bool reset, const int heading, const bool clockwise)
 
     //turn the PID on
     g_PerimeterTrackPID.SetMode(AUTOMATIC);
-    g_PerimeterTrackPID.SetTunings(g_ParamPerimeterTrackPIDKp, g_ParamPerimeterTrackPIDKi , g_ParamPerimeterTrackPIDKd);
-    g_PerimeterTrackPID.SetOutputLimits(-100, 100);   // in %
+    g_PerimeterTrackPID.SetTunings(g_ParamPerimeterTrackPIDKp, g_ParamPerimeterTrackPIDKi , g_ParamPerimeterTrackPIDKd, P_ON_E);
+    g_PerimeterTrackPID.SetOutputLimits(-70, 70);   // in %
     g_PerimeterTrackPID.SetControllerDirection(DIRECT);
     g_PerimeterTrackPID.SetSampleTime(PERIMETER_TRACKING_PID_INTERVAL);
     
+
+#ifdef MQTT_PID_GRAPH_DEBUG
+    g_MQTTPIDGraphDebug = true;  // for testing
+#endif
+
     // Cancel any outstanding wheel speed corrections
     MotionMotorsTrackingAdjustSpeed(0, 0);
+    MowerForward(BACK_TO_BASE_SPEED);
   }
 
   if (millis() - lastPIDUpdate > PERIMETER_TRACKING_PID_INTERVAL)
   {
     // update PID with new input
+    // g_PIDInput = g_PerimeterMagnitudeAvgPID;
     g_PIDInput = g_PerimeterMagnitudeAvg;
+    g_PIDSetpoint = g_PerimeterTrackSetpoint;
+    g_PerimeterTrackPID.SetTunings(g_ParamPerimeterTrackPIDKp, g_ParamPerimeterTrackPIDKi , g_ParamPerimeterTrackPIDKd, P_ON_E);
+
+    DebugPrintln("PID P " + String(g_PerimeterTrackPID.GetKp()) + " " + String(g_ParamPerimeterTrackPIDKp), DBG_VERBOSE, true);
+
     bool PIDReturn = g_PerimeterTrackPID.Compute();
     if (!PIDReturn)
     {
@@ -729,26 +745,29 @@ bool MowerFollowWire(const bool reset, const int heading, const bool clockwise)
     //
     // Action on wheels to generate turn is by reducing the speed of the inner wheel because if motor is allready at full speed, it is not posible to increase speed of outter wheel
 
-    if (g_PIDOutput >= 0)     // Mag is negative and PID output positive, so we are inside and need to move towards the outside
+    if (g_PIDOutput != 0)
     {
-      if (clockwise)          // we need to go towards the left
+      if (g_PIDOutput > 0)     // Mag is negative and PID output positive, so we are inside and need to move towards the outside
       {
-        MotionMotorsTrackingAdjustSpeed(- g_PIDOutput/10, 0);
+        if (clockwise)          // we need to go towards the left
+        {
+          MotionMotorsTrackingAdjustSpeed(- g_PIDOutput, 0);
+        }
+        else                    // we need to go towards the right
+        {
+          MotionMotorsTrackingAdjustSpeed(0,- g_PIDOutput);
+        }
       }
-      else                    // we need to go towards the right
+      else      // Mag is positive and PID output negative, so we are outside and need to move towards the inside
       {
-        MotionMotorsTrackingAdjustSpeed(0,- g_PIDOutput/10);
-      }
-    }
-    else      // Mag is positive and PID output negative, so we are outside and need to move towards the inside
-    {
-      if (clockwise)          // we need to go towards the right
-      {
-        MotionMotorsTrackingAdjustSpeed(0, g_PIDOutput/10);
-      }
-      else                    // we need to go towards the left
-      {
-        MotionMotorsTrackingAdjustSpeed(g_PIDOutput/10, 0);
+        if (clockwise)          // we need to go towards the right
+        {
+          MotionMotorsTrackingAdjustSpeed(0, g_PIDOutput);
+        }
+        else                    // we need to go towards the left
+        {
+          MotionMotorsTrackingAdjustSpeed(g_PIDOutput, 0);
+        }
       }
     }
 
@@ -793,7 +812,7 @@ bool MowerFollowWire(const bool reset, const int heading, const bool clockwise)
 }
 
 /**
- * Enables the perimeter tracking adjustment of the speed of both motors
+ * Enables the perimeter tracking adjustment of the speed for both motors
  * @param leftMotorAjustment adjustment to apply to left Motor (in %)
  * @param rightMotorAjustment adjustment to apply to right Motor (in %)
  */
