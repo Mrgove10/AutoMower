@@ -444,26 +444,50 @@ extern float g_WheelPerimeterTrackingCorrection[MOTION_MOTOR_COUNT];         // 
 #define SONAR_MIN_DISTANCE_FOR_SLOWING 60 // in cm
 #define SONAR_MIN_DISTANCE_FOR_TURN 40    // in cm
 #define SONAR_MIN_DISTANCE_FOR_STOP 25    // in cm
+#define SONAR_MIN_DISTANCE_FOR_PRECONDITION 40    // in cm
+
+// Mowing 
+#define MOWER_MOWING_TRAVEL_SPEED 90
+#define MOWER_MOWING_MAX_CONSECUTVE_OBSTACLES 5
 
 // Perimeter search function
+
+#define PERIMETER_SEARCH_PHASE_1 1
+#define PERIMETER_SEARCH_PHASE_2 2
+#define PERIMETER_SEARCH_PHASE_3 3
 
 #define PERIMETER_SEARCH_REVERSE_MAX_TIME 4000 // in ms
 #define PERIMETER_SEARCH_REVERSE_SPEED 80 // in %
 #define PERIMETER_SEARCH_REVERSE_TIME 1000 // in %
 #define PERIMETER_SEARCH_FORWARD_MAX_TIME_1 30000 // in ms
-#define PERIMETER_SEARCH_FORWARD_MAX_TIME_2 5000 // in ms
+// #define PERIMETER_SEARCH_FORWARD_MAX_TIME_2 5000 // in ms
 #define PERIMETER_SEARCH_FORWARD_SPEED 80 // in %
-#define PERIMETER_SEARCH_FORWARD_TIME 1000 // in %
+#define PERIMETER_SEARCH_FORWARD_TIME 500 // in ms
 // #define PERIMETER_SEARCH_CLOCKWISE_TURN_ANGLE 135 // in deg
 // #define PERIMETER_SEARCH_COUNTER_CLOCKWISE_TURN_ANGLE -135 // in deg
 #define PERIMETER_SEARCH_ANGLE_INCREMENT 15 // in deg
 // #define PERIMETER_SEARCH_TURN_MAX_TIME 10000 // in ms
 #define PERIMETER_SEARCH_TURN_MAX_ITERATIONS 180/PERIMETER_SEARCH_ANGLE_INCREMENT // in loop counts. It should not be necessary to turn more than 150 deg depending on wire approach angle
+#define PERIMETER_SEARCH_MAX_CONSECUTVE_OBSTACLES 3
 
 // Back to base function
 #define BACK_TO_BASE_HEADING 0  // in deg 0=North
 #define BACK_TO_BASE_CLOCKWISE true  // in which direction to follow wire
 #define BACK_TO_BASE_SPEED 90 // in %
+#define FOLLOW_WIRE_MAX_CONSECUTVE_OBSTACLES 2
+
+
+// Obstacle detection
+
+#define OBSTACLE_DETECTED_NONE 0
+#define OBSTACLE_DETECTED_BUMPER 1
+#define OBSTACLE_DETECTED_FRONT 2
+#define OBSTACLE_DETECTED_LEFT 3
+#define OBSTACLE_DETECTED_RIGHT 4
+#define OBSTACLE_DETECTED_PERIMETER 5
+
+// Move count variables
+extern int g_successiveObstacleDectections;       // successive obstacle detections (to trigger appropriate reaction)
 
 // Perimeter tracking function
 
@@ -528,6 +552,7 @@ extern bool g_CutMotorAlarm;
 #define ERROR_MOWING_NO_START_OBJECT_TOO_CLOSE      101
 #define ERROR_MOWING_NO_START_TILT_ACTIVE           102
 #define ERROR_MOWING_NO_START_NO_PERIMETER_SIGNAL   103
+#define ERROR_MOWING_CONSECUTIVE_OBSTACLES          104
 
 #define ERROR_WIRE_SEARCH_NO_START_BUMPER_ACTIVE         200
 #define ERROR_WIRE_SEARCH_NO_START_OBJECT_TOO_CLOSE      201
@@ -536,11 +561,21 @@ extern bool g_CutMotorAlarm;
 #define ERROR_WIRE_SEARCH_PHASE_1_FAILLED                204
 #define ERROR_WIRE_SEARCH_PHASE_2_FAILLED                205
 #define ERROR_WIRE_SEARCH_PHASE_3_FAILLED                206
-#define ERROR_WIRE_SEARCH_PHASE_4_FAILLED                207
+// #define ERROR_WIRE_SEARCH_PHASE_4_FAILLED                207
+
+#define ERROR_FOLLOW_WIRE_NO_START_BUMPER_ACTIVE         210
+#define ERROR_FOLLOW_WIRE_NO_START_OBJECT_TOO_CLOSE      211
+#define ERROR_FOLLOW_WIRE_NO_START_TILT_ACTIVE           212
+#define ERROR_FOLLOW_WIRE_NO_START_NO_PERIMETER_SIGNAL   213
+#define ERROR_FOLLOW_WIRE_CONSECUTIVE_OBSTACLES          214
 
 #define ERROR_UNDEFINED 999
 
 extern int g_CurrentErrorCode; // Current Error code
+
+/************************* Mower operation statistics *********************************/
+
+extern long g_totalObstacleDectections;         // Total number of obstacle detections   (Save to EEPROM)
 
 /************************* Test sequence variables *********************************/
 #define TEST_SEQ_STEP_WAIT 1000

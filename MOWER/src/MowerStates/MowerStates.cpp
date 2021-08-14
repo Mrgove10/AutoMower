@@ -12,6 +12,12 @@
 #include "Utils/Utils.h"
 #include "Display/Display.h"
 
+//---------------------------------------------------------------------------------------------------------------------------
+// 
+// Idle Mode
+// 
+//---------------------------------------------------------------------------------------------------------------------------
+
 /**
  * Mower in idle state
  * @param StateChange boolean indicating this is the first call to this state after a state change
@@ -42,6 +48,12 @@ void MowerIdle(const bool StateChange, const MowerState PreviousState)
   // Send telemetry
 }
 
+//---------------------------------------------------------------------------------------------------------------------------
+// 
+// Docked Mode
+// 
+//---------------------------------------------------------------------------------------------------------------------------
+
 /**
  * Mower docked
  * @param StateChange boolean indicating this is the first call to this state after a state change
@@ -57,6 +69,12 @@ void MowerDocked(const bool StateChange, const MowerState PreviousState)
   // send error bat low
 }
 
+//---------------------------------------------------------------------------------------------------------------------------
+// 
+// Mowing Mode
+// 
+//---------------------------------------------------------------------------------------------------------------------------
+
 /**
  * Mower in mowing mode
  * @param StateChange boolean indicating this is the first call to this state after a state change
@@ -65,7 +83,7 @@ void MowerDocked(const bool StateChange, const MowerState PreviousState)
 void MowerMowing(const bool StateChange, const MowerState PreviousState)
 {
   //--------------------------------
-  // Actions to take when entering the state
+  // Actions to take when entering the mowing state
   //--------------------------------
 
   if (StateChange)
@@ -97,35 +115,14 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
     // Check if mowing conditions are met
     //--------------------------------
 
-    // Bumpers not activated
-    if (BumperRead(BUMPER_RIGHT) && BumperRead(BUMPER_LEFT))
+    if (!CheckPreConditions(ERROR_MOWING_NO_START_TILT_ACTIVE,
+                       ERROR_MOWING_NO_START_BUMPER_ACTIVE,
+                       ERROR_MOWING_NO_START_OBJECT_TOO_CLOSE,
+                       ERROR_MOWING_NO_START_OBJECT_TOO_CLOSE,
+                       ERROR_MOWING_NO_START_OBJECT_TOO_CLOSE,
+                       ERROR_MOWING_NO_START_NO_PERIMETER_SIGNAL,
+                       true))
     {
-      g_CurrentState = MowerState::error;
-      g_CurrentErrorCode = ERROR_MOWING_NO_START_BUMPER_ACTIVE;
-      return;
-    }
-    // Obstacles detected
-    if (g_SonarDistance[SONAR_FRONT] < SONAR_MIN_DISTANCE_FOR_TURN ||
-        g_SonarDistance[SONAR_LEFT] < SONAR_MIN_DISTANCE_FOR_TURN ||
-        g_SonarDistance[SONAR_RIGHT] < SONAR_MIN_DISTANCE_FOR_TURN
-        )
-    {
-      g_CurrentState = MowerState::error;
-      g_CurrentErrorCode = ERROR_MOWING_NO_START_OBJECT_TOO_CLOSE;
-      return;
-    }
-    // Tilt activated
-    if (TiltRead(TILT_HORIZONTAL) || TiltRead(TILT_VERTICAL))
-    {
-      g_CurrentState = MowerState::error;
-      g_CurrentErrorCode = ERROR_MOWING_NO_START_TILT_ACTIVE;
-      return;
-    }
-    // No perimeter signal
-    if (false)          // TO DO
-    {
-      g_CurrentState = MowerState::error;
-      g_CurrentErrorCode = ERROR_MOWING_NO_START_NO_PERIMETER_SIGNAL;
       return;
     }
 
@@ -145,8 +142,13 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
     g_MowingLoopCnt = 0;
 
   }
-
   g_MowingLoopCnt = g_MowingLoopCnt + 1;
+
+  // Ongoing Mowing routine is as follows:
+  // Check for tilt,
+  // Check enviroment to slow down for approaching obstacles,
+  // Check for obstacle detection and react (trigger error if too many),
+  // Stop when conditions met (TO DO)
 
   //--------------------------------
   // Check tilt sensors and take immediate action
@@ -158,203 +160,51 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
   }
 
   //--------------------------------
-  // Sonar environement sensing for approaching objects
+  // Environment sensing for approaching objects
   //--------------------------------
-
-  // SonarRead(SONAR_FRONT, true);
-  // SonarRead(SONAR_LEFT, true);
-  // SonarRead(SONAR_RIGHT, true);
-
-  if ((g_SonarDistance[SONAR_FRONT] < SONAR_MIN_DISTANCE_FOR_SLOWING ||
-      g_SonarDistance[SONAR_LEFT] < SONAR_MIN_DISTANCE_FOR_SLOWING ||
-      g_SonarDistance[SONAR_RIGHT] < SONAR_MIN_DISTANCE_FOR_SLOWING)
-      && g_MotionMotorSpeed[0] != MOWER_MOVES_SPEED_SLOW)
+  if (!MowerSlowDownApproachingObstables(PERIMETER_SEARCH_FORWARD_SPEED - MOWER_MOVES_SPEED_SLOW,
+                                         SONAR_MIN_DISTANCE_FOR_SLOWING, 
+                                         SONAR_MIN_DISTANCE_FOR_SLOWING, 
+                                         SONAR_MIN_DISTANCE_FOR_SLOWING, 
+                                         PERIMETER_APPROACHING_THRESHOLD))
   {
-    DebugPrintln("Approaching object : Slowing down ! (" + String(g_SonarDistance[SONAR_FRONT]) + "cm)", DBG_DEBUG, true);
-    MowerForward(MOWER_MOVES_SPEED_SLOW);
-  }
-  else if (abs(g_PerimeterMagnitudeAvg) > PERIMETER_APPROACHING_THRESHOLD && g_MotionMotorSpeed[0] != MOWER_MOVES_SPEED_SLOW)
-  {
-    DebugPrintln("Approaching perimeter : Slowing down ! (" + String(g_PerimeterMagnitude) + ")", DBG_DEBUG, true);
-    MowerForward(MOWER_MOVES_SPEED_SLOW);
-  }
-  else
-  {
-    DebugPrintln("No approaching object or perimeter : normal speed", DBG_VERBOSE, true);
-    MowerSpeed(MOWER_MOWING_TRAVEL_SPEED);
+    MowerForward(MOWER_MOWING_TRAVEL_SPEED);
   }
 
   //--------------------------------
-  // Bumper Collision detection
+  // Obstacle Collision detection
   //--------------------------------
 
-  if (BumperRead(BUMPER_RIGHT) || BumperRead(BUMPER_LEFT))
+  if (OBSTACLE_DETECTED_NONE != CheckObstacleAndAct(true,
+                                                    SONAR_MIN_DISTANCE_FOR_STOP,
+                                                    SONAR_MIN_DISTANCE_FOR_STOP,
+                                                    SONAR_MIN_DISTANCE_FOR_STOP,
+                                                    true,
+                                                    true))
   {
-    DebugPrintln("Bumper collision detected ! ", DBG_DEBUG, true);
-    MowerStop();
-    CutMotorStop(true);
-
-    // SonarRead(SONAR_LEFT, true);
-    if (g_SonarDistance[SONAR_LEFT] > SONAR_MIN_DISTANCE_FOR_TURN) // check if it's clear on left side
+    // Check if number of consecutive obstacle detection is above threshold and put mower in Error mode
+    if (g_successiveObstacleDectections > MOWER_MOWING_MAX_CONSECUTVE_OBSTACLES)
     {
-      DebugPrintln("Turning left", DBG_VERBOSE, true);
-      MowerReserseAndTurn(-90, MOWER_MOVES_REVERSE_FOR_TURN_DURATION, true); // reverse and turn left 90 degrees
+      g_CurrentState = MowerState::error;
+      g_CurrentErrorCode = ERROR_MOWING_CONSECUTIVE_OBSTACLES;
+      return;
     }
     else
     {
-      // SonarRead(SONAR_RIGHT, true);
-      if (g_SonarDistance[SONAR_RIGHT] > SONAR_MIN_DISTANCE_FOR_TURN) // check if it's clear on right side
-      {
-        DebugPrintln("Reversing and turning right", DBG_VERBOSE, true);
-        MowerReserseAndTurn(90, MOWER_MOVES_REVERSE_FOR_TURN_DURATION, true); // reverse and turn right 90 degrees
-      }
-      else
-      {
-        DebugPrintln("Reversing and going back", DBG_VERBOSE, true);
-        MowerReserseAndTurn(135, MOWER_MOVES_REVERSE_FOR_TURN_DURATION * 2, true); // reverse and turn right 135 degrees....and hope for the best !
-      }
+      // Start mowing again
+      MowerForward(MOWER_MOWING_TRAVEL_SPEED);
+      CutMotorStart(MOWER_MOWING_CUTTING_DIRECTION, MOWER_MOWING_CUTTING_SPEED);
     }
-    MowerForward(MOWER_MOWING_TRAVEL_SPEED);
-    CutMotorStart(MOWER_MOWING_CUTTING_DIRECTION, MOWER_MOWING_CUTTING_SPEED);
   }
 
-  //--------------------------------
-  // Perimeter wire dection
-  //--------------------------------
-
-  if (!g_isInsidePerimeter)
-  {
-    DebugPrintln("Outside Perimeter cable (mag:" + String(g_PerimeterMagnitude) + ")", DBG_DEBUG, true);
-
-    MowerStop();
-    CutMotorStop();
-
-    // SonarRead(SONAR_LEFT, true);
-
-    if (g_SonarDistance[SONAR_LEFT] > SONAR_MIN_DISTANCE_FOR_TURN) // check if it's clear on left side
-    {
-      DebugPrintln("Reversing and turning left", DBG_VERBOSE, true);
-      MowerReserseAndTurn(random(-90, -45), MOWER_MOVES_REVERSE_FOR_TURN_DURATION, true); // reverse and turn left 90 degrees
-    }
-    else
-    {
-      // SonarRead(SONAR_RIGHT, true);
-
-      if (g_SonarDistance[SONAR_RIGHT] > SONAR_MIN_DISTANCE_FOR_TURN) // check if it's clear on right side
-      {
-        DebugPrintln("Reversing and turning right", DBG_VERBOSE, true);
-        MowerReserseAndTurn(random(45, 90), MOWER_MOVES_REVERSE_FOR_TURN_DURATION, true); // reverse and turn right 90 degrees
-      }
-      else
-      {
-        DebugPrintln("Reversing and going back", DBG_VERBOSE, true);
-        MowerReserseAndTurn(random(135, 225), MOWER_MOVES_REVERSE_FOR_TURN_DURATION * 2, true); // reverse and turn right 135 degrees....and hope for the best !
-      }
-    }
-    MowerForward(MOWER_MOWING_TRAVEL_SPEED);
-    CutMotorStart(MOWER_MOWING_CUTTING_DIRECTION, MOWER_MOWING_CUTTING_SPEED);
-  }
-
-  //--------------------------------
-  // Front Sonar Collision detection
-  //--------------------------------
-
-  // SonarRead(SONAR_FRONT, true);
-
-  if (g_SonarDistance[SONAR_FRONT] < SONAR_MIN_DISTANCE_FOR_STOP)
-  {
-    DebugPrintln("Font sonar proximity ! (" + String(g_SonarDistance[SONAR_FRONT]) + "cm)", DBG_DEBUG, true);
-
-    MowerStop();
-    CutMotorStop();
-
-    // SonarRead(SONAR_LEFT, true);
-
-    if (g_SonarDistance[SONAR_LEFT] > SONAR_MIN_DISTANCE_FOR_TURN) // check if it's clear on left side
-    {
-      DebugPrintln("Reversing and turning left", DBG_VERBOSE, true);
-
-      MowerReserseAndTurn(random(-90, -45), MOWER_MOVES_REVERSE_FOR_TURN_DURATION, true); // reverse and turn left 90 degrees
-    }
-    else
-    {
-      // SonarRead(SONAR_RIGHT, true);
-
-      if (g_SonarDistance[SONAR_RIGHT] > SONAR_MIN_DISTANCE_FOR_TURN) // check if it's clear on right side
-      {
-        DebugPrintln("Reversing and turning right", DBG_VERBOSE, true);
-        MowerReserseAndTurn(random(45, 90), MOWER_MOVES_REVERSE_FOR_TURN_DURATION, true); // reverse and turn right 90 degrees
-      }
-      else
-      {
-        DebugPrintln("Reversing and going back", DBG_VERBOSE, true);
-        MowerReserseAndTurn(random(135, 225), MOWER_MOVES_REVERSE_FOR_TURN_DURATION * 2, true); // reverse and turn right 135 degrees....and hope for the best !
-      }
-    }
-    MowerForward(MOWER_MOWING_TRAVEL_SPEED);
-    CutMotorStart(MOWER_MOWING_CUTTING_DIRECTION, MOWER_MOWING_CUTTING_SPEED);
-  }
-
-  //--------------------------------
-  // Left Sonar Collision detection
-  //--------------------------------
-
-  // SonarRead(SONAR_LEFT, true);
-
-  if (g_SonarDistance[SONAR_LEFT] < SONAR_MIN_DISTANCE_FOR_STOP)
-  {
-    DebugPrintln("Left sonar proximity ! (" + String(g_SonarDistance[SONAR_LEFT]) + "cm)", DBG_DEBUG, true);
-
-    MowerStop();
-    CutMotorStop();
-
-    // SonarRead(SONAR_RIGHT, true);
-
-    if (g_SonarDistance[SONAR_RIGHT] > SONAR_MIN_DISTANCE_FOR_TURN) // check if it's clear on right side
-    {
-      DebugPrintln("Turning right", DBG_VERBOSE, true);
-      MowerTurn(random(20, 60), true); // turn right 30 degrees
-    }
-    else
-    {
-      DebugPrintln("Reversing and going back", DBG_VERBOSE, true);
-      MowerReserseAndTurn(random(135, 225), MOWER_MOVES_REVERSE_FOR_TURN_DURATION * 2, true); // reverse and turn right 135 degrees....and hope for the best !
-    }
-    MowerForward(MOWER_MOWING_TRAVEL_SPEED);
-    CutMotorStart(MOWER_MOWING_CUTTING_DIRECTION, MOWER_MOWING_CUTTING_SPEED);
-  }
-
-  //--------------------------------
-  // Right Sonar Collision dection
-  //--------------------------------
-
-  // SonarRead(SONAR_RIGHT, true);
-
-  if (g_SonarDistance[SONAR_RIGHT] < SONAR_MIN_DISTANCE_FOR_STOP)
-  {
-    DebugPrintln("Right sonar proximity ! (" + String(g_SonarDistance[SONAR_RIGHT]) + "cm)", DBG_DEBUG, true);
-
-    MowerStop();
-    CutMotorStop();
-
-    // SonarRead(SONAR_LEFT, true);
-
-    if (g_SonarDistance[SONAR_LEFT] > SONAR_MIN_DISTANCE_FOR_TURN) // check if it's clear on left side
-    {
-      DebugPrintln("Turning left", DBG_VERBOSE, true);
-      MowerTurn(random(-60, -20), true); // turn left 30 degrees
-    }
-    else
-    {
-      DebugPrintln("Reversing and going back", DBG_VERBOSE, true);
-      MowerReserseAndTurn(random(-225, -135), MOWER_MOVES_REVERSE_FOR_TURN_DURATION * 2, true); // reverse and turn left 135 degrees....and hope for the best !
-    }
-    MowerForward(MOWER_MOWING_TRAVEL_SPEED);
-    CutMotorStart(MOWER_MOWING_CUTTING_DIRECTION, MOWER_MOWING_CUTTING_SPEED);
-  }
-
-  // TO DO
+  // TO DO When to stop mowing and go back to base
 }
+
+//---------------------------------------------------------------------------------------------------------------------------
+// 
+// Returning to base Mode
+// 
+//---------------------------------------------------------------------------------------------------------------------------
 
 /**
  * Mower returning to base
@@ -364,10 +214,13 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
 void MowerGoingToBase(const bool StateChange, const MowerState PreviousState)
 {
   bool PIDReset = false;
+  bool FindWireReset = false;
   static bool FindWire = false;
+  static bool FollowWire = false;
+  static int FindWirePhase = 0;
 
   //--------------------------------
-  // Actions to take when entering the state
+  // Actions to take when entering the Return to Base state
   //--------------------------------
 
   if (StateChange)
@@ -396,35 +249,62 @@ void MowerGoingToBase(const bool StateChange, const MowerState PreviousState)
 
     // Ensure wire finding function is called on first call
     FindWire = true;
+    FindWireReset = true;
+    FindWirePhase = PERIMETER_SEARCH_PHASE_1;
+
     // Ensure wire tracking PID is reset on first call
     PIDReset = true;
   }
 
-  // find target with compas
+  // Overall procedure is as follows:
+  // Check for tilt,
+  // Execute wire find procedure (does not runs as a loop and has it's own pre-condition and obstacle detection checks),
+  // Execute follow wire procedure (does not runs as a loop and has it's own pre-condition and obstacle detection checks),
+  // Decide on actions if obstacles are detected,
+  // Stop when conditions met (TO DO)
+
+  //--------------------------------
+  // Check tilt sensors and take immediate action
+  //--------------------------------
+
+  if (CheckTiltReadAndAct())
+  {
+    return;
+  }
+
+  // find target with compas TODO
 
   //--------------------------------
   // Find perimeter wire
   //--------------------------------
   if (FindWire)
   {
-    if (!MowerFindWire(BACK_TO_BASE_HEADING, BACK_TO_BASE_CLOCKWISE))
+    if (MowerFindWire(FindWireReset, &FindWirePhase, BACK_TO_BASE_HEADING, BACK_TO_BASE_CLOCKWISE))
     {
-      return;
+      // Stop wire finding
+      FindWire = false;
+      FollowWire = true;
     }
-    FindWire = false;
   }
- 
+
   //--------------------------------
   // Follow perim to base
   //--------------------------------
-  MowerFollowWire(PIDReset, BACK_TO_BASE_HEADING, BACK_TO_BASE_CLOCKWISE);
-
+  if (FollowWire)
+  {
+    MowerFollowWire(PIDReset, BACK_TO_BASE_HEADING, BACK_TO_BASE_CLOCKWISE);
+  }
 
   // TO DO conditions to end wire tracking
 
 //  g_CurrentState = MowerState::idle;
-
 }
+
+//---------------------------------------------------------------------------------------------------------------------------
+// 
+// Leaving base Mode
+// 
+//---------------------------------------------------------------------------------------------------------------------------
 
 /**
  * Mower leaving base
@@ -444,6 +324,12 @@ void MowerLeavingBase(const bool StateChange, const MowerState PreviousState)
   //go forward
   // g_CurrentState = MowerState::mowing;
 }
+
+//---------------------------------------------------------------------------------------------------------------------------
+// 
+// ERROR Mode
+// 
+//---------------------------------------------------------------------------------------------------------------------------
 
 /**
  * Mower in error
@@ -477,204 +363,195 @@ void MowerInError(const bool StateChange, const MowerState PreviousState)
   }
 }
 
+//---------------------------------------------------------------------------------------------------------------------------
+// 
+// Helper functions
+// 
+//---------------------------------------------------------------------------------------------------------------------------
+
 /**
  * Mower finds perimeter wire according to heading given and, when found, orient right or left
+ * @param reset boolean indicating the wire finding function needs to be reset
+ * @param phase pointer to integer used to indicate the search phase (input and output)
  * @param heading integer indicating the heading to follows to try to find the wire
  * @param clockwise boolean indicating the direction in which the mower should face if it finds the wire
- * @return Success boolean depending on whether it found the wire or not
+ * @return Success boolean depending on whether it found the wire (true) or not (false)
  */
-bool MowerFindWire(const int heading, const bool clockwise)
+bool MowerFindWire(const bool reset, int *phase, const int heading, const bool clockwise)
 {
+
 // ************************
 // TO DO - HEADING !!!!!
 // ************************
-
-  DebugPrintln("");
-  LogPrintln("Mowing Started searching for wire", TAG_SEARCH, DBG_INFO);
-
-  //--------------------------------------------------------------
-  // Check if pre-requisistes are met:
-  // no bumper, tilt or sonar restrictions (same as starting mowing)
-  //--------------------------------------------------------------
-
-  // Bumpers not activated
-  if (BumperRead(BUMPER_RIGHT) && BumperRead(BUMPER_LEFT))
+  if (reset)
   {
-    g_CurrentState = MowerState::error;
-    g_CurrentErrorCode = ERROR_WIRE_SEARCH_NO_START_BUMPER_ACTIVE;
-    return false;
-  }
-  // Obstacles detected
-  if (g_SonarDistance[SONAR_FRONT] < SONAR_MIN_DISTANCE_FOR_TURN ||
-      g_SonarDistance[SONAR_LEFT] < SONAR_MIN_DISTANCE_FOR_TURN ||
-      g_SonarDistance[SONAR_RIGHT] < SONAR_MIN_DISTANCE_FOR_TURN
-      )
-  {
-    g_CurrentState = MowerState::error;
-    g_CurrentErrorCode = ERROR_WIRE_SEARCH_NO_START_OBJECT_TOO_CLOSE;
-    return false;
-  }
-  // Tilt activated
-  if (TiltRead(TILT_HORIZONTAL) || TiltRead(TILT_VERTICAL))
-  {
-    g_CurrentState = MowerState::error;
-    g_CurrentErrorCode = ERROR_WIRE_SEARCH_NO_START_TILT_ACTIVE;
-    return false;
-  }
-  // No perimeter signal
-  if (false)          // TO DO
-  {
-    g_CurrentState = MowerState::error;
-    g_CurrentErrorCode = ERROR_WIRE_SEARCH_NO_START_NO_PERIMETER_SIGNAL;
-    return false;
-  }
+    DebugPrintln("");
+    LogPrintln("Mower started searching for wire", TAG_SEARCH, DBG_INFO);
 
-  //--------------------------------------------------------------
-  // First, if outside perimeter, mower reverses to try and come back in the perimeter
-  // If search "timeout" is reached, procedure (and mower) stops and raises an error
-  //--------------------------------------------------------------
+    //--------------------------------
+    // Check if pre-requisistes conditions are met
+    //--------------------------------
 
-  unsigned long searchStartTime = millis();
-
-  DebugPrintln("Phase 1 - Reversing to find wire", DBG_DEBUG, true);
-
-  while (!g_isInsidePerimeter && 
-          millis() - searchStartTime < PERIMETER_SEARCH_REVERSE_MAX_TIME &&
-          g_CurrentState == MowerState::going_to_base)
-  {
-    // Reverse Mower
-    MowerReverse(PERIMETER_SEARCH_REVERSE_SPEED, PERIMETER_SEARCH_REVERSE_TIME);
-  }
-  MowerStop();
-
-  // Check if inside, if not trigger error
-  if (!g_isInsidePerimeter) 
-  {
-    DebugPrintln("Phase 1 failled: not inside perimeter", DBG_DEBUG, true);
-
-    g_CurrentState = MowerState::error;
-    g_CurrentErrorCode = ERROR_WIRE_SEARCH_PHASE_1_FAILLED;
-    return false;
-  }
-
-  //--------------------------------------------------------------
-  // Second, once in the perimeter, it goes forward to find the wire (and stops if it finds obstacles) and goes over the wire (stops when outside)
-  // If search "timeout" is reached, procedure (and mower) stops and raises an error
-  //--------------------------------------------------------------
-
-  DebugPrintln("Phase 2 - Forward to find wire", DBG_DEBUG, true);
-  searchStartTime = millis();
-  while (g_isInsidePerimeter && 
-         millis() - searchStartTime < PERIMETER_SEARCH_FORWARD_MAX_TIME_1 &&
-         g_CurrentState == MowerState::going_to_base)
-  {
-    // Go Forward
-// TO DO => use a common procedure
-
-    if (abs(g_PerimeterMagnitudeAvg) > PERIMETER_APPROACHING_THRESHOLD && g_MotionMotorSpeed[0] != MOWER_MOVES_SPEED_SLOW)
+    if (!CheckPreConditions(ERROR_WIRE_SEARCH_NO_START_TILT_ACTIVE,
+                        ERROR_NO_ERROR,                              // no error here as 1st phase is a reverse motion
+                        ERROR_NO_ERROR,                              // no error here as 1st phase is a reverse motion
+                        ERROR_NO_ERROR,                              // no error here as 1st phase is a reverse motion
+                        ERROR_NO_ERROR,                              // no error here as 1st phase is a reverse motion
+                        ERROR_WIRE_SEARCH_NO_START_NO_PERIMETER_SIGNAL,
+                        true))
     {
-      DebugPrintln("Approaching perimeter : Slowing down ! (" + String(g_PerimeterMagnitude) + ")", DBG_DEBUG, true);
-      MowerForward(MOWER_MOVES_SPEED_SLOW);
+      return false;
     }
-    else
-    {
-      DebugPrintln("No perimeter approaching : normal speed", DBG_VERBOSE, true);
-      MowerForward(PERIMETER_SEARCH_FORWARD_SPEED);
-    }
-    delay(PERIMETER_SEARCH_FORWARD_TIME);
 
-    // TO DO obstacle detection / avoidance !
+    // Initialise Phase
+    *phase = PERIMETER_SEARCH_PHASE_1;
+    DebugPrintln("Phase 1 - Reversing to find wire", DBG_DEBUG, true);
   }
-  MowerStop();
 
-  // Check if outside, if not trigger error
-  if (g_isInsidePerimeter) 
+  static unsigned long searchStartTime = millis();
+  int turnIncrement = 0;
+  int turnCount = 0;
+
+  switch (*phase)
   {
-    DebugPrintln("Phase 2 failled: not outside perimeter", DBG_DEBUG, true);
-    g_CurrentState = MowerState::error;
-    g_CurrentErrorCode = ERROR_WIRE_SEARCH_PHASE_2_FAILLED;
-    return false;
-  }
+    //--------------------------------------------------------------
+    // First, if outside perimeter, mower reverses to try and come back in the perimeter
+    // If search "timeout" is reached, procedure (and mower) stops and raises an error
+    //--------------------------------------------------------------
+
+    case PERIMETER_SEARCH_PHASE_1:
+    {
+
+      // Not inside and still time
+      if (!g_isInsidePerimeter && millis() - searchStartTime < PERIMETER_SEARCH_REVERSE_MAX_TIME)
+      {
+        // Reverse Mower
+        MowerReverse(PERIMETER_SEARCH_REVERSE_SPEED, PERIMETER_SEARCH_REVERSE_TIME);
+        return true;        // continue search
+      }
+
+      // Back inside => the phase ends
+      if (g_isInsidePerimeter)
+      {
+        MowerStop();
+        *phase = PERIMETER_SEARCH_PHASE_2;
+        DebugPrintln("Phase 2 - Forward to find wire", DBG_DEBUG, true);
+        searchStartTime = millis();
+        return true;        // continue search
+      }
+
+      // Time is up ... raise error and stop search 
+      if (millis() - searchStartTime > PERIMETER_SEARCH_REVERSE_MAX_TIME)
+      {
+        DebugPrintln("Phase 1 failled: not inside perimeter", DBG_DEBUG, true);
+        g_CurrentState = MowerState::error;
+        g_CurrentErrorCode = ERROR_WIRE_SEARCH_PHASE_1_FAILLED;
+        return false;
+      }
+    }   
+
+    //--------------------------------------------------------------
+    // Second, once in the perimeter, it goes forward to find the wire (and stops if it finds obstacles) and goes over the wire (stops when outside)
+    // If search "timeout" is reached, procedure (and mower) stops and raises an error
+    //--------------------------------------------------------------
+
+    case PERIMETER_SEARCH_PHASE_2:
+    {
+      if (g_isInsidePerimeter && millis() - searchStartTime < PERIMETER_SEARCH_FORWARD_MAX_TIME_1)
+      {
+        //--------------------------------
+        // Environment sensing for approaching objects
+        //--------------------------------
+
+        if (!MowerSlowDownApproachingObstables(PERIMETER_SEARCH_FORWARD_SPEED - MOWER_MOVES_SPEED_SLOW,
+                                                SONAR_MIN_DISTANCE_FOR_SLOWING, 
+                                                SONAR_MIN_DISTANCE_FOR_SLOWING, 
+                                                SONAR_MIN_DISTANCE_FOR_SLOWING, 
+                                                PERIMETER_APPROACHING_THRESHOLD))
+        {
+          MowerForward(PERIMETER_SEARCH_FORWARD_SPEED);
+        }
+        return true;        // continue search
+      }
+
+      // Reached outside (wire found): => the phase ends
+      if (!g_isInsidePerimeter)
+      {
+        MowerStop();
+        *phase = PERIMETER_SEARCH_PHASE_3;
+        if(clockwise)
+        {
+          DebugPrintln("Phase 3 - Turn clockwise", DBG_DEBUG, true);
+          turnIncrement = PERIMETER_SEARCH_ANGLE_INCREMENT;
+        }
+        else
+        {
+          DebugPrintln("Phase 3 - Turn counter clockwise", DBG_DEBUG, true);
+          turnIncrement = - PERIMETER_SEARCH_ANGLE_INCREMENT;
+        }
+        turnCount = 0;
+        return true;        // continue search
+      }
+
+      // Time is up ... raise error and stop search 
+      if (millis() - searchStartTime > PERIMETER_SEARCH_FORWARD_MAX_TIME_1)
+      {
+        DebugPrintln("Phase 2 failled: not outside perimeter", DBG_DEBUG, true);
+        g_CurrentState = MowerState::error;
+        g_CurrentErrorCode = ERROR_WIRE_SEARCH_PHASE_2_FAILLED;
+        return false;
+      }
+    }
+
   //--------------------------------------------------------------
   // Third, it turns in direction requested (clockwise or counter-clockwise)
   // By slowing down before crossing the wire, the mower should have not gone very far over
   // and doing an "on the spot" turn, we can hope to be just inside the perimeter
   //--------------------------------------------------------------
 
-  int turnIncrement = 0;
+    case PERIMETER_SEARCH_PHASE_3:
+    {
+      // Not inside and still turn steps available
+      if (!g_isInsidePerimeter && turnCount < PERIMETER_SEARCH_TURN_MAX_ITERATIONS)
+      {
+        //--------------------------------
+        // Check tilt sensors and take immediate action
+        //--------------------------------
+        if (CheckTiltReadAndAct())
+        {
+          return false;
+        }
 
-  if(clockwise)
-  {
-    DebugPrintln("Phase 3 - Turn clockwise", DBG_DEBUG, true);
-    turnIncrement = PERIMETER_SEARCH_ANGLE_INCREMENT;
-    // MowerTurn(PERIMETER_SEARCH_CLOCKWISE_TURN_ANGLE,true);
+        // Turn on the spot by steps
+        MowerTurn(turnIncrement, true);
+        delay(PERIMETER_TIMER_PERIOD * 2 / 1000);  // wait to make sure that Perimeter signal read task can refresh g_isInsidePerimeter status
+        turnCount = turnCount + 1;
+
+        return true;        // continue search
+      }
+
+      // Back inside => the phase ends
+      if (g_isInsidePerimeter)
+      {
+        MowerStop();
+        return false;        // end search
+      }
+
+      // Max Number of turns reached ... raise error and stop search 
+      if (turnCount >= PERIMETER_SEARCH_TURN_MAX_ITERATIONS)
+      {
+        DebugPrintln("Phase 3 failled: not inside perimeter", DBG_DEBUG, true);
+        g_CurrentState = MowerState::error;
+        g_CurrentErrorCode = ERROR_WIRE_SEARCH_PHASE_3_FAILLED;
+        return false;
+      }
+    }   
+    default:
+    {
+      DebugPrintln("Phase Undefined - should not be here !!!", DBG_ERROR, true);
+      return false;
+    }
   }
-  else
-  {
-    DebugPrintln("Phase 3 - Turn counter clockwise", DBG_DEBUG, true);
-    turnIncrement = - PERIMETER_SEARCH_ANGLE_INCREMENT;
-    // MowerTurn(PERIMETER_SEARCH_COUNTER_CLOCKWISE_TURN_ANGLE,true);
-  }
-
-  // searchStartTime = millis();
-  int turnCount = 0;
-  while (!g_isInsidePerimeter && 
-          // millis() - searchStartTime < PERIMETER_SEARCH_TURN_MAX_TIME &&
-          turnCount < PERIMETER_SEARCH_TURN_MAX_ITERATIONS &&
-          g_CurrentState == MowerState::going_to_base)
-  {
-    // Turn on the spot by steps
-    MowerTurn(turnIncrement, true);
-    delay(PERIMETER_TIMER_PERIOD * 2 / 1000);  // wait to make sure that Perimeter signal read task can refresh g_isInsidePerimeter status
-    turnCount = turnCount + 1;
-  }
-//  MowerStop();
-
-
-//TO DO decide if not reaching inside is a faillure or not
-
-  // Check if inside, if not trigger error
-  if (!g_isInsidePerimeter) 
-  {
-    DebugPrintln("Phase 3 failled: not inside perimeter", DBG_DEBUG, true);
-
-    g_CurrentState = MowerState::error;
-    g_CurrentErrorCode = ERROR_WIRE_SEARCH_PHASE_3_FAILLED;
-    return false;
-  }
-
-  //--------------------------------------------------------------
-  // Fourth, is to drive forward to come back inside the wire
-  // If not inside within a "timeout" is reached, procedure (and mower) stops and raises an error
-  //--------------------------------------------------------------
-
-  DebugPrintln("Phase 4 - Forward to find wire", DBG_DEBUG, true);
-  searchStartTime = millis();
-  while (!g_isInsidePerimeter && 
-          millis() - searchStartTime < PERIMETER_SEARCH_FORWARD_MAX_TIME_2 &&
-          g_CurrentState == MowerState::going_to_base)
-  {
-    // Go Forward
-    MowerForward(PERIMETER_SEARCH_FORWARD_SPEED);
-    delay(PERIMETER_SEARCH_FORWARD_TIME);
-  }
-  MowerStop();
-
-  // Check if inside, if not trigger error
-  if (!g_isInsidePerimeter) 
-  {
-    DebugPrintln("Phase 4 failled: not inside perimeter", DBG_DEBUG, true);
-
-    g_CurrentState = MowerState::error;
-    g_CurrentErrorCode = ERROR_WIRE_SEARCH_PHASE_4_FAILLED;
-    return false;
-  }
-
-  //--------------------------------------------------------------
-  // Finally, hopefully, mower should be "on" the wire (or close to it inside the perimeter), ready to follow the wire in correct direction !! Procedure stops and returns success
-  //--------------------------------------------------------------
-
-  return true;
 }
 
 /**
@@ -682,7 +559,7 @@ bool MowerFindWire(const int heading, const bool clockwise)
  * @param reset boolean indicating the wire trakcing function and PID needs to be reset
  * @param heading integer indicating the heading to follow to get to charging station
  * @param clockwise boolean indicating the direction in which the mower is following the wire
- * @return Success boolean depending on whether it found the wire or not
+ * @return Success boolean depending on whether it found the wire (true) or not (false)
  */
 bool MowerFollowWire(const bool reset, const int heading, const bool clockwise)
 {
@@ -691,6 +568,21 @@ bool MowerFollowWire(const bool reset, const int heading, const bool clockwise)
   if (reset)
   {
     DebugPrintln("Starting to follow wire....", DBG_DEBUG, true);
+
+    //--------------------------------
+    // Check if pre-requisistes conditions are met
+    //--------------------------------
+
+    if (!CheckPreConditions(ERROR_FOLLOW_WIRE_NO_START_TILT_ACTIVE,
+                        ERROR_FOLLOW_WIRE_NO_START_BUMPER_ACTIVE,
+                        ERROR_FOLLOW_WIRE_NO_START_OBJECT_TOO_CLOSE,
+                        ERROR_FOLLOW_WIRE_NO_START_OBJECT_TOO_CLOSE,
+                        ERROR_FOLLOW_WIRE_NO_START_OBJECT_TOO_CLOSE,
+                        ERROR_FOLLOW_WIRE_NO_START_NO_PERIMETER_SIGNAL,
+                        true))
+    {
+      return false;
+    }
 
     DebugPrintln("Kp:" + String(g_ParamPerimeterTrackPIDKp) + " Ki:" + String(g_ParamPerimeterTrackPIDKi) + " Kd:" + String(g_ParamPerimeterTrackPIDKd), DBG_DEBUG, true);
     DebugPrintln("");
@@ -705,7 +597,6 @@ bool MowerFollowWire(const bool reset, const int heading, const bool clockwise)
     g_PerimeterTrackPID.SetOutputLimits(-70, 70);   // in %
     g_PerimeterTrackPID.SetControllerDirection(DIRECT);
     g_PerimeterTrackPID.SetSampleTime(PERIMETER_TRACKING_PID_INTERVAL);
-    
 
 #ifdef MQTT_PID_GRAPH_DEBUG
     g_MQTTPIDGraphDebug = true;  // for testing
@@ -716,15 +607,97 @@ bool MowerFollowWire(const bool reset, const int heading, const bool clockwise)
     MowerForward(BACK_TO_BASE_SPEED);
   }
 
+  //--------------------------------
+  // Check tilt sensors and take immediate action
+  //--------------------------------
+  if (CheckTiltReadAndAct())
+  {
+    return false;
+  }
+
+  //--------------------------------
+  // Environment sensing for approaching objects
+  //--------------------------------
+  bool SlowedDown = false;
+  if (clockwise)
+  {
+    SlowedDown = MowerSlowDownApproachingObstables(BACK_TO_BASE_SPEED - MOWER_MOVES_SPEED_SLOW,
+                                         SONAR_MIN_DISTANCE_FOR_SLOWING, 
+                                         0,                                                     // no left detection
+                                         SONAR_MIN_DISTANCE_FOR_SLOWING, 
+                                         0);                                                    // no perimeter detection
+  }
+  else
+  {
+    SlowedDown = MowerSlowDownApproachingObstables(BACK_TO_BASE_SPEED - MOWER_MOVES_SPEED_SLOW,
+                                         SONAR_MIN_DISTANCE_FOR_SLOWING, 
+                                         SONAR_MIN_DISTANCE_FOR_SLOWING, 
+                                         0,                                                     // no right detection
+                                         0);                                                    // no perimeter detection
+  } 
+
+  if (!SlowedDown)
+  {
+    MowerForward(BACK_TO_BASE_SPEED); /// check how this interferes with PID speed adjustment !
+  }
+
+  //--------------------------------
+  // Obstacle Collision detection
+  //--------------------------------
+
+  int colisionDetected = OBSTACLE_DETECTED_NONE;
+
+  if (clockwise)
+  {
+    colisionDetected = OBSTACLE_DETECTED_NONE != CheckObstacleAndAct(true,
+                                                      SONAR_MIN_DISTANCE_FOR_STOP,
+                                                      0,                            // no left detection
+                                                      SONAR_MIN_DISTANCE_FOR_STOP,
+                                                      false,                       // no perimeter detection
+                                                      false);                       // no action (for the moment ???????????????)
+  }
+  else
+  {
+    colisionDetected = OBSTACLE_DETECTED_NONE != CheckObstacleAndAct(true,
+                                                      SONAR_MIN_DISTANCE_FOR_STOP,
+                                                      SONAR_MIN_DISTANCE_FOR_STOP,
+                                                      0,                            // no right detection
+                                                      false,                       // no perimeter detection
+                                                      false);                       // no action (for the moment ???????????????)
+  }
+
+  if (colisionDetected != OBSTACLE_DETECTED_NONE)
+  {
+    // Check if number of consecutive obstacle detection is above threshold and put mower in Error mode
+    if (g_successiveObstacleDectections > FOLLOW_WIRE_MAX_CONSECUTVE_OBSTACLES)
+    {
+      g_CurrentState = MowerState::error;
+      g_CurrentErrorCode = ERROR_FOLLOW_WIRE_CONSECUTIVE_OBSTACLES;
+      return false;
+    }
+    else
+    {
+      // WHAT TO DO HERE ?????????????? do another Wire find ????????
+      // MowerForward(MOWER_MOWING_TRAVEL_SPEED);
+      // CutMotorStart(MOWER_MOWING_CUTTING_DIRECTION, MOWER_MOWING_CUTTING_SPEED);
+    }
+  }
+
+  //--------------------------------
+  // Use PID to apply direction orders to motors
+  //--------------------------------
+
   if (millis() - lastPIDUpdate > PERIMETER_TRACKING_PID_INTERVAL)
   {
     // update PID with new input
     // g_PIDInput = g_PerimeterMagnitudeAvgPID;
     g_PIDInput = g_PerimeterMagnitudeAvg;
+
+    // Update PID settings "on the fly" too enbale easier tuning
     g_PIDSetpoint = g_PerimeterTrackSetpoint;
     g_PerimeterTrackPID.SetTunings(g_ParamPerimeterTrackPIDKp, g_ParamPerimeterTrackPIDKi , g_ParamPerimeterTrackPIDKd, P_ON_E);
 
-    DebugPrintln("PID P " + String(g_PerimeterTrackPID.GetKp()) + " " + String(g_ParamPerimeterTrackPIDKp), DBG_VERBOSE, true);
+    // DebugPrintln("PID P " + String(g_PerimeterTrackPID.GetKp()) + " " + String(g_ParamPerimeterTrackPIDKp), DBG_VERBOSE, true);
 
     bool PIDReturn = g_PerimeterTrackPID.Compute();
     if (!PIDReturn)
@@ -822,4 +795,320 @@ void MotionMotorsTrackingAdjustSpeed(const int leftMotorAjustment, const int rig
   MotionMotorSetSpeed(MOTION_MOTOR_LEFT, BACK_TO_BASE_SPEED); // function will apply correction and set new speed
   g_WheelPerimeterTrackingCorrection[MOTION_MOTOR_RIGHT] = rightMotorAjustment;
   MotionMotorSetSpeed(MOTION_MOTOR_RIGHT, BACK_TO_BASE_SPEED); // function will apply correction and set new speed
+}
+
+/**
+ * @brief Function to check pre-conditions before performing tasks. Pre-condition checks can be performed on Tilt sensors (both), bumpers (both), Sonar sensors (Front, left or right) and perimeter wire active
+ * If a precondition is not met and if the error enable parameter is set, an error is triggered (error number passed as parameter) and the mower is set into ERROR mode.
+ * If the error enable parameter is not set, the function only returns if pre-conditions are net or not and the mower state is not changed (left to caller to decide).
+ * To disable a pre-condition check, the ERROR_NO_ERROR error number should be passed as parameter value.
+ * 
+ * @param Tilt (optional) check tilt sensors (both) and trigger ERROR Mode if ErrorMode is true (ERROR_NO_ERROR to disable, by default)
+ * @param Bumper (optional) check bumper sensors (both) and trigger ERROR Mode if ErrorMode is true (ERROR_NO_ERROR to disable, by default)
+ * @param Front (optional) check front sonar and trigger ERROR Mode if ErrorMode is true (ERROR_NO_ERROR to disable, by default)
+ * @param Left (optional) check left sonar and trigger ERROR Mode if ErrorMode is true (ERROR_NO_ERROR to disable, by default)
+ * @param Right (optional) check right sonar and trigger ERROR Mode if ErrorMode is true (ERROR_NO_ERROR to disable, by default)
+ * @param Perimeter (optional) check perimeter wire active and trigger ERROR Mode if ErrorMode is true (ERROR_NO_ERROR to disable, by default)
+ * @param ErrorMode (optional) , if true, changes mower mode to Error (default is false).
+ * @return boolean indicating if preconditions are met (true) or not (false).
+ */
+bool CheckPreConditions(const int Tilt, const int Bumper, const int Front, const int Left, const int Right, const int Perimeter, const bool ErrorMode)
+{
+
+  // Tilt checks (activated or not)
+
+  if (Tilt != ERROR_NO_ERROR && (TiltRead(TILT_HORIZONTAL) || TiltRead(TILT_VERTICAL)))
+  {
+    if (ErrorMode)
+    { 
+      g_CurrentState = MowerState::error;
+      g_CurrentErrorCode = Tilt;
+    }
+    return false;
+  }
+
+  // Bumper checks (activated or not)
+  
+  if (Bumper != ERROR_NO_ERROR && (BumperRead(BUMPER_RIGHT) || BumperRead(BUMPER_LEFT)))
+  {
+    if (ErrorMode)
+    { 
+      g_CurrentState = MowerState::error;
+      g_CurrentErrorCode = Bumper;
+    }
+    return false;
+  }
+
+  // Front sonar (close obstacle or not)
+  
+  if (Front != ERROR_NO_ERROR && (g_SonarDistance[SONAR_FRONT] < SONAR_MIN_DISTANCE_FOR_PRECONDITION))
+  {
+    if (ErrorMode)
+    { 
+      g_CurrentState = MowerState::error;
+      g_CurrentErrorCode = Front;
+    }
+    return false;
+  }
+
+  // Left sonar (close obstacle or not)
+  
+  if (Left != ERROR_NO_ERROR && (g_SonarDistance[SONAR_LEFT] < SONAR_MIN_DISTANCE_FOR_PRECONDITION))
+  {
+    if (ErrorMode)
+    { 
+      g_CurrentState = MowerState::error;
+      g_CurrentErrorCode = Left;
+    }
+    return false;
+  }
+
+  // Right sonar (close obstacle or not)
+  
+  if (Right != ERROR_NO_ERROR && (g_SonarDistance[SONAR_RIGHT] < SONAR_MIN_DISTANCE_FOR_PRECONDITION))
+  {
+    if (ErrorMode)
+    { 
+      g_CurrentState = MowerState::error;
+      g_CurrentErrorCode = Right;
+    }
+    return false;
+  }
+
+  // Perimeter active
+  
+        // TO DO
+
+  if (Perimeter != ERROR_NO_ERROR && (false))       // TO DO
+  {
+    if (ErrorMode)
+    { 
+      g_CurrentState = MowerState::error;
+      g_CurrentErrorCode = Perimeter;
+    }
+    return false;
+  }
+
+  return true;
+}
+
+/**
+ * @brief Function to check if an obstacle is detected and performs a pre-defined action (if activated).
+ * Obstacle detection can be any combination of bumper (both), Sonars (Front, Left or right) and perimeter wire, but function returns at first detection.
+ * Detections are performed in the following order: 1-Bumper, 2- Perimeter, 3-Front sonar, 4-Left sonar, 5-Right sonar.
+ * If the action enable parameter is not set, the function only returns if a detection occured or not and action to take if left to caller to decide.
+ * At the end of the funtion, if the action enable is set, the mower is stopped and the cutting motor is stopped. Caller to restart the motors as required.
+ * 
+ * @param Bumper as optional boolean : bumper active triggers detection/action. 0 disbales the check. Default is 0
+ * @param Front as optional int: sonar measured front distance to trigger detection/action. 0 disbales the check. Default is 0
+ * @param Left as optional int: sonar measured left distance to trigger detection/action. 0 disbales the check. Default is 0
+ * @param Right as optional int: sonar measured right distance to trigger detection/action. 0 disbales the check. Default is 0
+ * @param Perimeter as optional boolean: outside perimeter wire to trigger detection/action. 0 disables the check. Absolute value is used to perform the check (applies to both inside and outside perimeter wire).  Default is 0.
+ * @param ActionMode (optional) , if true, changes action is performed if condition is detected (default is false).
+ * @return integer indicating which detection was detected.
+ */
+int CheckObstacleAndAct(const bool Bumper, const int Front, const int Left, const int Right, const bool Perimeter, const bool ActionMode)
+{
+  //--------------------------------
+  // Bumper Collision detection
+  //--------------------------------
+  // Reaction to bumper collision is as follows:
+  // Stop motion and cutting, 
+  // if possible to turn left, reverse and turn left by a "small" angle (~ less than 90 degrees)
+  // if not possible, if possible to turn right, reverse and turn right by a "small" angle (~ less than 90 degrees)
+  // if not possible, reverse further and turn to  be ready to go in "opposite direction"
+
+  if (!Bumper && (BumperRead(BUMPER_RIGHT) || BumperRead(BUMPER_LEFT)))
+  {
+    DebugPrintln("Bumper collision detected ! ", DBG_DEBUG, true);
+    if (ActionMode)
+    { 
+      // Stop motion and stop cutting motor
+      MowerStop();
+      CutMotorStop(true);
+
+      if (g_SonarDistance[SONAR_LEFT] > SONAR_MIN_DISTANCE_FOR_TURN) // check if it's clear on left side
+      {
+        DebugPrintln("Turning left", DBG_VERBOSE, true);
+        MowerReserseAndTurn(random(-90, -45), MOWER_MOVES_REVERSE_FOR_TURN_DURATION, true); // reverse and turn left 90 degrees
+      }
+      else
+      {
+        if (g_SonarDistance[SONAR_RIGHT] > SONAR_MIN_DISTANCE_FOR_TURN) // check if it's clear on right side
+        {
+          DebugPrintln("Reversing and turning right", DBG_VERBOSE, true);
+          MowerReserseAndTurn(random(45, 90), MOWER_MOVES_REVERSE_FOR_TURN_DURATION, true); // reverse and turn right 90 degrees
+        }
+        else
+        {
+          DebugPrintln("Reversing and going back", DBG_VERBOSE, true);
+          MowerReserseAndTurn(random(135, 225), MOWER_MOVES_REVERSE_FOR_TURN_DURATION * 2, true); // reverse and turn right 135 degrees....and hope for the best !
+        }
+      }
+    }
+
+    // count as an obstable detection
+    g_totalObstacleDectections = g_totalObstacleDectections + 1;
+    g_successiveObstacleDectections = g_successiveObstacleDectections + 1;
+
+    return OBSTACLE_DETECTED_BUMPER;
+  }
+
+  //--------------------------------
+  // Perimeter wire dection
+  //--------------------------------
+  // Reaction to being outside perimeter wire is as follows:
+  // Stop motion (no need to stop cutting as this a normal event), 
+  // if possible to turn left, reverse and turn left by a "small" angle (~ less than 90 degrees)
+  // if not possible, if possible to turn Right, reverse and turn right by a "small" angle (~ less than 90 degrees)
+  // if not possible, reverse further and turn to be ready to go in "opposite direction"
+
+  if (Perimeter && !g_isInsidePerimeter)
+  {
+    DebugPrintln("Outside Perimeter cable (mag:" + String(g_PerimeterMagnitude) + ")", DBG_DEBUG, true);
+
+    if (ActionMode)
+    { 
+      MowerStop();
+
+      if (g_SonarDistance[SONAR_LEFT] > SONAR_MIN_DISTANCE_FOR_TURN) // check if it's clear on left side
+      {
+        DebugPrintln("Reversing and turning left", DBG_VERBOSE, true);
+        MowerReserseAndTurn(random(-90, -45), MOWER_MOVES_REVERSE_FOR_TURN_DURATION, true); // reverse and turn left 90 degrees
+      }
+      else
+      {
+        // SonarRead(SONAR_RIGHT, true);
+
+        if (g_SonarDistance[SONAR_RIGHT] > SONAR_MIN_DISTANCE_FOR_TURN) // check if it's clear on right side
+        {
+          DebugPrintln("Reversing and turning right", DBG_VERBOSE, true);
+          MowerReserseAndTurn(random(45, 90), MOWER_MOVES_REVERSE_FOR_TURN_DURATION, true); // reverse and turn right 90 degrees
+        }
+        else
+        {
+          DebugPrintln("Reversing and going back", DBG_VERBOSE, true);
+          MowerReserseAndTurn(random(135, 225), MOWER_MOVES_REVERSE_FOR_TURN_DURATION * 2, true); // reverse and turn right 135 degrees....and hope for the best !
+        }
+      }
+    }
+    return OBSTACLE_DETECTED_PERIMETER;
+  }
+
+  //--------------------------------
+  // Front Sonar Collision detection
+  //--------------------------------
+  // Reaction to Front sonar detection is as follows:
+  // Stop motion and cutting, 
+  // if possible to turn left, reverse and turn left by a "small" angle (~ less than 90 degrees)
+  // if not possible, if possible to turn right, reverse and turn right by a "small" angle (~ less than 90 degrees)
+  // if not possible, reverse further and turn to  be ready to go in "opposite direction"
+
+  if (Front != 0 && (g_SonarDistance[SONAR_FRONT] < Front))
+  {
+    DebugPrintln("Font sonar proximity ! (" + String(g_SonarDistance[SONAR_FRONT]) + "cm)", DBG_DEBUG, true);
+    if (ActionMode)
+    { 
+      // Stop motion and stop cutting motor
+      MowerStop();
+      CutMotorStop(false);
+
+      if (g_SonarDistance[SONAR_LEFT] > SONAR_MIN_DISTANCE_FOR_TURN) // check if it's clear on left side
+      {
+        DebugPrintln("Reversing and turning left", DBG_VERBOSE, true);
+        MowerReserseAndTurn(random(-90, -45), MOWER_MOVES_REVERSE_FOR_TURN_DURATION, true); // reverse and turn left 90 degrees
+      }
+      else
+      {
+        if (g_SonarDistance[SONAR_RIGHT] > SONAR_MIN_DISTANCE_FOR_TURN) // check if it's clear on right side
+        {
+          DebugPrintln("Reversing and turning right", DBG_VERBOSE, true);
+          MowerReserseAndTurn(random(45, 90), MOWER_MOVES_REVERSE_FOR_TURN_DURATION, true); // reverse and turn right 90 degrees
+        }
+        else
+        {
+          DebugPrintln("Reversing and going back", DBG_VERBOSE, true);
+          MowerReserseAndTurn(random(135, 225), MOWER_MOVES_REVERSE_FOR_TURN_DURATION * 2, true); // reverse and turn right 135 degrees....and hope for the best !
+        }
+      }
+    }
+
+    // count as an obstable detection
+    g_totalObstacleDectections = g_totalObstacleDectections + 1;
+    g_successiveObstacleDectections = g_successiveObstacleDectections + 1;
+
+    return OBSTACLE_DETECTED_FRONT;
+  }
+
+  //--------------------------------
+  // Left Sonar Collision detection
+  //--------------------------------
+  // Reaction to Left sonar detection is as follows:
+  // Stop motion and cutting, 
+  // if possible to turn right, turn mower to the right by a "small" angle (~ less than 60 degrees)
+  // if not possible, reverse and turn to be ready to go in "opposite direction"
+
+  if (Left != 0 && (g_SonarDistance[SONAR_LEFT] < Left))
+  {
+    DebugPrintln("Left sonar proximity ! (" + String(g_SonarDistance[SONAR_LEFT]) + "cm)", DBG_DEBUG, true);
+    if (ActionMode)
+    { 
+      MowerStop();
+      CutMotorStop(false);
+
+      if (g_SonarDistance[SONAR_RIGHT] > SONAR_MIN_DISTANCE_FOR_TURN) // check if it's clear on right side
+      {
+        DebugPrintln("Turning right", DBG_VERBOSE, true);
+        MowerTurn(random(20, 60), true); // turn right 30 degrees
+      }
+      else
+      {
+        DebugPrintln("Reversing and going back", DBG_VERBOSE, true);
+        MowerReserseAndTurn(random(135, 225), MOWER_MOVES_REVERSE_FOR_TURN_DURATION * 2, true); // reverse and turn right 135 degrees....and hope for the best !
+      }
+    }
+
+    // count as an obstable detection
+    g_totalObstacleDectections = g_totalObstacleDectections + 1;
+    g_successiveObstacleDectections = g_successiveObstacleDectections + 1;
+    return OBSTACLE_DETECTED_LEFT;
+  }
+
+  //--------------------------------
+  // Right Sonar Collision dection
+  //--------------------------------
+  // Reaction to Right sonar detection is as follows:
+  // Stop motion and cutting, 
+  // if possible to turn Left, turn mower to the left by a "small" angle (~ less than 60 degrees)
+  // if not possible, reverse and turn to be ready to go in "opposite direction"
+
+  if (Right != 0 && (g_SonarDistance[SONAR_RIGHT] < Right))
+  {
+    DebugPrintln("Right sonar proximity ! (" + String(g_SonarDistance[SONAR_RIGHT]) + "cm)", DBG_DEBUG, true);
+    if (ActionMode)
+    { 
+      MowerStop();
+      CutMotorStop(false);
+
+      if (g_SonarDistance[SONAR_LEFT] > SONAR_MIN_DISTANCE_FOR_TURN) // check if it's clear on left side
+      {
+        DebugPrintln("Turning left", DBG_VERBOSE, true);
+        MowerTurn(random(-60, -20), true); // turn left 30 degrees
+      }
+      else
+      {
+        DebugPrintln("Reversing and going back", DBG_VERBOSE, true);
+        MowerReserseAndTurn(random(-225, -135), MOWER_MOVES_REVERSE_FOR_TURN_DURATION * 2, true); // reverse and turn left 135 degrees....and hope for the best !
+      }
+    }
+
+    // count as an obstable detection
+    g_totalObstacleDectections = g_totalObstacleDectections + 1;
+    g_successiveObstacleDectections = g_successiveObstacleDectections + 1;
+    return OBSTACLE_DETECTED_RIGHT;
+  }
+
+  // reset successive detections counter
+  g_successiveObstacleDectections = 0;
+  return OBSTACLE_DETECTED_NONE;
 }
