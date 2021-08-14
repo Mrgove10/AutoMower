@@ -152,7 +152,7 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
   // Check tilt sensors and take immediate action
   //--------------------------------
 
-  if (TiltReadAndAct())
+  if (CheckTiltReadAndAct())
   {
     return;
   }

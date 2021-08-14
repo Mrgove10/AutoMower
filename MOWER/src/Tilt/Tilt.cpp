@@ -118,7 +118,7 @@ bool TiltRead(int tilt)
  * @return boolean true if at least one tilt is activated, false if not
  */
 
-bool TiltReadAndAct(void)
+bool CheckTiltReadAndAct(void)
 {
   bool returnval = false;
 
