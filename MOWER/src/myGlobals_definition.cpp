@@ -278,6 +278,9 @@ float g_WheelPerimeterTrackingCorrection[MOTION_MOTOR_COUNT] = {0, 0};         /
 
 /************************* Mower Moves variables *********************************/
 
+// Move count variables
+int g_successiveObstacleDectections = 0;       // successive obstacle detections (to trigger appropriate reaction)
+
 // Perimeter tracking function
 
 #include <PID_v1.h>
@@ -305,7 +308,13 @@ int g_CutMotorSpeed = 0;
 bool g_CutMotorAlarm = false;
 
 /************************* Error variables *********************************/
+
 int g_CurrentErrorCode = ERROR_NO_ERROR; // Current Error code
+
+/************************* Mower operation statistics *********************************/
+
+long g_totalObstacleDectections = 0;         // Total number of obstacle detections   (Save to EEPROM)
+
 
 /************************* Program variables *********************************/
 
