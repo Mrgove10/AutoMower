@@ -15,11 +15,12 @@ void MotionMotorSetup();
 void MotionMotorStart(const int Motor, const int Direction, const int Speed);
 
 /**
- * Motion Motor speed setting function
+ * Motion Motor speed setting function. Speed can be set either in absolute or relative values depending on call parameters. Relative speed can either be positive or negative
  * @param Motor to set speed (in %)
- * @param Speed to set
+ * @param Speed to set or to change
+ * @param Relative boolean indicating if Speed parameter is given in relative or absolute value
  */
-void MotionMotorSetSpeed(const int Motor, const int Speed);
+void MotionMotorSetSpeed(const int Motor, const int Speed, const bool Relative = false);
 
 /**
  * Motion Motor test function

@@ -416,6 +416,7 @@ extern bool g_FanOn[FAN_COUNT];
 
 #define MOTION_MOTOR_POINTS 4096  // depending on MOTION_MOTOR_PWM_RESOLUTION
 #define MOTION_MOTOR_MIN_SPEED 25 // in %
+#define MOTION_MOTOR_TEST_STEP_DURATION 2000
 
 extern const int g_MotionMotorIn1Pin[MOTION_MOTOR_COUNT];
 extern const int g_MotionMotorIn2Pin[MOTION_MOTOR_COUNT];
@@ -476,9 +477,7 @@ extern float g_WheelPerimeterTrackingCorrection[MOTION_MOTOR_COUNT];         // 
 #define BACK_TO_BASE_SPEED 90 // in %
 #define FOLLOW_WIRE_MAX_CONSECUTVE_OBSTACLES 2
 
-
 // Obstacle detection
-
 #define OBSTACLE_DETECTED_NONE 0
 #define OBSTACLE_DETECTED_BUMPER 1
 #define OBSTACLE_DETECTED_FRONT 2

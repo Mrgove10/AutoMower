@@ -120,7 +120,7 @@ bool MowerSlowDownApproachingObstables(const int SpeedDelta, const int Front, co
 
   if (Front > 0 && g_SonarDistance[SONAR_FRONT] < Front)
   {
-      DebugPrintln("Front approaching object : Slowing down ! (" + String(g_SonarDistance[SONAR_FRONT]) + "cm)", DBG_DEBUG, true);
+      DebugPrintln("Front approaching object: Slowing down ! (" + String(g_SonarDistance[SONAR_FRONT]) + "cm)", DBG_DEBUG, true);
       SpeedReductiontiggered = true;
   } 
 
@@ -128,7 +128,7 @@ bool MowerSlowDownApproachingObstables(const int SpeedDelta, const int Front, co
 
   if (Left > 0 && g_SonarDistance[SONAR_LEFT] < Left)
   {
-    DebugPrintln("Left approaching object : Slowing down ! (" + String(g_SonarDistance[SONAR_LEFT]) + "cm)", DBG_DEBUG, true);
+    DebugPrintln("Left approaching object: Slowing down ! (" + String(g_SonarDistance[SONAR_LEFT]) + "cm)", DBG_DEBUG, true);
     SpeedReductiontiggered = true;
   } 
 
@@ -136,7 +136,7 @@ bool MowerSlowDownApproachingObstables(const int SpeedDelta, const int Front, co
 
   if (Right > 0 && g_SonarDistance[SONAR_RIGHT] < Right)
   {
-    DebugPrintln("Right approaching object : Slowing down ! (" + String(g_SonarDistance[SONAR_RIGHT]) + "cm)", DBG_DEBUG, true);
+    DebugPrintln("Right approaching object: Slowing down ! (" + String(g_SonarDistance[SONAR_RIGHT]) + "cm)", DBG_DEBUG, true);
     SpeedReductiontiggered = true;
   } 
 
@@ -144,7 +144,7 @@ bool MowerSlowDownApproachingObstables(const int SpeedDelta, const int Front, co
 
   if (Perimeter > 0 && abs(g_PerimeterMagnitudeAvg) > Perimeter)
   {
-    DebugPrintln("Approaching perimeter : Slowing down ! (" + String(g_PerimeterMagnitude) + ")", DBG_DEBUG, true);
+    DebugPrintln("Approaching perimeter: Slowing down ! (" + String(g_PerimeterMagnitude) + ")", DBG_DEBUG, true);
     SpeedReductiontiggered = true;
   } 
 
@@ -153,17 +153,15 @@ bool MowerSlowDownApproachingObstables(const int SpeedDelta, const int Front, co
   // Left Motor
   if (SpeedReductiontiggered && g_MotionMotorSpeed[MOTION_MOTOR_LEFT] > MOTION_MOTOR_MIN_SPEED + SpeedDelta)
   {
-    int newspeed = g_MotionMotorSpeed[MOTION_MOTOR_LEFT] - SpeedDelta;
-    DebugPrintln("Left motor speed reduced at " + String(newspeed) + "%", DBG_VERBOSE, true);
-    MotionMotorSetSpeed(MOTION_MOTOR_LEFT, newspeed);
+    DebugPrintln("Left motor speed reduced by " + String(SpeedDelta) + "%", DBG_VERBOSE, true);
+    MotionMotorSetSpeed(MOTION_MOTOR_LEFT, SpeedDelta, true);
   }
 
   // Right Motor
   if (SpeedReductiontiggered && g_MotionMotorSpeed[MOTION_MOTOR_RIGHT] > MOTION_MOTOR_MIN_SPEED + SpeedDelta)
   {
-    int newspeed = g_MotionMotorSpeed[MOTION_MOTOR_RIGHT] - SpeedDelta;
-    DebugPrintln("Right motor speed reduced at " + String(newspeed) + "%", DBG_VERBOSE, true);
-    MotionMotorSetSpeed(MOTION_MOTOR_RIGHT, newspeed);
+    DebugPrintln("Right motor speed reduced by " + String(SpeedDelta) + "%", DBG_VERBOSE, true);
+    MotionMotorSetSpeed(MOTION_MOTOR_RIGHT, SpeedDelta, true);
   }
 
   return SpeedReductiontiggered;

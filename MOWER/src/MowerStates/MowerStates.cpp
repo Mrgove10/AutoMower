@@ -162,13 +162,13 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
   //--------------------------------
   // Environment sensing for approaching objects
   //--------------------------------
-  if (!MowerSlowDownApproachingObstables(PERIMETER_SEARCH_FORWARD_SPEED - MOWER_MOVES_SPEED_SLOW,
+  if (!MowerSlowDownApproachingObstables(MOWER_MOWING_TRAVEL_SPEED - MOWER_MOVES_SPEED_SLOW,
                                          SONAR_MIN_DISTANCE_FOR_SLOWING, 
                                          SONAR_MIN_DISTANCE_FOR_SLOWING, 
                                          SONAR_MIN_DISTANCE_FOR_SLOWING, 
                                          PERIMETER_APPROACHING_THRESHOLD))
   {
-    MowerForward(MOWER_MOWING_TRAVEL_SPEED);
+    MowerSpeed(MOWER_MOWING_TRAVEL_SPEED);
   }
 
   //--------------------------------
@@ -474,6 +474,8 @@ bool MowerFindWire(const bool reset, int *phase, const int heading, const bool c
         return true;        // continue search
       }
 
+// TO DO - OBSTACLE AVOIDANCE 
+
       // Reached outside (wire found): => the phase ends
       if (!g_isInsidePerimeter)
       {
@@ -496,6 +498,7 @@ bool MowerFindWire(const bool reset, int *phase, const int heading, const bool c
       // Time is up ... raise error and stop search 
       if (millis() - searchStartTime > PERIMETER_SEARCH_FORWARD_MAX_TIME_1)
       {
+        MowerStop();
         DebugPrintln("Phase 2 failled: not outside perimeter", DBG_DEBUG, true);
         g_CurrentState = MowerState::error;
         g_CurrentErrorCode = ERROR_WIRE_SEARCH_PHASE_2_FAILLED;
@@ -638,7 +641,7 @@ bool MowerFollowWire(const bool reset, const int heading, const bool clockwise)
 
   if (!SlowedDown)
   {
-    MowerForward(BACK_TO_BASE_SPEED); /// check how this interferes with PID speed adjustment !
+    MowerSpeed(BACK_TO_BASE_SPEED); /// check how this interferes with PID speed adjustment !
   }
 
   //--------------------------------
@@ -677,6 +680,12 @@ bool MowerFollowWire(const bool reset, const int heading, const bool clockwise)
     }
     else
     {
+      // As no action requested to obstacle detection function, stop mower.
+      MowerStop();
+      CutMotorStop(true);
+
+      // in this situation, we are still on the wire, facing the obstacle (no action requested to obstacle detection function).
+
       // WHAT TO DO HERE ?????????????? do another Wire find ????????
       // MowerForward(MOWER_MOWING_TRAVEL_SPEED);
       // CutMotorStart(MOWER_MOWING_CUTTING_DIRECTION, MOWER_MOWING_CUTTING_SPEED);
@@ -742,6 +751,10 @@ bool MowerFollowWire(const bool reset, const int heading, const bool clockwise)
           MotionMotorsTrackingAdjustSpeed(g_PIDOutput, 0);
         }
       }
+    }
+    else
+    {
+      MotionMotorsTrackingAdjustSpeed(0, 0);
     }
 
     // TO DO !!!!!!

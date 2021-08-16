@@ -69,21 +69,34 @@ void MotionMotorStart(const int Motor, const int Direction, const int Speed)
 }
 
 /**
- * Motion Motor speed setting function
+ * Motion Motor speed setting function. Speed can be set either in absolute or relative values depending on call parameters. Relative speed can either be positive or negative
  * @param Motor to set speed (in %)
- * @param Speed to set
+ * @param Speed to set or to change
+ * @param Relative boolean indicating if Speed parameter is given in relative or absolute value
  */
-void MotionMotorSetSpeed(const int Motor, const int Speed)
+void MotionMotorSetSpeed(const int Motor, const int Speed, const bool Relative)
 {
-//  static int previousSpeed = 0;
-  int adjustedSpeed = Speed + int(g_WheelPerimeterTrackingCorrection[Motor]);
+  int previousSpeed = g_MotionMotorSpeed[Motor];
+  int adjustedSpeed;
 
+// Establish new requested speed
+  if (Relative)
+  {
+    adjustedSpeed = g_MotionMotorSpeed[Motor] + Speed + int(g_WheelPerimeterTrackingCorrection[Motor]);
+  }
+  else
+  {
+    adjustedSpeed = Speed + int(g_WheelPerimeterTrackingCorrection[Motor]);
+  }
+
+// Check new requested speed for range and convert into PWM points
   int checkedspeed = max(0, adjustedSpeed);                                         // make sure speed is in 0-100% range
   checkedspeed = min(100, checkedspeed);                                           // make sure speed is in 0-100% range
   int SpeedPoints = int(map(checkedspeed, 0, 100, 0, MOTION_MOTOR_POINTS)); // convert speed (in %) into PWM range
 
-//  if (Speed != previousSpeed)
-  // {
+// If new requested speed is different from current speed, apply the chnage if above inimum threshold
+  if (Speed != previousSpeed)
+  {
     if ((checkedspeed < MOTION_MOTOR_MIN_SPEED) && (checkedspeed != 0))
     {
       DebugPrintln("Motion Motor " + g_MotionMotorStr[Motor] + " speed " + String(checkedspeed) + " too low : not applied", DBG_VERBOSE, true);
@@ -95,11 +108,10 @@ void MotionMotorSetSpeed(const int Motor, const int Speed)
       ledcWrite(g_MotionMotorPWMChannel[Motor], SpeedPoints);
       g_MotionMotorSpeed[Motor] = checkedspeed;
 
-      DebugPrintln("Motion Motor " + g_MotionMotorStr[Motor] + " @ " + String(checkedspeed) + "% on Channel " + String(g_MotionMotorPWMChannel[Motor]) + " (" + String(SpeedPoints) + ")", DBG_VERBOSE, true);
+      DebugPrintln("Motion Motor " + g_MotionMotorStr[Motor] + " @ " + String(checkedspeed) + "% (" + String(SpeedPoints) + ")", DBG_VERBOSE, true);
     }
-    // previousSpeed = Speed;
-  // }
-};
+  }
+}
 
 /**
  * Motion Motor Stop function
@@ -129,8 +141,6 @@ void MotionMotorTest(const int Motor)
     DisplayPrint(0, 0, F("Motion Motor Test"));
   }
   DisplayPrint(2, 2 + Motor, g_MotionMotorStr[Motor]);
-
-#define MOTION_MOTOR_TEST_STEP_DURATION 2000
 
   //Forward
 
