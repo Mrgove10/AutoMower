@@ -27,6 +27,7 @@ typedef struct
     double ParamPerimeterTrackPIDKp;
     double ParamPerimeterTrackPIDKi;
     double ParamPerimeterTrackPIDKd;
+    long totalObstacleDectections;
 } DataStruct;
 
 #define EEPROM_SPARE_SIZE EEPROM_SIZE - sizeof(DataStruct) - EEPROM_CRC_SIZE

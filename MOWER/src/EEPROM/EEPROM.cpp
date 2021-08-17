@@ -82,6 +82,8 @@ void EEPROMSetup(void)
     g_ParamPerimeterTrackPIDKi = g_EEPROMLoad.Load.Data.ParamPerimeterTrackPIDKi;
     g_ParamPerimeterTrackPIDKd = g_EEPROMLoad.Load.Data.ParamPerimeterTrackPIDKd;
     g_PerimeterTrackSetpoint = g_EEPROMLoad.Load.Data.PerimeterTrackSetpoint;
+  
+    g_totalObstacleDectections = g_EEPROMLoad.Load.Data.totalObstacleDectections;
   }
 }
 
@@ -154,6 +156,8 @@ void EEPROMSave(boolean immediatly)
     g_EEPROMLoad.Load.Data.ParamPerimeterTrackPIDKd = g_ParamPerimeterTrackPIDKd;
     g_EEPROMLoad.Load.Data.PerimeterTrackSetpoint = g_PerimeterTrackSetpoint;
 
+    g_EEPROMLoad.Load.Data.totalObstacleDectections = g_totalObstacleDectections;
+
     EEPROMWrite();
   }
 }
@@ -176,6 +180,8 @@ void EEPROMInitialise(void)
   g_EEPROMLoad.Load.Data.ParamPerimeterTrackPIDKi = 0;
   g_EEPROMLoad.Load.Data.ParamPerimeterTrackPIDKd = 0;
   g_EEPROMLoad.Load.Data.PerimeterTrackSetpoint = 0;
+
+  g_EEPROMLoad.Load.Data.totalObstacleDectections = 0;
 
   for (int i = 0; i < EEPROM_SPARE_SIZE - 1; i++)
   {

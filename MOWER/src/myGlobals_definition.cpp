@@ -313,7 +313,7 @@ int g_CurrentErrorCode = ERROR_NO_ERROR; // Current Error code
 
 /************************* Mower operation statistics *********************************/
 
-long g_totalObstacleDectections = 0;         // Total number of obstacle detections   (Save to EEPROM)
+long g_totalObstacleDectections = 0;         // Total number of obstacle detections   (Saved to EEPROM)
 
 
 /************************* Program variables *********************************/

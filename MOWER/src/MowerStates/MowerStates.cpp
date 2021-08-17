@@ -107,10 +107,6 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
     g_SonarReadEnabled = true;          // activate Sonar readings
     delay(SONAR_READ_ACTIVATION_DELAY); //wait for task to take 1st readings
 
-//    SonarRead(SONAR_FRONT, true);
-//    SonarRead(SONAR_LEFT, true);
-//    SonarRead(SONAR_RIGHT, true);
-
     //--------------------------------
     // Check if mowing conditions are met
     //--------------------------------
@@ -133,7 +129,7 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
     // Sound starting beep to notify environment
     if (PreviousState == MowerState::idle)
     {
-      // TO DO
+      // TO DO Beep
     }
 
     MowerForward(MOWER_MOVES_SPEED_SLOW);
@@ -241,7 +237,7 @@ void MowerGoingToBase(const bool StateChange, const MowerState PreviousState)
     // Sound starting beep to notify environment
     if (PreviousState == MowerState::idle)
     {
-      // TO DO
+      // TO DO Beep
     }
 
     // just in case, stop cut motor
@@ -381,7 +377,7 @@ bool MowerFindWire(const bool reset, int *phase, const int heading, const bool c
 {
 
 // ************************
-// TO DO - HEADING !!!!!
+// TO DO - HEADING to base!!!!!
 // ************************
   if (reset)
   {
@@ -470,11 +466,37 @@ bool MowerFindWire(const bool reset, int *phase, const int heading, const bool c
                                                 PERIMETER_APPROACHING_THRESHOLD))
         {
           MowerForward(PERIMETER_SEARCH_FORWARD_SPEED);
+          return true;        // continue search
         }
-        return true;        // continue search
-      }
 
-// TO DO - OBSTACLE AVOIDANCE 
+        //--------------------------------
+        // Obstacle Collision detection
+        //--------------------------------
+
+        if (OBSTACLE_DETECTED_NONE != CheckObstacleAndAct(true,
+                                                          SONAR_MIN_DISTANCE_FOR_STOP,
+                                                          SONAR_MIN_DISTANCE_FOR_STOP,
+                                                          SONAR_MIN_DISTANCE_FOR_STOP,
+                                                          false,                        //  no Perimeter detection (and action)
+                                                          true))
+        {
+          // Check if number of consecutive obstacle detection is above threshold and put mower in Error mode
+          if (g_successiveObstacleDectections > PERIMETER_SEARCH_MAX_CONSECUTVE_OBSTACLES)
+          {
+            g_CurrentState = MowerState::error;
+            g_CurrentErrorCode = ERROR_WIRE_SEARCH_CONSECUTIVE_OBSTACLES;
+            return false;
+          }
+          else
+          {
+            // Start searching again
+            // TO DO - HEADING to base!!!!!
+
+            MowerForward(PERIMETER_SEARCH_FORWARD_SPEED);
+            return true;        // continue search
+          }
+        }
+      }
 
       // Reached outside (wire found): => the phase ends
       if (!g_isInsidePerimeter)
@@ -558,7 +580,7 @@ bool MowerFindWire(const bool reset, int *phase, const int heading, const bool c
 }
 
 /**
- * @brief Mower follows perimeter wire back to charging station
+ * @brief Mower follows perimeter wire back to charging station or to mowing zone
  * @param reset boolean indicating the wire trakcing function and PID needs to be reset
  * @param heading integer indicating the heading to follow to get to charging station
  * @param clockwise boolean indicating the direction in which the mower is following the wire
@@ -590,11 +612,11 @@ bool MowerFollowWire(const bool reset, const int heading, const bool clockwise)
     DebugPrintln("Kp:" + String(g_ParamPerimeterTrackPIDKp) + " Ki:" + String(g_ParamPerimeterTrackPIDKi) + " Kd:" + String(g_ParamPerimeterTrackPIDKd), DBG_DEBUG, true);
     DebugPrintln("");
 
-    //initialize the variables we're linked to
+    // Initialize the variables the PID is linked to
     g_PIDSetpoint = g_PerimeterTrackSetpoint;
     g_PIDInput = g_PerimeterMagnitudeAvg;
 
-    //turn the PID on
+    // Turn the PID on
     g_PerimeterTrackPID.SetMode(AUTOMATIC);
     g_PerimeterTrackPID.SetTunings(g_ParamPerimeterTrackPIDKp, g_ParamPerimeterTrackPIDKi , g_ParamPerimeterTrackPIDKd, P_ON_E);
     g_PerimeterTrackPID.SetOutputLimits(-70, 70);   // in %
@@ -607,6 +629,8 @@ bool MowerFollowWire(const bool reset, const int heading, const bool clockwise)
 
     // Cancel any outstanding wheel speed corrections
     MotionMotorsTrackingAdjustSpeed(0, 0);
+
+    // Move forward
     MowerForward(BACK_TO_BASE_SPEED);
   }
 
@@ -639,9 +663,9 @@ bool MowerFollowWire(const bool reset, const int heading, const bool clockwise)
                                          0);                                                    // no perimeter detection
   } 
 
-  if (!SlowedDown)
+  if (!SlowedDown)                // No approaching objects : resume normal speed
   {
-    MowerSpeed(BACK_TO_BASE_SPEED); /// check how this interferes with PID speed adjustment !
+    MowerSpeed(BACK_TO_BASE_SPEED); 
   }
 
   //--------------------------------
@@ -669,26 +693,24 @@ bool MowerFollowWire(const bool reset, const int heading, const bool clockwise)
                                                       false);                       // no action (for the moment ???????????????)
   }
 
+  // For the moment, to keep things simple, we will conider that their should be no object on the wire path (time will tell is this is a reasonable assumption).
+  // To achieve this, we simply set the FOLLOW_WIRE_MAX_CONSECUTVE_OBSTACLES definition to 0.
+  // So if an obstacle is detected, we declare an error and stop the wire following function.
+
   if (colisionDetected != OBSTACLE_DETECTED_NONE)
   {
     // Check if number of consecutive obstacle detection is above threshold and put mower in Error mode
     if (g_successiveObstacleDectections > FOLLOW_WIRE_MAX_CONSECUTVE_OBSTACLES)
     {
+      MowerStop();
+      CutMotorStop(true);
       g_CurrentState = MowerState::error;
       g_CurrentErrorCode = ERROR_FOLLOW_WIRE_CONSECUTIVE_OBSTACLES;
       return false;
     }
     else
     {
-      // As no action requested to obstacle detection function, stop mower.
-      MowerStop();
-      CutMotorStop(true);
-
-      // in this situation, we are still on the wire, facing the obstacle (no action requested to obstacle detection function).
-
-      // WHAT TO DO HERE ?????????????? do another Wire find ????????
-      // MowerForward(MOWER_MOWING_TRAVEL_SPEED);
-      // CutMotorStart(MOWER_MOWING_CUTTING_DIRECTION, MOWER_MOWING_CUTTING_SPEED);
+      // This will be the place to insert any code if we decide to implement obstacle avoidance strategy in case of obstacle during wire tracking function. 
     }
   }
 
@@ -757,8 +779,6 @@ bool MowerFollowWire(const bool reset, const int heading, const bool clockwise)
       MotionMotorsTrackingAdjustSpeed(0, 0);
     }
 
-    // TO DO !!!!!!
-
 #ifdef MQTT_PID_GRAPH_DEBUG
 //  send debug information through MQTT
     if(g_MQTTPIDGraphDebug)
@@ -793,7 +813,6 @@ bool MowerFollowWire(const bool reset, const int heading, const bool clockwise)
   return true;
   
 // TO DO
-// detect objects and decide what to do
 // when to stop ????? When charging has started ??
 }
 

@@ -186,8 +186,8 @@ String ErrorString(const int errorCode)
   case ERROR_WIRE_SEARCH_NO_START_NO_PERIMETER_SIGNAL:    return String("Wire search cannot start: no perimeter signal");
   case ERROR_WIRE_SEARCH_PHASE_1_FAILLED:                 return String("Wire search phase 1 (reversing) failled to get inside perimeter");
   case ERROR_WIRE_SEARCH_PHASE_2_FAILLED:                 return String("Wire search phase 2 (forward) failled to get outside perimeter");
+  case ERROR_WIRE_SEARCH_CONSECUTIVE_OBSTACLES:           return String("Wire search phase 2 (forward) failled: too many successive obstacles");
   case ERROR_WIRE_SEARCH_PHASE_3_FAILLED:                 return String("Wire search phase 3 (turn) failled to get inside perimeter");
-  // case ERROR_WIRE_SEARCH_PHASE_4_FAILLED:                 return String("Wire search phase 4 (after turn) failled to get inside perimeter");
   case ERROR_FOLLOW_WIRE_NO_START_BUMPER_ACTIVE:          return String("Wire tracking cannot start: bumper activated");
   case ERROR_FOLLOW_WIRE_NO_START_OBJECT_TOO_CLOSE:       return String("Wire tracking cannot start: object too close");
   case ERROR_FOLLOW_WIRE_NO_START_TILT_ACTIVE:            return String("Wire tracking cannot start: tilt sensor activated");

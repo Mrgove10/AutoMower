@@ -2,6 +2,7 @@
 #include "Environment_definitions.h"
 #include "myGlobals_definition.h"
 #include "PerimeterTsk/PerimeterTsk.h"
+#include "EEPROM/EEPROM.h"
 #include "Utils/Utils.h"
 
 /**
@@ -142,6 +143,7 @@ void PerimeterRawValuesCalibration(int Samples)
   g_PerimeterOffset = center;
   //   xSemaphoreGive(g_MyglobalSemaphore);
   LogPrintln("End of calibration: Offset=" + String(center), TAG_VALUE, DBG_INFO);
+  EEPROMSave(true);
 }
 
 /**

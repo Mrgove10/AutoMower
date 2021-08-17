@@ -475,9 +475,9 @@ extern float g_WheelPerimeterTrackingCorrection[MOTION_MOTOR_COUNT];         // 
 #define BACK_TO_BASE_HEADING 0  // in deg 0=North
 #define BACK_TO_BASE_CLOCKWISE true  // in which direction to follow wire
 #define BACK_TO_BASE_SPEED 90 // in %
-#define FOLLOW_WIRE_MAX_CONSECUTVE_OBSTACLES 2
+#define FOLLOW_WIRE_MAX_CONSECUTVE_OBSTACLES 0    // Setting to 0 will stop the wire tracking function on first obstacle
 
-// Obstacle detection
+// Obstacle detection causes
 #define OBSTACLE_DETECTED_NONE 0
 #define OBSTACLE_DETECTED_BUMPER 1
 #define OBSTACLE_DETECTED_FRONT 2
@@ -559,8 +559,8 @@ extern bool g_CutMotorAlarm;
 #define ERROR_WIRE_SEARCH_NO_START_NO_PERIMETER_SIGNAL   203
 #define ERROR_WIRE_SEARCH_PHASE_1_FAILLED                204
 #define ERROR_WIRE_SEARCH_PHASE_2_FAILLED                205
-#define ERROR_WIRE_SEARCH_PHASE_3_FAILLED                206
-// #define ERROR_WIRE_SEARCH_PHASE_4_FAILLED                207
+#define ERROR_WIRE_SEARCH_CONSECUTIVE_OBSTACLES          206
+#define ERROR_WIRE_SEARCH_PHASE_3_FAILLED                207
 
 #define ERROR_FOLLOW_WIRE_NO_START_BUMPER_ACTIVE         210
 #define ERROR_FOLLOW_WIRE_NO_START_OBJECT_TOO_CLOSE      211
