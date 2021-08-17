@@ -60,7 +60,7 @@ bool MowerFindWire(const bool reset, int *phase, const int heading, const bool c
  * @param clockwise boolean indicating the direction in which the mower is following the wire
  * @return Success boolean depending on whether it found the wire (true) or not (false)
  */
-bool MowerFollowWire(const bool reset, const int heading, const bool clockwise);
+bool MowerFollowWire(bool *reset, const int heading, const bool clockwise);
 
 /**
  * Enables the perimeter tracking adjustment of the speed for both motors

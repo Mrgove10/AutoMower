@@ -129,7 +129,7 @@ extern unsigned int g_inQueue;            // Accumulated I2S notification queue 
 /************************* Perimeter data processing task *********************************/
 
 #define TIMER_PRESCALER 80                // timer counts every microseconds
-#define PERIMETER_TIMER_PERIOD 150 * 1000 // in microseconds
+#define PERIMETER_TIMER_PERIOD 100 * 1000 // in microseconds
 #define PERIMETER_TIMER_NUMBER 0          // Timer used
 #define PERIMETER_QUEUE_LEN 5             // Queue length. Not one to enable some latency to processing task
 
@@ -145,7 +145,7 @@ extern unsigned int g_inQueue;            // Accumulated I2S notification queue 
 #define PERIMETER_SWAP_COIL_POLARITY false
 // #define PERIMETER_IN_OUT_DETECTION_THRESHOLD 1000
 #define PERIMETER_IN_OUT_DETECTION_THRESHOLD 400
-#define PERIMETER_APPROACHING_THRESHOLD PERIMETER_IN_OUT_DETECTION_THRESHOLD/5
+#define PERIMETER_APPROACHING_THRESHOLD PERIMETER_IN_OUT_DETECTION_THRESHOLD/2
 
 #define MQTT_GRAPH_DEBUG true
 
@@ -456,6 +456,7 @@ extern float g_WheelPerimeterTrackingCorrection[MOTION_MOTOR_COUNT];         // 
 #define PERIMETER_SEARCH_PHASE_1 1
 #define PERIMETER_SEARCH_PHASE_2 2
 #define PERIMETER_SEARCH_PHASE_3 3
+#define PERIMETER_SEARCH_FINISHED 4
 
 #define PERIMETER_SEARCH_REVERSE_MAX_TIME 4000 // in ms
 #define PERIMETER_SEARCH_REVERSE_SPEED 80 // in %
@@ -473,7 +474,7 @@ extern float g_WheelPerimeterTrackingCorrection[MOTION_MOTOR_COUNT];         // 
 
 // Back to base function
 #define BACK_TO_BASE_HEADING 0  // in deg 0=North
-#define BACK_TO_BASE_CLOCKWISE true  // in which direction to follow wire
+#define BACK_TO_BASE_CLOCKWISE false  // in which direction to follow wire
 #define BACK_TO_BASE_SPEED 90 // in %
 #define FOLLOW_WIRE_MAX_CONSECUTVE_OBSTACLES 0    // Setting to 0 will stop the wire tracking function on first obstacle
 
@@ -484,6 +485,8 @@ extern float g_WheelPerimeterTrackingCorrection[MOTION_MOTOR_COUNT];         // 
 #define OBSTACLE_DETECTED_LEFT 3
 #define OBSTACLE_DETECTED_RIGHT 4
 #define OBSTACLE_DETECTED_PERIMETER 5
+
+#define OBSTACLE_APPROACH_LOW_SPEED_MIN_DURATION 5000     // in ms
 
 // Move count variables
 extern int g_successiveObstacleDectections;       // successive obstacle detections (to trigger appropriate reaction)
@@ -498,7 +501,7 @@ extern double g_PIDSetpoint, g_PIDInput, g_PIDOutput;
   //Specify the links and initial tuning parameters
 extern PID g_PerimeterTrackPID;
 
-#define PERIMETER_TRACKING_PID_INTERVAL 250  // in ms
+#define PERIMETER_TRACKING_PID_INTERVAL 150  // in ms
 
 #define MQTT_PID_GRAPH_DEBUG true
 

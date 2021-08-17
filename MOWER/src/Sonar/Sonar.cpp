@@ -76,7 +76,7 @@ int SonarRead(const int sensor, const bool Now)
     //    Distance = sonar[sensor].ping_cm(SONAR_MAX_DISTANCE);
     Distance = sonar[sensor].convert_cm(sonar[sensor].ping_median(SONAR_READ_ITERATIONS));
 
-    DebugPrintln("Sonar " + g_sensorStr[sensor] + " value: " + String(Distance) + " cm", DBG_VERBOSE, true);
+    // DebugPrintln("Sonar " + g_sensorStr[sensor] + " value: " + String(Distance) + " cm", DBG_VERBOSE, true);
 
     LastSonarRead[sensor] = millis();
     if (Distance == 0)

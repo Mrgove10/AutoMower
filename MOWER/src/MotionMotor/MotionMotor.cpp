@@ -76,7 +76,7 @@ void MotionMotorStart(const int Motor, const int Direction, const int Speed)
  */
 void MotionMotorSetSpeed(const int Motor, const int Speed, const bool Relative)
 {
-  int previousSpeed = g_MotionMotorSpeed[Motor];
+  static int previousSpeed[MOTION_MOTOR_COUNT] = {0, 0};
   int adjustedSpeed;
 
 // Establish new requested speed
@@ -94,20 +94,24 @@ void MotionMotorSetSpeed(const int Motor, const int Speed, const bool Relative)
   checkedspeed = min(100, checkedspeed);                                           // make sure speed is in 0-100% range
   int SpeedPoints = int(map(checkedspeed, 0, 100, 0, MOTION_MOTOR_POINTS)); // convert speed (in %) into PWM range
 
-// If new requested speed is different from current speed, apply the chnage if above inimum threshold
-  if (Speed != previousSpeed)
+// If new requested speed is different from current speed, apply the chnage if above minimum threshold
+  if ((checkedspeed < MOTION_MOTOR_MIN_SPEED) && (checkedspeed != 0))
   {
-    if ((checkedspeed < MOTION_MOTOR_MIN_SPEED) && (checkedspeed != 0))
+    if (SpeedPoints != previousSpeed[Motor])
     {
+      previousSpeed[Motor] = SpeedPoints;
       DebugPrintln("Motion Motor " + g_MotionMotorStr[Motor] + " speed " + String(checkedspeed) + " too low : not applied", DBG_VERBOSE, true);
-      ledcWrite(g_MotionMotorPWMChannel[Motor], 0);
-      g_MotionMotorSpeed[Motor] = 0;
     }
-    else
+    ledcWrite(g_MotionMotorPWMChannel[Motor], 0);
+    g_MotionMotorSpeed[Motor] = 0;
+  }
+  else
+  {
+    ledcWrite(g_MotionMotorPWMChannel[Motor], SpeedPoints);
+    g_MotionMotorSpeed[Motor] = checkedspeed;
+    if (SpeedPoints != previousSpeed[Motor])
     {
-      ledcWrite(g_MotionMotorPWMChannel[Motor], SpeedPoints);
-      g_MotionMotorSpeed[Motor] = checkedspeed;
-
+      previousSpeed[Motor] = SpeedPoints;
       DebugPrintln("Motion Motor " + g_MotionMotorStr[Motor] + " @ " + String(checkedspeed) + "% (" + String(SpeedPoints) + ")", DBG_VERBOSE, true);
     }
   }
@@ -124,6 +128,7 @@ void MotionMotorStop(const int Motor)
   MotionMotorSetSpeed(Motor, 0);
   g_MotionMotorOn[Motor] = false;
   g_MotionMotorDirection[Motor] = MOTION_MOTOR_STOPPED;
+  g_WheelPerimeterTrackingCorrection[Motor] = 0;
   DebugPrintln("Motion Motor " + g_MotionMotorStr[Motor] + " Stopped", DBG_VERBOSE, true);
 }
 

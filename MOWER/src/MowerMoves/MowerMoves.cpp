@@ -34,7 +34,11 @@ void MowerForward(const int Speed)
  */
 void MowerSpeed(const int Speed)
 {
-  DebugPrintln("Mower speed at " + String(Speed) + "%", DBG_VERBOSE, true);
+  static int lastSpeed = 0;
+  if (Speed != lastSpeed){
+    DebugPrintln("Mower speed at " + String(Speed) + "%", DBG_VERBOSE, true);
+    lastSpeed = Speed;
+  }
   MotionMotorSetSpeed(MOTION_MOTOR_RIGHT, Speed);
   MotionMotorSetSpeed(MOTION_MOTOR_LEFT, Speed);
 }
@@ -61,6 +65,7 @@ void MowerReverse(const int Speed, const int Duration)
  */
 void MowerTurn(const int Angle, const bool OnSpot)
 {
+  // Limit angle to [-360,+360] degrees
   int LimitedAngle = min(Angle, 360);
   LimitedAngle = max(LimitedAngle, -360);
   float turnDuration = float(abs(LimitedAngle) / (MOWER_MOVES_TURN_ANGLE_RATIO));
@@ -114,8 +119,14 @@ void MowerReserseAndTurn(const int Angle, const int Duration, const bool OnSpot)
  */
 bool MowerSlowDownApproachingObstables(const int SpeedDelta, const int Front, const int Left, const int Right, const int Perimeter)
 {
+  static unsigned long lastSpeedReduction = 0;
   bool SpeedReductiontiggered = false;
 
+  // To avoid a jerky mouvement, speed reduction is maintained at least for a set duration
+  if (millis() - lastSpeedReduction < OBSTACLE_APPROACH_LOW_SPEED_MIN_DURATION)
+  {
+    return true;
+  }
   // Check for objects in Front
 
   if (Front > 0 && g_SonarDistance[SONAR_FRONT] < Front)
@@ -154,14 +165,20 @@ bool MowerSlowDownApproachingObstables(const int SpeedDelta, const int Front, co
   if (SpeedReductiontiggered && g_MotionMotorSpeed[MOTION_MOTOR_LEFT] > MOTION_MOTOR_MIN_SPEED + SpeedDelta)
   {
     DebugPrintln("Left motor speed reduced by " + String(SpeedDelta) + "%", DBG_VERBOSE, true);
-    MotionMotorSetSpeed(MOTION_MOTOR_LEFT, SpeedDelta, true);
+    MotionMotorSetSpeed(MOTION_MOTOR_LEFT, -SpeedDelta, true);
   }
 
   // Right Motor
   if (SpeedReductiontiggered && g_MotionMotorSpeed[MOTION_MOTOR_RIGHT] > MOTION_MOTOR_MIN_SPEED + SpeedDelta)
   {
     DebugPrintln("Right motor speed reduced by " + String(SpeedDelta) + "%", DBG_VERBOSE, true);
-    MotionMotorSetSpeed(MOTION_MOTOR_RIGHT, SpeedDelta, true);
+    MotionMotorSetSpeed(MOTION_MOTOR_RIGHT, -SpeedDelta, true);
+  }
+
+  // keep track of when last speed reduction was triggered
+  if (SpeedReductiontiggered)
+  {
+    lastSpeedReduction = millis();
   }
 
   return SpeedReductiontiggered;

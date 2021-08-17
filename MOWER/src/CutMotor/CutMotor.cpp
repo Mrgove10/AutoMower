@@ -231,7 +231,7 @@ void CutMotorCheck(const bool Now)
   if ((millis() - LastCutMotorCheck > CUT_MOTOR_CHECK_INTERVAL) || Now)
   {
     g_CutMotorAlarm = (IOExtend.digitalRead(PIN_MCP_MOTOR_CUT_HIGH_AMP) == 1);
-    DebugPrintln("Cut Motor Status: " + String(g_CutMotorAlarm), DBG_VERBOSE, true);
+    // DebugPrintln("Cut Motor Status: " + String(g_CutMotorAlarm), DBG_VERBOSE, true);
     LastCutMotorCheck = millis();
   }
 }

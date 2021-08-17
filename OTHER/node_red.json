@@ -15,8 +15,8 @@
         "qos": "2",
         "datatype": "auto",
         "broker": "571acea9.12d868",
-        "x": 140,
-        "y": 880,
+        "x": 130,
+        "y": 1320,
         "wires": [
             [
                 "98402fba.352288",
@@ -37,8 +37,8 @@
         "targetType": "msg",
         "statusVal": "",
         "statusType": "auto",
-        "x": 350.56666564941406,
-        "y": 815.5666656494141,
+        "x": 340.56666564941406,
+        "y": 1255.566665649414,
         "wires": []
     },
     {
@@ -49,8 +49,8 @@
         "property": "payload",
         "action": "",
         "pretty": false,
-        "x": 310,
-        "y": 880,
+        "x": 300,
+        "y": 1320,
         "wires": [
             [
                 "db7d0d4.ee76cf"
@@ -67,8 +67,8 @@
         "noerr": 0,
         "initialize": "",
         "finalize": "",
-        "x": 470,
-        "y": 880,
+        "x": 460,
+        "y": 1320,
         "wires": [
             [
                 "4757df50.75e2c"
@@ -81,8 +81,8 @@
         "z": "22c08532.6aa75a",
         "mydb": "169ed79e.a6e3e",
         "name": "",
-        "x": 640,
-        "y": 880,
+        "x": 630,
+        "y": 1320,
         "wires": [
             [
                 "61cb0b4f.b0a794"
@@ -102,8 +102,8 @@
         "targetType": "msg",
         "statusVal": "",
         "statusType": "auto",
-        "x": 850,
-        "y": 880,
+        "x": 840,
+        "y": 1320,
         "wires": []
     },
     {
@@ -154,8 +154,8 @@
         "noerr": 0,
         "initialize": "",
         "finalize": "",
-        "x": 350,
-        "y": 1019,
+        "x": 340,
+        "y": 1459,
         "wires": [
             [
                 "f1b11ce8.bd70e"
@@ -168,8 +168,8 @@
         "z": "22c08532.6aa75a",
         "mydb": "169ed79e.a6e3e",
         "name": "",
-        "x": 520,
-        "y": 1019,
+        "x": 510,
+        "y": 1459,
         "wires": [
             [
                 "c102044.4b12f78"
@@ -189,8 +189,8 @@
         "targetType": "msg",
         "statusVal": "payload.affectedRows",
         "statusType": "auto",
-        "x": 680,
-        "y": 1018,
+        "x": 670,
+        "y": 1458,
         "wires": []
     },
     {
@@ -210,8 +210,8 @@
         "topic": "",
         "payload": "",
         "payloadType": "date",
-        "x": 150,
-        "y": 1019,
+        "x": 140,
+        "y": 1459,
         "wires": [
             [
                 "a87d3583.626b08",
@@ -228,8 +228,8 @@
         "qos": "2",
         "datatype": "auto",
         "broker": "571acea9.12d868",
-        "x": 160,
-        "y": 720,
+        "x": 140,
+        "y": 1160,
         "wires": [
             [
                 "a6814ca9.1e24f",
@@ -251,8 +251,8 @@
         "targetType": "msg",
         "statusVal": "",
         "statusType": "auto",
-        "x": 430,
-        "y": 680,
+        "x": 420,
+        "y": 1120,
         "wires": []
     },
     {
@@ -263,8 +263,8 @@
         "property": "payload",
         "action": "",
         "pretty": false,
-        "x": 370,
-        "y": 720,
+        "x": 360,
+        "y": 1160,
         "wires": [
             [
                 "3c15a014.7f9ee8"
@@ -281,8 +281,8 @@
         "noerr": 0,
         "initialize": "",
         "finalize": "",
-        "x": 590,
-        "y": 720,
+        "x": 580,
+        "y": 1160,
         "wires": [
             [
                 "853e0375.1eb838"
@@ -295,8 +295,8 @@
         "z": "22c08532.6aa75a",
         "mydb": "169ed79e.a6e3e",
         "name": "",
-        "x": 800,
-        "y": 720,
+        "x": 790,
+        "y": 1160,
         "wires": [
             [
                 "538c59a7.66ccd"
@@ -316,8 +316,8 @@
         "targetType": "msg",
         "statusVal": "",
         "statusType": "auto",
-        "x": 1000,
-        "y": 720,
+        "x": 990,
+        "y": 1160,
         "wires": []
     },
     {
@@ -330,8 +330,8 @@
         "noerr": 0,
         "initialize": "",
         "finalize": "",
-        "x": 410,
-        "y": 760,
+        "x": 400,
+        "y": 1200,
         "wires": [
             []
         ]
@@ -349,8 +349,8 @@
         "targetType": "msg",
         "statusVal": "payload.affectedRows",
         "statusType": "auto",
-        "x": 725,
-        "y": 1096,
+        "x": 715,
+        "y": 1536,
         "wires": []
     },
     {
@@ -359,8 +359,8 @@
         "z": "22c08532.6aa75a",
         "mydb": "169ed79e.a6e3e",
         "name": "",
-        "x": 565,
-        "y": 1097,
+        "x": 555,
+        "y": 1537,
         "wires": [
             [
                 "354cc1ea.a2656e"
@@ -377,8 +377,8 @@
         "noerr": 0,
         "initialize": "",
         "finalize": "",
-        "x": 380,
-        "y": 1097,
+        "x": 370,
+        "y": 1537,
         "wires": [
             [
                 "30f763.e388209e"
@@ -878,7 +878,7 @@
         "topic": "",
         "payload": "{\"Command\":\"STATE_CHANGE\",\"Val1\":\"TO_BASE\"}",
         "payloadType": "json",
-        "x": 140,
+        "x": 120,
         "y": 240,
         "wires": [
             [
@@ -1375,8 +1375,8 @@
         "qos": "",
         "retain": "false",
         "broker": "571acea9.12d868",
-        "x": 2050,
-        "y": 160,
+        "x": 750,
+        "y": 720,
         "wires": []
     },
     {
@@ -1394,13 +1394,14 @@
         "once": false,
         "onceDelay": 0.1,
         "topic": "",
-        "payload": "{\"Command\":\"PARAMETER\",\"Val1\":\"PerimTtrkngKp\",\"Val2\":\"5.0\"}",
+        "payload": "{\"Command\":\"PARAMETER\",\"Val1\":\"PerimTtrkngKp\",\"Val2\":\".265\"}",
         "payloadType": "json",
-        "x": 1790,
-        "y": 60,
+        "x": 130,
+        "y": 640,
         "wires": [
             [
-                "b452d1d75983bb6d"
+                "b452d1d75983bb6d",
+                "f115ffc904218da6"
             ]
         ]
     },
@@ -1410,8 +1411,8 @@
         "z": "22c08532.6aa75a",
         "name": "Parameter values",
         "info": "",
-        "x": 2080,
-        "y": 40,
+        "x": 360,
+        "y": 600,
         "wires": []
     },
     {
@@ -1429,13 +1430,14 @@
         "once": false,
         "onceDelay": 0.1,
         "topic": "",
-        "payload": "{\"Command\":\"PARAMETER\",\"Val1\":\"PerimTtrkngKi\",\"Val2\":\"0.5\"}",
+        "payload": "{\"Command\":\"PARAMETER\",\"Val1\":\"PerimTtrkngKi\",\"Val2\":\"0.013\"}",
         "payloadType": "json",
-        "x": 1790,
-        "y": 100,
+        "x": 150,
+        "y": 700,
         "wires": [
             [
-                "b452d1d75983bb6d"
+                "b452d1d75983bb6d",
+                "1093d70c59f8b96a"
             ]
         ]
     },
@@ -1454,13 +1456,14 @@
         "once": false,
         "onceDelay": 0.1,
         "topic": "",
-        "payload": "{\"Command\":\"PARAMETER\",\"Val1\":\"PerimTtrkngKd\",\"Val2\":\"0\"}",
+        "payload": "{\"Command\":\"PARAMETER\",\"Val1\":\"PerimTtrkngKd\",\"Val2\":\"0.011\"}",
         "payloadType": "json",
-        "x": 1790,
-        "y": 140,
+        "x": 150,
+        "y": 760,
         "wires": [
             [
-                "b452d1d75983bb6d"
+                "b452d1d75983bb6d",
+                "60a790fbeb5c18d5"
             ]
         ]
     },
@@ -1479,13 +1482,14 @@
         "once": false,
         "onceDelay": 0.1,
         "topic": "",
-        "payload": "{\"Command\":\"PARAMETER\",\"Val1\":\"PerimTtrkSetPt\",\"Val2\":\"-5\"}",
+        "payload": "{\"Command\":\"PARAMETER\",\"Val1\":\"PerimTtrkSetPt\",\"Val2\":\"0\"}",
         "payloadType": "json",
-        "x": 1790,
-        "y": 180,
+        "x": 130,
+        "y": 820,
         "wires": [
             [
-                "b452d1d75983bb6d"
+                "b452d1d75983bb6d",
+                "b687340dd3f7c4f7"
             ]
         ]
     },
@@ -1506,11 +1510,143 @@
         "topic": "",
         "payload": "{\"Command\":\"PARAMETER\",\"Val1\":\"Template\",\"Val2\":\"1.1\"}",
         "payloadType": "json",
-        "x": 1770,
-        "y": 260,
+        "x": 150,
+        "y": 860,
         "wires": [
             [
                 "b452d1d75983bb6d"
+            ]
+        ]
+    },
+    {
+        "id": "1f090316f64295c6",
+        "type": "debug",
+        "z": "22c08532.6aa75a",
+        "name": "",
+        "active": true,
+        "tosidebar": false,
+        "console": false,
+        "tostatus": true,
+        "complete": "payload.Val2",
+        "targetType": "msg",
+        "statusVal": "payload",
+        "statusType": "auto",
+        "x": 460,
+        "y": 640,
+        "wires": []
+    },
+    {
+        "id": "f115ffc904218da6",
+        "type": "json",
+        "z": "22c08532.6aa75a",
+        "name": "",
+        "property": "payload",
+        "action": "obj",
+        "pretty": false,
+        "x": 310,
+        "y": 640,
+        "wires": [
+            [
+                "1f090316f64295c6"
+            ]
+        ]
+    },
+    {
+        "id": "15b70cbeb6ff1901",
+        "type": "debug",
+        "z": "22c08532.6aa75a",
+        "name": "",
+        "active": true,
+        "tosidebar": false,
+        "console": false,
+        "tostatus": true,
+        "complete": "payload.Val2",
+        "targetType": "msg",
+        "statusVal": "payload",
+        "statusType": "auto",
+        "x": 460,
+        "y": 700,
+        "wires": []
+    },
+    {
+        "id": "1093d70c59f8b96a",
+        "type": "json",
+        "z": "22c08532.6aa75a",
+        "name": "",
+        "property": "payload",
+        "action": "obj",
+        "pretty": false,
+        "x": 310,
+        "y": 700,
+        "wires": [
+            [
+                "15b70cbeb6ff1901"
+            ]
+        ]
+    },
+    {
+        "id": "d873e85b739a0a52",
+        "type": "debug",
+        "z": "22c08532.6aa75a",
+        "name": "",
+        "active": true,
+        "tosidebar": false,
+        "console": false,
+        "tostatus": true,
+        "complete": "payload.Val2",
+        "targetType": "msg",
+        "statusVal": "payload",
+        "statusType": "auto",
+        "x": 460,
+        "y": 760,
+        "wires": []
+    },
+    {
+        "id": "60a790fbeb5c18d5",
+        "type": "json",
+        "z": "22c08532.6aa75a",
+        "name": "",
+        "property": "payload",
+        "action": "obj",
+        "pretty": false,
+        "x": 310,
+        "y": 760,
+        "wires": [
+            [
+                "d873e85b739a0a52"
+            ]
+        ]
+    },
+    {
+        "id": "d6e5f6e63c422eb3",
+        "type": "debug",
+        "z": "22c08532.6aa75a",
+        "name": "",
+        "active": true,
+        "tosidebar": false,
+        "console": false,
+        "tostatus": true,
+        "complete": "payload.Val2",
+        "targetType": "msg",
+        "statusVal": "payload",
+        "statusType": "auto",
+        "x": 460,
+        "y": 820,
+        "wires": []
+    },
+    {
+        "id": "b687340dd3f7c4f7",
+        "type": "json",
+        "z": "22c08532.6aa75a",
+        "name": "",
+        "property": "payload",
+        "action": "obj",
+        "pretty": false,
+        "x": 310,
+        "y": 820,
+        "wires": [
+            [
+                "d6e5f6e63c422eb3"
             ]
         ]
     },

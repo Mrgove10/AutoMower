@@ -528,7 +528,8 @@ void PerimeterProcessingLoopTask(void *dummyParameter)
 #endif
         // Display Perimeter task and filter summary information
         count = count + 1;
-        if (count == 100 || abs(g_PerimeterMagnitude) > 200 ) 
+        // if (count == 100 || abs(g_PerimeterMagnitude) > 600 ) 
+        if (count == 100) 
         {
           DebugPrintln("Perim: inQ:" + String(g_inPerimeterQueue) +
                     " QMax:" + String(g_inPerimeterQueueMax) +

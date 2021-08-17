@@ -171,6 +171,8 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
   // Obstacle Collision detection
   //--------------------------------
 
+// TO DO : if outside, mower gets "locked-out"!!
+
   if (OBSTACLE_DETECTED_NONE != CheckObstacleAndAct(true,
                                                     SONAR_MIN_DISTANCE_FOR_STOP,
                                                     SONAR_MIN_DISTANCE_FOR_STOP,
@@ -249,6 +251,7 @@ void MowerGoingToBase(const bool StateChange, const MowerState PreviousState)
     FindWirePhase = PERIMETER_SEARCH_PHASE_1;
 
     // Ensure wire tracking PID is reset on first call
+    FollowWire = false;
     PIDReset = true;
   }
 
@@ -280,6 +283,7 @@ void MowerGoingToBase(const bool StateChange, const MowerState PreviousState)
       // Stop wire finding
       FindWire = false;
       FollowWire = true;
+      PIDReset = true;
     }
   }
 
@@ -288,7 +292,11 @@ void MowerGoingToBase(const bool StateChange, const MowerState PreviousState)
   //--------------------------------
   if (FollowWire)
   {
-    MowerFollowWire(PIDReset, BACK_TO_BASE_HEADING, BACK_TO_BASE_CLOCKWISE);
+    if (!MowerFollowWire(&PIDReset, BACK_TO_BASE_HEADING, BACK_TO_BASE_CLOCKWISE))
+    {
+//      g_CurrentState = MowerState::idle;
+      FollowWire = false;
+    };
   }
 
   // TO DO conditions to end wire tracking
@@ -375,7 +383,9 @@ void MowerInError(const bool StateChange, const MowerState PreviousState)
  */
 bool MowerFindWire(const bool reset, int *phase, const int heading, const bool clockwise)
 {
-
+  static unsigned long searchStartTime = millis();
+  static int turnIncrement = 0;
+  static int turnCount = 0;
 // ************************
 // TO DO - HEADING to base!!!!!
 // ************************
@@ -402,11 +412,11 @@ bool MowerFindWire(const bool reset, int *phase, const int heading, const bool c
     // Initialise Phase
     *phase = PERIMETER_SEARCH_PHASE_1;
     DebugPrintln("Phase 1 - Reversing to find wire", DBG_DEBUG, true);
+    searchStartTime = millis();
+    turnIncrement = 0;
+    turnCount = 0;
   }
 
-  static unsigned long searchStartTime = millis();
-  int turnIncrement = 0;
-  int turnCount = 0;
 
   switch (*phase)
   {
@@ -417,13 +427,12 @@ bool MowerFindWire(const bool reset, int *phase, const int heading, const bool c
 
     case PERIMETER_SEARCH_PHASE_1:
     {
-
       // Not inside and still time
       if (!g_isInsidePerimeter && millis() - searchStartTime < PERIMETER_SEARCH_REVERSE_MAX_TIME)
       {
         // Reverse Mower
         MowerReverse(PERIMETER_SEARCH_REVERSE_SPEED, PERIMETER_SEARCH_REVERSE_TIME);
-        return true;        // continue search
+        return false;        // continue search
       }
 
       // Back inside => the phase ends
@@ -433,7 +442,8 @@ bool MowerFindWire(const bool reset, int *phase, const int heading, const bool c
         *phase = PERIMETER_SEARCH_PHASE_2;
         DebugPrintln("Phase 2 - Forward to find wire", DBG_DEBUG, true);
         searchStartTime = millis();
-        return true;        // continue search
+        MowerForward(PERIMETER_SEARCH_FORWARD_SPEED);
+        return false;        // continue search
       }
 
       // Time is up ... raise error and stop search 
@@ -444,6 +454,12 @@ bool MowerFindWire(const bool reset, int *phase, const int heading, const bool c
         g_CurrentErrorCode = ERROR_WIRE_SEARCH_PHASE_1_FAILLED;
         return false;
       }
+
+      // Should never come Here !
+      DebugPrintln("Phase 1 : Code should not be here !", DBG_ERROR, true);
+      g_CurrentState = MowerState::error;
+      g_CurrentErrorCode = ERROR_UNDEFINED;
+      return false;
     }   
 
     //--------------------------------------------------------------
@@ -466,7 +482,7 @@ bool MowerFindWire(const bool reset, int *phase, const int heading, const bool c
                                                 PERIMETER_APPROACHING_THRESHOLD))
         {
           MowerForward(PERIMETER_SEARCH_FORWARD_SPEED);
-          return true;        // continue search
+          return false;        // continue search
         }
 
         //--------------------------------
@@ -491,11 +507,12 @@ bool MowerFindWire(const bool reset, int *phase, const int heading, const bool c
           {
             // Start searching again
             // TO DO - HEADING to base!!!!!
-
             MowerForward(PERIMETER_SEARCH_FORWARD_SPEED);
-            return true;        // continue search
           }
         }
+
+        DebugPrintln("Phase 2 : keep going....", DBG_VERBOSE, true);
+        return false;        // continue search
       }
 
       // Reached outside (wire found): => the phase ends
@@ -514,7 +531,7 @@ bool MowerFindWire(const bool reset, int *phase, const int heading, const bool c
           turnIncrement = - PERIMETER_SEARCH_ANGLE_INCREMENT;
         }
         turnCount = 0;
-        return true;        // continue search
+        return false;        // continue search
       }
 
       // Time is up ... raise error and stop search 
@@ -526,6 +543,12 @@ bool MowerFindWire(const bool reset, int *phase, const int heading, const bool c
         g_CurrentErrorCode = ERROR_WIRE_SEARCH_PHASE_2_FAILLED;
         return false;
       }
+
+      // Should never come Here !
+      DebugPrintln("Phase 2 : Code should not be here ! (Phase:" + String(*phase) + ") " + String(millis() - searchStartTime) + " ms", DBG_ERROR, true);
+      g_CurrentState = MowerState::error;
+      g_CurrentErrorCode = ERROR_UNDEFINED;
+      return false;
     }
 
   //--------------------------------------------------------------
@@ -552,14 +575,15 @@ bool MowerFindWire(const bool reset, int *phase, const int heading, const bool c
         delay(PERIMETER_TIMER_PERIOD * 2 / 1000);  // wait to make sure that Perimeter signal read task can refresh g_isInsidePerimeter status
         turnCount = turnCount + 1;
 
-        return true;        // continue search
+        return false;        // continue search
       }
 
       // Back inside => the phase ends
       if (g_isInsidePerimeter)
       {
         MowerStop();
-        return false;        // end search
+        *phase = PERIMETER_SEARCH_FINISHED;
+        return true;        // end search
       }
 
       // Max Number of turns reached ... raise error and stop search 
@@ -570,10 +594,18 @@ bool MowerFindWire(const bool reset, int *phase, const int heading, const bool c
         g_CurrentErrorCode = ERROR_WIRE_SEARCH_PHASE_3_FAILLED;
         return false;
       }
+      // Should never come Here !
+      DebugPrintln("Phase 3 : Code should not be here ! (Phase:" + String(*phase) + ")", DBG_ERROR, true);
+      g_CurrentState = MowerState::error;
+      g_CurrentErrorCode = ERROR_UNDEFINED;
+      return false;
     }   
+
     default:
     {
-      DebugPrintln("Phase Undefined - should not be here !!!", DBG_ERROR, true);
+      DebugPrintln("Phase Undefined - should not be here !!!  (Phase:" + String(*phase) + ")", DBG_ERROR, true);
+      g_CurrentState = MowerState::error;
+      g_CurrentErrorCode = ERROR_UNDEFINED;
       return false;
     }
   }
@@ -586,11 +618,11 @@ bool MowerFindWire(const bool reset, int *phase, const int heading, const bool c
  * @param clockwise boolean indicating the direction in which the mower is following the wire
  * @return Success boolean depending on whether it found the wire (true) or not (false)
  */
-bool MowerFollowWire(const bool reset, const int heading, const bool clockwise)
+bool MowerFollowWire(bool *reset, const int heading, const bool clockwise)
 {
   static unsigned long lastPIDUpdate = 0;
-
-  if (reset)
+  
+  if (*reset)
   {
     DebugPrintln("Starting to follow wire....", DBG_DEBUG, true);
 
@@ -611,6 +643,7 @@ bool MowerFollowWire(const bool reset, const int heading, const bool clockwise)
 
     DebugPrintln("Kp:" + String(g_ParamPerimeterTrackPIDKp) + " Ki:" + String(g_ParamPerimeterTrackPIDKi) + " Kd:" + String(g_ParamPerimeterTrackPIDKd), DBG_DEBUG, true);
     DebugPrintln("");
+    *reset = false;
 
     // Initialize the variables the PID is linked to
     g_PIDSetpoint = g_PerimeterTrackSetpoint;
@@ -648,7 +681,7 @@ bool MowerFollowWire(const bool reset, const int heading, const bool clockwise)
   bool SlowedDown = false;
   if (clockwise)
   {
-    SlowedDown = MowerSlowDownApproachingObstables(BACK_TO_BASE_SPEED - MOWER_MOVES_SPEED_SLOW,
+    SlowedDown = MowerSlowDownApproachingObstables(BACK_TO_BASE_SPEED - MOWER_MOVES_SPEED_NORMAL,
                                          SONAR_MIN_DISTANCE_FOR_SLOWING, 
                                          0,                                                     // no left detection
                                          SONAR_MIN_DISTANCE_FOR_SLOWING, 
@@ -656,7 +689,7 @@ bool MowerFollowWire(const bool reset, const int heading, const bool clockwise)
   }
   else
   {
-    SlowedDown = MowerSlowDownApproachingObstables(BACK_TO_BASE_SPEED - MOWER_MOVES_SPEED_SLOW,
+    SlowedDown = MowerSlowDownApproachingObstables(BACK_TO_BASE_SPEED - MOWER_MOVES_SPEED_NORMAL,
                                          SONAR_MIN_DISTANCE_FOR_SLOWING, 
                                          SONAR_MIN_DISTANCE_FOR_SLOWING, 
                                          0,                                                     // no right detection
@@ -728,7 +761,7 @@ bool MowerFollowWire(const bool reset, const int heading, const bool clockwise)
     g_PIDSetpoint = g_PerimeterTrackSetpoint;
     g_PerimeterTrackPID.SetTunings(g_ParamPerimeterTrackPIDKp, g_ParamPerimeterTrackPIDKi , g_ParamPerimeterTrackPIDKd, P_ON_E);
 
-    // DebugPrintln("PID P " + String(g_PerimeterTrackPID.GetKp()) + " " + String(g_ParamPerimeterTrackPIDKp), DBG_VERBOSE, true);
+    DebugPrintln("PID P " + String(g_PerimeterTrackPID.GetKp()) + " " + String(g_ParamPerimeterTrackPIDKp), DBG_VERBOSE, true);
 
     bool PIDReturn = g_PerimeterTrackPID.Compute();
     if (!PIDReturn)
