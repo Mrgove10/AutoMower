@@ -190,6 +190,17 @@ extern int8_t g_PerimeterSamplesForMatchedFilter[I2S_DMA_BUFFER_LENGTH];
 extern bool g_MQTTGraphDebug;               // to start/stop the transmission of MQTT debug data
 extern bool g_MQTTGraphRawDebug;            // to start/stop the transmission of MQTT debug data
 #endif
+
+/************************* Analog Read task *********************************/
+#define ANA_READ_TASK_ESP_CORE 1          // Core assigned to task
+#define ANA_READ_TASK_PRIORITY 1          // Priority assigned to task
+#define ANA_READ_TASK_STACK_SIZE 4000     // Stack assigned to task (in bytes)
+#define ANA_READ_TASK_NAME "AnaReadTsk"   // Task name
+
+#define ANA_READ_TASK_LOOP_WAIT  100 // In ms
+
+extern TaskHandle_t g_AnaReadTaskHandle; // Sonar Read task RTOS task handle
+
 /************************* EEPROM Management *********************************/
 
 #include "EEPROM.h"
@@ -240,6 +251,11 @@ extern bool g_KeyPressed[KEYPAD_MAX_KEYS];
 #include <Adafruit_MCP23017.h>
 
 extern Adafruit_MCP23017 IOExtend;
+
+/************************* Rain Sensor variables *********************************/
+#define RAIN_SENSOR_CHECK_THRESHOLD 1
+#define RAIN_SENSOR_RAINING_THRESHOLD 50 // this may have to be placed in a parameter
+#define RAIN_READ_INTERVAL 30000 // in ms
 
 /************************* I2C HMC5883L Compasss Sensor variables *********************************/
 #include <Adafruit_HMC5883_U.h>

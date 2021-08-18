@@ -5,7 +5,7 @@
 #include "Voltage/Voltage.h"
 #include "Utils/Utils.h"
 #include "Display/Display.h"
-#include "FastAnaReadTsk/FastAnaReadTsk.h"
+#include "AnaReadTsk/AnaReadTsk.h"
 
 /**
  * Checks to see if voltage is connected and its level
@@ -41,7 +41,8 @@ bool BatteryVoltageCheck(void)
 /**
  * Function to read voltage 
  * 
- * * @return Range depending on voltage thresholds
+ * @param Now optional bool to force immediate voltage read
+ * @return Range depending on voltage thresholds
  */
 int BatteryVoltageRead(const bool Now)
 {

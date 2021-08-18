@@ -22,6 +22,7 @@
 #include "MotionMotor/MotionMotor.h"
 #include "CutMotor/CutMotor.h"
 #include "FastAnaReadTsk/FastAnaReadTsk.h"
+#include "AnaReadTsk/AnaReadTsk.h"
 #include "PerimeterTsk/PerimeterTsk.h"
 #include "StartupChecks.h"
 
@@ -30,14 +31,14 @@ void MySetup(void)
   g_MySerialSemaphore = xSemaphoreCreateMutex();
 
   Serial.begin(SERIAL_BAUD);
-  delay(500);
+  delay(100);
 
   DisplaySetup();
 
   IOExtendSetup();
 
-  MotorCurrentSensorSetup();
-  CompassSensorSetup();
+  MotorCurrentSensorSetup();     // Done by Analog Read task
+  CompassSensorSetup();    // Done by Analog Read task ??
 
   KeypadSetup();
 
@@ -84,6 +85,7 @@ void MySetup(void)
 
   SerialAndTelnet.handle();
 
+  // Send reboot event to logger
   LogPrintln(Resetreason, TAG_RESET, DBG_WARNING);
 
   TemperatureSensorSetup();
@@ -94,21 +96,22 @@ void MySetup(void)
 
   CutMotorSetup();
 
-  MotorCurrentSensorSetup();
-
-  CompassSensorSetup();
+  CompassSensorSetup(); // Done by Analog Read task ??
 
   BumperSetup();
 
   TiltSetup();
 
-  GPSSetup();
+  GPSSetup(); // Done by Analog Read task ??
+
+  // Start other RTOS tasks
 
   SonarReadLoopTaskCreate();
-  
   FastAnaReadLoopTaskCreate();
-
+  AnaReadLoopTaskCreate();
   PerimeterProcessingLoopTaskCreate();
+
+  // Set default trace level
 
   g_debugLevel = DBG_DEBUG;
 

@@ -40,6 +40,6 @@ void FastAnaReadLoopTaskResume(void);
  * @param pin to read from
  * @return pin analog value
  */
-int ProtectedAnalogRead(int pin);
+// int ProtectedAnalogRead(int pin);
 
 #endif

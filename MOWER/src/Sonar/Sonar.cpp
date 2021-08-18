@@ -155,7 +155,7 @@ void SonarReadLoopTaskCreate(void)
 
   if (xReturned == pdPASS)
   {
-    DebugPrintln("Sonar read Task created on Core " + String(PERIMETER_TASK_ESP_CORE), DBG_VERBOSE, true);
+    DebugPrintln("Sonar read Task created on Core " + String(SONAR_READ_TASK_ESP_CORE), DBG_VERBOSE, true);
   }
   else
   {

@@ -135,6 +135,10 @@ int8_t g_PerimeterSamplesForMatchedFilter[I2S_DMA_BUFFER_LENGTH];
 bool g_MQTTGraphDebug = false;
 bool g_MQTTGraphRawDebug = false;
 #endif
+
+/************************* Analog Read task *********************************/
+TaskHandle_t g_AnaReadTaskHandle; // Sonar Read task RTOS task handle
+
 /************************* EEPROM Management *********************************/
 
 EEPROMLoadStruct g_EEPROMLoad;

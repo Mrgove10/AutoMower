@@ -5,7 +5,7 @@
 #include "Current/Current.h"
 #include "Utils/Utils.h"
 #include "Display/Display.h"
-#include "FastAnaReadTsk/FastAnaReadTsk.h"
+#include "AnaReadTsk/AnaReadTsk.h"
 
 /**
  * I2C INA219 Current Sensor Setup function
@@ -76,6 +76,7 @@ bool MotorCurrentSensorCheck(int sensor)
 bool MotorCurrentRead(const int sensor, const bool Now)
 {
   static unsigned long LastMotorCurrentRead[MOTOR_CURRENT_COUNT] = {0, 0, 0};
+  static float smoothedCurrent[MOTOR_CURRENT_COUNT] = {UNKNOWN_FLOAT, UNKNOWN_FLOAT, UNKNOWN_FLOAT};
 
   if ((millis() - LastMotorCurrentRead[sensor] > MOTOR_CURRENT_READ_INTERVAL) || Now)
   {
@@ -91,6 +92,15 @@ bool MotorCurrentRead(const int sensor, const bool Now)
     //    power_mW = MotorCurrentSensor[sensor].getPower_mW();
     //    loadvoltage = busvoltage + (shuntvoltage / 1000);
 
+    if(smoothedCurrent[sensor] == UNKNOWN_FLOAT)
+    {
+      smoothedCurrent[sensor] = abs(current_mA);
+    }
+    else
+    {
+      smoothedCurrent[sensor] = 0.8 * smoothedCurrent[sensor] + 0.2 * ((float)abs(current_mA));
+    }
+
     /*
     DebugPrintln("Sensor" + String(sensor) + " Bus Voltage: " + String(busvoltage) + " V" + 
               " Shunt Voltage: " + String(shuntvoltage) + " mV" + 
@@ -98,7 +108,7 @@ bool MotorCurrentRead(const int sensor, const bool Now)
               " Current: " + String(current_mA) + " mA" + 
               " Power: " + String(power_mW) + " mW" , DBG_VERBOSE, true);
   */
-    g_MotorCurrent[sensor] = current_mA;
+    g_MotorCurrent[sensor] = smoothedCurrent[sensor];
     LastMotorCurrentRead[sensor] = millis();
   }
   return true;

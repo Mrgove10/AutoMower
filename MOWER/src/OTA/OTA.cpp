@@ -9,6 +9,7 @@
 #include "MQTT/MQTT.h"
 #include "FastAnaReadTsk/FastAnaReadTsk.h"
 #include "PerimeterTsk/PerimeterTsk.h"
+#include "AnaReadTsk/AnaReadTsk.h"
 #include "Sonar/Sonar.h"
 #include "Display/Display.h"
 
@@ -103,9 +104,12 @@ void OTAHandle(void)
     DebugPrintln("Waiting for OTA upload ", DBG_INFO, true);
     SerialAndTelnet.handle();
     MQTTDisconnect();
+
+    // Suspend RTOS tasks
     FastAnaReadLoopTaskSuspend();
     PerimeterProcessingLoopTaskSuspend();
     SonarReadLoopTaskSuspend();
+    AnaReadLoopTaskSuspend();
 
     //    MQTTUnSubscribe(); // no MQTT update to avoid any interruption during upload
 
@@ -128,10 +132,12 @@ void OTAHandle(void)
     g_otaFlag = false;
 
     setInterval(NTP_REFRESH); // NTP updates back on
+
     // Resume RTOS tasks
     FastAnaReadLoopTaskResume();
     PerimeterProcessingLoopTaskResume();
     SonarReadLoopTaskResume();
+    AnaReadLoopTaskResume();
 
     // Set mower back to Idle state
     g_CurrentState = MowerState::idle;

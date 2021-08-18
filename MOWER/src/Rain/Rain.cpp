@@ -5,7 +5,7 @@
 #include "Rain/Rain.h"
 #include "Utils/Utils.h"
 #include "Display/Display.h"
-#include "FastAnaReadTsk/FastAnaReadTsk.h"
+#include "AnaReadTsk/AnaReadTsk.h"
 
 /**
  * Checks to see if rain sensor is connected (and hopefully functionning)
@@ -44,12 +44,29 @@ bool RainSensorCheck(void)
 /**
  * Function to know if it is raining
  * 
- * * @return true if rain is detected
+ * @param Now optional bool to force immediate rain sensor read
+ * @return true if rain is detected
  */
-bool isRaining(void)
+bool isRaining(const bool Now)
 {
-  int raw = ProtectedAnalogRead(PIN_ESP_RAIN);
-  DebugPrintln("Raining check value: " + String(raw), DBG_VERBOSE, true);
+  static unsigned long LastRainRead = 0;
+  static int raw = 0;
+  static float smoothValue = UNKNOWN_FLOAT;
 
-  return raw > RAIN_SENSOR_RAINING_THRESHOLD;
+  if ((millis() - LastRainRead > RAIN_READ_INTERVAL) || Now)
+  {
+    raw = ProtectedAnalogRead(PIN_ESP_RAIN);
+
+    if (smoothValue == UNKNOWN_FLOAT)
+    {
+      smoothValue = raw;
+    }
+    else
+    {
+      smoothValue = 0.80 * smoothValue + 0.20 * ((float) raw);
+    }
+    DebugPrintln("Raining check value: " + String(smoothValue), DBG_VERBOSE, true);
+  }
+
+  return smoothValue > RAIN_SENSOR_RAINING_THRESHOLD;
 }

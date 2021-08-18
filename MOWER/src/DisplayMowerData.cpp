@@ -40,9 +40,9 @@ void DisplayMowerData()
   // }
 
   BatteryChargeCurrentRead(false);
-  MotorCurrentRead(MOTOR_CURRENT_RIGHT);
-  MotorCurrentRead(MOTOR_CURRENT_LEFT);
-  MotorCurrentRead(MOTOR_CURRENT_CUT);
+  // MotorCurrentRead(MOTOR_CURRENT_RIGHT);
+  // MotorCurrentRead(MOTOR_CURRENT_LEFT);
+  // MotorCurrentRead(MOTOR_CURRENT_CUT);
 
   KeypadRead();
 
@@ -52,9 +52,9 @@ void DisplayMowerData()
 
   BatteryVoltageRead();
 
-  CompassRead();
+//  CompassRead();
 
-  GPSRead(true);
+//  GPSRead(true);
 
   CutMotorCheck();
 

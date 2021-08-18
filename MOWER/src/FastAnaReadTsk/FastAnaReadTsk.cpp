@@ -213,74 +213,74 @@ void FastAnaReadLoopTaskResume(void)
  * @param pin to read from
  * @return pin analog value
  */
-int ProtectedAnalogRead(int pin)
-{
-  // Using I2S to read from the ADC causes conflict with normal analogRead function as it locks the ADC
-  // This function is to be used to perform "usual" (slow) analog reads whilst managing the conflict with the I2S driver through the use of an
-  // application semaphore
-  // IMPORTANT NOTES:
-  // 1- This function may not be used before the semaphore has been initialised (initlisation is taken care of in the FastAnaReadLoopTaskCreate() function)
-  // 2- This function only works for ADC1 connected pins (pins 32 to 39)
+// int ProtectedAnalogRead(int pin)
+// {
+//   // Using I2S to read from the ADC causes conflict with normal analogRead function as it locks the ADC
+//   // This function is to be used to perform "usual" (slow) analog reads whilst managing the conflict with the I2S driver through the use of an
+//   // application semaphore
+//   // IMPORTANT NOTES:
+//   // 1- This function may not be used before the semaphore has been initialised (initlisation is taken care of in the FastAnaReadLoopTaskCreate() function)
+//   // 2- This function only works for ADC1 connected pins (pins 32 to 39)
 
-  // obtain exclusive access to ADC (or wait for it to be available)
-  xSemaphoreTake(g_ADCinUse, portMAX_DELAY);
+//   // obtain exclusive access to ADC (or wait for it to be available)
+//   xSemaphoreTake(g_ADCinUse, portMAX_DELAY);
 
-  // Stop I2S driver
-  i2s_stop(I2S_PORT);
+//   // Stop I2S driver
+//   i2s_stop(I2S_PORT);
 
-  // Stop I2S driver using ADC
-  i2s_adc_disable(I2S_PORT);
+//   // Stop I2S driver using ADC
+//   i2s_adc_disable(I2S_PORT);
 
-  // read ADC channel corresponding to Pin
-  adc1_channel_t ADC1Channel;
+//   // read ADC channel corresponding to Pin
+//   adc1_channel_t ADC1Channel;
 
-  switch (pin)
-  {
-  case 32:
-    ADC1Channel = ADC1_GPIO32_CHANNEL;
-    break;
-  case 33:
-    ADC1Channel = ADC1_GPIO33_CHANNEL;
-    break;
-  case 34:
-    ADC1Channel = ADC1_GPIO34_CHANNEL;
-    break;
-  case 35:
-    ADC1Channel = ADC1_GPIO35_CHANNEL;
-    break;
-  case 36:
-    ADC1Channel = ADC1_GPIO36_CHANNEL;
-    break;
-  case 37:
-    ADC1Channel = ADC1_GPIO37_CHANNEL;
-    break;
-  case 38:
-    ADC1Channel = ADC1_GPIO38_CHANNEL;
-    break;
-  case 39:
-    ADC1Channel = ADC1_GPIO39_CHANNEL;
-    break;
-  default:
-    DebugPrintln("Pin " + String(pin) + " is not an ADC1 pin !", DBG_ERROR, true);
-    return -1;
-  }
+//   switch (pin)
+//   {
+//   case 32:
+//     ADC1Channel = ADC1_GPIO32_CHANNEL;
+//     break;
+//   case 33:
+//     ADC1Channel = ADC1_GPIO33_CHANNEL;
+//     break;
+//   case 34:
+//     ADC1Channel = ADC1_GPIO34_CHANNEL;
+//     break;
+//   case 35:
+//     ADC1Channel = ADC1_GPIO35_CHANNEL;
+//     break;
+//   case 36:
+//     ADC1Channel = ADC1_GPIO36_CHANNEL;
+//     break;
+//   case 37:
+//     ADC1Channel = ADC1_GPIO37_CHANNEL;
+//     break;
+//   case 38:
+//     ADC1Channel = ADC1_GPIO38_CHANNEL;
+//     break;
+//   case 39:
+//     ADC1Channel = ADC1_GPIO39_CHANNEL;
+//     break;
+//   default:
+//     DebugPrintln("Pin " + String(pin) + " is not an ADC1 pin !", DBG_ERROR, true);
+//     return -1;
+//   }
 
-  int rawval = adc1_get_raw(ADC1Channel);
+//   int rawval = adc1_get_raw(ADC1Channel);
 
-  // Restore I2S driver using ADC
-  i2s_set_adc_mode(I2S_ADC_UNIT, I2S_ADC_CHANNEL);
+//   // Restore I2S driver using ADC
+//   i2s_set_adc_mode(I2S_ADC_UNIT, I2S_ADC_CHANNEL);
 
-  // Clear I2S DMA buffers
-  i2s_zero_dma_buffer(I2S_PORT);
+//   // Clear I2S DMA buffers
+//   i2s_zero_dma_buffer(I2S_PORT);
 
-  // Assign ADC to I2S driver
-  i2s_adc_enable(I2S_PORT);
+//   // Assign ADC to I2S driver
+//   i2s_adc_enable(I2S_PORT);
 
-  // Start I2S driver
-  i2s_start(I2S_PORT);
+//   // Start I2S driver
+//   i2s_start(I2S_PORT);
 
-  xSemaphoreGive(g_ADCinUse);
-  // Free access to ADC
+//   xSemaphoreGive(g_ADCinUse);
+//   // Free access to ADC
 
-  return rawval;
-}
+//   return rawval;
+// }

@@ -30,7 +30,7 @@ void CompassSensorSetup()
 }
 
 /**
- * Function to test and read I2C HMC5883L Compasss Sensor
+ * Function to test and read I2C HMC5883L Compass Sensor
  *  
  * @param Now true to force an immediate read
  */
