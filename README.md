@@ -41,11 +41,12 @@ Communication is done through MQTT, and the following topics are used:
   "Val2":"<Command_Dependant_String_2"
 }
 ```
+
 The list of Commands and their expected associated values are as describes below:
 
 #### Mower State changes
 
-**Description** : This command is used to put the mower in a given state. 
+**Description** : This command is used to put the mower in a given state.
 
 In this state the mower is doing nthing and wait for the next command.
 
@@ -65,7 +66,7 @@ In this state the mower is doing nthing and wait for the next command.
 
 `ERROR` : This is the state when the Mower has identified an error condition and is stopped and waiting for an acknowledgement from the user. This command is not for operational use and only for testing purposes.
 
-`ACKNOWLEDGE` : This is the command to acknoledge an error. Upon acknowledgement, the mower will retun to Idle state. Acknowledgement can also be performed directly on the mower's HMI. 
+`ACKNOWLEDGE` : This is the command to acknoledge an error. Upon acknowledgement, the mower will retun to Idle state. Acknowledgement can also be performed directly on the mower's HMI.
 
 `TEST` : This is the command to trigger the mower's startup test sequence. At the end, the mower will retun to Idle state.
 
@@ -143,7 +144,7 @@ In this state the mower is doing nthing and wait for the next command.
 }
 ```
 
-#### Parameter value change 
+#### Parameter value change
 
 **Description** : This command enables to send a new parameter value to the mower. If the value is stored in EEPROM (most of them are), the EEPROM is updated/saved.
 
@@ -179,7 +180,7 @@ In this state the mower is doing nthing and wait for the next command.
 
 #### Test & Debug commands
 
-##### Stop/activate sending of raw perimeter signal read task 
+##### Stop/activate sending of raw perimeter signal read task
 
 **Description** : This command enables to start and stop the sending over MQTT of the raw perimeter signal read task detailled values used for plotting //**ONLY FOR TEST PURPOSES**//
 
@@ -189,7 +190,7 @@ In this state the mower is doing nthing and wait for the next command.
 
 **Val2** : No Val2 value expected for this command (any value sent will be ignored)
 
-**Message Example** : 
+**Message Example** :
 
 ```json
 {
@@ -197,7 +198,7 @@ In this state the mower is doing nthing and wait for the next command.
 }
 ```
 
-##### Stop/activate sending of processed perimeter code detection task 
+##### Stop/activate sending of processed perimeter code detection task
 
 **Description** : This command enables to start and stop the sending over MQTT of the processed perimeter code detection task values used for plotting //**ONLY FOR TEST PURPOSES**//
 
@@ -215,7 +216,7 @@ In this state the mower is doing nthing and wait for the next command.
 }
 ```
 
-##### Stop/activate sending of perimeter wire tracking control 
+##### Stop/activate sending of perimeter wire tracking control
 
 **Description** : This command enables to start and stop the sending over MQTT of the perimeter wire tracking PID control values used for plotting //**ONLY FOR TEST PURPOSES**//
 
@@ -273,7 +274,7 @@ In this state the mower is doing nthing and wait for the next command.
 }
 ```
 
-##### Turn mower test move 
+##### Turn mower test move
 
 **Description** : This command enables to request for a turn as specified in the associated values. //**ONLY FOR TEST PURPOSES - NO COLISION DETECTION PERFORMED**//
 
@@ -373,4 +374,4 @@ This project is under the MIT License, see [here](LICENSE.md)
 
 ## Contribution
 
-You can contribute by submitting a PR
+You can contribute by submitting a Pull Request

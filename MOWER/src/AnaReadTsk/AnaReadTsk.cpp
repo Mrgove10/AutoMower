@@ -89,7 +89,6 @@ int ProtectedAnalogRead(int pin)
   return rawval;
 }
 
-
 /**
  * Analog Read task main loop
  * @param dummyParameter is unused but required
@@ -108,7 +107,7 @@ void AnaReadLoopTask(void *dummyParameter)
     {
       DebugPrintln("Analog read Task Started on core " + String(xPortGetCoreID()), DBG_VERBOSE, true);
 
-    //   SonarSensorSetup();       // Setup Sensors
+      //   SonarSensorSetup();       // Setup Sensors
 
       // Motion motor current sensor setup
       MotorCurrentSensorSetup();
@@ -122,26 +121,26 @@ void AnaReadLoopTask(void *dummyParameter)
     //------------------------------------------------------------------
 
     // Read battery voltage value
-    BatteryVoltageRead(false);       // the read interval check is performed by the function
+    BatteryVoltageRead(false); // the read interval check is performed by the function
 
     // Read battery charge current value
 
-// TO DO
+    // TO DO
 
     // Read motion motor current value
-    MotorCurrentRead(MOTOR_CURRENT_RIGHT, false);  // The read interval check is performed by the function
-    MotorCurrentRead(MOTOR_CURRENT_LEFT, false);   // The read interval check is performed by the function
+    MotorCurrentRead(MOTOR_CURRENT_RIGHT, false); // The read interval check is performed by the function
+    MotorCurrentRead(MOTOR_CURRENT_LEFT, false);  // The read interval check is performed by the function
 
     // Read cut motor current value
-    MotorCurrentRead(MOTOR_CURRENT_CUT, false);    // The read interval check is performed by the function
+    MotorCurrentRead(MOTOR_CURRENT_CUT, false); // The read interval check is performed by the function
 
     // Read GPS data
-    GPSRead(false);        // The read interval check is performed by the function
+    GPSRead(false); // The read interval check is performed by the function
 
     // Read Gyro data
 
     // Read Compass data
-    CompassRead(false);    // The read interval check is performed by the function
+    CompassRead(false); // The read interval check is performed by the function
 
     // Wait for the next loop
     delay(ANA_READ_TASK_LOOP_WAIT);
@@ -155,12 +154,12 @@ void AnaReadLoopTaskCreate(void)
 {
   BaseType_t xReturned;
   xReturned = xTaskCreatePinnedToCore(
-      AnaReadLoopTask,           /* Task function. */
-      ANA_READ_TASK_NAME,         /* String with name of task. */
-      ANA_READ_TASK_STACK_SIZE,   /* Stack size in bytes. */
-      NULL,                        /* Parameter passed as input of the task */
-      ANA_READ_TASK_PRIORITY,     /* Priority of the task. */
-      &g_AnaReadTaskHandle,  /* Task handle. */
+      AnaReadLoopTask,          /* Task function. */
+      ANA_READ_TASK_NAME,       /* String with name of task. */
+      ANA_READ_TASK_STACK_SIZE, /* Stack size in bytes. */
+      NULL,                     /* Parameter passed as input of the task */
+      ANA_READ_TASK_PRIORITY,   /* Priority of the task. */
+      &g_AnaReadTaskHandle,     /* Task handle. */
       ANA_READ_TASK_ESP_CORE);
 
   if (xReturned == pdPASS)

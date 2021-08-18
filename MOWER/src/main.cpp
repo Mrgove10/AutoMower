@@ -25,7 +25,7 @@ void setup()
 {
   MySetup();
 
-// Set mower to idle mode
+  // Set mower to idle mode
   MowerIdle(true, g_PreviousState);
 }
 
@@ -40,8 +40,9 @@ void loop()
 
   bool stateChange = g_CurrentState != StateOnCall;
 
-  if (stateChange){
-      g_PreviousState = g_CurrentState;
+  if (stateChange)
+  {
+    g_PreviousState = g_CurrentState;
   }
 
   StateOnCall = g_CurrentState;

@@ -35,7 +35,8 @@ void MowerForward(const int Speed)
 void MowerSpeed(const int Speed)
 {
   static int lastSpeed = 0;
-  if (Speed != lastSpeed){
+  if (Speed != lastSpeed)
+  {
     DebugPrintln("Mower speed at " + String(Speed) + "%", DBG_VERBOSE, true);
     lastSpeed = Speed;
   }
@@ -82,7 +83,7 @@ void MowerTurn(const int Angle, const bool OnSpot)
     MotionMotorStop(MOTION_MOTOR_RIGHT);
     MotionMotorStop(MOTION_MOTOR_LEFT);
   }
-  else    // Right turn
+  else // Right turn
   {
     MotionMotorStart(MOTION_MOTOR_LEFT, MOTION_MOTOR_FORWARD, MOWER_MOVES_TURN_SPEED);
     if (OnSpot)
@@ -131,9 +132,9 @@ bool MowerSlowDownApproachingObstables(const int SpeedDelta, const int Front, co
 
   if (Front > 0 && g_SonarDistance[SONAR_FRONT] < Front)
   {
-      DebugPrintln("Front approaching object: Slowing down ! (" + String(g_SonarDistance[SONAR_FRONT]) + "cm)", DBG_DEBUG, true);
-      SpeedReductiontiggered = true;
-  } 
+    DebugPrintln("Front approaching object: Slowing down ! (" + String(g_SonarDistance[SONAR_FRONT]) + "cm)", DBG_DEBUG, true);
+    SpeedReductiontiggered = true;
+  }
 
   // Check for objects on left side
 
@@ -141,7 +142,7 @@ bool MowerSlowDownApproachingObstables(const int SpeedDelta, const int Front, co
   {
     DebugPrintln("Left approaching object: Slowing down ! (" + String(g_SonarDistance[SONAR_LEFT]) + "cm)", DBG_DEBUG, true);
     SpeedReductiontiggered = true;
-  } 
+  }
 
   // Check for objects on right side
 
@@ -149,7 +150,7 @@ bool MowerSlowDownApproachingObstables(const int SpeedDelta, const int Front, co
   {
     DebugPrintln("Right approaching object: Slowing down ! (" + String(g_SonarDistance[SONAR_RIGHT]) + "cm)", DBG_DEBUG, true);
     SpeedReductiontiggered = true;
-  } 
+  }
 
   // Check for Perimeter wire
 
@@ -157,7 +158,7 @@ bool MowerSlowDownApproachingObstables(const int SpeedDelta, const int Front, co
   {
     DebugPrintln("Approaching perimeter: Slowing down ! (" + String(g_PerimeterMagnitude) + ")", DBG_DEBUG, true);
     SpeedReductiontiggered = true;
-  } 
+  }
 
   // If at least one of the conditions are met and if motor speed is higher that minimum threshold, reduce speed
 

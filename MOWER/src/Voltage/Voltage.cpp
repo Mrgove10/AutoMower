@@ -60,7 +60,7 @@ int BatteryVoltageRead(const bool Now)
     }
     else
     {
-      smoothVoltage = 0.80 * smoothVoltage + 0.20 * ((float) volt);
+      smoothVoltage = 0.80 * smoothVoltage + 0.20 * ((float)volt);
     }
 
     g_BatteryVotlage = smoothVoltage;

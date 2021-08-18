@@ -159,9 +159,9 @@ int8_t PerimeterRawValuesConvert(uint16_t rawVal, uint16_t offset)
   int8_t relativeValue = 0;
 
   OffsetedValue = rawVal - offset;
-  relativeValue = min(SCHAR_MAX,  max(SCHAR_MIN, OffsetedValue / 16));
+  relativeValue = min(SCHAR_MAX, max(SCHAR_MIN, OffsetedValue / 16));
   // int16_t tempValue = OffsetedValue / 16;
-  // if (tempValue > SCHAR_MAX) 
+  // if (tempValue > SCHAR_MAX)
   // {
   //   return SCHAR_MAX;
   // }
@@ -169,7 +169,7 @@ int8_t PerimeterRawValuesConvert(uint16_t rawVal, uint16_t offset)
   // {
   //   return SCHAR_MIN;
   // }
-  // else 
+  // else
   // {
   //   return tempValue;
   // }
@@ -219,7 +219,7 @@ void GetPerimeterRawValues(int Samples)
     // Serial.print(String(g_RawCopy[i]) + " ");
 
     ConvertedValue = PerimeterRawValuesConvert(g_RawCopy[i], offset);
-    g_PerimeterSamplesForMatchedFilter[l] = ConvertedValue; 
+    g_PerimeterSamplesForMatchedFilter[l] = ConvertedValue;
     // maxBuf = max(ConvertedValue, maxBuf);
     // minBuf = min(ConvertedValue, minBuf);
     // rawTotal = rawTotal + ConvertedValue;
@@ -323,11 +323,11 @@ int16_t corrFilter(int8_t *H, int8_t subsample, int16_t M, int8_t *ip, int16_t n
 void MatchedFilter(int16_t Samples)
 {
   // int16_t sampleCount = Samples;
-  int16_t mag; // perimeter magnitude
+  int16_t mag;            // perimeter magnitude
   static int16_t magPrev; // previous perimeter magnitude
-  int16_t magAvg; // perimeter magnitude 2 value rolling average
+  int16_t magAvg;         // perimeter magnitude 2 value rolling average
   // int16_t magAvg5; // perimeter magnitude 5 value rolling average
-  // static int16_t magPrev1=0, magPrev2=0, magPrev3=0, magPrev4=0; 
+  // static int16_t magPrev1=0, magPrev2=0, magPrev3=0, magPrev4=0;
   static float smoothMagLost = UNKNOWN_FLOAT;
   static float smoothMagTracking = UNKNOWN_FLOAT;
   float FilterQuality = 0;
@@ -367,23 +367,23 @@ void MatchedFilter(int16_t Samples)
   // perimeter inside/outside detection
   if (mag > 0)
   {
-    g_signalCounter = min(g_signalCounter + 1, 4);    
+    g_signalCounter = min(g_signalCounter + 1, 4);
   }
   else
   {
-    g_signalCounter = max(g_signalCounter - 1, -4);    
+    g_signalCounter = max(g_signalCounter - 1, -4);
   }
 
-  magAvg = (mag + magPrev)/2;
+  magAvg = (mag + magPrev) / 2;
   magPrev = mag;
-  
+
   // magAvg5 = (mag + magPrev1 + magPrev2 + magPrev3 + magPrev4) /5;
   // magPrev4 = magPrev3;
   // magPrev3 = magPrev2;
   // magPrev2 = magPrev1;
   // magPrev1 = mag;
-  
-  // In/out perimeter wire detection 
+
+  // In/out perimeter wire detection
   // Large signal, the in/out detection is reliable.
   // Using mag yields very fast in/out transition reporting.
 
@@ -391,7 +391,8 @@ void MatchedFilter(int16_t Samples)
   if (abs(mag) > PERIMETER_IN_OUT_DETECTION_THRESHOLD)
   {
     isInside = (mag < 0);
-    if(isInside){
+    if (isInside)
+    {
       g_signalCounter = -4;
     }
     else
@@ -408,10 +409,10 @@ void MatchedFilter(int16_t Samples)
   // Decided not to protect with a semaphore the access to match filter values as these values are only written here and this avoids unecessary system overload
   //  xSemaphoreTake(g_MyglobalSemaphore, portMAX_DELAY);
 
-  // Perimeter wire signal strenght detection 
+  // Perimeter wire signal strenght detection
   // smoothed magnitude used for signal detection
-  
-  if(smoothMagLost == UNKNOWN_FLOAT)
+
+  if (smoothMagLost == UNKNOWN_FLOAT)
   {
     smoothMagLost = abs(mag);
   }
@@ -419,9 +420,9 @@ void MatchedFilter(int16_t Samples)
   {
     smoothMagLost = 0.99 * smoothMagLost + 0.01 * ((float)abs(mag));
   }
-  g_PerimeterSignalLost = smoothMagLost < g_PerimeterSignalLostThreshold; 
+  g_PerimeterSignalLost = smoothMagLost < g_PerimeterSignalLostThreshold;
 
-  if(smoothMagTracking == UNKNOWN_FLOAT)
+  if (smoothMagTracking == UNKNOWN_FLOAT)
   {
     smoothMagTracking = abs(mag);
   }
@@ -431,7 +432,7 @@ void MatchedFilter(int16_t Samples)
   }
   g_PerimeterSignalLowForTracking = smoothMagTracking < g_PerimeterSignalLowTrackThreshold;
 
-  if(isInside)
+  if (isInside)
   {
     g_lastIsInsidePerimeterTime = millis();
   }
@@ -498,33 +499,33 @@ void PerimeterProcessingLoopTask(void *dummyParameter)
         MatchedFilter(I2S_DMA_BUFFER_LENGTH);
 
 #ifdef MQTT_GRAPH_DEBUG
-    if(g_MQTTGraphRawDebug)
-    {
-      String JsonPayload = "";
-      FirebaseJson JSONDBGPayload;
-      String JSONDBGPayloadStr;
-      char MQTTpayload[MQTT_MAX_PAYLOAD];
-
-      for (int l = 0; l < I2S_DMA_BUFFER_LENGTH; l++)
-      {
-        JSONDBGPayload.clear();
-        JSONDBGPayload.add("val5", g_RawCopy[l]);
-        // JSONDBGPayload.add("val6", (int) ConvertedValue);
-        JSONDBGPayload.toString(JSONDBGPayloadStr, false);
-        JSONDBGPayloadStr.toCharArray(MQTTpayload, JSONDBGPayloadStr.length() + 1);
-        bool result = MQTTclient.publish(MQTT_DEBUG_RAW_CHANNEL, MQTTpayload);
-        if (result != 1)
+        if (g_MQTTGraphRawDebug)
         {
-            g_MQTTErrorCount = g_MQTTErrorCount + 1;
+          String JsonPayload = "";
+          FirebaseJson JSONDBGPayload;
+          String JSONDBGPayloadStr;
+          char MQTTpayload[MQTT_MAX_PAYLOAD];
+
+          for (int l = 0; l < I2S_DMA_BUFFER_LENGTH; l++)
+          {
+            JSONDBGPayload.clear();
+            JSONDBGPayload.add("val5", g_RawCopy[l]);
+            // JSONDBGPayload.add("val6", (int) ConvertedValue);
+            JSONDBGPayload.toString(JSONDBGPayloadStr, false);
+            JSONDBGPayloadStr.toCharArray(MQTTpayload, JSONDBGPayloadStr.length() + 1);
+            bool result = MQTTclient.publish(MQTT_DEBUG_RAW_CHANNEL, MQTTpayload);
+            if (result != 1)
+            {
+              g_MQTTErrorCount = g_MQTTErrorCount + 1;
+            }
+            MQTTclient.loop();
+            //          DebugPrintln("Sending to :[" + String(MQTT_DEBUG_CHANNEL) + "] " + String(MQTTpayload) + " => " + String(result), DBG_VERBOSE, true);
+          }
         }
-        MQTTclient.loop();
-  //          DebugPrintln("Sending to :[" + String(MQTT_DEBUG_CHANNEL) + "] " + String(MQTTpayload) + " => " + String(result), DBG_VERBOSE, true);
-      }
-    }
 #endif
         // Send debug data through MQTT
 #ifdef MQTT_GRAPH_DEBUG
-        if(g_MQTTGraphDebug)
+        if (g_MQTTGraphDebug)
         {
           String JsonPayload = "";
           FirebaseJson JSONDBGPayload;
@@ -537,37 +538,37 @@ void PerimeterProcessingLoopTask(void *dummyParameter)
           JSONDBGPayload.add("MagAvg", g_PerimeterMagnitudeAvg);
           JSONDBGPayload.add("SMag", g_PerimeterSmoothMagnitude);
           JSONDBGPayload.add("SMagTrk", g_PerimeterSmoothMagnitudeTracking);
-          JSONDBGPayload.add("Cnt", g_signalCounter*50);
-          JSONDBGPayload.add("In?", g_isInsidePerimeter*100);
+          JSONDBGPayload.add("Cnt", g_signalCounter * 50);
+          JSONDBGPayload.add("In?", g_isInsidePerimeter * 100);
           JSONDBGPayload.toString(JSONDBGPayloadStr, false);
           JSONDBGPayloadStr.toCharArray(MQTTpayload, JSONDBGPayloadStr.length() + 1);
           bool result = MQTTclient.publish(MQTT_DEBUG_CHANNEL, MQTTpayload);
           if (result != 1)
           {
-              g_MQTTErrorCount = g_MQTTErrorCount + 1;
+            g_MQTTErrorCount = g_MQTTErrorCount + 1;
           }
           MQTTclient.loop();
-//          DebugPrintln("Sending to :[" + String(MQTT_DEBUG_CHANNEL) + "] " + String(MQTTpayload) + " => " + String(result), DBG_VERBOSE, true);
+          //          DebugPrintln("Sending to :[" + String(MQTT_DEBUG_CHANNEL) + "] " + String(MQTTpayload) + " => " + String(result), DBG_VERBOSE, true);
         }
 #endif
         // Display Perimeter task and filter summary information
         count = count + 1;
-        // if (count == 100 || abs(g_PerimeterMagnitude) > 600 ) 
-        if (count == 100) 
+        // if (count == 100 || abs(g_PerimeterMagnitude) > 600 )
+        if (count == 100)
         {
           DebugPrintln("Perim: inQ:" + String(g_inPerimeterQueue) +
-                    " QMax:" + String(g_inPerimeterQueueMax) +
-                    " Qfull:" + String(g_PerimeterQueuefull) +
-                    " |RawAvg " + String(g_PerimeterRawAvg) + " [" + String(g_PerimeterRawMin) + "," + String(g_PerimeterRawMax) + "]" +
-                    " |FiltMag:" + String(g_PerimeterMagnitude) +
-                    " |AvgMag:" + String(g_PerimeterMagnitudeAvg) +
-                    // " |AvgMagPID:" + String(g_PerimeterMagnitudeAvgPID) +
-                    " SMag:" + String(g_PerimeterSmoothMagnitude) +
-                    " SMagTrk:" + String(g_PerimeterSmoothMagnitudeTracking) +
-                    " FiltQual:" + String(g_PerimeterFilterQuality,2) + 
-                    " Sigcount:" + String(g_signalCounter) +
-                    " in?:" + String(g_isInsidePerimeter),
-                DBG_DEBUG, true);
+                           " QMax:" + String(g_inPerimeterQueueMax) +
+                           " Qfull:" + String(g_PerimeterQueuefull) +
+                           " |RawAvg " + String(g_PerimeterRawAvg) + " [" + String(g_PerimeterRawMin) + "," + String(g_PerimeterRawMax) + "]" +
+                           " |FiltMag:" + String(g_PerimeterMagnitude) +
+                           " |AvgMag:" + String(g_PerimeterMagnitudeAvg) +
+                           // " |AvgMagPID:" + String(g_PerimeterMagnitudeAvgPID) +
+                           " SMag:" + String(g_PerimeterSmoothMagnitude) +
+                           " SMagTrk:" + String(g_PerimeterSmoothMagnitudeTracking) +
+                           " FiltQual:" + String(g_PerimeterFilterQuality, 2) +
+                           " Sigcount:" + String(g_signalCounter) +
+                           " in?:" + String(g_isInsidePerimeter),
+                       DBG_DEBUG, true);
           count = 0;
           g_PerimeterQueuefull = 0;
           g_inPerimeterQueueMax = 0;
@@ -577,36 +578,36 @@ void PerimeterProcessingLoopTask(void *dummyParameter)
           g_PerimeterRawMax = 0;
 // plot Match filter results
 #ifdef SERIAL_PLOTTER
-        int Ptr = g_rawWritePtrCopy;
-        uint16_t offset = g_PerimeterOffset;
+          int Ptr = g_rawWritePtrCopy;
+          uint16_t offset = g_PerimeterOffset;
 
-        int endPtr = Ptr - 1;
-        if (endPtr < 0)
-        {
-          endPtr = PERIMETER_RAW_SAMPLES - 1;
-        }
-        int startPtr = endPtr - I2S_DMA_BUFFER_LENGTH;
-        if (startPtr < 0)
-        {
-          startPtr = PERIMETER_RAW_SAMPLES + startPtr;
-        }
-        int i = startPtr;
-
-        for (int l = 0; l < I2S_DMA_BUFFER_LENGTH; l++)
-        {
-          Serial2.println(String(micros() & 0x0FFFFF) + ";;;" +
-                          String(i) + ";" + String(l) + ";" + String(g_RawCopy[i]) + ";" +
-                          String(PerimeterRawValuesConvert(g_RawCopy[i], offset)) + ";" +
-                          String(g_PerimeterMagnitude) + ";" + String(g_PerimeterSmoothMagnitude) + ";" +
-                          String(g_PerimeterFilterQuality, 2) + ";" + String(g_signalCounter) + ";" + String(g_isInsidePerimeter));
-          i = i + 1;
-          if (i == PERIMETER_RAW_SAMPLES)
+          int endPtr = Ptr - 1;
+          if (endPtr < 0)
           {
-            i = 0;
+            endPtr = PERIMETER_RAW_SAMPLES - 1;
           }
-        }
+          int startPtr = endPtr - I2S_DMA_BUFFER_LENGTH;
+          if (startPtr < 0)
+          {
+            startPtr = PERIMETER_RAW_SAMPLES + startPtr;
+          }
+          int i = startPtr;
+
+          for (int l = 0; l < I2S_DMA_BUFFER_LENGTH; l++)
+          {
+            Serial2.println(String(micros() & 0x0FFFFF) + ";;;" +
+                            String(i) + ";" + String(l) + ";" + String(g_RawCopy[i]) + ";" +
+                            String(PerimeterRawValuesConvert(g_RawCopy[i], offset)) + ";" +
+                            String(g_PerimeterMagnitude) + ";" + String(g_PerimeterSmoothMagnitude) + ";" +
+                            String(g_PerimeterFilterQuality, 2) + ";" + String(g_signalCounter) + ";" + String(g_isInsidePerimeter));
+            i = i + 1;
+            if (i == PERIMETER_RAW_SAMPLES)
+            {
+              i = 0;
+            }
+          }
 #endif
-      }
+        }
       }
       else if (evt == PERIMETER_TASK_PROCESSING_CALIBRATION) // Calibration
       {

@@ -213,7 +213,7 @@ void MQTTCallback(char *topic, byte *message, unsigned int length)
       {
         g_CurrentState = MowerState::leaving_base;
       }
-      else if (Val1Str == "ERROR")    // only for testing purposes
+      else if (Val1Str == "ERROR") // only for testing purposes
       {
         g_CurrentState = MowerState::error;
       }
@@ -260,12 +260,12 @@ void MQTTCallback(char *topic, byte *message, unsigned int length)
 
     else if (Command == "PARAMETER")
     {
-      ParameterChangeValue(Val1Str, Val2);    // Value changed and saved in EEPROM
+      ParameterChangeValue(Val1Str, Val2); // Value changed and saved in EEPROM
     }
 
     else if (Command == "TUNE_OFFSET")
     {
-      g_PerimeterOffset = g_PerimeterOffset + int(Val1);   // only for testing purposes
+      g_PerimeterOffset = g_PerimeterOffset + int(Val1); // only for testing purposes
     }
 
     else

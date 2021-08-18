@@ -92,7 +92,7 @@ bool MotorCurrentRead(const int sensor, const bool Now)
     //    power_mW = MotorCurrentSensor[sensor].getPower_mW();
     //    loadvoltage = busvoltage + (shuntvoltage / 1000);
 
-    if(smoothedCurrent[sensor] == UNKNOWN_FLOAT)
+    if (smoothedCurrent[sensor] == UNKNOWN_FLOAT)
     {
       smoothedCurrent[sensor] = abs(current_mA);
     }

@@ -79,7 +79,7 @@ void MotionMotorSetSpeed(const int Motor, const int Speed, const bool Relative)
   static int previousSpeed[MOTION_MOTOR_COUNT] = {0, 0};
   int adjustedSpeed;
 
-// Establish new requested speed
+  // Establish new requested speed
   if (Relative)
   {
     adjustedSpeed = g_MotionMotorSpeed[Motor] + Speed + int(g_WheelPerimeterTrackingCorrection[Motor]);
@@ -89,12 +89,12 @@ void MotionMotorSetSpeed(const int Motor, const int Speed, const bool Relative)
     adjustedSpeed = Speed + int(g_WheelPerimeterTrackingCorrection[Motor]);
   }
 
-// Check new requested speed for range and convert into PWM points
-  int checkedspeed = max(0, adjustedSpeed);                                         // make sure speed is in 0-100% range
-  checkedspeed = min(100, checkedspeed);                                           // make sure speed is in 0-100% range
+  // Check new requested speed for range and convert into PWM points
+  int checkedspeed = max(0, adjustedSpeed);                                 // make sure speed is in 0-100% range
+  checkedspeed = min(100, checkedspeed);                                    // make sure speed is in 0-100% range
   int SpeedPoints = int(map(checkedspeed, 0, 100, 0, MOTION_MOTOR_POINTS)); // convert speed (in %) into PWM range
 
-// If new requested speed is different from current speed, apply the chnage if above minimum threshold
+  // If new requested speed is different from current speed, apply the chnage if above minimum threshold
   if ((checkedspeed < MOTION_MOTOR_MIN_SPEED) && (checkedspeed != 0))
   {
     if (SpeedPoints != previousSpeed[Motor])

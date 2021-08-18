@@ -123,18 +123,18 @@ bool CheckTiltReadAndAct(void)
   bool returnval = false;
 
   // Check vertical tilt and react
-  if(TiltRead(TILT_VERTICAL))
+  if (TiltRead(TILT_VERTICAL))
   {
     DebugPrintln("Vertical Tilt sensor Triggered !", DBG_INFO, true);
-    g_CurrentState = MowerState::error;                   // Place mower in error state
-    g_CurrentErrorCode = ERROR_VERTICAL_TILT_ACTIVATED;   // Update error code
+    g_CurrentState = MowerState::error;                 // Place mower in error state
+    g_CurrentErrorCode = ERROR_VERTICAL_TILT_ACTIVATED; // Update error code
     MowerStop();
     CutMotorStop(true);
     returnval = true;
   }
 
   // Check vertical tilt and react
-  if(TiltRead(TILT_HORIZONTAL))
+  if (TiltRead(TILT_HORIZONTAL))
   {
     DebugPrintln("Horizontal Tilt sensor Triggered !", DBG_INFO, true);
     g_CurrentState = MowerState::error;                   // Place mower in error state

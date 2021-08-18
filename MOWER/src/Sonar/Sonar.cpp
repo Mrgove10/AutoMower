@@ -12,7 +12,7 @@ void SonarSensorSetup(void)
 {
   DebugPrintln("Sonar Sensor Setup start", DBG_VERBOSE, true);
 
-  g_SonarReadEnabled = true;     // By default, sonar readings are enabled
+  g_SonarReadEnabled = true; // By default, sonar readings are enabled
 }
 
 /**
@@ -25,7 +25,7 @@ bool SonarSensorCheck(int sensor)
   bool sensorCheck = false;
   unsigned int Distance = UNKNOWN_INT;
 
-  g_SonarReadEnabled = true;    // Start sonar readings
+  g_SonarReadEnabled = true; // Start sonar readings
 
   DebugPrintln("SonarSensorCheck start #" + String(sensor + 1), DBG_VERBOSE, true);
   if (sensor == 0)
@@ -109,7 +109,7 @@ void SonarReadLoopTask(void *dummyParameter)
     {
       DebugPrintln("Sonar read Task Started on core " + String(xPortGetCoreID()), DBG_VERBOSE, true);
 
-      SonarSensorSetup();       // Setup Sensors
+      SonarSensorSetup(); // Setup Sensors
 
       SetupDone = true;
       DebugPrintln("Sonar read Task setup complete", DBG_VERBOSE, true);
@@ -121,15 +121,15 @@ void SonarReadLoopTask(void *dummyParameter)
 
     if (g_SonarReadEnabled)
     {
-      for (int sonar = 0; sonar < SONAR_COUNT; sonar++ )
+      for (int sonar = 0; sonar < SONAR_COUNT; sonar++)
       {
-        SonarRead(sonar, true);     // Read sonar value with no wait
+        SonarRead(sonar, true); // Read sonar value with no wait
       }
       delay(SONAR_READ_TASK_LOOP_TIME);
     }
     else
     {
-      for (int sonar = 0; sonar < SONAR_COUNT; sonar++ )
+      for (int sonar = 0; sonar < SONAR_COUNT; sonar++)
       {
         g_SonarDistance[sonar] = UNKNOWN_INT; // set sonar value to unknown
       }
@@ -145,12 +145,12 @@ void SonarReadLoopTaskCreate(void)
 {
   BaseType_t xReturned;
   xReturned = xTaskCreatePinnedToCore(
-      SonarReadLoopTask,           /* Task function. */
-      SONAR_READ_TASK_NAME,         /* String with name of task. */
-      SONAR_READ_TASK_STACK_SIZE,   /* Stack size in bytes. */
-      NULL,                        /* Parameter passed as input of the task */
-      SONAR_READ_TASK_PRIORITY,     /* Priority of the task. */
-      &g_SonarReadTaskHandle,  /* Task handle. */
+      SonarReadLoopTask,          /* Task function. */
+      SONAR_READ_TASK_NAME,       /* String with name of task. */
+      SONAR_READ_TASK_STACK_SIZE, /* Stack size in bytes. */
+      NULL,                       /* Parameter passed as input of the task */
+      SONAR_READ_TASK_PRIORITY,   /* Priority of the task. */
+      &g_SonarReadTaskHandle,     /* Task handle. */
       SONAR_READ_TASK_ESP_CORE);
 
   if (xReturned == pdPASS)

@@ -155,7 +155,7 @@ void EEPROMSave(boolean immediatly)
     g_EEPROMLoad.Load.Data.LastEepromSaveTime.minute = myTime.minute();
     g_EEPROMLoad.Load.Data.LastEepromSaveTime.second = myTime.second();
 
-// Stored parameters
+    // Stored parameters
     g_EEPROMLoad.Load.Data.PerimeterSignalOffset = g_PerimeterOffset;
     g_EEPROMLoad.Load.Data.ParamPerimeterTrackPIDKp = g_ParamPerimeterTrackPIDKp;
     g_EEPROMLoad.Load.Data.ParamPerimeterTrackPIDKi = g_ParamPerimeterTrackPIDKi;
@@ -164,7 +164,7 @@ void EEPROMSave(boolean immediatly)
     g_EEPROMLoad.Load.Data.PerimeterSignalLostThreshold = g_PerimeterSignalLostThreshold;
     g_EEPROMLoad.Load.Data.PerimeterSignalLowTrackThreshold = g_PerimeterSignalLowTrackThreshold;
 
-// Stored Statistics
+    // Stored Statistics
     g_EEPROMLoad.Load.Data.totalObstacleDectections = g_totalObstacleDectections;
 
     EEPROMWrite();
@@ -184,7 +184,7 @@ void EEPROMInitialise(void)
   g_EEPROMLoad.Load.Data.LastEepromSaveTime.minute = myTime.minute();
   g_EEPROMLoad.Load.Data.LastEepromSaveTime.second = myTime.second();
 
-// Stored parameters
+  // Stored parameters
   g_EEPROMLoad.Load.Data.PerimeterSignalOffset = 0;
   g_EEPROMLoad.Load.Data.ParamPerimeterTrackPIDKp = 0;
   g_EEPROMLoad.Load.Data.ParamPerimeterTrackPIDKi = 0;
@@ -193,7 +193,7 @@ void EEPROMInitialise(void)
   g_EEPROMLoad.Load.Data.PerimeterSignalLostThreshold = g_PerimeterSignalLostThreshold;
   g_EEPROMLoad.Load.Data.PerimeterSignalLowTrackThreshold = g_PerimeterSignalLowTrackThreshold;
 
-// Stored Statistics
+  // Stored Statistics
   g_EEPROMLoad.Load.Data.totalObstacleDectections = 0;
 
   for (int i = 0; i < EEPROM_SPARE_SIZE - 1; i++)

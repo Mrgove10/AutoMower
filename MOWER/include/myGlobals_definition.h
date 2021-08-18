@@ -87,7 +87,7 @@ extern int8_t g_sigcode_diff[PERIMETER_SIGNAL_CODE_LENGTH];
 
 #define I2S_SAMPLE_RATE 38400                                                       // I2S scanning rate in samples per second
 #define I2S_DMA_BUFFERS 4                                                           // number of allocated I2S DMA buffers
-#define I2S_DMA_BUFFER_LENGTH PERIMETER_SIGNAL_CODE_LENGTH * PERIMETER_SUBSAMPLE * 3 // in number of samples
+#define I2S_DMA_BUFFER_LENGTH PERIMETER_SIGNAL_CODE_LENGTH *PERIMETER_SUBSAMPLE * 3 // in number of samples
 #define PERIMETER_RAW_SAMPLES I2S_DMA_BUFFER_LENGTH * 3                             // We store more samples than just one DMA buffer to have more data to process
 
 #define FAST_ANA_READ_TASK_ESP_CORE 1            // Core assigned to task
@@ -145,11 +145,11 @@ extern unsigned int g_inQueue;            // Accumulated I2S notification queue 
 #define PERIMETER_SWAP_COIL_POLARITY false
 // #define PERIMETER_IN_OUT_DETECTION_THRESHOLD 1000
 #define PERIMETER_IN_OUT_DETECTION_THRESHOLD 400
-#define PERIMETER_APPROACHING_THRESHOLD PERIMETER_IN_OUT_DETECTION_THRESHOLD/2
+#define PERIMETER_APPROACHING_THRESHOLD PERIMETER_IN_OUT_DETECTION_THRESHOLD / 2
 
 #define MQTT_GRAPH_DEBUG true
 
-extern hw_timer_t *g_PerimeterTimerhandle;  // Perimeter processing task timer based trigger ISR handle
+extern hw_timer_t *g_PerimeterTimerhandle; // Perimeter processing task timer based trigger ISR handle
 
 extern QueueHandle_t g_PerimeterTimerQueue; // Queue red by Perimeter processing task
 
@@ -172,32 +172,32 @@ extern int g_PerimeterMagnitudeAvg;
 extern int g_PerimeterSmoothMagnitude;
 extern int g_PerimeterSmoothMagnitudeTracking;
 extern float g_PerimeterFilterQuality;
-extern int16_t g_PerimeterOffset;                 // (Saved to EEPROM)
+extern int16_t g_PerimeterOffset; // (Saved to EEPROM)
 extern int g_signalCounter;
 
-extern bool g_PerimeterSignalStopped;            // This boolean indicates that the sender has notified that the wire is cut or stopped
-extern bool g_PerimeterSignalLost;               // This boolean indicates that the perimeter signal is either too weak (meaning that the perimeter wire is probably cut or the sender is stopped)
-extern int16_t g_PerimeterSignalLostThreshold;   // Threshold under which g_PerimeterSignalLost is true (Dynamic parameter Saved to EEPROM)
+extern bool g_PerimeterSignalStopped;          // This boolean indicates that the sender has notified that the wire is cut or stopped
+extern bool g_PerimeterSignalLost;             // This boolean indicates that the perimeter signal is either too weak (meaning that the perimeter wire is probably cut or the sender is stopped)
+extern int16_t g_PerimeterSignalLostThreshold; // Threshold under which g_PerimeterSignalLost is true (Dynamic parameter Saved to EEPROM)
 
-extern bool g_PerimeterSignalLowForTracking;     // This boolean indicates that the perimeter signal is too weak while wire tracking meaning that the mower is no longuer "over" the wire
-extern int16_t g_PerimeterSignalLowTrackThreshold;   // Threshold under which g_PerimeterSignalLowForTracking is true (Dynamic parameter Saved to EEPROM)
+extern bool g_PerimeterSignalLowForTracking;       // This boolean indicates that the perimeter signal is too weak while wire tracking meaning that the mower is no longuer "over" the wire
+extern int16_t g_PerimeterSignalLowTrackThreshold; // Threshold under which g_PerimeterSignalLowForTracking is true (Dynamic parameter Saved to EEPROM)
 
 extern uint16_t g_RawCopy[PERIMETER_RAW_SAMPLES]; //  Copy of circular Buffer containing last samples read from I2S DMA buffers
 extern int g_rawWritePtrCopy;                     // Pointer to last value written to g_RawCopy circular buffer copy
 extern int8_t g_PerimeterSamplesForMatchedFilter[I2S_DMA_BUFFER_LENGTH];
 
 #ifdef MQTT_GRAPH_DEBUG
-extern bool g_MQTTGraphDebug;               // to start/stop the transmission of MQTT debug data
-extern bool g_MQTTGraphRawDebug;            // to start/stop the transmission of MQTT debug data
+extern bool g_MQTTGraphDebug;    // to start/stop the transmission of MQTT debug data
+extern bool g_MQTTGraphRawDebug; // to start/stop the transmission of MQTT debug data
 #endif
 
 /************************* Analog Read task *********************************/
-#define ANA_READ_TASK_ESP_CORE 1          // Core assigned to task
-#define ANA_READ_TASK_PRIORITY 1          // Priority assigned to task
-#define ANA_READ_TASK_STACK_SIZE 4000     // Stack assigned to task (in bytes)
-#define ANA_READ_TASK_NAME "AnaReadTsk"   // Task name
+#define ANA_READ_TASK_ESP_CORE 1        // Core assigned to task
+#define ANA_READ_TASK_PRIORITY 1        // Priority assigned to task
+#define ANA_READ_TASK_STACK_SIZE 4000   // Stack assigned to task (in bytes)
+#define ANA_READ_TASK_NAME "AnaReadTsk" // Task name
 
-#define ANA_READ_TASK_LOOP_WAIT  100 // In ms
+#define ANA_READ_TASK_LOOP_WAIT 100 // In ms
 
 extern TaskHandle_t g_AnaReadTaskHandle; // Sonar Read task RTOS task handle
 
@@ -255,7 +255,7 @@ extern Adafruit_MCP23017 IOExtend;
 /************************* Rain Sensor variables *********************************/
 #define RAIN_SENSOR_CHECK_THRESHOLD 1
 #define RAIN_SENSOR_RAINING_THRESHOLD 50 // this may have to be placed in a parameter
-#define RAIN_READ_INTERVAL 30000 // in ms
+#define RAIN_READ_INTERVAL 30000         // in ms
 
 /************************* I2C HMC5883L Compasss Sensor variables *********************************/
 #include <Adafruit_HMC5883_U.h>
@@ -336,11 +336,11 @@ extern float g_MotorCurrent[MOTOR_CURRENT_COUNT];
 #define VOLTAGE_RANGE_MAX 17000 // in mV
 
 // #define VOLTAGE_DETECTION_THRESHOLD 9
-#define BATTERY_VOLTAGE_LOW_THRESHOLD 11000     // in mV
-#define BATTERY_VOLTAGE_MEDIUM_THRESHOLD 11500  // in mV
-#define BATTERY_VOLTAGE_NORMAL_THRESHOLD 12000  // in mV
-#define BATTERY_VOLTAGE_RETURN_TO_BASE_THRESHOLD 11200  // in mV
-#define BATTERY_VOLTAGE_FULL_THRESHOLD 12650 // in mV
+#define BATTERY_VOLTAGE_LOW_THRESHOLD 11000            // in mV
+#define BATTERY_VOLTAGE_MEDIUM_THRESHOLD 11500         // in mV
+#define BATTERY_VOLTAGE_NORMAL_THRESHOLD 12000         // in mV
+#define BATTERY_VOLTAGE_RETURN_TO_BASE_THRESHOLD 11200 // in mV
+#define BATTERY_VOLTAGE_FULL_THRESHOLD 12650           // in mV
 
 #define BATTERY_VOLTAGE_OK 0               // if above BATTERY_VOLTAGE_NORMAL_THRESHOLD
 #define BATTERY_VOLTAGE_MEDIUM 1           // if between BATTERY_VOLTAGE_MEDIUM_THRESHOLD and BATTERY_VOLTAGE_NORMAL_THRESHOLD
@@ -357,13 +357,13 @@ extern int g_BatteryStatus;
 #define SONAR_READ_TASK_STACK_SIZE 4000     // Stack assigned to task (in bytes)
 #define SONAR_READ_TASK_NAME "SonarReadTsk" // Task name
 
-#define SONAR_READ_TASK_WAIT_ON_IDLE 500    // in ms
-#define SONAR_READ_TASK_LOOP_TIME 150       // in ms
+#define SONAR_READ_TASK_WAIT_ON_IDLE 500 // in ms
+#define SONAR_READ_TASK_LOOP_TIME 150    // in ms
 
 #define SONAR_READ_ACTIVATION_DELAY SONAR_READ_TASK_WAIT_ON_IDLE + SONAR_READ_TASK_LOOP_TIME * 2
 extern TaskHandle_t g_SonarReadTaskHandle; // Sonar Read task RTOS task handle
 
-extern bool g_SonarReadEnabled;          // Global variable to suspend sonar sensor reading
+extern bool g_SonarReadEnabled; // Global variable to suspend sonar sensor reading
 
 /************************* HC-SR04 Sonar sensor variables *********************************/
 #include <Wire.h>
@@ -457,7 +457,7 @@ extern int g_MotionMotorDirection[MOTION_MOTOR_COUNT];
 extern int g_MotionMotorSpeed[MOTION_MOTOR_COUNT];
 extern String g_MotionMotorStr[MOTION_MOTOR_COUNT];
 
-extern float g_WheelPerimeterTrackingCorrection[MOTION_MOTOR_COUNT];         // from perimeter tracking PID control
+extern float g_WheelPerimeterTrackingCorrection[MOTION_MOTOR_COUNT]; // from perimeter tracking PID control
 
 /************************* Mower Moves variables *********************************/
 
@@ -466,19 +466,19 @@ extern float g_WheelPerimeterTrackingCorrection[MOTION_MOTOR_COUNT];         // 
 #define MOWER_MOVES_SPEED_NORMAL 80 // in %
 #define MOWER_MOVES_SPEED_MAX 100   // in %
 
-#define MOWER_MOVES_REVERSE 75   // in %
+#define MOWER_MOVES_REVERSE 75 // in %
 
 #define MOWER_MOVES_TURN_SPEED 80
 #define MOWER_MOVES_TURN_ANGLE_RATIO 360.0f / 6000.0f // in Angle degrees per ms
 #define MOWER_MOVES_REVERSE_FOR_TURN_DURATION 2500    // in ms
 #define MOWER_MOWING_TRAVEL_SPEED 90
 
-#define SONAR_MIN_DISTANCE_FOR_SLOWING 60 // in cm
-#define SONAR_MIN_DISTANCE_FOR_TURN 40    // in cm
-#define SONAR_MIN_DISTANCE_FOR_STOP 25    // in cm
-#define SONAR_MIN_DISTANCE_FOR_PRECONDITION 40    // in cm
+#define SONAR_MIN_DISTANCE_FOR_SLOWING 60      // in cm
+#define SONAR_MIN_DISTANCE_FOR_TURN 40         // in cm
+#define SONAR_MIN_DISTANCE_FOR_STOP 25         // in cm
+#define SONAR_MIN_DISTANCE_FOR_PRECONDITION 40 // in cm
 
-// Mowing 
+// Mowing
 #define MOWER_MOWING_TRAVEL_SPEED 90
 #define MOWER_MOWING_MAX_CONSECUTVE_OBSTACLES 5
 
@@ -489,9 +489,9 @@ extern float g_WheelPerimeterTrackingCorrection[MOTION_MOTOR_COUNT];         // 
 #define PERIMETER_SEARCH_PHASE_3 3
 #define PERIMETER_SEARCH_FINISHED 4
 
-#define PERIMETER_SEARCH_REVERSE_MAX_TIME 4000 // in ms
-#define PERIMETER_SEARCH_REVERSE_SPEED 80 // in %
-#define PERIMETER_SEARCH_REVERSE_TIME 1000 // in %
+#define PERIMETER_SEARCH_REVERSE_MAX_TIME 4000    // in ms
+#define PERIMETER_SEARCH_REVERSE_SPEED 80         // in %
+#define PERIMETER_SEARCH_REVERSE_TIME 1000        // in %
 #define PERIMETER_SEARCH_FORWARD_MAX_TIME_1 30000 // in ms
 // #define PERIMETER_SEARCH_FORWARD_MAX_TIME_2 5000 // in ms
 #define PERIMETER_SEARCH_FORWARD_SPEED 80 // in %
@@ -500,14 +500,14 @@ extern float g_WheelPerimeterTrackingCorrection[MOTION_MOTOR_COUNT];         // 
 // #define PERIMETER_SEARCH_COUNTER_CLOCKWISE_TURN_ANGLE -135 // in deg
 #define PERIMETER_SEARCH_ANGLE_INCREMENT 15 // in deg
 // #define PERIMETER_SEARCH_TURN_MAX_TIME 10000 // in ms
-#define PERIMETER_SEARCH_TURN_MAX_ITERATIONS 180/PERIMETER_SEARCH_ANGLE_INCREMENT // in loop counts. It should not be necessary to turn more than 150 deg depending on wire approach angle
+#define PERIMETER_SEARCH_TURN_MAX_ITERATIONS 180 / PERIMETER_SEARCH_ANGLE_INCREMENT // in loop counts. It should not be necessary to turn more than 150 deg depending on wire approach angle
 #define PERIMETER_SEARCH_MAX_CONSECUTVE_OBSTACLES 3
 
 // Back to base function
-#define BACK_TO_BASE_HEADING 0  // in deg 0=North
-#define BACK_TO_BASE_CLOCKWISE false  // in which direction to follow wire
-#define BACK_TO_BASE_SPEED 90 // in %
-#define FOLLOW_WIRE_MAX_CONSECUTVE_OBSTACLES 0    // Setting to 0 will stop the wire tracking function on first obstacle
+#define BACK_TO_BASE_HEADING 0                 // in deg 0=North
+#define BACK_TO_BASE_CLOCKWISE false           // in which direction to follow wire
+#define BACK_TO_BASE_SPEED 90                  // in %
+#define FOLLOW_WIRE_MAX_CONSECUTVE_OBSTACLES 0 // Setting to 0 will stop the wire tracking function on first obstacle
 
 // Obstacle detection causes
 #define OBSTACLE_DETECTED_NONE 0
@@ -517,10 +517,10 @@ extern float g_WheelPerimeterTrackingCorrection[MOTION_MOTOR_COUNT];         // 
 #define OBSTACLE_DETECTED_RIGHT 4
 #define OBSTACLE_DETECTED_PERIMETER 5
 
-#define OBSTACLE_APPROACH_LOW_SPEED_MIN_DURATION 5000     // in ms
+#define OBSTACLE_APPROACH_LOW_SPEED_MIN_DURATION 5000 // in ms
 
 // Move count variables
-extern int g_successiveObstacleDectections;       // successive obstacle detections (to trigger appropriate reaction)
+extern int g_successiveObstacleDectections; // successive obstacle detections (to trigger appropriate reaction)
 
 // Perimeter tracking function
 
@@ -529,21 +529,21 @@ extern int g_successiveObstacleDectections;       // successive obstacle detecti
 //Define Variables used by PID library
 extern double g_PIDSetpoint, g_PIDInput, g_PIDOutput;
 
-  //Specify the links and initial tuning parameters
+//Specify the links and initial tuning parameters
 extern PID g_PerimeterTrackPID;
 
-#define PERIMETER_TRACKING_PID_INTERVAL 150  // in ms
+#define PERIMETER_TRACKING_PID_INTERVAL 150 // in ms
 
 #define MQTT_PID_GRAPH_DEBUG true
 
 #ifdef MQTT_PID_GRAPH_DEBUG
-extern bool g_MQTTPIDGraphDebug;                    // to start/stop the transmission of MQTT debug data
+extern bool g_MQTTPIDGraphDebug; // to start/stop the transmission of MQTT debug data
 #endif
 
-extern double g_PerimeterTrackSetpoint;             // Setpoint for PID wire tracking (Saved to EEPROM)
-extern double g_ParamPerimeterTrackPIDKp;           // Kp PID Parameter for wire tracking (Saved to EEPROM)
-extern double g_ParamPerimeterTrackPIDKi;           // Ki PID Parameter for wire tracking (Saved to EEPROM)
-extern double g_ParamPerimeterTrackPIDKd;           // Kd PID Parameter for wire tracking (Saved to EEPROM)
+extern double g_PerimeterTrackSetpoint;   // Setpoint for PID wire tracking (Saved to EEPROM)
+extern double g_ParamPerimeterTrackPIDKp; // Kp PID Parameter for wire tracking (Saved to EEPROM)
+extern double g_ParamPerimeterTrackPIDKi; // Ki PID Parameter for wire tracking (Saved to EEPROM)
+extern double g_ParamPerimeterTrackPIDKd; // Kd PID Parameter for wire tracking (Saved to EEPROM)
 
 /************************* CUT Motor variables *********************************/
 
@@ -576,32 +576,32 @@ extern bool g_CutMotorAlarm;
 #define ERROR_NO_ERROR 0
 
 //General Error conditions
-#define ERROR_BATTERY_CRITICAL                      001
-#define ERROR_VERTICAL_TILT_ACTIVATED               002
-#define ERROR_HORIZONTAL_TILT_ACTIVATED             003
-#define ERROR_NO_PERIMETER_SIGNAL                 004
+#define ERROR_BATTERY_CRITICAL 001
+#define ERROR_VERTICAL_TILT_ACTIVATED 002
+#define ERROR_HORIZONTAL_TILT_ACTIVATED 003
+#define ERROR_NO_PERIMETER_SIGNAL 004
 
 //States-related Error conditions
-#define ERROR_MOWING_NO_START_BUMPER_ACTIVE         100
-#define ERROR_MOWING_NO_START_OBJECT_TOO_CLOSE      101
-#define ERROR_MOWING_NO_START_TILT_ACTIVE           102
-#define ERROR_MOWING_NO_START_NO_PERIMETER_SIGNAL   103
-#define ERROR_MOWING_CONSECUTIVE_OBSTACLES          104
+#define ERROR_MOWING_NO_START_BUMPER_ACTIVE 100
+#define ERROR_MOWING_NO_START_OBJECT_TOO_CLOSE 101
+#define ERROR_MOWING_NO_START_TILT_ACTIVE 102
+#define ERROR_MOWING_NO_START_NO_PERIMETER_SIGNAL 103
+#define ERROR_MOWING_CONSECUTIVE_OBSTACLES 104
 
-#define ERROR_WIRE_SEARCH_NO_START_BUMPER_ACTIVE         200
-#define ERROR_WIRE_SEARCH_NO_START_OBJECT_TOO_CLOSE      201
-#define ERROR_WIRE_SEARCH_NO_START_TILT_ACTIVE           202
-#define ERROR_WIRE_SEARCH_NO_START_NO_PERIMETER_SIGNAL   203
-#define ERROR_WIRE_SEARCH_PHASE_1_FAILLED                204
-#define ERROR_WIRE_SEARCH_PHASE_2_FAILLED                205
-#define ERROR_WIRE_SEARCH_CONSECUTIVE_OBSTACLES          206
-#define ERROR_WIRE_SEARCH_PHASE_3_FAILLED                207
+#define ERROR_WIRE_SEARCH_NO_START_BUMPER_ACTIVE 200
+#define ERROR_WIRE_SEARCH_NO_START_OBJECT_TOO_CLOSE 201
+#define ERROR_WIRE_SEARCH_NO_START_TILT_ACTIVE 202
+#define ERROR_WIRE_SEARCH_NO_START_NO_PERIMETER_SIGNAL 203
+#define ERROR_WIRE_SEARCH_PHASE_1_FAILLED 204
+#define ERROR_WIRE_SEARCH_PHASE_2_FAILLED 205
+#define ERROR_WIRE_SEARCH_CONSECUTIVE_OBSTACLES 206
+#define ERROR_WIRE_SEARCH_PHASE_3_FAILLED 207
 
-#define ERROR_FOLLOW_WIRE_NO_START_BUMPER_ACTIVE         210
-#define ERROR_FOLLOW_WIRE_NO_START_OBJECT_TOO_CLOSE      211
-#define ERROR_FOLLOW_WIRE_NO_START_TILT_ACTIVE           212
-#define ERROR_FOLLOW_WIRE_NO_START_NO_PERIMETER_SIGNAL   213
-#define ERROR_FOLLOW_WIRE_CONSECUTIVE_OBSTACLES          214
+#define ERROR_FOLLOW_WIRE_NO_START_BUMPER_ACTIVE 210
+#define ERROR_FOLLOW_WIRE_NO_START_OBJECT_TOO_CLOSE 211
+#define ERROR_FOLLOW_WIRE_NO_START_TILT_ACTIVE 212
+#define ERROR_FOLLOW_WIRE_NO_START_NO_PERIMETER_SIGNAL 213
+#define ERROR_FOLLOW_WIRE_CONSECUTIVE_OBSTACLES 214
 
 #define ERROR_UNDEFINED 999
 
@@ -609,7 +609,7 @@ extern int g_CurrentErrorCode; // Current Error code
 
 /************************* Mower operation statistics *********************************/
 
-extern long g_totalObstacleDectections;         // Total number of obstacle detections   (Save to EEPROM)
+extern long g_totalObstacleDectections; // Total number of obstacle detections   (Save to EEPROM)
 
 /************************* Test sequence variables *********************************/
 #define TEST_SEQ_STEP_WAIT 1000
@@ -630,4 +630,4 @@ extern MowerState g_PreviousState;
 /************************* Mower State variables *********************************/
 
 // Mowing mode
-extern int g_MowingLoopCnt;         // number of loops since mowing started
+extern int g_MowingLoopCnt; // number of loops since mowing started

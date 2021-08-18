@@ -37,8 +37,8 @@ void MySetup(void)
 
   IOExtendSetup();
 
-  MotorCurrentSensorSetup();     // Done by Analog Read task
-  CompassSensorSetup();    // Done by Analog Read task ??
+  MotorCurrentSensorSetup(); // Done by Analog Read task
+  CompassSensorSetup();      // Done by Analog Read task ??
 
   KeypadSetup();
 

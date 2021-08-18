@@ -117,15 +117,15 @@ int g_PerimeterSmoothMagnitude = 0;
 int g_PerimeterSmoothMagnitudeTracking = 0;
 
 float g_PerimeterFilterQuality = 0;
-int16_t g_PerimeterOffset = 0;                   // (Saved to EEPROM)
+int16_t g_PerimeterOffset = 0; // (Saved to EEPROM)
 int g_signalCounter = 0;
 
-bool g_PerimeterSignalStopped = false;            // This boolean indicates that the sender has notified that the wire is cut or stopped
-bool g_PerimeterSignalLost = true;               // This boolean indicates that the perimeter signal is either too weak (meaning that the perimeter wire is probably cut or the sender is stopped)
-int16_t g_PerimeterSignalLostThreshold = 0;   // Threshold under which g_PerimeterSignalLost is true (Dynamic parameter Saved to EEPROM)
+bool g_PerimeterSignalStopped = false;      // This boolean indicates that the sender has notified that the wire is cut or stopped
+bool g_PerimeterSignalLost = true;          // This boolean indicates that the perimeter signal is either too weak (meaning that the perimeter wire is probably cut or the sender is stopped)
+int16_t g_PerimeterSignalLostThreshold = 0; // Threshold under which g_PerimeterSignalLost is true (Dynamic parameter Saved to EEPROM)
 
-bool g_PerimeterSignalLowForTracking = true;     // This boolean indicates that the perimeter signal is too weak while wire tracking meaning that the mower is no longuer "over" the wire
-int16_t g_PerimeterSignalLowTrackThreshold = 0;   // Threshold under which g_PerimeterSignalLowForTracking is true (Dynamic parameter Saved to EEPROM)
+bool g_PerimeterSignalLowForTracking = true;    // This boolean indicates that the perimeter signal is too weak while wire tracking meaning that the mower is no longuer "over" the wire
+int16_t g_PerimeterSignalLowTrackThreshold = 0; // Threshold under which g_PerimeterSignalLowForTracking is true (Dynamic parameter Saved to EEPROM)
 
 uint16_t g_RawCopy[PERIMETER_RAW_SAMPLES]; //  Copy of circular Buffer containing last samples read from I2S DMA buffers
 int g_rawWritePtrCopy;                     // Pointer to last value written to g_RawCopy circular buffer copy
@@ -238,7 +238,7 @@ int g_BatteryStatus = BATTERY_VOLTAGE_OK;
 
 TaskHandle_t g_SonarReadTaskHandle; // Sonar Read task RTOS task handle
 
-bool g_SonarReadEnabled = false;          // Global variable to suspend sonar sensor reading
+bool g_SonarReadEnabled = false; // Global variable to suspend sonar sensor reading
 
 /************************* HC-SR04 Sonar sensor variables *********************************/
 #include <Wire.h>
@@ -287,12 +287,12 @@ int g_MotionMotorSpeed[MOTION_MOTOR_COUNT] = {0, 0};
 
 String g_MotionMotorStr[MOTION_MOTOR_COUNT] = {"Right", "Left"};
 
-float g_WheelPerimeterTrackingCorrection[MOTION_MOTOR_COUNT] = {0, 0};         // from perimeter tracking PID control
+float g_WheelPerimeterTrackingCorrection[MOTION_MOTOR_COUNT] = {0, 0}; // from perimeter tracking PID control
 
 /************************* Mower Moves variables *********************************/
 
 // Move count variables
-int g_successiveObstacleDectections = 0;       // successive obstacle detections (to trigger appropriate reaction)
+int g_successiveObstacleDectections = 0; // successive obstacle detections (to trigger appropriate reaction)
 
 // Perimeter tracking function
 
@@ -301,17 +301,17 @@ int g_successiveObstacleDectections = 0;       // successive obstacle detections
 //Define Variables used by PID library
 double g_PIDSetpoint, g_PIDInput, g_PIDOutput;
 
-  //Specify the links and initial tuning parameters
+//Specify the links and initial tuning parameters
 PID g_PerimeterTrackPID(&g_PIDInput, &g_PIDOutput, &g_PIDSetpoint, 0, 0, 0, DIRECT);
 
 #ifdef MQTT_PID_GRAPH_DEBUG
 bool g_MQTTPIDGraphDebug = true;
 #endif
 
-double g_PerimeterTrackSetpoint = 0;             // Setpoint for PID wire tracking
-double g_ParamPerimeterTrackPIDKp = 0;           // Kp PID Parameter for wire tracking
-double g_ParamPerimeterTrackPIDKi = 0;           // Ki PID Parameter for wire tracking
-double g_ParamPerimeterTrackPIDKd = 0;           // Kd PID Parameter for wire tracking
+double g_PerimeterTrackSetpoint = 0;   // Setpoint for PID wire tracking
+double g_ParamPerimeterTrackPIDKp = 0; // Kp PID Parameter for wire tracking
+double g_ParamPerimeterTrackPIDKi = 0; // Ki PID Parameter for wire tracking
+double g_ParamPerimeterTrackPIDKd = 0; // Kd PID Parameter for wire tracking
 
 /************************* CUT Motor variables *********************************/
 
@@ -326,8 +326,7 @@ int g_CurrentErrorCode = ERROR_NO_ERROR; // Current Error code
 
 /************************* Mower operation statistics *********************************/
 
-long g_totalObstacleDectections = 0;         // Total number of obstacle detections   (Saved to EEPROM)
-
+long g_totalObstacleDectections = 0; // Total number of obstacle detections   (Saved to EEPROM)
 
 /************************* Program variables *********************************/
 
@@ -337,4 +336,4 @@ MowerState g_PreviousState = MowerState::idle;
 /************************* Mower State variables *********************************/
 
 // Mowing mode
-int g_MowingLoopCnt = 0;         // number of loops since mowing started
+int g_MowingLoopCnt = 0; // number of loops since mowing started
