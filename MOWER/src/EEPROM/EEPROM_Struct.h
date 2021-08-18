@@ -27,6 +27,9 @@ typedef struct
     double ParamPerimeterTrackPIDKp;
     double ParamPerimeterTrackPIDKi;
     double ParamPerimeterTrackPIDKd;
+    int16_t PerimeterSignalLostThreshold;
+    int16_t PerimeterSignalLowTrackThreshold;
+
     long totalObstacleDectections;
 } DataStruct;
 

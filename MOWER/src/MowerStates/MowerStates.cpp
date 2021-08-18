@@ -156,6 +156,31 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
   }
 
   //--------------------------------
+  // Is Perimeter signal Lost or stopped ? 
+  //--------------------------------
+
+  if (g_PerimeterSignalLost || g_PerimeterSignalStopped)
+  {
+    DebugPrintln("Perimeter signal Lost (" + String(g_PerimeterSmoothMagnitude) + ") or stopped", DBG_ERROR, true);
+    g_CurrentState = MowerState::error;
+    g_CurrentErrorCode = ERROR_NO_PERIMETER_SIGNAL;
+    return;
+  }
+
+  //--------------------------------
+  // Is Battery level above threshold ? 
+  //--------------------------------
+
+  if (g_BatteryVotlage < BATTERY_VOLTAGE_RETURN_TO_BASE_THRESHOLD)
+  {
+    DebugPrintln("Battery low: returning to base (" + String(g_BatteryVotlage) + " mv)", DBG_INFO, true);
+    MowerStop();
+    CutMotorStop();
+    g_CurrentState = MowerState::going_to_base;
+    return;
+  }
+
+  //--------------------------------
   // Environment sensing for approaching objects
   //--------------------------------
   if (!MowerSlowDownApproachingObstables(MOWER_MOWING_TRAVEL_SPEED - MOWER_MOVES_SPEED_SLOW,
@@ -271,7 +296,7 @@ void MowerGoingToBase(const bool StateChange, const MowerState PreviousState)
     return;
   }
 
-  // find target with compas TODO
+  // find target with compass TO DO
 
   //--------------------------------
   // Find perimeter wire
@@ -469,12 +494,19 @@ bool MowerFindWire(const bool reset, int *phase, const int heading, const bool c
 
     case PERIMETER_SEARCH_PHASE_2:
     {
+  // Is Perimeter signal Lost or stopped ? 
+      if (g_PerimeterSignalLost || g_PerimeterSignalStopped)
+      {
+        DebugPrintln("Perimeter signal Lost (" + String(g_PerimeterSmoothMagnitude) + ") or stopped", DBG_ERROR, true);
+        g_CurrentState = MowerState::error;
+        g_CurrentErrorCode = ERROR_NO_PERIMETER_SIGNAL;
+        return false;
+      }
+
+      // Still inside and moving towards perimeter 
       if (g_isInsidePerimeter && millis() - searchStartTime < PERIMETER_SEARCH_FORWARD_MAX_TIME_1)
       {
-        //--------------------------------
         // Environment sensing for approaching objects
-        //--------------------------------
-
         if (!MowerSlowDownApproachingObstables(PERIMETER_SEARCH_FORWARD_SPEED - MOWER_MOVES_SPEED_SLOW,
                                                 SONAR_MIN_DISTANCE_FOR_SLOWING, 
                                                 SONAR_MIN_DISTANCE_FOR_SLOWING, 
@@ -485,10 +517,7 @@ bool MowerFindWire(const bool reset, int *phase, const int heading, const bool c
           return false;        // continue search
         }
 
-        //--------------------------------
         // Obstacle Collision detection
-        //--------------------------------
-
         if (OBSTACLE_DETECTED_NONE != CheckObstacleAndAct(true,
                                                           SONAR_MIN_DISTANCE_FOR_STOP,
                                                           SONAR_MIN_DISTANCE_FOR_STOP,
@@ -559,6 +588,15 @@ bool MowerFindWire(const bool reset, int *phase, const int heading, const bool c
 
     case PERIMETER_SEARCH_PHASE_3:
     {
+      // Is Perimeter signal Lost or stopped ? 
+      if (g_PerimeterSignalLost || g_PerimeterSignalStopped)
+      {
+        DebugPrintln("Perimeter signal Lost (" + String(g_PerimeterSmoothMagnitude) + ") or stopped", DBG_ERROR, true);
+        g_CurrentState = MowerState::error;
+        g_CurrentErrorCode = ERROR_NO_PERIMETER_SIGNAL;
+        return false;
+      }
+
       // Not inside and still turn steps available
       if (!g_isInsidePerimeter && turnCount < PERIMETER_SEARCH_TURN_MAX_ITERATIONS)
       {
@@ -578,8 +616,8 @@ bool MowerFindWire(const bool reset, int *phase, const int heading, const bool c
         return false;        // continue search
       }
 
-      // Back inside => the phase ends
-      if (g_isInsidePerimeter)
+      // Back inside and signal is strong enough => the phase ends
+      if (g_isInsidePerimeter && !g_PerimeterSignalLowForTracking)
       {
         MowerStop();
         *phase = PERIMETER_SEARCH_FINISHED;
@@ -642,6 +680,7 @@ bool MowerFollowWire(bool *reset, const int heading, const bool clockwise)
     }
 
     DebugPrintln("Kp:" + String(g_ParamPerimeterTrackPIDKp) + " Ki:" + String(g_ParamPerimeterTrackPIDKi) + " Kd:" + String(g_ParamPerimeterTrackPIDKd), DBG_DEBUG, true);
+    DebugPrintln("Smag:" + String(g_PerimeterSmoothMagnitude), DBG_DEBUG, true);
     DebugPrintln("");
     *reset = false;
 
@@ -748,6 +787,32 @@ bool MowerFollowWire(bool *reset, const int heading, const bool clockwise)
   }
 
   //--------------------------------
+  // Is Perimeter signal strong enough ? 
+  //--------------------------------
+
+  if (g_PerimeterSignalLowForTracking)
+  {
+    DebugPrintln("Perimeter signal too low (" + String(g_PerimeterSmoothMagnitudeTracking) + ")", DBG_ERROR, true);
+// for the moment, do nothing
+// TO DO .... 
+// stop mower
+// either trigger a wire search or declare an error
+    // return false;
+  }
+
+  //--------------------------------
+  // Is Perimeter signal Lost or stopped? 
+  //--------------------------------
+
+  if (g_PerimeterSignalLost || g_PerimeterSignalStopped)
+  {
+    DebugPrintln("Perimeter signal Lost (" + String(g_PerimeterSmoothMagnitude) + ") or stopped", DBG_ERROR, true);
+    g_CurrentState = MowerState::error;
+    g_CurrentErrorCode = ERROR_NO_PERIMETER_SIGNAL;
+    return false;
+  }
+
+  //--------------------------------
   // Use PID to apply direction orders to motors
   //--------------------------------
 
@@ -757,7 +822,7 @@ bool MowerFollowWire(bool *reset, const int heading, const bool clockwise)
     // g_PIDInput = g_PerimeterMagnitudeAvgPID;
     g_PIDInput = g_PerimeterMagnitudeAvg;
 
-    // Update PID settings "on the fly" too enbale easier tuning
+    // Update PID settings "on the fly" too enable easier tuning
     g_PIDSetpoint = g_PerimeterTrackSetpoint;
     g_PerimeterTrackPID.SetTunings(g_ParamPerimeterTrackPIDKp, g_ParamPerimeterTrackPIDKi , g_ParamPerimeterTrackPIDKd, P_ON_E);
 

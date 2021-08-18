@@ -168,11 +168,19 @@ extern unsigned long g_lastIsInsidePerimeterTime;
 extern bool g_PerimetersignalTimedOut;
 extern int g_PerimeterMagnitude;
 extern int g_PerimeterMagnitudeAvg;
-extern int g_PerimeterMagnitudeAvgPID;
+// extern int g_PerimeterMagnitudeAvgPID;
 extern int g_PerimeterSmoothMagnitude;
+extern int g_PerimeterSmoothMagnitudeTracking;
 extern float g_PerimeterFilterQuality;
-extern int16_t g_PerimeterOffset;                   // (Saved to EEPROM)
+extern int16_t g_PerimeterOffset;                 // (Saved to EEPROM)
 extern int g_signalCounter;
+
+extern bool g_PerimeterSignalStopped;            // This boolean indicates that the sender has notified that the wire is cut or stopped
+extern bool g_PerimeterSignalLost;               // This boolean indicates that the perimeter signal is either too weak (meaning that the perimeter wire is probably cut or the sender is stopped)
+extern int16_t g_PerimeterSignalLostThreshold;   // Threshold under which g_PerimeterSignalLost is true (Dynamic parameter Saved to EEPROM)
+
+extern bool g_PerimeterSignalLowForTracking;     // This boolean indicates that the perimeter signal is too weak while wire tracking meaning that the mower is no longuer "over" the wire
+extern int16_t g_PerimeterSignalLowTrackThreshold;   // Threshold under which g_PerimeterSignalLowForTracking is true (Dynamic parameter Saved to EEPROM)
 
 extern uint16_t g_RawCopy[PERIMETER_RAW_SAMPLES]; //  Copy of circular Buffer containing last samples read from I2S DMA buffers
 extern int g_rawWritePtrCopy;                     // Pointer to last value written to g_RawCopy circular buffer copy
@@ -311,9 +319,16 @@ extern float g_MotorCurrent[MOTOR_CURRENT_COUNT];
 
 #define VOLTAGE_RANGE_MAX 17000 // in mV
 
-#define BATTERY_VOLTAGE_OK 0               // if above VOLTAGE_NORMAL_THRESHOLD
-#define BATTERY_VOLTAGE_MEDIUM 1           // if above BATTERY_VOLTAGE_MEDIUM_THRESHOLD and below VOLTAGE_NORMAL_THRESHOLD
-#define BATTERY_VOLTAGE_LOW 2              // if above BATTERY_VOLTAGE_LOW_THRESHOLD  and below BATTERY_VOLTAGE_MEDIUM_THRESHOLD
+// #define VOLTAGE_DETECTION_THRESHOLD 9
+#define BATTERY_VOLTAGE_LOW_THRESHOLD 11000     // in mV
+#define BATTERY_VOLTAGE_MEDIUM_THRESHOLD 11500  // in mV
+#define BATTERY_VOLTAGE_NORMAL_THRESHOLD 12000  // in mV
+#define BATTERY_VOLTAGE_RETURN_TO_BASE_THRESHOLD 11200  // in mV
+#define BATTERY_VOLTAGE_FULL_THRESHOLD 12650 // in mV
+
+#define BATTERY_VOLTAGE_OK 0               // if above BATTERY_VOLTAGE_NORMAL_THRESHOLD
+#define BATTERY_VOLTAGE_MEDIUM 1           // if between BATTERY_VOLTAGE_MEDIUM_THRESHOLD and BATTERY_VOLTAGE_NORMAL_THRESHOLD
+#define BATTERY_VOLTAGE_LOW 2              // if between BATTERY_VOLTAGE_LOW_THRESHOLD and BATTERY_VOLTAGE_MEDIUM_THRESHOLD
 #define BATTERY_VOLTAGE_CRITICAL 3         // if below BATTERY_VOLTAGE_LOW_THRESHOLD
 #define BATTERY_VOLTAGE_READ_INTERVAL 5000 // in ms
 
@@ -548,6 +563,7 @@ extern bool g_CutMotorAlarm;
 #define ERROR_BATTERY_CRITICAL                      001
 #define ERROR_VERTICAL_TILT_ACTIVATED               002
 #define ERROR_HORIZONTAL_TILT_ACTIVATED             003
+#define ERROR_NO_PERIMETER_SIGNAL                 004
 
 //States-related Error conditions
 #define ERROR_MOWING_NO_START_BUMPER_ACTIVE         100

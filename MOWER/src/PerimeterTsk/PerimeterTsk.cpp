@@ -324,11 +324,12 @@ void MatchedFilter(int16_t Samples)
 {
   // int16_t sampleCount = Samples;
   int16_t mag; // perimeter magnitude
-  static int16_t magPrev; // perimeter magnitude
+  static int16_t magPrev; // previous perimeter magnitude
   int16_t magAvg; // perimeter magnitude 2 value rolling average
-  int16_t magAvg5; // perimeter magnitude 5 value rolling average
-  static int16_t magPrev1=0, magPrev2=0, magPrev3=0, magPrev4=0; 
-  static float smoothMag;
+  // int16_t magAvg5; // perimeter magnitude 5 value rolling average
+  // static int16_t magPrev1=0, magPrev2=0, magPrev3=0, magPrev4=0; 
+  static float smoothMagLost = UNKNOWN_FLOAT;
+  static float smoothMagTracking = UNKNOWN_FLOAT;
   float FilterQuality = 0;
   //  static int callCounter;
 
@@ -363,11 +364,6 @@ void MatchedFilter(int16_t Samples)
     mag = mag * -1;
   }
 
-  
-  // smoothed magnitude used for signal-off detection
-  smoothMag = 0.99 * smoothMag + 0.01 * ((float)abs(mag));
-  //smoothMag[idx] = 0.99 * smoothMag[idx] + 0.01 * ((float)mag[idx]);
-
   // perimeter inside/outside detection
   if (mag > 0)
   {
@@ -381,17 +377,19 @@ void MatchedFilter(int16_t Samples)
   magAvg = (mag + magPrev)/2;
   magPrev = mag;
   
-  magAvg5 = (mag + magPrev1 + magPrev2 + magPrev3 + magPrev4) /5;
-  magPrev4 = magPrev3;
-  magPrev3 = magPrev2;
-  magPrev2 = magPrev1;
-  magPrev1 = mag;
+  // magAvg5 = (mag + magPrev1 + magPrev2 + magPrev3 + magPrev4) /5;
+  // magPrev4 = magPrev3;
+  // magPrev3 = magPrev2;
+  // magPrev2 = magPrev1;
+  // magPrev1 = mag;
   
+  // In/out perimeter wire detection 
+  // Large signal, the in/out detection is reliable.
+  // Using mag yields very fast in/out transition reporting.
+
   boolean isInside;
   if (abs(mag) > PERIMETER_IN_OUT_DETECTION_THRESHOLD)
   {
-    // Large signal, the in/out detection is reliable.
-    // Using mag yields very fast in/out transition reporting.
     isInside = (mag < 0);
     if(isInside){
       g_signalCounter = -4;
@@ -407,16 +405,41 @@ void MatchedFilter(int16_t Samples)
     isInside = (g_signalCounter <= 0);
   }
 
-  // Decided not to protect with a semaphore the access match filter values as these values are only written here and this avoids unecessary system overload
+  // Decided not to protect with a semaphore the access to match filter values as these values are only written here and this avoids unecessary system overload
   //  xSemaphoreTake(g_MyglobalSemaphore, portMAX_DELAY);
+
+  // Perimeter wire signal strenght detection 
+  // smoothed magnitude used for signal detection
+  
+  if(smoothMagLost == UNKNOWN_FLOAT)
+  {
+    smoothMagLost = abs(mag);
+  }
+  else
+  {
+    smoothMagLost = 0.99 * smoothMagLost + 0.01 * ((float)abs(mag));
+  }
+  g_PerimeterSignalLost = smoothMagLost < g_PerimeterSignalLostThreshold; 
+
+  if(smoothMagTracking == UNKNOWN_FLOAT)
+  {
+    smoothMagTracking = abs(mag);
+  }
+  else
+  {
+    smoothMagTracking = 0.75 * smoothMagTracking + 0.25 * ((float)abs(mag));
+  }
+  g_PerimeterSignalLowForTracking = smoothMagTracking < g_PerimeterSignalLowTrackThreshold;
+
   if(isInside)
   {
     g_lastIsInsidePerimeterTime = millis();
   }
   g_PerimeterMagnitude = mag;
   g_PerimeterMagnitudeAvg = magAvg;
-  g_PerimeterMagnitudeAvgPID = magAvg5;
-  g_PerimeterSmoothMagnitude = smoothMag;
+  // g_PerimeterMagnitudeAvgPID = magAvg5;
+  g_PerimeterSmoothMagnitude = int(smoothMagLost);
+  g_PerimeterSmoothMagnitudeTracking = int(smoothMagTracking);
   g_isInsidePerimeter = isInside;
   g_PerimeterFilterQuality = FilterQuality;
   //  xSemaphoreGive(g_MyglobalSemaphore);
@@ -511,8 +534,9 @@ void PerimeterProcessingLoopTask(void *dummyParameter)
           JSONDBGPayload.clear();
 
           JSONDBGPayload.add("Mag", g_PerimeterMagnitude);
-          JSONDBGPayload.add("MagAvg", g_PerimeterMagnitudeAvg);        
-          JSONDBGPayload.add("MagAvg5", g_PerimeterMagnitudeAvgPID);        
+          JSONDBGPayload.add("MagAvg", g_PerimeterMagnitudeAvg);
+          JSONDBGPayload.add("SMag", g_PerimeterSmoothMagnitude);
+          JSONDBGPayload.add("SMagTrk", g_PerimeterSmoothMagnitudeTracking);
           JSONDBGPayload.add("Cnt", g_signalCounter*50);
           JSONDBGPayload.add("In?", g_isInsidePerimeter*100);
           JSONDBGPayload.toString(JSONDBGPayloadStr, false);
@@ -537,8 +561,9 @@ void PerimeterProcessingLoopTask(void *dummyParameter)
                     " |RawAvg " + String(g_PerimeterRawAvg) + " [" + String(g_PerimeterRawMin) + "," + String(g_PerimeterRawMax) + "]" +
                     " |FiltMag:" + String(g_PerimeterMagnitude) +
                     " |AvgMag:" + String(g_PerimeterMagnitudeAvg) +
-                    " |AvgMagPID:" + String(g_PerimeterMagnitudeAvgPID) +
+                    // " |AvgMagPID:" + String(g_PerimeterMagnitudeAvgPID) +
                     " SMag:" + String(g_PerimeterSmoothMagnitude) +
+                    " SMagTrk:" + String(g_PerimeterSmoothMagnitudeTracking) +
                     " FiltQual:" + String(g_PerimeterFilterQuality,2) + 
                     " Sigcount:" + String(g_signalCounter) +
                     " in?:" + String(g_isInsidePerimeter),

@@ -165,16 +165,12 @@ String ErrorString(const int errorCode)
     return String("No Error");
 
 //General Error conditions
-
-  case ERROR_BATTERY_CRITICAL:
-    return String("Battery level below CRITICAL threshold");
-  case ERROR_VERTICAL_TILT_ACTIVATED:
-    return String("Vertical tilt sensor triggered");
-  case ERROR_HORIZONTAL_TILT_ACTIVATED:
-    return String("Horizontal tilt sensor triggered");
+  case ERROR_BATTERY_CRITICAL:                            return String("Battery level below CRITICAL threshold");
+  case ERROR_VERTICAL_TILT_ACTIVATED:                     return String("Vertical tilt sensor triggered");
+  case ERROR_HORIZONTAL_TILT_ACTIVATED:                   return String("Horizontal tilt sensor triggered");
+  case ERROR_NO_PERIMETER_SIGNAL:                         return String("Perimeter wire signal lost or stopped");
 
 //States-related Error conditions
-
   case ERROR_MOWING_NO_START_BUMPER_ACTIVE:               return String("Mowing cannot start: bumper activated");
   case ERROR_MOWING_NO_START_OBJECT_TOO_CLOSE:            return String("Mowing cannot start: object too close");
   case ERROR_MOWING_NO_START_TILT_ACTIVE:                 return String("Mowing cannot start: tilt sensor activated");
@@ -195,7 +191,6 @@ String ErrorString(const int errorCode)
   case ERROR_FOLLOW_WIRE_CONSECUTIVE_OBSTACLES:           return String("Wire tracking Stopped: too many successive obstacles");
 
 // Undefined errors
-
   case ERROR_UNDEFINED:
     return String("ERROR UNDEFINED");
   default:
@@ -226,9 +221,17 @@ bool ParameterChangeValue(const String parameterCode, const float parameterValue
   {
     g_ParamPerimeterTrackPIDKd = parameterValue;
   }
-    else if (parameterCode == "PerimTtrkSetPt")
+  else if (parameterCode == "PerimTtrkSetPt")
   {
     g_PerimeterTrackSetpoint = parameterValue;
+  }
+  else if (parameterCode == "PerimLostThresld")
+  {
+    g_PerimeterSignalLostThreshold = parameterValue;
+  }
+  else if (parameterCode == "PerimTtrkLowThresld")
+  {
+    g_PerimeterSignalLowTrackThreshold = parameterValue;
   }
   else    // Paramater Code not configured or found
   {

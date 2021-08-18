@@ -157,7 +157,11 @@ In this state the mower is doing nthing and wait for the next command.
 
 `PerimTtrkngKd` : PID control Kd (derivative) parameter for perimeter wire tracking,
 
-`PerimTtrkSetPt` : PID control setpoint for perimeter tracking
+`PerimTtrkSetPt` : PID control setpoint for perimeter tracking,
+
+`PerimLostThresld` : Perimeter wire signal lost threshold (perimeter wire cut or sender stopped),
+
+`PerimTtrkLowThresld` : Perimeter wire signal too low for tracking threshold (mower no longer "over" perimeter wire).
 
 **Note** : Incorrectly spelt or unknown parameter codes are rejected.
 

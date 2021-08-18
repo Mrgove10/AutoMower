@@ -111,12 +111,21 @@ unsigned long g_lastIsInsidePerimeterTime = 0;
 bool g_PerimetersignalTimedOut = false;
 int g_PerimeterMagnitude = 0;
 int g_PerimeterMagnitudeAvg = 0;
-int g_PerimeterMagnitudeAvgPID=0;
+// int g_PerimeterMagnitudeAvgPID=0;
 
 int g_PerimeterSmoothMagnitude = 0;
+int g_PerimeterSmoothMagnitudeTracking = 0;
+
 float g_PerimeterFilterQuality = 0;
 int16_t g_PerimeterOffset = 0;                   // (Saved to EEPROM)
 int g_signalCounter = 0;
+
+bool g_PerimeterSignalStopped = false;            // This boolean indicates that the sender has notified that the wire is cut or stopped
+bool g_PerimeterSignalLost = true;               // This boolean indicates that the perimeter signal is either too weak (meaning that the perimeter wire is probably cut or the sender is stopped)
+int16_t g_PerimeterSignalLostThreshold = 0;   // Threshold under which g_PerimeterSignalLost is true (Dynamic parameter Saved to EEPROM)
+
+bool g_PerimeterSignalLowForTracking = true;     // This boolean indicates that the perimeter signal is too weak while wire tracking meaning that the mower is no longuer "over" the wire
+int16_t g_PerimeterSignalLowTrackThreshold = 0;   // Threshold under which g_PerimeterSignalLowForTracking is true (Dynamic parameter Saved to EEPROM)
 
 uint16_t g_RawCopy[PERIMETER_RAW_SAMPLES]; //  Copy of circular Buffer containing last samples read from I2S DMA buffers
 int g_rawWritePtrCopy;                     // Pointer to last value written to g_RawCopy circular buffer copy

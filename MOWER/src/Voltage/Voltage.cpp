@@ -46,13 +46,23 @@ bool BatteryVoltageCheck(void)
 int BatteryVoltageRead(const bool Now)
 {
   static unsigned long LastVoltageRead = 0;
+  static float smoothVoltage = UNKNOWN_FLOAT;
 
   if ((millis() - LastVoltageRead > BATTERY_VOLTAGE_READ_INTERVAL) || Now)
   {
     int voltraw = ProtectedAnalogRead(PIN_ESP_BAT_VOLT);
     int volt = map(voltraw, 0, 4095, 0, VOLTAGE_RANGE_MAX);
 
-    g_BatteryVotlage = volt;
+    if (smoothVoltage == UNKNOWN_FLOAT)
+    {
+      smoothVoltage = volt;
+    }
+    else
+    {
+      smoothVoltage = 0.80 * smoothVoltage + 0.20 * ((float) volt);
+    }
+
+    g_BatteryVotlage = smoothVoltage;
     LastVoltageRead = millis();
 
     if (volt < BATTERY_VOLTAGE_LOW_THRESHOLD)
@@ -65,7 +75,7 @@ int BatteryVoltageRead(const bool Now)
       g_BatteryStatus = BATTERY_VOLTAGE_LOW;
       return BATTERY_VOLTAGE_LOW;
     }
-    else if (volt < VOLTAGE_NORMAL_THRESHOLD)
+    else if (volt < BATTERY_VOLTAGE_NORMAL_THRESHOLD)
     {
       g_BatteryStatus = BATTERY_VOLTAGE_MEDIUM;
       return BATTERY_VOLTAGE_MEDIUM;
