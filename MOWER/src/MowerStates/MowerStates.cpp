@@ -9,6 +9,7 @@
 #include "Sonar/Sonar.h"
 #include "Tilt/Tilt.h"
 #include "Bumper/Bumper.h"
+#include "Rain/Rain.h"
 #include "Utils/Utils.h"
 #include "Display/Display.h"
 
@@ -174,6 +175,19 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
   if (g_BatteryVotlage < BATTERY_VOLTAGE_RETURN_TO_BASE_THRESHOLD)
   {
     DebugPrintln("Battery low: returning to base (" + String(g_BatteryVotlage) + " mv)", DBG_INFO, true);
+    MowerStop();
+    CutMotorStop();
+    g_CurrentState = MowerState::going_to_base;
+    return;
+  }
+
+  //--------------------------------
+  // Is it raining ? 
+  //--------------------------------
+
+  if (isRaining())
+  {
+    DebugPrintln("Raining : returning to base", DBG_INFO, true);
     MowerStop();
     CutMotorStop();
     g_CurrentState = MowerState::going_to_base;
