@@ -5,6 +5,8 @@ This Project
 [![PlatformIO CI](https://github.com/Mrgove10/AutoMower/actions/workflows/main.yml/badge.svg)](https://github.com/Mrgove10/AutoMower/actions/workflows/main.yml)
 [![CodeFactor](https://www.codefactor.io/repository/github/mrgove10/automower/badge)](https://www.codefactor.io/repository/github/mrgove10/automower)
 
+**Note: This project is a work in progress !!**
+
 ## Table of contents
 
 - [Automower](#automower)
@@ -54,21 +56,21 @@ In this state the mower is doing nthing and wait for the next command.
 
 **Val1** : Possible values for Val1 are:
 
-`IDLE` : In this state the mower is doing nothing and waits for the next command.
+- `IDLE` : In this state the mower is doing nothing and waits for the next command.
 
-`DOCKED` : In this state the mower is docked.
+- `DOCKED` : In this state the mower is docked.
 
-`MOWING` : In this state the mower is doing it's primary work....mowing the lawn !
+- `MOWING` : In this state the mower is doing it's primary work....mowing the lawn !
 
-`TO_BASE` : In this state the mower is returning to its base/charging station.
+- `TO_BASE` : In this state the mower is returning to its base/charging station.
 
-`FROM_BASE` : In this state the mower is leaving its base/charging station and going to the mowing zone.
+- `FROM_BASE` : In this state the mower is leaving its base/charging station and going to the mowing zone.
 
-`ERROR` : This is the state when the Mower has identified an error condition and is stopped and waiting for an acknowledgement from the user. This command is not for operational use and only for testing purposes.
+- `ERROR` : This is the state when the Mower has identified an error condition and is stopped and waiting for an acknowledgement from the user. This command is not for operational use and only for testing purposes.
 
-`ACKNOWLEDGE` : This is the command to acknoledge an error. Upon acknowledgement, the mower will retun to Idle state. Acknowledgement can also be performed directly on the mower's HMI.
+- `ACKNOWLEDGE` : This is the command to acknoledge an error. Upon acknowledgement, the mower will retun to `IDLE` state. Acknowledgement can also be performed directly on the mower's HMI.
 
-`TEST` : This is the command to trigger the mower's startup test sequence. At the end, the mower will retun to Idle state.
+- `TEST` : This is the command to trigger the mower's startup test sequence. At the end, the mower will retun to `IDLE` state.
 
 **Val2** : No Val2 value expected for the above commands (any value sent will be ignored)
 
@@ -101,7 +103,7 @@ In this state the mower is doing nthing and wait for the next command.
 
 #### Over The Air program update (OTA)
 
-**Description** : This command places the mower in a condition ready to receive an OTA upate. This stops the mower (motor stops), suspsends the MQTT communications and suspends mower RTOS tasks. At end of successful OTA, the mower program resets. If OTA is not performed within a preconfigure duration (¬ 3 minutes), normal mower functions resume and the mower is placed in Idle state.
+**Description** : This command places the mower in a condition ready to receive an OTA upate. This stops the mower (motor stops), suspsends the MQTT communications and suspends mower RTOS tasks. At end of successful OTA, the mower program resets. If OTA is not performed within a preconfigure duration (¬ 3 minutes), normal mower functions resume and the mower is placed in `IDLE` state.
 
 **Command** : `OTA`
 
@@ -125,11 +127,11 @@ In this state the mower is doing nthing and wait for the next command.
 
 **Val1** : Val1 contains the level to be set. Possible values for Val1 are:
 
-`VERBOSE` : At this "lowest" level, all trace messages are displayed.
+- `VERBOSE` : At this "lowest" level, all trace messages are displayed.
 
-`DEBUG` : At this level, VERBOSE level mesages are not displayed, all others are.
+- `DEBUG` : At this level, VERBOSE level mesages are not displayed, all others are.
 
-`INFO` : At this level, VERBOSE and DEBUG level mesages are not displayed, all others are (INFO and ERROR).
+- `INFO` : At this level, VERBOSE and DEBUG level mesages are not displayed, all others are (INFO and ERROR).
 
 **Note** INFO and ERROR messages cannot be hidden.
 
@@ -152,17 +154,17 @@ In this state the mower is doing nthing and wait for the next command.
 
 **Val1** : Val1 contains the string code of the parameter. Possible values are:
 
-`PerimTtrkngKp` : PID control Kp (proportional )parameter for perimeter wire tracking,
+- `PerimTtrkngKp` : PID control Kp (proportional )parameter for perimeter wire tracking,
 
-`PerimTtrkngKi` : PID control Ki (integral) parameter for perimeter wire tracking,
+- `PerimTtrkngKi` : PID control Ki (integral) parameter for perimeter wire tracking,
 
-`PerimTtrkngKd` : PID control Kd (derivative) parameter for perimeter wire tracking,
+- `PerimTtrkngKd` : PID control Kd (derivative) parameter for perimeter wire tracking,
 
-`PerimTtrkSetPt` : PID control setpoint for perimeter tracking,
+- `PerimTtrkSetPt` : PID control setpoint for perimeter tracking,
 
-`PerimLostThresld` : Perimeter wire signal lost threshold (perimeter wire cut or sender stopped),
+- `PerimLostThresld` : Perimeter wire signal lost threshold (perimeter wire cut or sender stopped),
 
-`PerimTtrkLowThresld` : Perimeter wire signal too low for tracking threshold (mower no longer "over" perimeter wire).
+- `PerimTtrkLowThresld` : Perimeter wire signal too low for tracking threshold (mower no longer "over" perimeter wire).
 
 **Note** : Incorrectly spelt or unknown parameter codes are rejected.
 
@@ -367,6 +369,12 @@ In this state the mower is doing nthing and wait for the next command.
 ```
 
 ## Receiving information from the Mower
+
+// TO DO
+
+## Tasks
+
+// TO DO
 
 ## License
 
