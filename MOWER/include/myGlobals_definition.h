@@ -479,11 +479,13 @@ extern float g_WheelPerimeterTrackingCorrection[MOTION_MOTOR_COUNT]; // from per
 #define SONAR_MIN_DISTANCE_FOR_STOP 25         // in cm
 #define SONAR_MIN_DISTANCE_FOR_PRECONDITION 40 // in cm
 
+#define PERIMETER_MIN_MAGNITUDE_FOR_OUT_DETECTION 60 // to prevent spurious out of perimeter detections
+
 // Mowing
 #define MOWER_MOWING_TRAVEL_SPEED 90
 #define MOWER_MOWING_MAX_CONSECUTVE_OBSTACLES 5
 
-extern unsigned int g_totalMowingTime; // Total time spent mowing, in minutes (Saved to EEPROM)
+extern unsigned long g_totalMowingTime; // Total time spent mowing, in minutes (Saved to EEPROM)
 
 // Perimeter search function
 

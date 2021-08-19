@@ -163,17 +163,19 @@ bool MowerSlowDownApproachingObstables(const int SpeedDelta, const int Front, co
   // If at least one of the conditions are met and if motor speed is higher that minimum threshold, reduce speed
 
   // Left Motor
-  if (SpeedReductiontiggered && g_MotionMotorSpeed[MOTION_MOTOR_LEFT] > MOTION_MOTOR_MIN_SPEED + SpeedDelta)
+  // if (SpeedReductiontiggered && g_MotionMotorSpeed[MOTION_MOTOR_LEFT] - SpeedDelta > MOTION_MOTOR_MIN_SPEED )
+  if (SpeedReductiontiggered)
   {
     DebugPrintln("Left motor speed reduced by " + String(SpeedDelta) + "%", DBG_VERBOSE, true);
-    MotionMotorSetSpeed(MOTION_MOTOR_LEFT, -SpeedDelta, true);
+    MotionMotorSetSpeed(MOTION_MOTOR_LEFT, - SpeedDelta, true);
   }
 
   // Right Motor
-  if (SpeedReductiontiggered && g_MotionMotorSpeed[MOTION_MOTOR_RIGHT] > MOTION_MOTOR_MIN_SPEED + SpeedDelta)
+  // if (SpeedReductiontiggered && g_MotionMotorSpeed[MOTION_MOTOR_RIGHT] - SpeedDelta > MOTION_MOTOR_MIN_SPEED)
+  if (SpeedReductiontiggered)
   {
     DebugPrintln("Right motor speed reduced by " + String(SpeedDelta) + "%", DBG_VERBOSE, true);
-    MotionMotorSetSpeed(MOTION_MOTOR_RIGHT, -SpeedDelta, true);
+    MotionMotorSetSpeed(MOTION_MOTOR_RIGHT, - SpeedDelta, true);
   }
 
   // keep track of when last speed reduction was triggered

@@ -12,7 +12,8 @@ void InitTelnet()
   MySERIAL.setRejectMsg(text);
   MySERIAL.setCallbackOnConnect(telnetConnected);
   MySERIAL.setCallbackOnDisconnect(telnetDisconnected);
-  MySERIAL.setBufferSize(3000);
+  // MySERIAL.setBufferSize(1024);
+  MySERIAL.setBufferSize(512);
   MySERIAL.setMinBlockSize(16);
 
   MySERIAL.begin(TELNET_BAUD);

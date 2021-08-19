@@ -174,7 +174,7 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
   if (g_PerimeterSignalLost || g_PerimeterSignalStopped)
   {
     DebugPrintln("Perimeter signal Lost (" + String(g_PerimeterSmoothMagnitude) + ") or stopped", DBG_ERROR, true);
-    g_totalMowingTime = g_totalMowingTime + (millis() - mowingStartTime) / 60000;   // in minutes
+    g_totalMowingTime = g_totalMowingTime + (millis() - mowingStartTime);   // in minutes
     g_CurrentState = MowerState::error;
     g_CurrentErrorCode = ERROR_NO_PERIMETER_SIGNAL;
     return;
@@ -189,7 +189,7 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
     DebugPrintln("Battery low: returning to base (" + String(g_BatteryVotlage) + " mv)", DBG_INFO, true);
     MowerStop();
     CutMotorStop();
-    g_totalMowingTime = g_totalMowingTime + (millis() - mowingStartTime) / 60000;   // in minutes
+    g_totalMowingTime = g_totalMowingTime + (millis() - mowingStartTime);   // in minutes
     g_CurrentState = MowerState::going_to_base;
     return;
   }
@@ -203,7 +203,7 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
     DebugPrintln("Raining : returning to base", DBG_INFO, true);
     MowerStop();
     CutMotorStop();
-    g_totalMowingTime = g_totalMowingTime + (millis() - mowingStartTime) / 60000;   // in minutes
+    g_totalMowingTime = g_totalMowingTime + (millis() - mowingStartTime);   // in minutes
     g_CurrentState = MowerState::going_to_base;
     return;
   }
@@ -236,7 +236,7 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
     // Check if number of consecutive obstacle detection is above threshold and put mower in Error mode
     if (g_successiveObstacleDectections > MOWER_MOWING_MAX_CONSECUTVE_OBSTACLES)
     {
-      g_totalMowingTime = g_totalMowingTime + (millis() - mowingStartTime) / 60000;   // in minutes
+      g_totalMowingTime = g_totalMowingTime + (millis() - mowingStartTime);   // in minutes
       g_CurrentState = MowerState::error;
       g_CurrentErrorCode = ERROR_MOWING_CONSECUTIVE_OBSTACLES;
       return;
@@ -249,7 +249,7 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
     }
   }
 
-  g_totalMowingTime = g_totalMowingTime + (millis() - mowingStartTime) / 60000;   // in minutes
+  g_totalMowingTime = g_totalMowingTime + (millis() - mowingStartTime);   // in minutes
   mowingStartTime = millis();
   // TO DO When to stop mowing and go back to base
 }
@@ -576,7 +576,7 @@ bool MowerFindWire(const bool reset, int *phase, const int heading, const bool c
     }
 
     // Reached outside (wire found): => the phase ends
-    if (!g_isInsidePerimeter)
+    if (!g_isInsidePerimeter && g_PerimeterSmoothMagnitudeTracking > PERIMETER_MIN_MAGNITUDE_FOR_OUT_DETECTION)
     {
       MowerStop();
       *phase = PERIMETER_SEARCH_PHASE_3;
@@ -642,6 +642,7 @@ bool MowerFindWire(const bool reset, int *phase, const int heading, const bool c
       }
 
       // Turn on the spot by steps
+      DebugPrintln("Phase 3 turn: " + String(turnCount), DBG_DEBUG, true);
       MowerTurn(turnIncrement, true);
       delay(PERIMETER_TIMER_PERIOD * 2 / 1000); // wait to make sure that Perimeter signal read task can refresh g_isInsidePerimeter status
       turnCount = turnCount + 1;
@@ -650,7 +651,8 @@ bool MowerFindWire(const bool reset, int *phase, const int heading, const bool c
     }
 
     // Back inside and signal is strong enough => the phase ends
-    if (g_isInsidePerimeter && !g_PerimeterSignalLowForTracking)
+    // if (g_isInsidePerimeter && !g_PerimeterSignalLowForTracking)
+    if (g_isInsidePerimeter)
     {
       MowerStop();
       *phase = PERIMETER_SEARCH_FINISHED;
@@ -693,6 +695,7 @@ bool MowerFindWire(const bool reset, int *phase, const int heading, const bool c
 bool MowerFollowWire(bool *reset, const int heading, const bool clockwise)
 {
   static unsigned long lastPIDUpdate = 0;
+  int speedAdjustment = 0;
 
   if (*reset)
   {
@@ -713,7 +716,7 @@ bool MowerFollowWire(bool *reset, const int heading, const bool clockwise)
       return false;
     }
 
-    DebugPrintln("Kp:" + String(g_ParamPerimeterTrackPIDKp) + " Ki:" + String(g_ParamPerimeterTrackPIDKi) + " Kd:" + String(g_ParamPerimeterTrackPIDKd), DBG_DEBUG, true);
+    DebugPrintln("Kp:" + String(g_ParamPerimeterTrackPIDKp,4) + " Ki:" + String(g_ParamPerimeterTrackPIDKi,4) + " Kd:" + String(g_ParamPerimeterTrackPIDKd,4), DBG_DEBUG, true);
     DebugPrintln("Smag:" + String(g_PerimeterSmoothMagnitude), DBG_DEBUG, true);
     DebugPrintln("");
 
@@ -756,24 +759,30 @@ bool MowerFollowWire(bool *reset, const int heading, const bool clockwise)
   bool SlowedDown = false;
   if (clockwise)
   {
-    SlowedDown = MowerSlowDownApproachingObstables(BACK_TO_BASE_SPEED - MOWER_MOVES_SPEED_NORMAL,
+    SlowedDown = MowerSlowDownApproachingObstables(10,
                                                    SONAR_MIN_DISTANCE_FOR_SLOWING,
                                                    0, // no left detection
                                                    SONAR_MIN_DISTANCE_FOR_SLOWING,
-                                                   0); // no perimeter detection
+                                                   200); // no perimeter detection
   }
   else
   {
-    SlowedDown = MowerSlowDownApproachingObstables(BACK_TO_BASE_SPEED - MOWER_MOVES_SPEED_NORMAL,
+    SlowedDown = MowerSlowDownApproachingObstables(10,
                                                    SONAR_MIN_DISTANCE_FOR_SLOWING,
                                                    SONAR_MIN_DISTANCE_FOR_SLOWING,
                                                    0,  // no right detection
-                                                   0); // no perimeter detection
+                                                   200); // no perimeter detection
   }
 
   if (!SlowedDown) // No approaching objects : resume normal speed
   {
     MowerSpeed(BACK_TO_BASE_SPEED);
+    speedAdjustment = 0;
+
+  }
+  else
+  {
+    speedAdjustment = 10;
   }
 
   //--------------------------------
@@ -843,7 +852,7 @@ bool MowerFollowWire(bool *reset, const int heading, const bool clockwise)
 
   if (g_PerimeterSignalLowForTracking)
   {
-    DebugPrintln("Perimeter signal too low for tracking (" + String(g_PerimeterSmoothMagnitudeTracking) + ")", DBG_ERROR, true);
+    DebugPrintln("Perimeter signal too low for tracking (" + String(g_PerimeterSmoothMagnitudeTracking) + ")", DBG_VERBOSE, true);
     // for the moment, do nothing
     // TO DO ....
     // stop mower
@@ -866,7 +875,7 @@ bool MowerFollowWire(bool *reset, const int heading, const bool clockwise)
     g_PIDSetpoint = g_PerimeterTrackSetpoint;
     g_PerimeterTrackPID.SetTunings(g_ParamPerimeterTrackPIDKp, g_ParamPerimeterTrackPIDKi, g_ParamPerimeterTrackPIDKd, P_ON_E);
 
-    DebugPrintln("PID P " + String(g_PerimeterTrackPID.GetKp()) + " " + String(g_ParamPerimeterTrackPIDKp), DBG_VERBOSE, true);
+//    DebugPrintln("PID P " + String(g_PerimeterTrackPID.GetKp()) + " " + String(g_ParamPerimeterTrackPIDKp), DBG_VERBOSE, true);
 
     bool PIDReturn = g_PerimeterTrackPID.Compute();
     if (!PIDReturn)
@@ -887,28 +896,30 @@ bool MowerFollowWire(bool *reset, const int heading, const bool clockwise)
     //
     // Action on wheels to generate turn is by reducing the speed of the inner wheel because if motor is allready at full speed, it is not posible to increase speed of outter wheel
 
+    DebugPrintln("\t\t\tPID Returned ..." + String(g_PIDOutput), DBG_DEBUG, true);
+
     if (g_PIDOutput != 0)
     {
       if (g_PIDOutput > 0) // Mag is negative and PID output positive, so we are inside and need to move towards the outside
       {
         if (clockwise) // we need to go towards the left
         {
-          MotionMotorsTrackingAdjustSpeed(-g_PIDOutput, 0);
+          MotionMotorsTrackingAdjustSpeed(-g_PIDOutput-speedAdjustment, -speedAdjustment);
         }
         else // we need to go towards the right
         {
-          MotionMotorsTrackingAdjustSpeed(0, -g_PIDOutput);
+          MotionMotorsTrackingAdjustSpeed(-speedAdjustment, -g_PIDOutput-speedAdjustment);
         }
       }
       else // Mag is positive and PID output negative, so we are outside and need to move towards the inside
       {
         if (clockwise) // we need to go towards the right
         {
-          MotionMotorsTrackingAdjustSpeed(0, g_PIDOutput);
+          MotionMotorsTrackingAdjustSpeed(-speedAdjustment, g_PIDOutput-speedAdjustment);
         }
         else // we need to go towards the left
         {
-          MotionMotorsTrackingAdjustSpeed(g_PIDOutput, 0);
+          MotionMotorsTrackingAdjustSpeed(g_PIDOutput-speedAdjustment, -speedAdjustment);
         }
       }
     }
@@ -1132,7 +1143,7 @@ int CheckObstacleAndAct(const bool Bumper, const int Front, const int Left, cons
   //    if not possible, if possible to turn Right, reverse and turn right by a "small" angle (~ less than 90 degrees)
   //    if not possible, reverse further and turn to be ready to go in "opposite direction"
 
-  if (Perimeter && !g_isInsidePerimeter)
+  if (Perimeter && !g_isInsidePerimeter && g_PerimeterSmoothMagnitudeTracking > PERIMETER_MIN_MAGNITUDE_FOR_OUT_DETECTION)
   {
     DebugPrintln("Outside Perimeter cable (mag:" + String(g_PerimeterMagnitude) + ")", DBG_DEBUG, true);
 

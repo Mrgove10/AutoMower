@@ -418,7 +418,7 @@ void MatchedFilter(int16_t Samples)
   }
   else
   {
-    smoothMagLost = 0.99 * smoothMagLost + 0.01 * ((float)abs(mag));
+    smoothMagLost = 0.95 * smoothMagLost + 0.05 * ((float)abs(mag));
   }
   g_PerimeterSignalLost = smoothMagLost < g_PerimeterSignalLostThreshold;
 

@@ -293,7 +293,7 @@ float g_WheelPerimeterTrackingCorrection[MOTION_MOTOR_COUNT] = {0, 0}; // from p
 /************************* Mower Moves variables *********************************/
 
 // Mowing
-unsigned int g_totalMowingTime = 0; // Total time spent mowing, in minutes (Saved to EEPROM)
+unsigned long g_totalMowingTime = 0; // Total time spent mowing, in minutes (Saved to EEPROM)
 
 // Move count variables
 int g_successiveObstacleDectections = 0; // successive obstacle detections (to trigger appropriate reaction)

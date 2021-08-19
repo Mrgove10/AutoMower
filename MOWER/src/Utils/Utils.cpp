@@ -320,7 +320,7 @@ void DisplayTaskStatus(const String task)
 
   if (task == "*")
   {
-    DebugPrint("Total Tasks: " + String(uxTaskGetNumberOfTasks()), DBG_INFO, true);
+    DebugPrint("Total Tasks: " + String(uxTaskGetNumberOfTasks()), DBG_VERBOSE, true);
   }
 
   DebugPrintln(" (" + String(millis()-startMillis) + "ms, heap: " + String(esp_get_free_heap_size()) +", temp:" + String(temperatureRead(), 1) + " deg)", DBG_VERBOSE, true, true);

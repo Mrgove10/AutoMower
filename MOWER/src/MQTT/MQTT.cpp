@@ -398,7 +398,7 @@ void MQTTSendTelemetry()
     JSONDataPayload.add("RSSI", String(WiFi.RSSI()));
 
     JSONDataPayload.add("Obstcl", String(g_totalObstacleDectections));
-    JSONDataPayload.add("MowTim", String(g_totalMowingTime));
+    JSONDataPayload.add("MowTim", String(int(g_totalMowingTime/60000)));
     JSONDataPayload.add("Heap", String(esp_get_free_heap_size()));
 
     JSONDataPayload.toString(JSONDataPayloadStr, false);

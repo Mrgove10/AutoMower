@@ -103,7 +103,7 @@ void MotionMotorSetSpeed(const int Motor, const int Speed, const bool Relative)
     if (SpeedPoints != previousSpeed[Motor])
     {
       previousSpeed[Motor] = SpeedPoints;
-      DebugPrintln("Motion Motor " + g_MotionMotorStr[Motor] + " speed " + String(checkedspeed) + " too low : not applied", DBG_VERBOSE, true);
+      DebugPrintln("\t\t\t\t\tMotion Motor " + g_MotionMotorStr[Motor] + " speed " + String(checkedspeed) + " too low : 0 applied", DBG_DEBUG, true);
     }
     ledcWrite(g_MotionMotorPWMChannel[Motor], 0);
     g_MotionMotorSpeed[Motor] = 0;
@@ -115,7 +115,7 @@ void MotionMotorSetSpeed(const int Motor, const int Speed, const bool Relative)
     if (SpeedPoints != previousSpeed[Motor])
     {
       previousSpeed[Motor] = SpeedPoints;
-      DebugPrintln("Motion Motor " + g_MotionMotorStr[Motor] + " @ " + String(checkedspeed) + "% (" + String(SpeedPoints) + ")", DBG_VERBOSE, true);
+      DebugPrintln("\t\t\t\t\tMotion Motor " + g_MotionMotorStr[Motor] + "\t@ " + String(checkedspeed) + "% (" + String(SpeedPoints) + ")", DBG_DEBUG, true);
     }
   }
 }

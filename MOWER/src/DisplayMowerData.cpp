@@ -61,7 +61,7 @@ void DisplayMowerData()
   static unsigned long LastRefreshed = 0;
   static unsigned long LastTaskRefreshed = 0;
 
-  if ((millis() - LastRefreshed > MOWER_DATA_DISPLAY_INTERVAL))
+  if ((millis() - LastRefreshed > MOWER_DATA_DISPLAY_INTERVAL*5))
   {
     DebugPrint("T1:" + String(g_Temperature[TEMPERATURE_1_RED], 1) +        // " | Err1: " + String(Temp1ErrorCount) +
                    " |T2:" + String(g_Temperature[TEMPERATURE_2_BLUE], 1) + //" | Err2: " + String(Temp2ErrorCount) +
@@ -74,8 +74,8 @@ void DisplayMowerData()
                    " |Head:" + String(g_CompassHeading, 1) +
                    " |Timouts:" + String(g_FastAnaReadTimeout) +
                    " |MaxQ:" + String(g_inQueueMax) +
-                   " |MowCnt" + String(g_MowingLoopCnt) +
-                   " |Obtcl" + String(g_totalObstacleDectections),
+                   " |MowCnt:" + String(g_MowingLoopCnt) +
+                   " |Obtcl:" + String(g_totalObstacleDectections),
                DBG_VERBOSE, true);
 
     g_FastAnaReadTimeout = 0;
