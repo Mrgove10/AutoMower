@@ -399,6 +399,7 @@ void MQTTSendTelemetry()
 
     JSONDataPayload.add("Obstcl", String(g_totalObstacleDectections));
     JSONDataPayload.add("MowTim", String(g_totalMowingTime));
+    JSONDataPayload.add("Heap", String(esp_get_free_heap_size()));
 
     JSONDataPayload.toString(JSONDataPayloadStr, false);
     JSONDataPayloadStr.toCharArray(MQTTpayload, JSONDataPayloadStr.length() + 1);

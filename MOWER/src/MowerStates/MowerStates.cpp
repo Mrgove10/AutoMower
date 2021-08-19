@@ -249,6 +249,8 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
     }
   }
 
+  g_totalMowingTime = g_totalMowingTime + (millis() - mowingStartTime) / 60000;   // in minutes
+  mowingStartTime = millis();
   // TO DO When to stop mowing and go back to base
 }
 

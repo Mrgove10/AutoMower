@@ -90,6 +90,9 @@ void EEPROMSetup(void)
     // Stored Statistics
     g_totalObstacleDectections = g_EEPROMLoad.Load.Data.totalObstacleDectections;
     g_totalMowingTime = g_EEPROMLoad.Load.Data.totalMowingTime;
+
+    DebugPrintln("EEPROM value for g_totalObstacleDectections: " + String(g_totalObstacleDectections), DBG_INFO);
+    DebugPrintln("EEPROM value for g_totalMowingTime: " + String(g_totalMowingTime), DBG_INFO);
   }
 }
 

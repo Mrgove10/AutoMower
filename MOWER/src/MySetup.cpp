@@ -64,6 +64,7 @@ void MySetup(void)
   DebugPrintln("Serial Baud:" + String(Serial.baudRate()));
   DebugPrintln("Running on Core:" + String(xPortGetCoreID()));
   DebugPrintln("Chip temperature:" + String(temperatureRead(), 1));
+  DebugPrintln("Free Heap:" + String(esp_get_free_heap_size()));
 
   EEPROMSetup();
 
