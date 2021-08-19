@@ -138,6 +138,7 @@ bool g_MQTTGraphRawDebug = false;
 
 /************************* Analog Read task *********************************/
 TaskHandle_t g_AnaReadTaskHandle; // Sonar Read task RTOS task handle
+SemaphoreHandle_t g_I2CSemaphore; // I2C resource protection semaphore
 
 /************************* EEPROM Management *********************************/
 

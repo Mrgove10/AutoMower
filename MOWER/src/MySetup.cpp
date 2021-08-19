@@ -29,6 +29,7 @@
 void MySetup(void)
 {
   g_MySerialSemaphore = xSemaphoreCreateMutex();
+  g_I2CSemaphore = xSemaphoreCreateMutex(); // I2C resource protection semaphore
 
   Serial.begin(SERIAL_BAUD);
   delay(100);

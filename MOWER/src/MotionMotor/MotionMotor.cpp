@@ -3,6 +3,7 @@
 #include "Environment_definitions.h"
 #include "myGlobals_definition.h"
 #include "MotionMotor/MotionMotor.h"
+#include "IOExtender/IOExtender.h"
 #include "Utils/Utils.h"
 #include "Display/Display.h"
 
@@ -49,8 +50,9 @@ void MotionMotorStart(const int Motor, const int Direction, const int Speed)
 
   if (Direction == MOTION_MOTOR_FORWARD)
   {
-    IOExtend.digitalWrite(g_MotionMotorIn1Pin[Motor], LOW);
-    IOExtend.digitalWrite(g_MotionMotorIn2Pin[Motor], HIGH);
+    IOExtendProtectedWrite(g_MotionMotorIn1Pin[Motor], LOW);
+    IOExtendProtectedWrite(g_MotionMotorIn2Pin[Motor], HIGH);
+
     MotionMotorSetSpeed(Motor, Speed);
     g_MotionMotorOn[Motor] = true;
     g_MotionMotorDirection[Motor] = MOTION_MOTOR_FORWARD;
@@ -59,8 +61,9 @@ void MotionMotorStart(const int Motor, const int Direction, const int Speed)
 
   if (Direction == MOTION_MOTOR_REVERSE)
   {
-    IOExtend.digitalWrite(g_MotionMotorIn1Pin[Motor], HIGH);
-    IOExtend.digitalWrite(g_MotionMotorIn2Pin[Motor], LOW);
+    IOExtendProtectedWrite(g_MotionMotorIn1Pin[Motor], HIGH);
+    IOExtendProtectedWrite(g_MotionMotorIn2Pin[Motor], LOW);
+
     MotionMotorSetSpeed(Motor, Speed);
     g_MotionMotorOn[Motor] = true;
     g_MotionMotorDirection[Motor] = MOTION_MOTOR_REVERSE;
@@ -123,8 +126,8 @@ void MotionMotorSetSpeed(const int Motor, const int Speed, const bool Relative)
  */
 void MotionMotorStop(const int Motor)
 {
-  IOExtend.digitalWrite(g_MotionMotorIn1Pin[Motor], LOW);
-  IOExtend.digitalWrite(g_MotionMotorIn2Pin[Motor], LOW);
+  IOExtendProtectedWrite(g_MotionMotorIn1Pin[Motor], LOW);
+  IOExtendProtectedWrite(g_MotionMotorIn2Pin[Motor], LOW);
   MotionMotorSetSpeed(Motor, 0);
   g_MotionMotorOn[Motor] = false;
   g_MotionMotorDirection[Motor] = MOTION_MOTOR_STOPPED;

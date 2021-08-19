@@ -160,62 +160,62 @@ String ErrorString(const int errorCode)
 {
   switch (errorCode)
   {
-  case ERROR_NO_ERROR:
-    return String("No Error");
+    case ERROR_NO_ERROR:
+      return String("No Error");
 
-    //General Error conditions
-  case ERROR_BATTERY_CRITICAL:
-    return String("Battery level below CRITICAL threshold");
-  case ERROR_VERTICAL_TILT_ACTIVATED:
-    return String("Vertical tilt sensor triggered");
-  case ERROR_HORIZONTAL_TILT_ACTIVATED:
-    return String("Horizontal tilt sensor triggered");
-  case ERROR_NO_PERIMETER_SIGNAL:
-    return String("Perimeter wire signal lost or stopped");
+      //General Error conditions
+    case ERROR_BATTERY_CRITICAL:
+      return String("Battery level below CRITICAL threshold");
+    case ERROR_VERTICAL_TILT_ACTIVATED:
+      return String("Vertical tilt sensor triggered");
+    case ERROR_HORIZONTAL_TILT_ACTIVATED:
+      return String("Horizontal tilt sensor triggered");
+    case ERROR_NO_PERIMETER_SIGNAL:
+      return String("Perimeter wire signal lost or stopped");
 
-    //States-related Error conditions
-  case ERROR_MOWING_NO_START_BUMPER_ACTIVE:
-    return String("Mowing cannot start: bumper activated");
-  case ERROR_MOWING_NO_START_OBJECT_TOO_CLOSE:
-    return String("Mowing cannot start: object too close");
-  case ERROR_MOWING_NO_START_TILT_ACTIVE:
-    return String("Mowing cannot start: tilt sensor activated");
-  case ERROR_MOWING_NO_START_NO_PERIMETER_SIGNAL:
-    return String("Mowing cannot start: no perimeter signal");
-  case ERROR_MOWING_CONSECUTIVE_OBSTACLES:
-    return String("Mowing Stopped: too many successive obstacles");
-  case ERROR_WIRE_SEARCH_NO_START_BUMPER_ACTIVE:
-    return String("Wire search cannot start: bumper activated");
-  case ERROR_WIRE_SEARCH_NO_START_OBJECT_TOO_CLOSE:
-    return String("Wire search cannot start: object too close");
-  case ERROR_WIRE_SEARCH_NO_START_TILT_ACTIVE:
-    return String("Wire search cannot start: tilt sensor activated");
-  case ERROR_WIRE_SEARCH_NO_START_NO_PERIMETER_SIGNAL:
-    return String("Wire search cannot start: no perimeter signal");
-  case ERROR_WIRE_SEARCH_PHASE_1_FAILLED:
-    return String("Wire search phase 1 (reversing) failled to get inside perimeter");
-  case ERROR_WIRE_SEARCH_PHASE_2_FAILLED:
-    return String("Wire search phase 2 (forward) failled to get outside perimeter");
-  case ERROR_WIRE_SEARCH_CONSECUTIVE_OBSTACLES:
-    return String("Wire search phase 2 (forward) failled: too many successive obstacles");
-  case ERROR_WIRE_SEARCH_PHASE_3_FAILLED:
-    return String("Wire search phase 3 (turn) failled to get inside perimeter");
-  case ERROR_FOLLOW_WIRE_NO_START_BUMPER_ACTIVE:
-    return String("Wire tracking cannot start: bumper activated");
-  case ERROR_FOLLOW_WIRE_NO_START_OBJECT_TOO_CLOSE:
-    return String("Wire tracking cannot start: object too close");
-  case ERROR_FOLLOW_WIRE_NO_START_TILT_ACTIVE:
-    return String("Wire tracking cannot start: tilt sensor activated");
-  case ERROR_FOLLOW_WIRE_NO_START_NO_PERIMETER_SIGNAL:
-    return String("Wire tracking cannot start: no perimeter signal");
-  case ERROR_FOLLOW_WIRE_CONSECUTIVE_OBSTACLES:
-    return String("Wire tracking Stopped: too many successive obstacles");
+      //States-related Error conditions
+    case ERROR_MOWING_NO_START_BUMPER_ACTIVE:
+      return String("Mowing cannot start: bumper activated");
+    case ERROR_MOWING_NO_START_OBJECT_TOO_CLOSE:
+      return String("Mowing cannot start: object too close");
+    case ERROR_MOWING_NO_START_TILT_ACTIVE:
+      return String("Mowing cannot start: tilt sensor activated");
+    case ERROR_MOWING_NO_START_NO_PERIMETER_SIGNAL:
+      return String("Mowing cannot start: no perimeter signal");
+    case ERROR_MOWING_CONSECUTIVE_OBSTACLES:
+      return String("Mowing Stopped: too many successive obstacles");
+    case ERROR_WIRE_SEARCH_NO_START_BUMPER_ACTIVE:
+      return String("Wire search cannot start: bumper activated");
+    case ERROR_WIRE_SEARCH_NO_START_OBJECT_TOO_CLOSE:
+      return String("Wire search cannot start: object too close");
+    case ERROR_WIRE_SEARCH_NO_START_TILT_ACTIVE:
+      return String("Wire search cannot start: tilt sensor activated");
+    case ERROR_WIRE_SEARCH_NO_START_NO_PERIMETER_SIGNAL:
+      return String("Wire search cannot start: no perimeter signal");
+    case ERROR_WIRE_SEARCH_PHASE_1_FAILLED:
+      return String("Wire search phase 1 (reversing) failled to get inside perimeter");
+    case ERROR_WIRE_SEARCH_PHASE_2_FAILLED:
+      return String("Wire search phase 2 (forward) failled to get outside perimeter");
+    case ERROR_WIRE_SEARCH_CONSECUTIVE_OBSTACLES:
+      return String("Wire search phase 2 (forward) failled: too many successive obstacles");
+    case ERROR_WIRE_SEARCH_PHASE_3_FAILLED:
+      return String("Wire search phase 3 (turn) failled to get inside perimeter");
+    case ERROR_FOLLOW_WIRE_NO_START_BUMPER_ACTIVE:
+      return String("Wire tracking cannot start: bumper activated");
+    case ERROR_FOLLOW_WIRE_NO_START_OBJECT_TOO_CLOSE:
+      return String("Wire tracking cannot start: object too close");
+    case ERROR_FOLLOW_WIRE_NO_START_TILT_ACTIVE:
+      return String("Wire tracking cannot start: tilt sensor activated");
+    case ERROR_FOLLOW_WIRE_NO_START_NO_PERIMETER_SIGNAL:
+      return String("Wire tracking cannot start: no perimeter signal");
+    case ERROR_FOLLOW_WIRE_CONSECUTIVE_OBSTACLES:
+      return String("Wire tracking Stopped: too many successive obstacles");
 
-    // Undefined errors
-  case ERROR_UNDEFINED:
-    return String("ERROR UNDEFINED");
-  default:
-    return String("ERROR UNDEFINED: Please update ErrorString() function");
+      // Undefined errors
+    case ERROR_UNDEFINED:
+      return String("ERROR UNDEFINED");
+    default:
+      return String("ERROR UNDEFINED: Please update ErrorString() function");
   }
 }
 
@@ -270,3 +270,85 @@ bool ParameterChangeValue(const String parameterCode, const float parameterValue
   }
   return found;
 }
+
+/**
+ * Display RTOS Tasks status information 
+ * 
+ * @param task Name of task to display status, or "*" for all application tasks
+ */
+void DisplayTaskStatus(const String task)
+{
+  int taskcount = 5;
+  String taskName[taskcount] = {"Current", FAST_ANA_READ_TASK_NAME, PERIMETER_TASK_NAME, SONAR_READ_TASK_NAME, ANA_READ_TASK_NAME};
+  TaskHandle_t xHandle[taskcount] = {xTaskGetCurrentTaskHandle() , g_FastAnaReadTaskHandle, g_PerimeterProcTaskHandle, g_SonarReadTaskHandle, g_AnaReadTaskHandle};
+  eTaskState state;
+  unsigned int minMem;
+  unsigned long startMillis = millis();
+
+  if (task != "*")
+  {
+    taskcount = 1;
+    
+    if (task == FAST_ANA_READ_TASK_NAME)
+    {
+      xHandle[0] = g_FastAnaReadTaskHandle;
+    }
+    else if (task == PERIMETER_TASK_NAME)
+    {
+      xHandle[0] = g_PerimeterProcTaskHandle;
+    }
+    else if (task == SONAR_READ_TASK_NAME)
+    {
+      xHandle[0] = g_SonarReadTaskHandle;
+    }
+    else if (task == ANA_READ_TASK_NAME)
+    {
+      xHandle[0] = g_AnaReadTaskHandle;
+    }
+    else
+    {
+      xHandle[0] = xTaskGetCurrentTaskHandle();
+    }
+  }
+
+  for (int i = 0; i < taskcount; i++)
+  {
+    state = eTaskGetState(xHandle[i]);
+    minMem = uxTaskGetStackHighWaterMark(xHandle[i]);
+    DebugPrintln("Task " + taskName[i] + " | State: " + String(taskStateStr(state)) + " | Min stack: " + String(minMem), DBG_INFO, true);
+  }
+
+  if (task == "*")
+  {
+    DebugPrint("Total Tasks: " + String(uxTaskGetNumberOfTasks()), DBG_INFO, true);
+  }
+
+  DebugPrintln(" (" + String(millis()-startMillis) + "ms)", DBG_INFO, true, true);
+
+}
+
+/**
+ * Display RTOS Tasks state as human readable string 
+ * 
+ * @param state state of task to display readable status
+ */
+
+String taskStateStr(const eTaskState state)
+{
+  switch (state)
+  {
+    case eReady:
+      return "Ready";
+    case eRunning:
+      return "Running";
+    case eBlocked:
+      return "Blocked";
+    case eDeleted:
+      return "Deleted";
+    case eSuspended:
+      return "Suspended";
+    default:
+      return "Unknown";
+  }
+}
+

@@ -41,10 +41,22 @@ void DisplaySetup(void)
 void DisplayClear(void)
 {
 #ifdef LCD2004_DISPLAY
+  // Ensure exlusive access to I2C
+  xSemaphoreTake(g_I2CSemaphore, portMAX_DELAY);
+
   lcd.clear();
+
+  // Free access to I2C for other tasks
+  xSemaphoreGive(g_I2CSemaphore);
 #endif
 #ifdef OLEDSSD1306_DISPLAY
+  // Ensure exlusive access to I2C
+  xSemaphoreTake(g_I2CSemaphore, portMAX_DELAY);
+
   oled.clear();
+
+  // Free access to I2C for other tasks
+  xSemaphoreGive(g_I2CSemaphore);
 #endif
 }
 
@@ -58,10 +70,19 @@ void DisplayClear(void)
 void DisplayPrint(int X, int Y, String Text, const bool OverWrite)
 {
 #ifdef LCD2004_DISPLAY
+  // Ensure exlusive access to I2C
+  xSemaphoreTake(g_I2CSemaphore, portMAX_DELAY);
+
   lcd.setCursor(X, Y);
   lcd.print(Text);
+
+  // Free access to I2C for other tasks
+  xSemaphoreGive(g_I2CSemaphore);
 #endif
 #ifdef OLEDSSD1306_DISPLAY
+  // Ensure exlusive access to I2C
+  xSemaphoreTake(g_I2CSemaphore, portMAX_DELAY);
+
   if (OverWrite)
   {
     int length = oled.getStringWidth(Text) * OLED_PIXEL_PER_COLUMN;
@@ -72,5 +93,8 @@ void DisplayPrint(int X, int Y, String Text, const bool OverWrite)
   }
   oled.drawString(X * OLED_PIXEL_PER_COLUMN, Y * OLED_PIXEL_PER_LINE, Text);
   oled.display();
+
+  // Free access to I2C for other tasks
+  xSemaphoreGive(g_I2CSemaphore);
 #endif
 };

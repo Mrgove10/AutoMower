@@ -73,4 +73,18 @@ String ErrorString(const int errorCode);
  */
 bool ParameterChangeValue(const String parameterCode, const float parameterValue);
 
+/**
+ * Display RTOS Tasks status information 
+ * 
+ * @param task Name of task to display status, or "*" for all application tasks
+ */
+void DisplayTaskStatus(const String task = "*");
+
+/**
+ * Display RTOS Tasks state as human readable string 
+ * 
+ * @param state state of task to display readable status
+ */
+String taskStateStr(const eTaskState state);
+
 #endif

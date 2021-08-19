@@ -4,6 +4,7 @@
 #include "myGlobals_definition.h"
 #include "Fan/Fan.h"
 #include "Temperature/Temperature.h"
+#include "IOExtender/IOExtender.h"
 #include "Utils/Utils.h"
 #include "Display/Display.h"
 
@@ -54,7 +55,7 @@ void FanTest(const int Fan)
  */
 void FanStart(const int Fan)
 {
-  IOExtend.digitalWrite(g_FanPin[Fan], HIGH);
+  IOExtendProtectedWrite(g_FanPin[Fan], HIGH);
   g_FanOn[Fan] = true;
 }
 
@@ -64,8 +65,7 @@ void FanStart(const int Fan)
  */
 void FanStop(const int Fan)
 {
-  IOExtend.digitalWrite(g_FanPin[Fan], LOW);
-
+  IOExtendProtectedWrite(g_FanPin[Fan], LOW);
   g_FanOn[Fan] = false;
 }
 

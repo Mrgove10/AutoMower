@@ -199,7 +199,8 @@ extern bool g_MQTTGraphRawDebug; // to start/stop the transmission of MQTT debug
 
 #define ANA_READ_TASK_LOOP_WAIT 100 // In ms
 
-extern TaskHandle_t g_AnaReadTaskHandle; // Sonar Read task RTOS task handle
+extern TaskHandle_t g_AnaReadTaskHandle; // Analog Read task RTOS task handle
+extern SemaphoreHandle_t g_I2CSemaphore; // I2C resource protection semaphore
 
 /************************* EEPROM Management *********************************/
 

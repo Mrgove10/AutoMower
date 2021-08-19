@@ -86,11 +86,17 @@ bool MotorCurrentRead(const int sensor, const bool Now)
     //    float loadvoltage = 0;
     //    float power_mW = 0;
 
+    // Ensure exlusive access to I2C
+    xSemaphoreTake(g_I2CSemaphore, portMAX_DELAY);
+
     //    shuntvoltage = MotorCurrentSensor[sensor].getShuntVoltage_mV();
     //    busvoltage = MotorCurrentSensor[sensor].getBusVoltage_V();
     current_mA = MotorCurrentSensor[sensor].getCurrent_mA();
     //    power_mW = MotorCurrentSensor[sensor].getPower_mW();
     //    loadvoltage = busvoltage + (shuntvoltage / 1000);
+
+    // Free access to I2C for other tasks
+    xSemaphoreGive(g_I2CSemaphore);
 
     if (smoothedCurrent[sensor] == UNKNOWN_FLOAT)
     {

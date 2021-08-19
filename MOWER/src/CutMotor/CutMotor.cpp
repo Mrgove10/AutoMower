@@ -3,6 +3,7 @@
 #include "Environment_definitions.h"
 #include "myGlobals_definition.h"
 #include "CutMotor/CutMotor.h"
+#include "IOExtender/IOExtender.h"
 #include "Utils/Utils.h"
 #include "Display/Display.h"
 
@@ -57,9 +58,8 @@ void CutMotorStart(const int Direction, const int Speed)
     CutMotorSetSpeed(Speed);
     DebugPrintln("Cut Motor start Reverse", DBG_VERBOSE, true);
   }
-
-  IOExtend.digitalWrite(PIN_MCP_MOTOR_CUT_LN1, HIGH);
-  IOExtend.digitalWrite(PIN_MCP_MOTOR_CUT_LN2, HIGH);
+  IOExtendProtectedWrite(PIN_MCP_MOTOR_CUT_LN1, HIGH);
+  IOExtendProtectedWrite(PIN_MCP_MOTOR_CUT_LN2, HIGH);
 }
 
 /**
@@ -90,8 +90,9 @@ void CutMotorStop(const bool Immedate)
     }
     DebugPrintln("Cut Motor IMMEDIATE Stop requested", DBG_VERBOSE, true);
   }
-  IOExtend.digitalWrite(PIN_MCP_MOTOR_CUT_LN1, LOW);
-  IOExtend.digitalWrite(PIN_MCP_MOTOR_CUT_LN2, LOW);
+
+  IOExtendProtectedWrite(PIN_MCP_MOTOR_CUT_LN1, LOW);
+  IOExtendProtectedWrite(PIN_MCP_MOTOR_CUT_LN2, LOW);
 
   g_CutMotorOn = false;
   g_CutMotorDirection = CUT_MOTOR_STOPPED;
@@ -230,7 +231,7 @@ void CutMotorCheck(const bool Now)
 
   if ((millis() - LastCutMotorCheck > CUT_MOTOR_CHECK_INTERVAL) || Now)
   {
-    g_CutMotorAlarm = (IOExtend.digitalRead(PIN_MCP_MOTOR_CUT_HIGH_AMP) == 1);
+    g_CutMotorAlarm = (IOExtendProtectedRead(PIN_MCP_MOTOR_CUT_HIGH_AMP) == 1);
     // DebugPrintln("Cut Motor Status: " + String(g_CutMotorAlarm), DBG_VERBOSE, true);
     LastCutMotorCheck = millis();
   }

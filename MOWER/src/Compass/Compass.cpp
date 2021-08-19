@@ -43,9 +43,16 @@ void CompassRead(const bool Now)
   if ((millis() - LastCompassRead > COMPASS_READ_INTERVAL) || Now)
   {
     sensors_event_t event;
+    
+    // Ensure exlusive access to I2C
+    xSemaphoreTake(g_I2CSemaphore, portMAX_DELAY);
+   
     //    Serial.println("Before getEvent");
     bool status = Compass.getEvent(&event);
     //    Serial.println("getEvent Satus:" + String(status));
+
+    // Free access to I2C for other tasks
+    xSemaphoreGive(g_I2CSemaphore);
 
     // Hold the module so that Z is pointing 'up' and you can measure the heading with x&y
     // Calculate heading when the magnetometer is level, then correct for signs of axis.
