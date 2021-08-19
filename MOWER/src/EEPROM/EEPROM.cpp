@@ -89,6 +89,7 @@ void EEPROMSetup(void)
 
     // Stored Statistics
     g_totalObstacleDectections = g_EEPROMLoad.Load.Data.totalObstacleDectections;
+    g_totalMowingTime = g_EEPROMLoad.Load.Data.totalMowingTime;
   }
 }
 
@@ -166,6 +167,7 @@ void EEPROMSave(boolean immediatly)
 
     // Stored Statistics
     g_EEPROMLoad.Load.Data.totalObstacleDectections = g_totalObstacleDectections;
+    g_EEPROMLoad.Load.Data.totalMowingTime = g_totalMowingTime;
 
     EEPROMWrite();
   }
@@ -195,6 +197,7 @@ void EEPROMInitialise(void)
 
   // Stored Statistics
   g_EEPROMLoad.Load.Data.totalObstacleDectections = 0;
+  g_EEPROMLoad.Load.Data.totalMowingTime = 0;
 
   for (int i = 0; i < EEPROM_SPARE_SIZE - 1; i++)
   {

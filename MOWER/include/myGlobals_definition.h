@@ -8,7 +8,7 @@ extern PubSubClient MQTTclient;
 extern int g_MQTTErrorCount;
 
 #define MQTT_TELEMETRY_SEND_INTERVAL 30000 // in ms
-#define MQTT_MAX_PAYLOAD 512
+#define MQTT_MAX_PAYLOAD 1024
 
 /************************* JSON *********************************/
 #include <FirebaseJson.h>
@@ -92,7 +92,7 @@ extern int8_t g_sigcode_diff[PERIMETER_SIGNAL_CODE_LENGTH];
 
 #define FAST_ANA_READ_TASK_ESP_CORE 1            // Core assigned to task
 #define FAST_ANA_READ_TASK_PRIORITY 1            // Priority assigned to task
-#define FAST_ANA_READ_TASK_STACK_SIZE 12000      // Stack assigned to task (in bytes)
+#define FAST_ANA_READ_TASK_STACK_SIZE 3000      // Stack assigned to task (in bytes)
 #define FAST_ANA_READ_TASK_NAME "FastAnaReadTsk" // Task name
 
 extern SemaphoreHandle_t g_ADCinUse;           // to protect access to ADC between I2S driver and other analogRead calls
@@ -135,7 +135,7 @@ extern unsigned int g_inQueue;            // Accumulated I2S notification queue 
 
 #define PERIMETER_TASK_ESP_CORE 1          // Core assigned to task
 #define PERIMETER_TASK_PRIORITY 1          // Priority assigned to task
-#define PERIMETER_TASK_STACK_SIZE 12000    // Stack assigned to task (in bytes)
+#define PERIMETER_TASK_STACK_SIZE 8000    // Stack assigned to task (in bytes)
 #define PERIMETER_TASK_NAME "PerimProcTsk" // Task name
 
 #define PERIMETER_TASK_PROCESSING_TRIGGER 1     // for perimeter data processing
@@ -194,7 +194,7 @@ extern bool g_MQTTGraphRawDebug; // to start/stop the transmission of MQTT debug
 /************************* Analog Read task *********************************/
 #define ANA_READ_TASK_ESP_CORE 1        // Core assigned to task
 #define ANA_READ_TASK_PRIORITY 1        // Priority assigned to task
-#define ANA_READ_TASK_STACK_SIZE 4000   // Stack assigned to task (in bytes)
+#define ANA_READ_TASK_STACK_SIZE 5000   // Stack assigned to task (in bytes)
 #define ANA_READ_TASK_NAME "AnaReadTsk" // Task name
 
 #define ANA_READ_TASK_LOOP_WAIT 100 // In ms
@@ -355,7 +355,7 @@ extern int g_BatteryStatus;
 /************************* Sonar Read task *********************************/
 #define SONAR_READ_TASK_ESP_CORE 1          // Core assigned to task
 #define SONAR_READ_TASK_PRIORITY 1          // Priority assigned to task
-#define SONAR_READ_TASK_STACK_SIZE 4000     // Stack assigned to task (in bytes)
+#define SONAR_READ_TASK_STACK_SIZE 3000     // Stack assigned to task (in bytes)
 #define SONAR_READ_TASK_NAME "SonarReadTsk" // Task name
 
 #define SONAR_READ_TASK_WAIT_ON_IDLE 500 // in ms
@@ -482,6 +482,8 @@ extern float g_WheelPerimeterTrackingCorrection[MOTION_MOTOR_COUNT]; // from per
 // Mowing
 #define MOWER_MOWING_TRAVEL_SPEED 90
 #define MOWER_MOWING_MAX_CONSECUTVE_OBSTACLES 5
+
+extern unsigned int g_totalMowingTime; // Total time spent mowing, in minutes (Saved to EEPROM)
 
 // Perimeter search function
 

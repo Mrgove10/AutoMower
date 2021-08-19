@@ -50,7 +50,7 @@ void DisplayMowerData()
   // SonarRead(SONAR_LEFT, true); // force sonar read as reading task may not be activated
   // SonarRead(SONAR_RIGHT, true); // force sonar read as reading task may not be activated
 
-  BatteryVoltageRead();
+//  BatteryVoltageRead();
 
   //  CompassRead();
 
@@ -59,6 +59,7 @@ void DisplayMowerData()
   CutMotorCheck();
 
   static unsigned long LastRefreshed = 0;
+  static unsigned long LastTaskRefreshed = 0;
 
   if ((millis() - LastRefreshed > MOWER_DATA_DISPLAY_INTERVAL))
   {
@@ -100,7 +101,14 @@ void DisplayMowerData()
   }
 
   //  DisplayPrint(0, 3, "B:" + String(g_BatteryChargeCurrent, 0) + " ", true);
+
   DisplayPrint(0, 3, "R:" + String(g_MotorCurrent[MOTOR_CURRENT_RIGHT], 0) + " ", true);
   DisplayPrint(6, 3, "L:" + String(g_MotorCurrent[MOTOR_CURRENT_LEFT], 0) + " ", true);
   DisplayPrint(12, 3, "C:" + String(g_MotorCurrent[MOTOR_CURRENT_CUT], 0) + " ", true);
+
+  if ((millis() - LastTaskRefreshed > MOWER_DATA_DISPLAY_INTERVAL*30))
+  {
+    DisplayTaskStatus("*");
+    LastTaskRefreshed = millis();
+  }
 }

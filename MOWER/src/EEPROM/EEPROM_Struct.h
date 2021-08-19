@@ -31,6 +31,7 @@ typedef struct
     int16_t PerimeterSignalLowTrackThreshold;
 
     long totalObstacleDectections;
+    unsigned int totalMowingTime;
 } DataStruct;
 
 #define EEPROM_SPARE_SIZE EEPROM_SIZE - sizeof(DataStruct) - EEPROM_CRC_SIZE

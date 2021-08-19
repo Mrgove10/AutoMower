@@ -397,6 +397,9 @@ void MQTTSendTelemetry()
 
     JSONDataPayload.add("RSSI", String(WiFi.RSSI()));
 
+    JSONDataPayload.add("Obstcl", String(g_totalObstacleDectections));
+    JSONDataPayload.add("MowTim", String(g_totalMowingTime));
+
     JSONDataPayload.toString(JSONDataPayloadStr, false);
     JSONDataPayloadStr.toCharArray(MQTTpayload, JSONDataPayloadStr.length() + 1);
 
