@@ -593,6 +593,11 @@ bool MowerFindWire(const bool reset, int *phase, const int heading, const bool c
       turnCount = 0;
       return false; // continue search
     }
+    else    // we consider that we are not really outside as the signal magniture is too low and we keep going...
+    {
+      DebugPrintln("Phase 2 : keep going (outside, but perimeter signal too weak)....", DBG_VERBOSE, true);
+      return false; // continue search
+    }
 
     // Time is up ... raise error and stop search
     if (millis() - searchStartTime > PERIMETER_SEARCH_FORWARD_MAX_TIME_1)
@@ -699,7 +704,8 @@ bool MowerFollowWire(bool *reset, const int heading, const bool clockwise)
 
   if (*reset)
   {
-    DebugPrintln("Starting to follow wire....", DBG_DEBUG, true);
+    DebugPrintln("");
+    LogPrintln("Mower started to follow wire", TAG_SEARCH, DBG_INFO);
 
     //--------------------------------
     // Check if pre-requisistes conditions are met
@@ -859,7 +865,6 @@ bool MowerFollowWire(bool *reset, const int heading, const bool clockwise)
     // either trigger a wire search or declare an error
     // return false;
   }
-
 
   //--------------------------------
   // Use PID to correct mower alignment over peimeter wire by adjusting orders to motors
