@@ -147,8 +147,6 @@ extern unsigned int g_inQueue;            // Accumulated I2S notification queue 
 #define PERIMETER_IN_OUT_DETECTION_THRESHOLD 400
 #define PERIMETER_APPROACHING_THRESHOLD PERIMETER_IN_OUT_DETECTION_THRESHOLD / 2
 
-#define MQTT_GRAPH_DEBUG true
-
 extern hw_timer_t *g_PerimeterTimerhandle; // Perimeter processing task timer based trigger ISR handle
 
 extern QueueHandle_t g_PerimeterTimerQueue; // Queue red by Perimeter processing task
@@ -185,11 +183,6 @@ extern int16_t g_PerimeterSignalLowTrackThreshold; // Threshold under which g_Pe
 extern uint16_t g_RawCopy[PERIMETER_RAW_SAMPLES]; //  Copy of circular Buffer containing last samples read from I2S DMA buffers
 extern int g_rawWritePtrCopy;                     // Pointer to last value written to g_RawCopy circular buffer copy
 extern int8_t g_PerimeterSamplesForMatchedFilter[I2S_DMA_BUFFER_LENGTH];
-
-#ifdef MQTT_GRAPH_DEBUG
-extern bool g_MQTTGraphDebug;    // to start/stop the transmission of MQTT debug data
-extern bool g_MQTTGraphRawDebug; // to start/stop the transmission of MQTT debug data
-#endif
 
 /************************* Analog Read task *********************************/
 #define ANA_READ_TASK_ESP_CORE 1        // Core assigned to task
@@ -539,12 +532,6 @@ extern PID g_PerimeterTrackPID;
 
 #define PERIMETER_TRACKING_PID_INTERVAL 150 // in ms
 
-#define MQTT_PID_GRAPH_DEBUG true
-
-#ifdef MQTT_PID_GRAPH_DEBUG
-extern bool g_MQTTPIDGraphDebug; // to start/stop the transmission of MQTT debug data
-#endif
-
 extern double g_PerimeterTrackSetpoint;   // Setpoint for PID wire tracking (Saved to EEPROM)
 extern double g_ParamPerimeterTrackPIDKp; // Kp PID Parameter for wire tracking (Saved to EEPROM)
 extern double g_ParamPerimeterTrackPIDKi; // Ki PID Parameter for wire tracking (Saved to EEPROM)
@@ -636,3 +623,37 @@ extern MowerState g_PreviousState;
 
 // Mowing mode
 extern int g_MowingLoopCnt; // number of loops since mowing started
+
+
+/************************* Program debugging *********************************/
+
+// For testing ONLY, if reset is not a power-on, delay indefinately to be able to "catch" reset cause.
+// NOT TO BE USED IN NORMAL OPERATION AS MOWER WILL NOT RESET OUTPUTS AND MOTORS WILL KEEP RUNNING UNTILL 
+// THE MOWER IS POWERED OFF OR A RESET IS ERFORMED ON ESP32 BORAD
+// Folowing line needs to be commented out for function to be active
+
+// #define STOP_RESTART_TO_CAPTURE_CRASH_DUMP true
+
+// Perimeter wire signal debugging
+
+// Folowing line needs to be commented out for function to be active
+
+#define MQTT_GRAPH_DEBUG true
+
+#ifdef MQTT_GRAPH_DEBUG
+extern bool g_MQTTGraphDebug;    // to start/stop the transmission of MQTT debug data
+extern bool g_MQTTGraphRawDebug; // to start/stop the transmission of MQTT raw debug data
+#define MQTT_DEBUG_CHANNEL "MQTTest/Data"
+#define MQTT_DEBUG_RAW_CHANNEL "MQTTest/DataRaw"
+
+#endif
+
+// Perimeter tracking PID debugging
+// Folowing line needs to be commented out for function to be active
+
+#define MQTT_PID_GRAPH_DEBUG true       // to enable sending by MQTT of PID related data
+
+#ifdef MQTT_PID_GRAPH_DEBUG
+extern bool g_MQTTPIDGraphDebug; // to start/stop the transmission of MQTT debug data
+#define MQTT_PID_DEBUG_CHANNEL "Automower/PIDDebug"
+#endif

@@ -1,3 +1,4 @@
+#include <rom/rtc.h>
 #include "myGlobals_definition.h"
 #include "Environment_definitions.h"
 #include "mySetup.h"
@@ -20,6 +21,7 @@
 #include "Compass/Compass.h"
 #include "GPS/GPS.h"
 #include "MotionMotor/MotionMotor.h"
+#include "MowerMoves/MowerMoves.h"
 #include "CutMotor/CutMotor.h"
 #include "FastAnaReadTsk/FastAnaReadTsk.h"
 #include "AnaReadTsk/AnaReadTsk.h"
@@ -34,9 +36,27 @@ void MySetup(void)
   Serial.begin(SERIAL_BAUD);
   delay(100);
 
+#ifdef STOP_RESTART_TO_CAPTURE_CRASH_DUMP
+// For testing ONLY, if reset is not a power-on, delay indefinately to be able to "catch" reset cause.
+// NOT TO BE USED IN NORMAL OPERATION AS MOWER WILL NOT RESET OUTPUTS AND MOTORS WILL KEEP RUNNING UNTILL 
+// THE MOWER IS POWERED OFF OR A RESET IS ERFORMED ON ESP32 BORAD
+
+  if (rtc_get_reset_reason(0) != 1)
+  {
+    while (true)
+    {
+      delay(100);
+    }
+  }
+#endif
+
   DisplaySetup();
 
   IOExtendSetup();
+
+  // in case of unexpected reset during mower operation, imidiatly stop all motors (setup function sets motor to stop after setup)
+  MotionMotorSetup();
+  CutMotorSetup();
 
   MotorCurrentSensorSetup(); // Done by Analog Read task
   CompassSensorSetup();      // Done by Analog Read task ??
@@ -65,6 +85,8 @@ void MySetup(void)
   DebugPrintln("Running on Core:" + String(xPortGetCoreID()));
   DebugPrintln("Chip temperature:" + String(temperatureRead(), 1));
   DebugPrintln("Free Heap:" + String(esp_get_free_heap_size()));
+
+  SerialAndTelnet.handle();
 
   EEPROMSetup();
 
@@ -107,14 +129,12 @@ void MySetup(void)
   GPSSetup(); // Done by Analog Read task ??
 
   // Start other RTOS tasks
-
   SonarReadLoopTaskCreate();
   FastAnaReadLoopTaskCreate();
   AnaReadLoopTaskCreate();
   PerimeterProcessingLoopTaskCreate();
 
   // Set default trace level
-
   g_debugLevel = DBG_DEBUG;
 
   SerialAndTelnet.handle();
