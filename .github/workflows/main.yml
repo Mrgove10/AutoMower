@@ -60,3 +60,31 @@ jobs:
         with:
           name: BASE - Build Artifact
           path: BASE/.pio/build/base_esp32/firmware.bin
+
+  deploy_APP:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: APP
+
+    steps:
+      - name: Clone repo
+        uses: actions/checkout@v2
+
+      - name: Set up node
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+
+      - name: npm install
+        run: npm install --verbose
+
+      - name: Build
+        run: npx webpack
+
+      # - name: Upload artifacts
+      #   uses: actions/upload-artifact@v2
+      #   with:
+      #     name: Website - Build Artifact
+      #     path: BASE/.pio/build/base_esp32/firmware.bin

@@ -1,7 +1,5 @@
 # Automower
 
-This Project
-
 [![PlatformIO CI](https://github.com/Mrgove10/AutoMower/actions/workflows/main.yml/badge.svg)](https://github.com/Mrgove10/AutoMower/actions/workflows/main.yml)
 [![CodeFactor](https://www.codefactor.io/repository/github/mrgove10/automower/badge)](https://www.codefactor.io/repository/github/mrgove10/automower)
 
@@ -11,20 +9,27 @@ This Project
 
 - [Automower](#automower)
   - [Table of contents](#table-of-contents)
-  - [Communicating with the Mower](#communicating-with-the-mower)
-    - [IDLE](#idle)
-    - [DOCKED](#docked)
-    - [MOWING](#mowing)
-    - [TO_BASE](#to_base)
-    - [FROM_BASE](#from_base)
-    - [ERROR](#error)
-    - [TEST](#test)
-    - [OTA](#ota)
-    - [DBG_VERBOSE](#dbg_verbose)
-    - [DBG_DEBUG](#dbg_debug)
-    - [BBG_INFO](#bbg_info)
-    - [TEST_MOTOR](#test_motor)
-    - [TEST_CUTMOTOR](#test_cutmotor)
+  - [Sending Commands and values to the Mower](#sending-commands-and-values-to-the-mower)
+    - [Automower/Command](#automowercommand)
+      - [Mower State changes](#mower-state-changes)
+      - [Calibration](#calibration)
+      - [Over The Air program update (OTA)](#over-the-air-program-update-ota)
+      - [Change Trace Level](#change-trace-level)
+      - [Parameter value change](#parameter-value-change)
+      - [Test & Debug commands](#test--debug-commands)
+        - [Stop/activate sending of raw perimeter signal read task](#stopactivate-sending-of-raw-perimeter-signal-read-task)
+        - [Stop/activate sending of processed perimeter code detection task](#stopactivate-sending-of-processed-perimeter-code-detection-task)
+        - [Stop/activate sending of perimeter wire tracking control](#stopactivate-sending-of-perimeter-wire-tracking-control)
+        - [Forward mower test move](#forward-mower-test-move)
+        - [Reverse mower test move](#reverse-mower-test-move)
+        - [Turn mower test move](#turn-mower-test-move)
+        - [Motion motor Test](#motion-motor-test)
+        - [Cutting motor Test](#cutting-motor-test)
+        - [TEST_STOP](#test_stop)
+        - [Test](#test)
+  - [Receiving information from the Mower](#receiving-information-from-the-mower)
+  - [Tasks](#tasks)
+  - [Website](#website)
   - [License](#license)
   - [Contribution](#contribution)
 
@@ -375,6 +380,20 @@ In this state the mower is doing nthing and wait for the next command.
 ## Tasks
 
 // TO DO
+
+## Website
+
+For developping the website you need node.js installed
+
+To launch the website  :
+
+``` bash
+cd APP
+npm install
+npx webpack serve 
+```
+
+You can now go to <http://locahost:8080>
 
 ## License
 
