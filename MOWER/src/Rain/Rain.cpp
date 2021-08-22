@@ -66,6 +66,7 @@ bool isRaining(const bool Now)
       smoothValue = 0.80 * smoothValue + 0.20 * ((float)raw);
     }
     DebugPrintln("Raining check value: " + String(smoothValue), DBG_VERBOSE, true);
+    LastRainRead  = millis();
   }
 
   return smoothValue > RAIN_SENSOR_RAINING_THRESHOLD;

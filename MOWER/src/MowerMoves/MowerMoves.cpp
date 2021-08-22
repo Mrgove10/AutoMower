@@ -122,12 +122,18 @@ bool MowerSlowDownApproachingObstables(const int SpeedDelta, const int Front, co
 {
   static unsigned long lastSpeedReduction = 0;
   bool SpeedReductiontiggered = false;
+  static bool SpeedReductionInProgress = false;
 
   // To avoid a jerky mouvement, speed reduction is maintained at least for a set duration
-  if (millis() - lastSpeedReduction < OBSTACLE_APPROACH_LOW_SPEED_MIN_DURATION)
-  {
-    return true;
-  }
+  // if (millis() - lastSpeedReduction < OBSTACLE_APPROACH_LOW_SPEED_MIN_DURATION)
+  // {
+  //   return true;
+  // }
+  // else
+  // {
+  //   // SpeedReductionInProgress = false;
+  // }
+
   // Check for objects in Front
 
   if (Front > 0 && g_SonarDistance[SONAR_FRONT] < Front)
@@ -164,7 +170,7 @@ bool MowerSlowDownApproachingObstables(const int SpeedDelta, const int Front, co
 
   // Left Motor
   // if (SpeedReductiontiggered && g_MotionMotorSpeed[MOTION_MOTOR_LEFT] - SpeedDelta > MOTION_MOTOR_MIN_SPEED )
-  if (SpeedReductiontiggered)
+  if (SpeedReductiontiggered && !SpeedReductionInProgress)
   {
     DebugPrintln("Left motor speed reduced by " + String(SpeedDelta) + "%", DBG_VERBOSE, true);
     MotionMotorSetSpeed(MOTION_MOTOR_LEFT, - SpeedDelta, true);
@@ -172,16 +178,22 @@ bool MowerSlowDownApproachingObstables(const int SpeedDelta, const int Front, co
 
   // Right Motor
   // if (SpeedReductiontiggered && g_MotionMotorSpeed[MOTION_MOTOR_RIGHT] - SpeedDelta > MOTION_MOTOR_MIN_SPEED)
-  if (SpeedReductiontiggered)
+  if (SpeedReductiontiggered && !SpeedReductionInProgress)
+  // if (SpeedReductiontiggered)
   {
     DebugPrintln("Right motor speed reduced by " + String(SpeedDelta) + "%", DBG_VERBOSE, true);
     MotionMotorSetSpeed(MOTION_MOTOR_RIGHT, - SpeedDelta, true);
+    SpeedReductionInProgress = true;
   }
 
   // keep track of when last speed reduction was triggered
   if (SpeedReductiontiggered)
   {
     lastSpeedReduction = millis();
+  }
+  else
+  {
+    SpeedReductionInProgress = false;
   }
 
   return SpeedReductiontiggered;

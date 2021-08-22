@@ -88,7 +88,7 @@ void CutMotorStop(const bool Immedate)
       delay(CUT_MOTOR_FAST_STOP_INVERSE_DURATION);
       ledcWrite(CUT_MOTOR_PWM_CHANNEL_FORWARD, 0);
     }
-    DebugPrintln("Cut Motor IMMEDIATE Stop requested", DBG_VERBOSE, true);
+    DebugPrintln("Cut Motor IMMEDIATE Stop requested", DBG_DEBUG, true);
   }
 
   IOExtendProtectedWrite(PIN_MCP_MOTOR_CUT_LN1, LOW);
@@ -96,7 +96,7 @@ void CutMotorStop(const bool Immedate)
 
   g_CutMotorOn = false;
   g_CutMotorDirection = CUT_MOTOR_STOPPED;
-  DebugPrintln("Cut Motor Stopped", DBG_VERBOSE, true);
+  DebugPrintln("Cut Motor Stopped", DBG_DEBUG, true);
 }
 
 /**

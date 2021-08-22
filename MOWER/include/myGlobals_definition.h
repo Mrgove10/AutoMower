@@ -145,7 +145,8 @@ extern unsigned int g_inQueue;            // Accumulated I2S notification queue 
 #define PERIMETER_SWAP_COIL_POLARITY false
 // #define PERIMETER_IN_OUT_DETECTION_THRESHOLD 1000
 #define PERIMETER_IN_OUT_DETECTION_THRESHOLD 400
-#define PERIMETER_APPROACHING_THRESHOLD PERIMETER_IN_OUT_DETECTION_THRESHOLD / 2
+#define PERIMETER_APPROACHING_THRESHOLD 300
+// #define PERIMETER_APPROACHING_THRESHOLD PERIMETER_IN_OUT_DETECTION_THRESHOLD/ 2
 
 extern hw_timer_t *g_PerimeterTimerhandle; // Perimeter processing task timer based trigger ISR handle
 
@@ -440,7 +441,7 @@ extern bool g_FanOn[FAN_COUNT];
 #define MOTION_MOTOR_REVERSE -1
 
 #define MOTION_MOTOR_POINTS 4096  // depending on MOTION_MOTOR_PWM_RESOLUTION
-#define MOTION_MOTOR_MIN_SPEED 25 // in %
+#define MOTION_MOTOR_MIN_SPEED 35 // in %
 #define MOTION_MOTOR_TEST_STEP_DURATION 2000
 
 extern const int g_MotionMotorIn1Pin[MOTION_MOTOR_COUNT];
@@ -465,17 +466,16 @@ extern float g_WheelPerimeterTrackingCorrection[MOTION_MOTOR_COUNT]; // from per
 #define MOWER_MOVES_TURN_SPEED 80
 #define MOWER_MOVES_TURN_ANGLE_RATIO 360.0f / 6000.0f // in Angle degrees per ms
 #define MOWER_MOVES_REVERSE_FOR_TURN_DURATION 2500    // in ms
-#define MOWER_MOWING_TRAVEL_SPEED 90
 
-#define SONAR_MIN_DISTANCE_FOR_SLOWING 60      // in cm
+#define SONAR_MIN_DISTANCE_FOR_SLOWING 25      // in cm
 #define SONAR_MIN_DISTANCE_FOR_TURN 40         // in cm
-#define SONAR_MIN_DISTANCE_FOR_STOP 25         // in cm
-#define SONAR_MIN_DISTANCE_FOR_PRECONDITION 40 // in cm
+#define SONAR_MIN_DISTANCE_FOR_STOP 15         // in cm
+#define SONAR_MIN_DISTANCE_FOR_PRECONDITION 20 // in cm
 
-#define PERIMETER_MIN_MAGNITUDE_FOR_OUT_DETECTION 60 // to prevent spurious out of perimeter detections
+#define PERIMETER_MIN_MAGNITUDE_FOR_OUT_DETECTION 200 // to prevent spurious out of perimeter detections
 
 // Mowing
-#define MOWER_MOWING_TRAVEL_SPEED 90
+#define MOWER_MOWING_TRAVEL_SPEED 100
 #define MOWER_MOWING_MAX_CONSECUTVE_OBSTACLES 5
 
 extern unsigned long g_totalMowingTime; // Total time spent mowing, in minutes (Saved to EEPROM)

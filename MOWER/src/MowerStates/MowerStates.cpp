@@ -138,7 +138,7 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
     mowingStartTime = millis();
 
     MowerForward(MOWER_MOVES_SPEED_SLOW);
-    // CutMotorStart(MOWER_MOWING_CUTTING_DIRECTION, MOWER_MOWING_CUTTING_SPEED);
+    CutMotorStart(MOWER_MOWING_CUTTING_DIRECTION, MOWER_MOWING_CUTTING_SPEED);
 
     g_MowingLoopCnt = 0;
   }
@@ -173,6 +173,8 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
 
   if (g_PerimeterSignalLost || g_PerimeterSignalStopped)
   {
+    MowerStop();
+    CutMotorStop();
     DebugPrintln("Perimeter signal Lost (" + String(g_PerimeterSmoothMagnitude) + ") or stopped", DBG_ERROR, true);
     g_totalMowingTime = g_totalMowingTime + (millis() - mowingStartTime);   // in minutes
     g_CurrentState = MowerState::error;
@@ -211,13 +213,15 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
   //--------------------------------
   // Environment sensing for approaching objects
   //--------------------------------
-  if (!MowerSlowDownApproachingObstables(MOWER_MOWING_TRAVEL_SPEED - MOWER_MOVES_SPEED_SLOW,
+  if (!MowerSlowDownApproachingObstables(20,
+  // if (!MowerSlowDownApproachingObstables(MOWER_MOWING_TRAVEL_SPEED - MOWER_MOVES_SPEED_SLOW,
                                          SONAR_MIN_DISTANCE_FOR_SLOWING,
                                          SONAR_MIN_DISTANCE_FOR_SLOWING,
                                          SONAR_MIN_DISTANCE_FOR_SLOWING,
                                          PERIMETER_APPROACHING_THRESHOLD))
   {
     MowerSpeed(MOWER_MOWING_TRAVEL_SPEED);
+    CutMotorStart(MOWER_MOWING_CUTTING_DIRECTION, MOWER_MOWING_CUTTING_SPEED);
   }
 
   //--------------------------------
@@ -227,7 +231,8 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
   // TO DO : if outside, mower gets "locked-out"!!
 
   if (OBSTACLE_DETECTED_NONE != CheckObstacleAndAct(true,
-                                                    SONAR_MIN_DISTANCE_FOR_STOP,
+                                                    // SONAR_MIN_DISTANCE_FOR_STOP,
+                                                    0,
                                                     SONAR_MIN_DISTANCE_FOR_STOP,
                                                     SONAR_MIN_DISTANCE_FOR_STOP,
                                                     true,
