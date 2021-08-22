@@ -547,14 +547,14 @@ extern double g_ParamPerimeterTrackPIDKd; // Kd PID Parameter for wire tracking 
 #define CUT_MOTOR_STOPPED 0
 #define CUT_MOTOR_FORWARD 1
 #define CUT_MOTOR_REVERSE -1
-#define CUT_MOTOR_MIN_SPEED 4096 / 10
+#define CUT_MOTOR_MIN_SPEED 10
 
-#define CUT_MOTOR_FAST_STOP_INVERSE_SPEED 4096   // full inverse speed
+#define CUT_MOTOR_FAST_STOP_INVERSE_SPEED 100   // full inverse speed
 #define CUT_MOTOR_FAST_STOP_INVERSE_DURATION 750 // in ms
 
 #define CUT_MOTOR_CHECK_INTERVAL 2000 // in ms
 
-#define MOWER_MOWING_CUTTING_SPEED 90 // in %
+#define MOWER_MOWING_CUTTING_SPEED 100 // in %
 #define MOWER_MOWING_CUTTING_DIRECTION CUT_MOTOR_FORWARD
 
 extern bool g_CutMotorOn;

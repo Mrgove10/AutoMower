@@ -94,12 +94,12 @@ void TestLoop()
     }
 
     // Cut motor loop
-    CutSpeed = CutSpeed + (24 * CutSens);
-    if (CutSpeed > 4096 + 1024)
+    CutSpeed = CutSpeed + (2 * CutSens);
+    if (CutSpeed > 125)
     {
       CutSens = -1;
     }
-    if (CutSpeed < -4096 - 1024)
+    if (CutSpeed < -125)
     {
       CutSens = 1;
     }

@@ -105,7 +105,7 @@ void CutMotorStop(const bool Immedate)
  */
 void CutMotorSetSpeed(const int Speed)
 {
-  if (Speed > 0 && Speed < 4096)
+  if (Speed > 0 && Speed <= 100)
   {
     if ((Speed < CUT_MOTOR_MIN_SPEED) && (Speed != 0))
     {
@@ -127,13 +127,13 @@ void CutMotorSetSpeed(const int Speed)
 
       if (g_CutMotorDirection == CUT_MOTOR_FORWARD)
       {
-        ledcWrite(CUT_MOTOR_PWM_CHANNEL_FORWARD, Speed);
+        ledcWrite(CUT_MOTOR_PWM_CHANNEL_FORWARD, (uint32_t)(Speed * 4096) / 100);
       }
       if (g_CutMotorDirection == CUT_MOTOR_REVERSE)
       {
-        ledcWrite(CUT_MOTOR_PWM_CHANNEL_REVERSE, Speed);
+        ledcWrite(CUT_MOTOR_PWM_CHANNEL_REVERSE, (uint32_t) (Speed * 4096) /100);
       }
-      g_CutMotorSpeed = Speed;
+      g_CutMotorSpeed = Speed /100 * 4096;
     }
   }
 };
@@ -148,10 +148,10 @@ void CutMotorTest(void)
   DisplayClear();
   DisplayPrint(0, 0, F("Cut Motor Test"));
 
-#define CRAWL 4096 * 10 / 100
-#define SLOW 4096 * 30 / 100
-#define NORMAL 4096 * 70 / 100
-#define FAST 4090
+#define CRAWL 10
+#define SLOW 30
+#define NORMAL 70
+#define FAST 100
 #define DURATION 2000
 
   //Forward
@@ -174,7 +174,7 @@ void CutMotorTest(void)
   DisplayPrint(4, 2, "Fast FWD  ", true);
   CutMotorSetSpeed(FAST);
   SerialAndTelnet.handle();
-  delay(DURATION);
+  delay(DURATION*5);
 
   DisplayPrint(4, 2, "Slow FWD  ", true);
   CutMotorSetSpeed(SLOW);
@@ -204,7 +204,7 @@ void CutMotorTest(void)
   DisplayPrint(4, 2, "Fast REV  ", true);
   CutMotorSetSpeed(FAST);
   SerialAndTelnet.handle();
-  delay(DURATION);
+  delay(DURATION*5);
 
   DisplayPrint(4, 2, "Slow REV  ", true);
   CutMotorSetSpeed(SLOW);
