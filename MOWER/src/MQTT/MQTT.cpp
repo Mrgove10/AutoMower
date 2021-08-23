@@ -363,6 +363,8 @@ void MQTTSendTelemetry()
 
     JSONDataPayload.clear();
 
+    JSONDataPayload.add("State", String ((int) g_CurrentState));
+    JSONDataPayload.add("Error", String (g_CurrentErrorCode));
     JSONDataPayload.add("BatVolt", String(float(g_BatteryVotlage / 1000.0f), 2));
     JSONDataPayload.add("ChargeCur", String(g_BatteryChargeCurrent, 2));
 
