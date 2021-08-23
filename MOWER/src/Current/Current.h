@@ -2,7 +2,7 @@
 #define current_h
 
 /**
- * I2C INA219 Current Sensor Setup function
+ * I2C INA219 Motor Current Sensor Setup function
  *
  */
 void MotorCurrentSensorSetup();
@@ -24,7 +24,13 @@ bool MotorCurrentRead(const int sensor, const bool Now = false);
 bool MotorCurrentSensorCheck(int sensor);
 
 /**
- * Checks to see if Battery ACS712 current sensor is connected (and hopefully functionning)
+ * I2C INA219 Battery Charge Current Sensor Setup function
+ *
+ */
+void BatteryCurrentSensorSetup();
+
+/**
+ * Checks to see if Battery I2C INA219 current sensor is connected (and hopefully functionning)
  * 
  * @return true if current sensor is ok
  */

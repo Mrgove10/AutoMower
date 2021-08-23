@@ -223,8 +223,17 @@ float g_Temperature[TEMPERATURE_COUNT] = {0, 0};
 /************************* ACS712 Battery Charge current sensor variables *********************************/
 float g_BatteryChargeCurrent = 0;
 
-/************************* INA219 I2C Curent sensor variables *********************************/
+/************************* INA219 I2C Battery Charge current sensor variables *********************************/
 #include <Adafruit_INA219.h>
+
+Adafruit_INA219 BatteryChargeSensor = Adafruit_INA219(BATTERY_INA219_I2C_ADDRESS);
+
+
+int g_BatterySOC = 0;  // Indicates the battery state of charge in %
+bool g_BatteryRelayIsClosed;  // Indicates whether the battery relay is closed (true) or not (false)
+bool g_BatteryIsCharging = false;  // indicates whether the battery is charging or not
+
+/************************* INA219 I2C Curent sensor variables *********************************/
 
 Adafruit_INA219 MotorCurrentSensor[MOTOR_CURRENT_COUNT] = {Adafruit_INA219(MOTOR_RIGHT_INA219_I2C_ADDRESS),
                                                            Adafruit_INA219(MOTOR_LEFT_INA219_I2C_ADDRESS),

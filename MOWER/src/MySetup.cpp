@@ -26,6 +26,7 @@
 #include "FastAnaReadTsk/FastAnaReadTsk.h"
 #include "AnaReadTsk/AnaReadTsk.h"
 #include "PerimeterTsk/PerimeterTsk.h"
+#include "Battery/Battery.h"
 #include "StartupChecks.h"
 
 void MySetup(void)
@@ -60,6 +61,8 @@ void MySetup(void)
 
   MotorCurrentSensorSetup(); // Done by Analog Read task
   CompassSensorSetup();      // Done by Analog Read task ??
+
+  BatteryChargeRelaySetup();
 
   KeypadSetup();
 
@@ -111,6 +114,8 @@ void MySetup(void)
 
   // Send reboot event to logger
   LogPrintln(Resetreason, TAG_RESET, DBG_WARNING);
+
+  BatteryCurrentSensorSetup();
 
   TemperatureSensorSetup();
 

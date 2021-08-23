@@ -11,7 +11,13 @@
  */
 void IOExtendSetup(void)
 {
+  // Ensure exlusive access to I2C
+  xSemaphoreTake(g_I2CSemaphore, portMAX_DELAY);
+
   IOExtend.begin(); // default address 0X20
+
+  // Free access to I2C for other tasks
+  xSemaphoreGive(g_I2CSemaphore);
 
   DebugPrintln("MCP I2C IO Extender setup Done", DBG_VERBOSE, true);
 }

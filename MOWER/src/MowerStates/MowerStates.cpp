@@ -10,6 +10,7 @@
 #include "Tilt/Tilt.h"
 #include "Bumper/Bumper.h"
 #include "Rain/Rain.h"
+#include "Battery/Battery.h"
 #include "Utils/Utils.h"
 #include "Display/Display.h"
 
@@ -306,6 +307,9 @@ void MowerGoingToBase(const bool StateChange, const MowerState PreviousState)
     // just in case, stop cut motor
     CutMotorStop();
 
+    // Close Battery charge relay to be able to detect arrival on base station
+    BatteryChargeRelayClose();
+
     // Ensure wire finding function is called on first call
     FindWire = true;
     FindWireReset = true;
@@ -382,6 +386,9 @@ void MowerLeavingBase(const bool StateChange, const MowerState PreviousState)
   {
     // Cancel any outstanding wheel speed corrections
     MotionMotorsTrackingAdjustSpeed(0, 0);
+
+    // Open Battery charge relay to reduce energy consumption of keepong relay closed
+    BatteryChargeRelayOpen();
   }
 
   // go backward for 50 cm

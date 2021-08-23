@@ -307,18 +307,28 @@ extern DeviceAddress temp_2_BlueSensor;
 extern int g_TempErrorCount[TEMPERATURE_COUNT];
 extern float g_Temperature[TEMPERATURE_COUNT];
 
-/************************* ACS712 Battery Charge current sensor variables *********************************/
-extern float g_BatteryChargeCurrent;
+/************************* INA219 I2C Battery Charge current sensor variables *********************************/
+#include <Adafruit_INA219.h>
 
-#define BATTERY_CHARGE_READ_INTERVAL 2000   // in ms
-#define CHARGE_CURRENT_CHECK_THRESHOLD 1000 // in raw AnalogRead points
-#define CHARGE_CURRENT_OFFSET 140           // in raw AnalogRead
-#define CHARGE_CURRENT_MV_PER_AMP 100.0F    // From ACS712-20A datasheet
-#define CHARGE_CURRENT_ZERO_VOLTAGE 2500    // in mv
-#define CHARGE_CURRENT_DEADBAND 250         // in mA
+#define BATTERY_CHARGE_READ_INTERVAL 5000   // in ms
+#define BATTERY_CHECK_INTERVAL 15000 // in ms
+#define BATTERY_0_PERCENT_VOLTAGE 11.7F  // in Volts
+#define BATTERY_100_PERCENT_VOLTAGE 12.65F  // in Volts
+
+#define BATTERY_CHARGE_CURRENT_TO_STOP_CHARGE 50  // in mA, used to stop charging when charging current is low
+#define BATTERY_CHARGE_CURRENT_CHARGING_THRESHOLD 75 // in mA, used to determine if battery is charging
+
+#define BATTERY_VOLTAGE_TO_START_CHARGE 12.6F  // in Volts
+#define BATTERY_VOLTAGE_TO_STOP_CHARGE BATTERY_100_PERCENT_VOLTAGE  // in Volts
+
+extern Adafruit_INA219 BatteryChargeSensor;
+
+extern float g_BatteryChargeCurrent;
+extern int g_BatterySOC;  // Indicates the battery state of charge in %
+extern bool g_BatteryRelayIsClosed;  // Indicates whether the battery relay is closed (true) or not (false)
+extern bool g_BatteryIsCharging;  // Indicates whether the battery is charging (true) or not (false)
 
 /************************* INA219 I2C Curent sensor variables *********************************/
-#include <Adafruit_INA219.h>
 
 #define MOTOR_CURRENT_COUNT 3 // Number of motor current sensors.
 

@@ -17,6 +17,7 @@
 #include "CutMotor/CutMotor.h"
 #include <pin_definitions.h>
 #include "Display/Display.h"
+#include "Battery/Battery.h"
 #include "TestLoop.h"
 #include "DisplayMowerData.h"
 #include "MowerStates/MowerStates.h"
@@ -37,6 +38,7 @@ void loop()
 
   FanCheck(FAN_1_RED);  // Read temperature and activate or stop Cutting fan
   FanCheck(FAN_2_BLUE); // Read temperature and activate or stop Motion fan
+  BatteryChargeCheck();
 
   bool stateChange = g_CurrentState != StateOnCall;
 

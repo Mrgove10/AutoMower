@@ -1,5 +1,5 @@
 // MCP 23017 Extender pins
-#define PIN_MCP_SPARE_1 0
+#define PIN_MCP_BATTERY_CHARGE_RELAY 0
 #define PIN_MCP_SPARE_2 1
 #define PIN_MCP_MOTOR_CUT_LN1 2
 #define PIN_MCP_MOTOR_CUT_LN2 3

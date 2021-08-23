@@ -17,7 +17,7 @@ void MotorCurrentSensorSetup()
   {
     if (!MotorCurrentSensor[sensor].begin())
     {
-      DebugPrintln("Motor current Sensor # " + String(sensor) + " not found !", DBG_VERBOSE, true);
+      // DebugPrintln("Motor current Sensor # " + String(sensor) + " not found !", DBG_VERBOSE, true);
       LogPrintln("Motor current Sensor # " + String(sensor) + " not found !", TAG_CHECK, DBG_ERROR);
     }
     else
@@ -121,20 +121,38 @@ bool MotorCurrentRead(const int sensor, const bool Now)
 }
 
 /**
+ * I2C INA219 Battery Charge Current Sensor Setup function
+ *
+ */
+void BatteryCurrentSensorSetup()
+{
+  if (BatteryChargeSensor.begin())
+  {
+    LogPrintln("Battery charge current Sensor not found !", TAG_CHECK, DBG_ERROR);
+  }
+  else
+  {
+    DebugPrintln("Battery charge current Sensor found !", DBG_VERBOSE, true);
+  }
+
+  BatteryChargeSensor.setCalibration_32V_2A();
+  delay(100);
+  BatteryChargeCurrentRead();
+}
+
+/**
  * Checks to see if Battery ACS712 current sensor is connected (and hopefully functionning)
  * 
  * @return true if Battery ACS712 current sensor is ok
  */
 bool BatteryCurrentSensorCheck(void)
 {
-  bool readStatus = BatteryChargeCurrentRead(true);
-
   DisplayClear();
   DisplayPrint(0, 0, F("Charge sensor Test"));
 
-  if (readStatus)
+  if (BatteryChargeSensor.success())
   {
-    DebugPrintln("Charge Sensor , Value: " + String(g_BatteryChargeCurrent, 3), DBG_INFO, true);
+    DebugPrintln("Charge Sensor ok, Value: " + String(g_BatteryChargeCurrent, 0), DBG_INFO, true);
     DisplayPrint(2, 2, F("Charge OK: "));
     DisplayPrint(7, 3, String(g_BatteryChargeCurrent, 0) + F(" mA"));
     delay(TEST_SEQ_STEP_WAIT);
@@ -158,39 +176,45 @@ bool BatteryCurrentSensorCheck(void)
 bool BatteryChargeCurrentRead(const bool Now)
 {
   static unsigned long LastBatteryChargeCurrentRead = 0;
+  static float smoothedCurrent = UNKNOWN_FLOAT;
 
   if ((millis() - LastBatteryChargeCurrentRead > BATTERY_CHARGE_READ_INTERVAL) || Now)
   {
-    int raw1 = ProtectedAnalogRead(PIN_ESP_AMP_CHARGE);
-    int raw2 = ProtectedAnalogRead(PIN_ESP_AMP_CHARGE);
-    int raw3 = ProtectedAnalogRead(PIN_ESP_AMP_CHARGE);
-    int raw = (raw1 + raw2 + raw3) / 3;
+    float current_mA = 0;
 
-    //  DebugPrintln("Raw Charge current value: " + String(raw), DBG_VERBOSE, true);
+    // Ensure exlusive access to I2C
+    xSemaphoreTake(g_I2CSemaphore, portMAX_DELAY);
 
-    if (raw > CHARGE_CURRENT_CHECK_THRESHOLD)
+    current_mA = BatteryChargeSensor.getCurrent_mA();
+
+    // Free access to I2C for other tasks
+    xSemaphoreGive(g_I2CSemaphore);
+
+    if (BatteryChargeSensor.success())
     {
-      int voltage = map(raw + CHARGE_CURRENT_OFFSET, 0, 4095, 0, 3300);
-      //    DebugPrintln(" Charge current voltage value: " + String(voltage), DBG_VERBOSE, true);
 
-      float current = float(voltage - CHARGE_CURRENT_ZERO_VOLTAGE) / CHARGE_CURRENT_MV_PER_AMP;
-
-      if ((current < CHARGE_CURRENT_DEADBAND) && (current > -CHARGE_CURRENT_DEADBAND))
+      if (smoothedCurrent == UNKNOWN_FLOAT)
       {
-        current = 0;
+        smoothedCurrent = abs(current_mA);
+      }
+      else
+      {
+        smoothedCurrent = 0.8 * smoothedCurrent + 0.2 * ((float)abs(current_mA));
       }
 
-      g_BatteryChargeCurrent = current * 1000; //  to convert to mA
+      g_BatteryChargeCurrent = smoothedCurrent;
       LastBatteryChargeCurrentRead = millis();
 
-      //    DebugPrintln("Charge current value: " + String(g_BatteryChargeCurrent,3), DBG_VERBOSE, true);
+      DebugPrintln("Battery charge current value: " + String(g_BatteryChargeCurrent), DBG_VERBOSE, true);
       return true;
     }
     else
     {
       g_BatteryChargeCurrent = UNKNOWN_FLOAT;
+      DebugPrintln("Battery charge current could not be read !", DBG_VERBOSE, true);
       return false;
     }
   }
+
   return true;
 }
