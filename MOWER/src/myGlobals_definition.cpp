@@ -155,13 +155,15 @@ Timezone myTime;
 
 /************************* Display variables *********************************/
 
-#ifdef OLEDSSD1306_DISPLAY
-SSD1306Wire oled(OLEDSSD1306_DISPLAY_I2C_ADDRESS, PIN_ESP_I2C_SDA, PIN_ESP_I2C_SCL);
-#endif
-
-#ifdef LCD2004_DISPLAY
+#ifdef DISPLAY_LCD2004
 LiquidCrystal_I2C lcd(PCF8574_ADDR_A21_A11_A01, 4, 5, 6, 16, 11, 12, 13, 14, POSITIVE); // Uses Defaut Address
 #endif
+
+#ifdef DISPLAY_OLEDSSD1306
+SSD1306Wire oled(DISPLAY_OLEDSSD1306_I2C_ADDRESS, PIN_ESP_I2C_SDA, PIN_ESP_I2C_SCL);
+#endif
+
+unsigned long g_LastDisplayUpdate = 0;             // Used to trigger screen backlight switch off
 
 /************************* Keypad variables *********************************/
 

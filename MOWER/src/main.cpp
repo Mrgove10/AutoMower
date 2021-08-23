@@ -89,7 +89,7 @@ void loop()
 
   EEPROMSave(false); // Update EEPROM
 
-  MQTTReconnect(); // Check MQTT Status ans reconnect
+  MQTTReconnect(); // Check MQTT Status and reconnect
 
   MQTTSendTelemetry(); // Send Mower Telemetry
 
@@ -98,6 +98,8 @@ void loop()
   SerialAndTelnet.handle(); // Refresh Telnet Session
 
   events(); // eztime refresh
+  
+  DisplayDimming(DISPLAY_BACKLIGHT_OFF_DELAY); // Dimm screen if timeout is reached 
 
   delay(50);
 }

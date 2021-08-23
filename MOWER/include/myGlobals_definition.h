@@ -217,21 +217,25 @@ extern Timezone myTime;
 /************************* Display variables *********************************/
 // The type of screen connected is defined int he Environment_definitions.h file
 
-#ifdef LCD2004_DISPLAY
+#ifdef DISPLAY_LCD2004
 #include <LiquidCrystal_I2C.h>
 extern LiquidCrystal_I2C lcd;
 #endif
 
-#ifdef OLEDSSD1306_DISPLAY
+#ifdef DISPLAY_OLEDSSD1306
 #include <SSD1306.h>
 extern SSD1306Wire oled;
-#endif
-
-#define COLUMS 20
-#define ROWS 4
 #define OLED_PIXEL_PER_LINE 16  // to reproduce LCD "form factor" on OLED display : 64/4
 #define OLED_PIXEL_PER_COLUMN 7 // to reproduce LCD "form factor" on OLED display : 128/20 => 6.4 rounded up to 7
-#define OLED_BRIGHTNESS 200
+#define OLED_BRIGHTNESS_NORMAL 255
+#define OLED_BRIGHTNESS_LOW 2
+#endif
+
+#define DISPLAY_COLUMS 20
+#define DISPLAY_ROWS 4
+
+#define DISPLAY_BACKLIGHT_OFF_DELAY 3 * 60 * 1000   // Used to trigger screen backlight switch off, in ms
+extern unsigned long g_LastDisplayUpdate;             // Used to trigger screen backlight switch off
 
 /************************* Keypad variables *********************************/
 
