@@ -1,0 +1,40 @@
+name: WebApp CI
+
+on: [push]
+
+jobs:
+  deploy_APP:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: APP
+
+    steps:
+      - name: Clone repo
+        uses: actions/checkout@v2
+
+      - name: Set up node
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+
+      - name: npm install
+        run: npm install 
+
+      - name: Build
+        run: npm run build
+
+      - name: Clean before artifact creation
+        run: |
+          ls -lah
+          rm -r node_modules
+          rm -r src
+          rm package.json package-lock.json .gitignore webpack.config.js
+          ls -lah
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: Website - Build Artifact
+          path: APP/

@@ -1,7 +1,7 @@
 # Automower
 
-[![PlatformIO CI](https://github.com/Mrgove10/AutoMower/actions/workflows/main.yml/badge.svg)](https://github.com/Mrgove10/AutoMower/actions/workflows/main.yml)
-[![CodeFactor](https://www.codefactor.io/repository/github/mrgove10/automower/badge)](https://www.codefactor.io/repository/github/mrgove10/automower)
+[![PlatformIO CI](https://github.com/Mrgove10/AutoMower/actions/workflows/mower.yml/badge.svg)](https://github.com/Mrgove10/AutoMower/actions/workflows/mower.yml)
+[![WebApp CI](https://github.com/Mrgove10/AutoMower/actions/workflows/webapp.yml/badge.svg)](https://github.com/Mrgove10/AutoMower/actions/workflows/webapp.yml)[![CodeFactor](https://www.codefactor.io/repository/github/mrgove10/automower/badge)](https://www.codefactor.io/repository/github/mrgove10/automower)
 
 **Note: This project is a work in progress !!**
 
