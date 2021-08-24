@@ -5,7 +5,7 @@
   "author": "",
   "license": "MIT",
   "scripts": {
-    "build" :"webpack",
+    "build": "webpack",
     "serve": "concurrently \"npx http-server\" \"npx webpack --watch\""
   },
   "dependencies": {
@@ -16,6 +16,8 @@
   },
   "devDependencies": {
     "concurrently": "^6.2.1",
+    "css-loader": "^6.2.0",
+    "style-loader": "^3.2.1",
     "webpack": "^5.51.1",
     "webpack-cli": "^4.8.0",
     "webpack-dev-server": "3.11.2"
