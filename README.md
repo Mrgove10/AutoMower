@@ -383,14 +383,14 @@ In this state the mower is doing nthing and wait for the next command.
 
 ## Website
 
-For developping the website you need node.js installed
+For developping the website you need node.js installed (version 16+ recommended)
 
 To launch the website  :
 
 ``` bash
 cd APP
 npm install
-npx webpack serve 
+npm run serve
 ```
 
 You can now go to <http://locahost:8080>

@@ -6,6 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Auto Mower Controles</title>
+    <link rel="stylesheet" href="./node_modules/@fortawesome/fontawesome-free/css/all.min.css" />
     <link rel="stylesheet" href="./node_modules/leaflet/dist/leaflet.css" />
     <link rel="stylesheet" href="./node_modules/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="./style/index.css" />
@@ -38,33 +39,88 @@
         <!--==================-->
         <div id="mainpage" class="row" style="display: flex;">
             <div class="col-6">
-                Hello World !
+                <h2 class="d-flex justify-content-center" id='stateDisplay'>State</h2>
+                <small class="d-flex justify-content-center">current state</small>
                 <br>
-                <button class="btn btn-success" onclick="start()">Start</button>
+                <h3><i class="fas fa-battery-three-quarters fa-rotate-270"></i> Battery</h3>
+                <div class="progress">
+                    <div class="progress-bar" role="progressbar" style="width: 25%" aria-valuenow="25" aria-valuemin="0"
+                        aria-valuemax="100">25%</div>
+                </div>
                 <br>
-                <button class="btn btn-danger" onclick="stop()">Stop</button>
+                <h3>Controls</h3>
+                <div class="d-flex justify-content-between">
+                    <button class="btn btn-success" onclick="start()">
+                        <i class="fas fa-play"></i> Start <i class="fas fa-play"></i>
+                    </button>
+                    <button class="btn btn-danger" onclick="stop()">
+                        <i class="fas fa-hand-paper"></i> Stop <i class="fas fa-hand-paper"></i>
+                    </button>
+                </div>
+                <div class="container">
+                    <div class="d-flex justify-content-center">
+                        <button class="btn btn-primary" onclick="goup()"><i class="fas fa-arrow-up"></i></button>
+                    </div>
+                    <br>
+                    <div class="d-flex align-items-center justify-content-around">
+                        <button class="btn btn-primary" onclick="goleft()"><i
+                                class="fas fa-arrow-up fa-rotate-270"></i></button>
+                        <button class="btn btn-primary" onclick="goright()"><i
+                                class="fas fa-arrow-up fa-rotate-90"></i></button>
+                    </div>
+                    <br>
+                    <div class="d-flex justify-content-center">
+                        <button class="btn btn-primary" onclick="godown()"><i
+                                class="fas fa-arrow-up fa-rotate-180"></i></button>
+
+                    </div>
+                </div>
+
+
+                <button class="btn btn-primary" onclick="setStateIcon('docked')">test</button>
+
             </div>
             <div class="col-6">
                 <div id="mapid"></div>
+                <div id="calendar" style="height: 800px;"></div>
             </div>
+
         </div>
 
         <!--==================-->
         <!--scheduling-->
         <!--==================-->
         <div id="schedule" class="col-12" style="display: none;">
-            sch
+
         </div>
 
         <!--==================-->
         <!--advanced-->
         <!--==================-->
         <div id="advanced" class="col-12" style="display: none;">
-            adv
+            <form>
+                <div class="form-group">
+                    <label for="exampleInputEmail1">Mower IP</label>
+                    <input type="text" class="form-control" id="mowerIP" placeholder="192.168.1.100">
+                </div>
+                <div class="form-group">
+                    <label for="exampleInputPassword1">Mqtt Server IP</label>
+                    <input type="text" class="form-control" id="mqttServerIP" placeholder="192.168.1.101">
+                </div>
+                <div class="form-group">
+                    <label for="exampleInputPassword1">Mqtt Server Port</label>
+                    <input type="text" class="form-control" id="mqttServerPort" placeholder="1883" value="1883">
+                </div>
+                <div class="form-check">
+                    <input type="checkbox" class="form-check-input" id="exampleCheck1">
+                    <label class="form-check-label" for="exampleCheck1">Check me out</label>
+                </div>
+                <button type="submit" class="btn btn-primary">Save</button>
+            </form>
         </div>
 
     </div>
-    <script src=" ./dist/bundle.js">
+    <script src="./dist/bundle.js" type="application/javascript">
     </script>
 </body>
 
