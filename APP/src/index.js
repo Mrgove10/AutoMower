@@ -1,9 +1,5 @@
 import { sendCommand } from './comm';
 
-import "@fortawesome/fontawesome-free/css/all.min.css";
-import "leaflet/dist/leaflet.css";
-import "bootstrap/dist/css/bootstrap.min.css";
-
 window.start = function () {
     console.log('Sending Start');
     sendCommand('STATE_CHANGE','MOWING');
