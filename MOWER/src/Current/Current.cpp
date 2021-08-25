@@ -200,6 +200,11 @@ bool BatteryChargeCurrentRead(const bool Now)
 
     if (BatteryChargeSensor.success())
     {
+      // Filter out very low current values
+      if (current_mA < BATTERY_CHARGE_CURRENT_MIN)
+      {
+        current_mA = 0;
+      }
 
       if (smoothedCurrent == UNKNOWN_FLOAT)
       {

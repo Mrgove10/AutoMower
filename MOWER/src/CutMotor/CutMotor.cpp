@@ -133,7 +133,7 @@ void CutMotorSetSpeed(const int Speed)
       {
         ledcWrite(CUT_MOTOR_PWM_CHANNEL_REVERSE, (uint32_t) (Speed * 4096) /100);
       }
-      g_CutMotorSpeed = Speed /100 * 4096;
+      g_CutMotorSpeed = Speed;
     }
   }
 };

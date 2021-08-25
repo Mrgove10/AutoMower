@@ -36,7 +36,8 @@ bool SonarSensorCheck(int sensor)
 
   //  Distance = sonar[sensor].ping_cm(SONAR_MAX_DISTANCE);
   // Distance = sonar[sensor].convert_cm(sonar[sensor].ping_median(SONAR_READ_ITERATIONS));
-  sensorCheck = (Distance != 0 && Distance != UNKNOWN_INT);
+  // sensorCheck = (Distance != 0 && Distance != UNKNOWN_INT);
+  sensorCheck = (g_SonarDistance[sensor] != 0 && g_SonarDistance[sensor] != UNKNOWN_INT);
 
   // DebugPrintln(g_sensorStr[sensor] + " Distance " + String(g_SonarDistance[sensor]), DBG_INFO, true);
 

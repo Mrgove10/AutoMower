@@ -367,7 +367,7 @@ void MQTTSendTelemetry()
     JSONDataPayload.add("Error", String (g_CurrentErrorCode));
     JSONDataPayload.add("BatVolt", String(float(g_BatteryVoltage / 1000.0f), 2));
     JSONDataPayload.add("ChargeCur", String(g_BatteryChargeCurrent, 2));
-    JSONDataPayload.add("BatSOC", String(g_BatterySOC));
+    JSONDataPayload.add("BatSOC", String(g_BatterySOC,1));
     JSONDataPayload.add("BatCharging", String(g_BatteryIsCharging));
 
     JSONDataPayload.add("DrvMotTemp", String(g_Temperature[TEMPERATURE_2_BLUE], 1));
@@ -381,7 +381,7 @@ void MQTTSendTelemetry()
     JSONDataPayload.add("CMotTemp", String(g_Temperature[TEMPERATURE_1_RED], 1));
     JSONDataPayload.add("CMotTempEr", String(g_TempErrorCount[TEMPERATURE_1_RED]));
     JSONDataPayload.add("CMotCur", String(g_MotorCurrent[MOTOR_CURRENT_CUT], 2));
-    JSONDataPayload.add("CMotSpd", String(float(g_CutMotorSpeed * g_CutMotorDirection * 100) / 4096, 2));
+    JSONDataPayload.add("CMotSpd", String(float(g_CutMotorSpeed * g_CutMotorDirection), 2));
     JSONDataPayload.add("CMotAlm", String(g_CutMotorAlarm));
     JSONDataPayload.add("CMotFan", String(g_FanOn[FAN_1_RED]));
 

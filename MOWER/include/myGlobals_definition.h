@@ -312,15 +312,14 @@ extern float g_Temperature[TEMPERATURE_COUNT];
 
 #define BATTERY_CHARGE_READ_INTERVAL 5000   // in ms
 #define BATTERY_CHECK_INTERVAL 15000 // in ms
-
+#define BATTERY_CHARGE_CURRENT_MIN 1    // in mA, used to filter out very low sensor readings
 #define BATTERY_CHARGE_CURRENT_TO_STOP_CHARGE 50  // in mA, used to stop charging when charging current is low
-#define BATTERY_CHARGE_CURRENT_CHARGING_THRESHOLD 200 // in mA, used to determine if battery is charging
-
+#define BATTERY_CHARGE_CURRENT_CHARGING_THRESHOLD 300 // in mA, used to determine if battery is charging
 
 extern Adafruit_INA219 BatteryChargeSensor;
 
 extern float g_BatteryChargeCurrent;
-extern int g_BatterySOC;  // Indicates the battery state of charge in %
+extern float g_BatterySOC;  // Indicates the battery state of charge in %
 extern bool g_BatteryRelayIsClosed;  // Indicates whether the battery relay is closed (true) or not (false)
 extern bool g_BatteryIsCharging;  // Indicates whether the battery is charging (true) or not (false)
 

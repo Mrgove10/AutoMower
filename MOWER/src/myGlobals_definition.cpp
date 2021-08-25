@@ -229,7 +229,7 @@ float g_BatteryChargeCurrent = 0;
 Adafruit_INA219 BatteryChargeSensor = Adafruit_INA219(BATTERY_INA219_I2C_ADDRESS);
 
 
-int g_BatterySOC = 0;  // Indicates the battery state of charge in %
+float g_BatterySOC = 0;  // Indicates the battery state of charge in %
 bool g_BatteryRelayIsClosed;  // Indicates whether the battery relay is closed (true) or not (false)
 bool g_BatteryIsCharging = false;  // indicates whether the battery is charging or not
 

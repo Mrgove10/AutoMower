@@ -25,7 +25,7 @@ bool BatteryVoltageCheck(void)
   DisplayPrint(2, 2, "Battery " + StatusStr[status]);
   DisplayPrint(7, 3, String(float(g_BatteryVoltage / 1000.0f), 1) + " V");
 
-  if (status > BATTERY_VOLTAGE_LOW_THRESHOLD)
+  if (status <= BATTERY_VOLTAGE_LOW)
   {
     delay(TEST_SEQ_STEP_WAIT);
     return true;
@@ -52,7 +52,7 @@ int BatteryVoltageRead(const bool Now)
 
   if ((millis() - LastVoltageRead > BATTERY_VOLTAGE_READ_INTERVAL) || Now)
   {
-        // Ensure exlusive access to I2C
+    // Ensure exlusive access to I2C
     xSemaphoreTake(g_I2CSemaphore, portMAX_DELAY);
 
     busvoltage = BatteryChargeSensor.getBusVoltage_V();
@@ -77,17 +77,19 @@ int BatteryVoltageRead(const bool Now)
     g_BatteryVoltage = smoothVoltage;
     LastVoltageRead = millis();
 
-    if (volt < BATTERY_VOLTAGE_LOW_THRESHOLD)
+    DebugPrintln("Battery Voltage: " + String(g_BatteryVoltage) + " mV", DBG_VERBOSE, true);
+
+    if (g_BatteryVoltage < BATTERY_VOLTAGE_LOW_THRESHOLD)
     {
       g_BatteryStatus = BATTERY_VOLTAGE_CRITICAL;
       return BATTERY_VOLTAGE_CRITICAL;
     }
-    else if (volt < BATTERY_VOLTAGE_MEDIUM_THRESHOLD)
+    else if (g_BatteryVoltage < BATTERY_VOLTAGE_MEDIUM_THRESHOLD)
     {
       g_BatteryStatus = BATTERY_VOLTAGE_LOW;
       return BATTERY_VOLTAGE_LOW;
     }
-    else if (volt < BATTERY_VOLTAGE_NORMAL_THRESHOLD)
+    else if (g_BatteryVoltage < BATTERY_VOLTAGE_NORMAL_THRESHOLD)
     {
       g_BatteryStatus = BATTERY_VOLTAGE_MEDIUM;
       return BATTERY_VOLTAGE_MEDIUM;
