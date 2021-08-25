@@ -48,15 +48,26 @@ int BatteryVoltageRead(const bool Now)
 {
   static unsigned long LastVoltageRead = 0;
   static float smoothVoltage = UNKNOWN_FLOAT;
+  float busvoltage = 0;
 
   if ((millis() - LastVoltageRead > BATTERY_VOLTAGE_READ_INTERVAL) || Now)
   {
-    int voltraw = ProtectedAnalogRead(PIN_ESP_BAT_VOLT);
-    int volt = map(voltraw, 0, 4095, 0, VOLTAGE_RANGE_MAX);
+        // Ensure exlusive access to I2C
+    xSemaphoreTake(g_I2CSemaphore, portMAX_DELAY);
 
+    busvoltage = BatteryChargeSensor.getBusVoltage_V();
+
+    // Free access to I2C for other tasks
+    xSemaphoreGive(g_I2CSemaphore);
+
+//    int voltraw = ProtectedAnalogRead(PIN_ESP_BAT_VOLT);
+//    int volt = map(voltraw, 0, 4095, 0, VOLTAGE_RANGE_MAX);
+
+    int volt = busvoltage*1000;
+    
     if (smoothVoltage == UNKNOWN_FLOAT)
     {
-      smoothVoltage = volt;
+     smoothVoltage = volt;
     }
     else
     {

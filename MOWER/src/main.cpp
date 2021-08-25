@@ -38,7 +38,6 @@ void loop()
 
   FanCheck(FAN_1_RED);  // Read temperature and activate or stop Cutting fan
   FanCheck(FAN_2_BLUE); // Read temperature and activate or stop Motion fan
-  BatteryChargeCheck();
 
   bool stateChange = g_CurrentState != StateOnCall;
 

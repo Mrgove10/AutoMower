@@ -36,6 +36,7 @@ void MySetup(void)
 
   Serial.begin(SERIAL_BAUD);
   delay(100);
+  Serial.println();
 
 #ifdef STOP_RESTART_TO_CAPTURE_CRASH_DUMP
 // For testing ONLY, if reset is not a power-on, delay indefinately to be able to "catch" reset cause.
@@ -55,7 +56,7 @@ void MySetup(void)
 
   IOExtendSetup();
 
-  // in case of unexpected reset during mower operation, imidiatly stop all motors (setup function sets motor to stop after setup)
+  // in case of unexpected reset during mower operation, immediatly stop all motors (setup function sets motor to stop after setup)
   MotionMotorSetup();
   CutMotorSetup();
 
@@ -66,13 +67,10 @@ void MySetup(void)
 
   KeypadSetup();
 
-  // Setup pins
-
-  //  adcAttachPin(BatteryPin);
-  //  adcAttachPin(MainBatteryPin);
+  // Delay to ensure all serial.prints have finished before Telnet intialisation
+  delay(500);
 
   // Setup Telnet Debug Management
-
   InitTelnet();
 
   DebugPrintln("");
@@ -150,10 +148,10 @@ void MySetup(void)
   DebugPrintln("End of Setup---------", DBG_VERBOSE, true);
   DebugPrintln("");
 
-  // bool startupChecksOk = StartupChecks();
+  bool startupChecksOk = StartupChecks();
 
   DebugPrintln("");
-  // DebugPrintln("End of Startupchecks - Status:" + String(startupChecksOk), DBG_VERBOSE, true);
+  DebugPrintln("End of Startupchecks - Status:" + String(startupChecksOk), DBG_VERBOSE, true);
   DebugPrintln("");
 
   SerialAndTelnet.handle();

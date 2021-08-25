@@ -81,7 +81,7 @@ bool MotorCurrentRead(const int sensor, const bool Now)
   if ((millis() - LastMotorCurrentRead[sensor] > MOTOR_CURRENT_READ_INTERVAL) || Now)
   {
     //    float shuntvoltage = 0;
-    //    float busvoltage = 0;
+    float busvoltage = 0;
     float current_mA = 0;
     //    float loadvoltage = 0;
     //    float power_mW = 0;
@@ -90,7 +90,7 @@ bool MotorCurrentRead(const int sensor, const bool Now)
     xSemaphoreTake(g_I2CSemaphore, portMAX_DELAY);
 
     //    shuntvoltage = MotorCurrentSensor[sensor].getShuntVoltage_mV();
-    //    busvoltage = MotorCurrentSensor[sensor].getBusVoltage_V();
+    busvoltage = MotorCurrentSensor[sensor].getBusVoltage_V();
     current_mA = MotorCurrentSensor[sensor].getCurrent_mA();
     //    power_mW = MotorCurrentSensor[sensor].getPower_mW();
     //    loadvoltage = busvoltage + (shuntvoltage / 1000);
@@ -106,6 +106,11 @@ bool MotorCurrentRead(const int sensor, const bool Now)
     {
       smoothedCurrent[sensor] = 0.8 * smoothedCurrent[sensor] + 0.2 * ((float)abs(current_mA));
     }
+
+//     if (MotorCurrentSensor[sensor].success())
+//     {
+//        DebugPrintln("Sensor" + String(sensor) + " Bus Voltage:" + String(busvoltage) + " V", DBG_VERBOSE, true);
+//     }
 
     /*
     DebugPrintln("Sensor" + String(sensor) + " Bus Voltage: " + String(busvoltage) + " V" + 
@@ -177,6 +182,8 @@ bool BatteryChargeCurrentRead(const bool Now)
 {
   static unsigned long LastBatteryChargeCurrentRead = 0;
   static float smoothedCurrent = UNKNOWN_FLOAT;
+  float busvoltage = 0;
+
 
   if ((millis() - LastBatteryChargeCurrentRead > BATTERY_CHARGE_READ_INTERVAL) || Now)
   {
@@ -186,6 +193,7 @@ bool BatteryChargeCurrentRead(const bool Now)
     xSemaphoreTake(g_I2CSemaphore, portMAX_DELAY);
 
     current_mA = BatteryChargeSensor.getCurrent_mA();
+    busvoltage = BatteryChargeSensor.getBusVoltage_V();
 
     // Free access to I2C for other tasks
     xSemaphoreGive(g_I2CSemaphore);
@@ -199,13 +207,13 @@ bool BatteryChargeCurrentRead(const bool Now)
       }
       else
       {
-        smoothedCurrent = 0.8 * smoothedCurrent + 0.2 * ((float)abs(current_mA));
+        smoothedCurrent = 0.5 * smoothedCurrent + 0.5 * ((float)abs(current_mA));
       }
 
       g_BatteryChargeCurrent = smoothedCurrent;
       LastBatteryChargeCurrentRead = millis();
 
-      DebugPrintln("Battery charge current value: " + String(g_BatteryChargeCurrent), DBG_VERBOSE, true);
+      DebugPrintln("Battery charge current value:" + String(g_BatteryChargeCurrent) + " mA (INA bus voltage:" + String(busvoltage,3) + " V)", DBG_VERBOSE, true);
       return true;
     }
     else

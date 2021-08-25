@@ -4,6 +4,7 @@
 #include "myGlobals_definition.h"
 #include "AnaReadTsk/AnaReadTsk.h"
 #include "Voltage/Voltage.h"
+#include "Battery/Battery.h"
 #include "Current/Current.h"
 #include "Compass/Compass.h"
 #include "GPS/GPS.h"
@@ -124,8 +125,7 @@ void AnaReadLoopTask(void *dummyParameter)
     BatteryVoltageRead(false); // the read interval check is performed by the function
 
     // Read battery charge current value
-
-    // TO DO
+    BatteryChargeCheck();
 
     // Read motion motor current value
     MotorCurrentRead(MOTOR_CURRENT_RIGHT, false); // The read interval check is performed by the function

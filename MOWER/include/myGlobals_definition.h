@@ -312,14 +312,10 @@ extern float g_Temperature[TEMPERATURE_COUNT];
 
 #define BATTERY_CHARGE_READ_INTERVAL 5000   // in ms
 #define BATTERY_CHECK_INTERVAL 15000 // in ms
-#define BATTERY_0_PERCENT_VOLTAGE 11.7F  // in Volts
-#define BATTERY_100_PERCENT_VOLTAGE 12.65F  // in Volts
 
 #define BATTERY_CHARGE_CURRENT_TO_STOP_CHARGE 50  // in mA, used to stop charging when charging current is low
-#define BATTERY_CHARGE_CURRENT_CHARGING_THRESHOLD 75 // in mA, used to determine if battery is charging
+#define BATTERY_CHARGE_CURRENT_CHARGING_THRESHOLD 200 // in mA, used to determine if battery is charging
 
-#define BATTERY_VOLTAGE_TO_START_CHARGE 12.6F  // in Volts
-#define BATTERY_VOLTAGE_TO_STOP_CHARGE BATTERY_100_PERCENT_VOLTAGE  // in Volts
 
 extern Adafruit_INA219 BatteryChargeSensor;
 
@@ -327,6 +323,29 @@ extern float g_BatteryChargeCurrent;
 extern int g_BatterySOC;  // Indicates the battery state of charge in %
 extern bool g_BatteryRelayIsClosed;  // Indicates whether the battery relay is closed (true) or not (false)
 extern bool g_BatteryIsCharging;  // Indicates whether the battery is charging (true) or not (false)
+
+/************************* Voltage variables *********************************/
+
+#define VOLTAGE_RANGE_MAX 17000 // in mV
+
+// #define VOLTAGE_DETECTION_THRESHOLD 9
+#define BATTERY_0_PERCENT_VOLTAGE 11200                // in mV
+#define BATTERY_VOLTAGE_LOW_THRESHOLD 11250            // in mV
+#define BATTERY_VOLTAGE_MEDIUM_THRESHOLD 11500         // in mV
+#define BATTERY_VOLTAGE_NORMAL_THRESHOLD 12000         // in mV
+#define BATTERY_VOLTAGE_RETURN_TO_BASE_THRESHOLD 11500 // in mV
+#define BATTERY_VOLTAGE_TO_START_CHARGE 12300           // in mv
+#define BATTERY_VOLTAGE_FULL_THRESHOLD 12400           // in mV
+#define BATTERY_VOLTAGE_TO_STOP_CHARGE BATTERY_VOLTAGE_FULL_THRESHOLD  // in mv
+
+#define BATTERY_VOLTAGE_OK 0               // if above BATTERY_VOLTAGE_NORMAL_THRESHOLD
+#define BATTERY_VOLTAGE_MEDIUM 1           // if between BATTERY_VOLTAGE_MEDIUM_THRESHOLD and BATTERY_VOLTAGE_NORMAL_THRESHOLD
+#define BATTERY_VOLTAGE_LOW 2              // if between BATTERY_VOLTAGE_LOW_THRESHOLD and BATTERY_VOLTAGE_MEDIUM_THRESHOLD
+#define BATTERY_VOLTAGE_CRITICAL 3         // if below BATTERY_VOLTAGE_LOW_THRESHOLD
+#define BATTERY_VOLTAGE_READ_INTERVAL 5000 // in ms
+
+extern float g_BatteryVoltage;          // Battery voltage in mV
+extern int g_BatteryStatus;
 
 /************************* INA219 I2C Curent sensor variables *********************************/
 
@@ -339,26 +358,6 @@ extern Adafruit_INA219 MotorCurrentSensor[MOTOR_CURRENT_COUNT];
 #define MOTOR_CURRENT_CUT 2
 #define MOTOR_CURRENT_READ_INTERVAL 500 // in ms
 extern float g_MotorCurrent[MOTOR_CURRENT_COUNT];
-
-/************************* Voltage variables *********************************/
-
-#define VOLTAGE_RANGE_MAX 17000 // in mV
-
-// #define VOLTAGE_DETECTION_THRESHOLD 9
-#define BATTERY_VOLTAGE_LOW_THRESHOLD 11000            // in mV
-#define BATTERY_VOLTAGE_MEDIUM_THRESHOLD 11500         // in mV
-#define BATTERY_VOLTAGE_NORMAL_THRESHOLD 12000         // in mV
-#define BATTERY_VOLTAGE_RETURN_TO_BASE_THRESHOLD 11200 // in mV
-#define BATTERY_VOLTAGE_FULL_THRESHOLD 12650           // in mV
-
-#define BATTERY_VOLTAGE_OK 0               // if above BATTERY_VOLTAGE_NORMAL_THRESHOLD
-#define BATTERY_VOLTAGE_MEDIUM 1           // if between BATTERY_VOLTAGE_MEDIUM_THRESHOLD and BATTERY_VOLTAGE_NORMAL_THRESHOLD
-#define BATTERY_VOLTAGE_LOW 2              // if between BATTERY_VOLTAGE_LOW_THRESHOLD and BATTERY_VOLTAGE_MEDIUM_THRESHOLD
-#define BATTERY_VOLTAGE_CRITICAL 3         // if below BATTERY_VOLTAGE_LOW_THRESHOLD
-#define BATTERY_VOLTAGE_READ_INTERVAL 5000 // in ms
-
-extern float g_BatteryVotlage;
-extern int g_BatteryStatus;
 
 /************************* Sonar Read task *********************************/
 #define SONAR_READ_TASK_ESP_CORE 1          // Core assigned to task

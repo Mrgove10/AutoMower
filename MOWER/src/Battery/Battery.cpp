@@ -20,12 +20,21 @@ void BatteryChargeRelaySetup(void)
   xSemaphoreTake(g_I2CSemaphore, portMAX_DELAY);
 
   // Set pin mode
-  IOExtend.pinMode(PIN_MCP_BATTERY_CHARGE_RELAY, OUTPUT_OPEN_DRAIN);
+   IOExtend.pinMode(PIN_MCP_BATTERY_CHARGE_RELAY, OUTPUT_OPEN_DRAIN);
+  // IOExtend.pinMode(PIN_MCP_BATTERY_CHARGE_RELAY, OUTPUT);
 
   // Free access to I2C for other tasks
   xSemaphoreGive(g_I2CSemaphore);
 
   // On start, close relay (relay is Normaly Open)
+  BatteryChargeRelayClose();
+  delay(5000);
+  BatteryChargeRelayOpen();
+  delay(5000);
+  BatteryChargeRelayClose();
+  delay(5000);
+  BatteryChargeRelayOpen();
+  delay(5000);
   BatteryChargeRelayClose();
 }
 
@@ -35,12 +44,15 @@ void BatteryChargeRelaySetup(void)
  */
 void BatteryChargeRelayOpen(void)
 {
-  // Open relay (relay is Normaly Open)
-  IOExtendProtectedWrite(PIN_MCP_BATTERY_CHARGE_RELAY, LOW);
+  if (g_BatteryRelayIsClosed)
+  {
+    // Open relay (relay is Normaly Open)
+    IOExtendProtectedWrite(PIN_MCP_BATTERY_CHARGE_RELAY, LOW);
 
-  g_BatteryRelayIsClosed = false;
+    g_BatteryRelayIsClosed = false;
 
-  DebugPrintln("Battery charge relay opened", DBG_VERBOSE, true);
+    DebugPrintln("Battery charge relay opened", DBG_VERBOSE, true);
+  }
 }
 
 /**
@@ -49,12 +61,15 @@ void BatteryChargeRelayOpen(void)
  */
 void BatteryChargeRelayClose(void)
 {
-  // Close relay (relay is Normaly Open)
-  IOExtendProtectedWrite(PIN_MCP_BATTERY_CHARGE_RELAY, HIGH);
+  if (!g_BatteryRelayIsClosed)
+  {
+    // Close relay (relay is Normaly Open)
+    IOExtendProtectedWrite(PIN_MCP_BATTERY_CHARGE_RELAY, HIGH);
 
-  g_BatteryRelayIsClosed = true;
+    g_BatteryRelayIsClosed = true;
 
-  DebugPrintln("Battery charge relay closed", DBG_VERBOSE, true);
+    DebugPrintln("Battery charge relay closed", DBG_VERBOSE, true);
+  }
 }
 
 /**
@@ -71,15 +86,15 @@ void BatteryChargeCheck(const bool Now)
     BatteryChargeCurrentRead(Now);
 
     // Check if battery Charge current and voltage levels correspond to a fully charged battery
-    if (g_BatteryChargeCurrent < BATTERY_CHARGE_CURRENT_TO_STOP_CHARGE && g_BatteryVotlage > BATTERY_VOLTAGE_TO_STOP_CHARGE)
+    if (g_BatteryChargeCurrent < BATTERY_CHARGE_CURRENT_TO_STOP_CHARGE && g_BatteryVoltage > BATTERY_VOLTAGE_TO_STOP_CHARGE && g_BatteryIsCharging)
     {
       // Open relay to stop charge
       BatteryChargeRelayOpen();
-      DebugPrintln("Battery Full, charge stopped", DBG_INFO, true);
+      DebugPrintln("Battery Full, charge stopped (" + String(g_BatteryChargeCurrent) + " mA, " + String(g_BatteryVoltage, 1) + " V)" , DBG_INFO, true);
     }
 
     // Check if battery voltage level is below charging threshold
-    if (g_BatteryVotlage < BATTERY_VOLTAGE_TO_START_CHARGE)
+    if (g_BatteryVoltage < BATTERY_VOLTAGE_TO_START_CHARGE)
     {
       // Close relay to enable charge
       BatteryChargeRelayClose();
@@ -96,8 +111,19 @@ void BatteryChargeCheck(const bool Now)
     }
 
     // Determine State of Charge
-    g_BatterySOC = (map(int(g_BatteryVotlage*10), int(BATTERY_0_PERCENT_VOLTAGE*10), int(BATTERY_100_PERCENT_VOLTAGE*10), 0, 1000))/10;
+
+    g_BatterySOC = (map(int(g_BatteryVoltage*10), int(BATTERY_0_PERCENT_VOLTAGE*10), int(BATTERY_VOLTAGE_FULL_THRESHOLD*10), 0, 1000))/10;
     
+    if (g_BatteryVoltage <= BATTERY_0_PERCENT_VOLTAGE)
+    { 
+      g_BatterySOC = 0;
+    }
+
+    if (g_BatteryVoltage >= BATTERY_VOLTAGE_FULL_THRESHOLD)
+    { 
+      g_BatterySOC = 100;
+    }
+
     LastBatteryCheck = millis();
   }
 }

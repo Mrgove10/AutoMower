@@ -118,6 +118,8 @@ void DisplayDimming(const unsigned long timeout)
   // Free access to I2C for other tasks
   xSemaphoreGive(g_I2CSemaphore);
 
+    DebugPrintln("Display dimming Done", DBG_VERBOSE, true);
+
   // Clear last screen action
   g_LastDisplayUpdate = 0;
   }
