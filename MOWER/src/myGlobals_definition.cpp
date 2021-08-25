@@ -243,7 +243,7 @@ float g_MotorCurrent[MOTOR_CURRENT_COUNT] = {0, 0, 0};
 
 /************************* Voltage variables *********************************/
 
-float g_BatteryVotlage = 0;
+float g_BatteryVoltage = 0;
 int g_BatteryStatus = BATTERY_VOLTAGE_OK;
 
 /************************* Sonar Read task *********************************/

@@ -187,9 +187,9 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
   // Is Battery level above threshold ?
   //--------------------------------
 
-  if (g_BatteryVotlage < BATTERY_VOLTAGE_RETURN_TO_BASE_THRESHOLD)
+  if (g_BatteryVoltage < BATTERY_VOLTAGE_RETURN_TO_BASE_THRESHOLD)
   {
-    DebugPrintln("Battery low: returning to base (" + String(g_BatteryVotlage) + " mv)", DBG_INFO, true);
+    DebugPrintln("Battery low: returning to base (" + String(g_BatteryVoltage) + " mv)", DBG_INFO, true);
     MowerStop();
     CutMotorStop();
     g_totalMowingTime = g_totalMowingTime + (millis() - mowingStartTime);   // in minutes

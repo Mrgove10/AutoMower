@@ -70,7 +70,7 @@ void DisplayMowerData()
                    " |ML:" + String(g_MotorCurrent[MOTOR_CURRENT_LEFT], 1) +
                    " |MC:" + String(g_MotorCurrent[MOTOR_CURRENT_CUT], 1) +
                    " |MCAlm:" + String(g_CutMotorAlarm) +
-                   " |Volt:" + String(float(g_BatteryVotlage) / 1000.0f, 1) +
+                   " |Volt:" + String(float(g_BatteryVoltage) / 1000.0f, 1) +
                    " |Head:" + String(g_CompassHeading, 1) +
                    " |Timouts:" + String(g_FastAnaReadTimeout) +
                    " |MaxQ:" + String(g_inQueueMax) +

@@ -120,7 +120,7 @@ void MowerReserseAndTurn(const int Angle, const int Duration, const bool OnSpot)
  */
 bool MowerSlowDownApproachingObstables(const int SpeedDelta, const int Front, const int Left, const int Right, const int Perimeter)
 {
-  static unsigned long lastSpeedReduction = 0;
+ static unsigned long lastSpeedReduction = 0;
   bool SpeedReductiontiggered = false;
   static bool SpeedReductionInProgress = false;
 
