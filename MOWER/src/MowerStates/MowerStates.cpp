@@ -85,6 +85,7 @@ void MowerDocked(const bool StateChange, const MowerState PreviousState)
 void MowerMowing(const bool StateChange, const MowerState PreviousState)
 {
   static unsigned long mowingStartTime = 0;
+  static int bladeDirection = CUT_MOTOR_FORWARD;
 
   //--------------------------------
   // Actions to take when entering the mowing state
@@ -138,8 +139,19 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
     //Initialise Mowing start time
     mowingStartTime = millis();
 
+    // Determine random cutting motor rotation direction
+    if (millis() % 2 == 0) 
+    {
+      bladeDirection = CUT_MOTOR_FORWARD;
+    }
+    else
+    {
+      bladeDirection = CUT_MOTOR_REVERSE;
+    }
+
+    // Start Mowing
     MowerForward(MOWER_MOVES_SPEED_SLOW);
-    CutMotorStart(MOWER_MOWING_CUTTING_DIRECTION, MOWER_MOWING_CUTTING_SPEED);
+    CutMotorStart(bladeDirection, MOWER_MOWING_CUTTING_SPEED);
 
     g_MowingLoopCnt = 0;
   }
@@ -222,7 +234,7 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
                                          PERIMETER_APPROACHING_THRESHOLD))
   {
     MowerSpeed(MOWER_MOWING_TRAVEL_SPEED);
-    CutMotorStart(MOWER_MOWING_CUTTING_DIRECTION, MOWER_MOWING_CUTTING_SPEED);
+    CutMotorStart(bladeDirection, MOWER_MOWING_CUTTING_SPEED);
   }
 
   //--------------------------------
@@ -251,7 +263,7 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
     {
       // Start mowing again
       MowerForward(MOWER_MOWING_TRAVEL_SPEED);
-      CutMotorStart(MOWER_MOWING_CUTTING_DIRECTION, MOWER_MOWING_CUTTING_SPEED);
+      CutMotorStart(bladeDirection, MOWER_MOWING_CUTTING_SPEED);
     }
   }
 
@@ -1106,6 +1118,28 @@ bool CheckPreConditions(const int Tilt, const int Bumper, const int Front, const
  */
 int CheckObstacleAndAct(const bool Bumper, const int Front, const int Left, const int Right, const bool Perimeter, const bool ActionMode)
 {
+  int firstSide = 0;  // first side to check distance before acting on obstacle detection 
+  int secondSide = 0; // Second side to check distance before acting on obstacle detection
+  String SideStr[SONAR_COUNT] = {"", "Left", "Right"};
+  int firstSideAngle = 0; // Angle to turn for first direction
+  int secondSideAngle = 0; // Angle to turn for second direction
+
+  // Determine random order for sides to check
+  if (millis() % 2 == 0)
+  {
+    firstSide = SONAR_RIGHT;
+    firstSideAngle = random(45, 90);
+    secondSide = SONAR_LEFT;
+    secondSideAngle = random(-90, -45);
+  }
+  else
+  {
+    firstSide = SONAR_LEFT;
+    firstSideAngle = random(-90, -45);
+    secondSide = SONAR_RIGHT;
+    secondSideAngle = random(45, 90);
+  }
+
   //--------------------------------
   // Bumper Collision detection
   //--------------------------------
@@ -1124,17 +1158,17 @@ int CheckObstacleAndAct(const bool Bumper, const int Front, const int Left, cons
       MowerStop();
       CutMotorStop(true);
 
-      if (g_SonarDistance[SONAR_LEFT] > SONAR_MIN_DISTANCE_FOR_TURN) // check if it's clear on left side
+      if (g_SonarDistance[firstSide] > SONAR_MIN_DISTANCE_FOR_TURN) // check if it's clear on first side
       {
-        DebugPrintln("Turning left", DBG_VERBOSE, true);
-        MowerReserseAndTurn(random(-90, -45), MOWER_MOVES_REVERSE_FOR_TURN_DURATION, true); // reverse and turn left 90 degrees
+        DebugPrintln("Turning " + SideStr[firstSide] , DBG_VERBOSE, true);
+        MowerReserseAndTurn(firstSideAngle, MOWER_MOVES_REVERSE_FOR_TURN_DURATION, true); // reverse and turn random angle
       }
       else
       {
-        if (g_SonarDistance[SONAR_RIGHT] > SONAR_MIN_DISTANCE_FOR_TURN) // check if it's clear on right side
+        if (g_SonarDistance[secondSide] > SONAR_MIN_DISTANCE_FOR_TURN) // check if it's clear on second side
         {
-          DebugPrintln("Reversing and turning right", DBG_VERBOSE, true);
-          MowerReserseAndTurn(random(45, 90), MOWER_MOVES_REVERSE_FOR_TURN_DURATION, true); // reverse and turn right 90 degrees
+          DebugPrintln("Reversing and turning " + SideStr[secondSide], DBG_VERBOSE, true);
+          MowerReserseAndTurn(secondSideAngle, MOWER_MOVES_REVERSE_FOR_TURN_DURATION, true); // reverse and turn random angle
         }
         else
         {
@@ -1168,19 +1202,17 @@ int CheckObstacleAndAct(const bool Bumper, const int Front, const int Left, cons
     {
       MowerStop();
 
-      if (g_SonarDistance[SONAR_LEFT] > SONAR_MIN_DISTANCE_FOR_TURN) // check if it's clear on left side
+      if (g_SonarDistance[firstSide] > SONAR_MIN_DISTANCE_FOR_TURN) // check if it's clear on first side
       {
-        DebugPrintln("Reversing and turning left", DBG_VERBOSE, true);
-        MowerReserseAndTurn(random(-90, -45), MOWER_MOVES_REVERSE_FOR_TURN_DURATION, true); // reverse and turn left 90 degrees
+        DebugPrintln("Turning " + SideStr[firstSide] , DBG_VERBOSE, true);
+        MowerReserseAndTurn(firstSideAngle, MOWER_MOVES_REVERSE_FOR_TURN_DURATION, true); // reverse and turn random angle
       }
       else
       {
-        // SonarRead(SONAR_RIGHT, true);
-
-        if (g_SonarDistance[SONAR_RIGHT] > SONAR_MIN_DISTANCE_FOR_TURN) // check if it's clear on right side
+        if (g_SonarDistance[secondSide] > SONAR_MIN_DISTANCE_FOR_TURN) // check if it's clear on second side
         {
-          DebugPrintln("Reversing and turning right", DBG_VERBOSE, true);
-          MowerReserseAndTurn(random(45, 90), MOWER_MOVES_REVERSE_FOR_TURN_DURATION, true); // reverse and turn right 90 degrees
+          DebugPrintln("Reversing and turning " + SideStr[secondSide], DBG_VERBOSE, true);
+          MowerReserseAndTurn(secondSideAngle, MOWER_MOVES_REVERSE_FOR_TURN_DURATION, true); // reverse and turn random angle
         }
         else
         {
@@ -1210,17 +1242,17 @@ int CheckObstacleAndAct(const bool Bumper, const int Front, const int Left, cons
       MowerStop();
       CutMotorStop(false);
 
-      if (g_SonarDistance[SONAR_LEFT] > SONAR_MIN_DISTANCE_FOR_TURN) // check if it's clear on left side
+      if (g_SonarDistance[firstSide] > SONAR_MIN_DISTANCE_FOR_TURN) // check if it's clear on first side
       {
-        DebugPrintln("Reversing and turning left", DBG_VERBOSE, true);
-        MowerReserseAndTurn(random(-90, -45), MOWER_MOVES_REVERSE_FOR_TURN_DURATION, true); // reverse and turn left 90 degrees
+        DebugPrintln("Turning " + SideStr[firstSide] , DBG_VERBOSE, true);
+        MowerReserseAndTurn(firstSideAngle, MOWER_MOVES_REVERSE_FOR_TURN_DURATION, true); // reverse and turn random angle
       }
       else
       {
-        if (g_SonarDistance[SONAR_RIGHT] > SONAR_MIN_DISTANCE_FOR_TURN) // check if it's clear on right side
+        if (g_SonarDistance[secondSide] > SONAR_MIN_DISTANCE_FOR_TURN) // check if it's clear on second side
         {
-          DebugPrintln("Reversing and turning right", DBG_VERBOSE, true);
-          MowerReserseAndTurn(random(45, 90), MOWER_MOVES_REVERSE_FOR_TURN_DURATION, true); // reverse and turn right 90 degrees
+          DebugPrintln("Reversing and turning " + SideStr[secondSide], DBG_VERBOSE, true);
+          MowerReserseAndTurn(secondSideAngle, MOWER_MOVES_REVERSE_FOR_TURN_DURATION, true); // reverse and turn random angle
         }
         else
         {
