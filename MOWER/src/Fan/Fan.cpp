@@ -44,7 +44,7 @@ void FanTest(const int Fan)
   FanStop(Fan);
   DisplayPrint(2, 2 + Fan, "Fan " + String(Fan + 1) + " Stopped", true);
 
-  delay(FAN_TEST_DURATION);
+  delay(TEST_SEQ_STEP_WAIT);
 
   DebugPrintln("Fan " + String(Fan + 1) + " test completed", DBG_INFO, true);
 }

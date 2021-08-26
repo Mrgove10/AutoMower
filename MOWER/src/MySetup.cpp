@@ -15,7 +15,7 @@
 #include "IOExtender/IOExtender.h"
 #include "Keypad/Keypad.h"
 #include "Temperature/Temperature.h"
-#include "Current/Current.h"
+#include "MotorCurrent/MotorCurrent.h"
 #include "Fan/Fan.h"
 #include "Sonar/Sonar.h"
 #include "Compass/Compass.h"

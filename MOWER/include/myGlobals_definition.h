@@ -313,8 +313,8 @@ extern float g_Temperature[TEMPERATURE_COUNT];
 #define BATTERY_CHARGE_READ_INTERVAL 5000   // in ms
 #define BATTERY_CHECK_INTERVAL 15000 // in ms
 #define BATTERY_CHARGE_CURRENT_MIN 1    // in mA, used to filter out very low sensor readings
-#define BATTERY_CHARGE_CURRENT_TO_STOP_CHARGE 50  // in mA, used to stop charging when charging current is low
-#define BATTERY_CHARGE_CURRENT_CHARGING_THRESHOLD 300 // in mA, used to determine if battery is charging
+#define BATTERY_CHARGE_CURRENT_TO_STOP_CHARGE 300  // in mA, used to stop charging when charging current is low
+#define BATTERY_CHARGE_CURRENT_CHARGING_THRESHOLD 50 // in mA, used to determine if battery is charging
 
 extern Adafruit_INA219 BatteryChargeSensor;
 
@@ -616,7 +616,7 @@ extern int g_CurrentErrorCode; // Current Error code
 extern long g_totalObstacleDectections; // Total number of obstacle detections   (Save to EEPROM)
 
 /************************* Test sequence variables *********************************/
-#define TEST_SEQ_STEP_WAIT 1000
+#define TEST_SEQ_STEP_WAIT 750
 #define TEST_SEQ_STEP_ERROR_WAIT 1000
 
 /************************* Program variables *********************************/
@@ -636,12 +636,11 @@ extern MowerState g_PreviousState;
 // Mowing mode
 extern int g_MowingLoopCnt; // number of loops since mowing started
 
-
 /************************* Program debugging *********************************/
 
-// For testing ONLY, if reset is not a power-on, delay indefinately to be able to "catch" reset cause.
+// For testing ONLY, if reset is not following a power-on, delay indefinately to be able to "catch" reset cause on the serial monitor.
 // NOT TO BE USED IN NORMAL OPERATION AS MOWER WILL NOT RESET OUTPUTS AND MOTORS WILL KEEP RUNNING UNTILL 
-// THE MOWER IS POWERED OFF OR A RESET IS ERFORMED ON ESP32 BORAD
+// THE MOWER IS POWERED OFF OR A RESET IS PERFORMED MANUALY ON ESP32 BOARD
 // Folowing line needs to be commented out for function to be active
 
 // #define STOP_RESTART_TO_CAPTURE_CRASH_DUMP true
