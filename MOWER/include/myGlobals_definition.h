@@ -235,7 +235,7 @@ extern SSD1306Wire oled;
 #define DISPLAY_COLUMS 20
 #define DISPLAY_ROWS 4
 
-#define DISPLAY_BACKLIGHT_OFF_DELAY 3 * 60 * 1000   // Used to trigger screen backlight switch off, in ms
+#define DISPLAY_BACKLIGHT_OFF_DELAY 2 * 60 * 1000   // Used to trigger screen backlight switch off, in ms
 extern unsigned long g_LastDisplayUpdate;             // Used to trigger screen backlight switch off
 
 /************************* Keypad variables *********************************/
@@ -623,11 +623,12 @@ extern int g_CurrentErrorCode; // Current Error code
 #define MENU_DETAILS_TXT "Dtls"
 #define MENU_RETURN_MENU "Back|    |    |    "
 
-#define DISPLAY_REFRESH_INTERVAL 2000  // in ms
-#define DISPLAY_IDLE_REFRESH_INTERVAL 10 * 60 * 1000  // in ms
-#define DISPLAY_MOWING_REFRESH_INTERVAL 1000  // in ms
-#define DISPLAY_ERROR_REFRESH_INTERVAL 5000  // in ms
-#define DISPLAY_TEST_REFRESH_INTERVAL 5000  // in ms
+#define DISPLAY_REFRESH_INTERVAL 2000                   // in ms
+#define DISPLAY_IDLE_REFRESH_INTERVAL 10 * 60 * 1000    // in ms
+#define DISPLAY_MOWING_REFRESH_INTERVAL 1000            // in ms
+#define DISPLAY_ERROR_REFRESH_INTERVAL 5000             // in ms
+#define DISPLAY_TEST_REFRESH_INTERVAL 5000              // in ms
+#define DISPLAY_TO_BASE_REFRESH_INTERVAL 1000           // in ms
 
 #define STATES_COUNT 7      // number of states in States enum (messy but did not find how to easly derive automatically number of elements from enum)
 

@@ -22,6 +22,18 @@ void menuDisplay(int state);
 void idleDisplay(bool refresh = false);
 
 /**
+ * Display the mowing state screen
+ * @param refresh boolean to force full screen update
+ * */
+void mowingDisplay(bool refresh = false);
+
+/**
+ * Display the going to base state screen
+ * @param refresh boolean to force full screen update
+ * */
+void toBaseDisplay(bool refresh = false);
+
+/**
  * Display the ERROR state screen
  * @param refresh boolean to force full screen update
  * */

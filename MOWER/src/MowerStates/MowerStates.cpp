@@ -103,6 +103,9 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
     DebugPrintln("");
     LogPrintln("Mowing Started", TAG_MOWING, DBG_INFO);
 
+    // Change display with refresh
+    mowingDisplay(true);
+
     //change Telemetry frequency
 
     // Reset mower error code (not needed after error acknowledgement implemented)
@@ -161,6 +164,7 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
     CutMotorStart(bladeDirection, MOWER_MOWING_CUTTING_SPEED);
 
     g_MowingLoopCnt = 0;
+
   }
 
   //--------------------------------
@@ -276,6 +280,10 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
 
   g_totalMowingTime = g_totalMowingTime + (millis() - mowingStartTime);   // in minutes
   mowingStartTime = millis();
+
+  // Update display
+  mowingDisplay();
+
   // TO DO When to stop mowing and go back to base
 }
 
@@ -306,6 +314,9 @@ void MowerGoingToBase(const bool StateChange, const MowerState PreviousState)
   {
     DebugPrintln("");
     LogPrintln("Mower going back to base", TAG_TO_BASE, DBG_INFO);
+
+    // Change display with refresh
+    toBaseDisplay(true);
 
     // Reset mower error code (not needed after error acknowledgement implemented)
     g_CurrentErrorCode = ERROR_NO_ERROR;
@@ -382,6 +393,9 @@ void MowerGoingToBase(const bool StateChange, const MowerState PreviousState)
       FollowWire = false;
     };
   }
+
+  // Update display
+  toBaseDisplay();
 
   // TO DO conditions to end wire tracking
 
@@ -778,7 +792,7 @@ bool MowerFollowWire(bool *reset, const int heading, const bool clockwise)
     g_PerimeterTrackPID.SetSampleTime(PERIMETER_TRACKING_PID_INTERVAL);
 
 #ifdef MQTT_PID_GRAPH_DEBUG
-    g_MQTTPIDGraphDebug = true; // for testing
+    // g_MQTTPIDGraphDebug = true; // for testing
 #endif
 
     // Cancel any outstanding wheel speed corrections
