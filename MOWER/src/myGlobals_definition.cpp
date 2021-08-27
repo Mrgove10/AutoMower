@@ -131,11 +131,6 @@ uint16_t g_RawCopy[PERIMETER_RAW_SAMPLES]; //  Copy of circular Buffer containin
 int g_rawWritePtrCopy;                     // Pointer to last value written to g_RawCopy circular buffer copy
 int8_t g_PerimeterSamplesForMatchedFilter[I2S_DMA_BUFFER_LENGTH];
 
-#ifdef MQTT_GRAPH_DEBUG
-bool g_MQTTGraphDebug = false;
-bool g_MQTTGraphRawDebug = false;
-#endif
-
 /************************* Analog Read task *********************************/
 TaskHandle_t g_AnaReadTaskHandle; // Sonar Read task RTOS task handle
 SemaphoreHandle_t g_I2CSemaphore; // I2C resource protection semaphore
@@ -319,10 +314,6 @@ double g_PIDSetpoint, g_PIDInput, g_PIDOutput;
 //Specify the links and initial tuning parameters
 PID g_PerimeterTrackPID(&g_PIDInput, &g_PIDOutput, &g_PIDSetpoint, 0, 0, 0, DIRECT);
 
-#ifdef MQTT_PID_GRAPH_DEBUG
-bool g_MQTTPIDGraphDebug = true;
-#endif
-
 double g_PerimeterTrackSetpoint = 0;   // Setpoint for PID wire tracking
 double g_ParamPerimeterTrackPIDKp = 0; // Kp PID Parameter for wire tracking
 double g_ParamPerimeterTrackPIDKi = 0; // Ki PID Parameter for wire tracking
@@ -342,13 +333,13 @@ int g_CurrentErrorCode = ERROR_NO_ERROR; // Current Error code
 /************************* Mower Menu definitions *********************************/
 
 // contains the text to display @ bottom of screen to act as a menu
-String g_menuString[STATES_COUNT] = {"Mow |Base|Test|Dtls ",   // Idle
-                                     "MowA|MowB|Zzzz|Dtls ",   // Docked
-                                     "Idle|    |    |Dtls ",   // Mowing
-                                     "Idle|    |    |Dtls ",   // Going_to_base
-                                     "Idle|    |    |Dtls ",   // Leaving_base
-                                     "Ack |Text|    |Dtls ",   //Error
-                                     "Tst |Mtn |Cut |Dtls "};  // Test
+String g_menuString[STATES_COUNT] = {"Mow |Base|Test|.... ",   // Idle
+                                     "MowA|MowB|Zzzz|.... ",   // Docked
+                                     "Idle|Base|1...|2... ",   // Mowing
+                                     "Idle|    |    |.... ",   // Going_to_base
+                                     "Idle|    |    |.... ",   // Leaving_base
+                                     "Ack |Text|    |.... ",   //Error
+                                     "Tst |Mtn |Cut |.... "};  // Test
 
 String g_StatesString[STATES_COUNT] = {"   IDLE   ",   // Idle
                                        "  DOCKED  ",   // Docked
@@ -371,3 +362,14 @@ MowerState g_PreviousState = MowerState::idle;
 
 // Mowing mode
 int g_MowingLoopCnt = 0; // number of loops since mowing started
+
+/************************* Program debugging *********************************/
+
+#ifdef MQTT_GRAPH_DEBUG
+bool g_MQTTGraphDebug = false;
+bool g_MQTTGraphRawDebug = false;
+#endif
+
+#ifdef MQTT_PID_GRAPH_DEBUG
+bool g_MQTTPIDGraphDebug = false;
+#endif
