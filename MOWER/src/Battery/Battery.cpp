@@ -178,7 +178,7 @@ int BatteryVoltageRead(const bool Now)
     }
     else
     {
-      smoothVoltage = 0.80 * smoothVoltage + 0.20 * ((float)volt);
+      smoothVoltage = 0.90 * smoothVoltage + 0.10 * ((float)volt);
     }
 
     g_BatteryVoltage = smoothVoltage;
@@ -315,7 +315,7 @@ void BatteryChargeCheck(const bool Now)
 
     // Determine State of Charge
 
-    g_BatterySOC = (map(int(g_BatteryVoltage*10), int(BATTERY_0_PERCENT_VOLTAGE*10), int(BATTERY_VOLTAGE_FULL_THRESHOLD*10), 0, 1000))/10;
+    g_BatterySOC = (map(int(g_BatteryVoltage), int(BATTERY_0_PERCENT_VOLTAGE), int(BATTERY_VOLTAGE_FULL_THRESHOLD), 0, 1000));
     
     if (g_BatteryVoltage <= BATTERY_0_PERCENT_VOLTAGE)
     { 

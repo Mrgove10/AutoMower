@@ -84,27 +84,27 @@ void DisplayMowerData()
     g_MowingLoopCnt = 0;
 
     //    DisplayClear();
-    DisplayPrint(0, 0, "T1: " + String(g_Temperature[TEMPERATURE_1_RED], 1) + " T2: " + String(g_Temperature[TEMPERATURE_2_BLUE], 1), true);
+    // DisplayPrint(0, 0, "T1: " + String(g_Temperature[TEMPERATURE_1_RED], 1) + " T2: " + String(g_Temperature[TEMPERATURE_2_BLUE], 1), true);
 
-    for (uint8_t i = 0; i < SONAR_COUNT; i++)
-    { // Loop through each sensor and display results.
-      DebugPrint(" | " + g_sensorStr[i] + ":" + String(g_SonarDistance[i]), DBG_VERBOSE, false, true);
-      DisplayPrint(0 + i * 6, 1, "S" + String(i + 1) + ":" + String(g_SonarDistance[i]) + " ", true);
-    }
-    DebugPrintln("", DBG_VERBOSE, false, true);
+    // for (uint8_t i = 0; i < SONAR_COUNT; i++)
+    // { // Loop through each sensor and display results.
+    //   DebugPrint(" | " + g_sensorStr[i] + ":" + String(g_SonarDistance[i]), DBG_VERBOSE, false, true);
+    //   DisplayPrint(0 + i * 6, 1, "S" + String(i + 1) + ":" + String(g_SonarDistance[i]) + " ", true);
+    // }
+    // DebugPrintln("", DBG_VERBOSE, false, true);
     LastRefreshed = millis();
   }
-  for (int i = 0; i < KEYPAD_MAX_KEYS; i++)
-  {
-    //    if (!key) {DebugPrintln("Keypad key" + String(i-7) + " pressed", DBG_INFO, true);}
-    DisplayPrint(0 + i * 5, 2, "K" + String(i + 1) + ":" + String(g_KeyPressed[i]) + " ", true);
-  }
+  // for (int i = 0; i < KEYPAD_MAX_KEYS; i++)
+  // {
+  //   //    if (!key) {DebugPrintln("Keypad key" + String(i-7) + " pressed", DBG_INFO, true);}
+  //   DisplayPrint(0 + i * 5, 2, "K" + String(i + 1) + ":" + String(g_KeyPressed[i]) + " ", true);
+  // }
 
   //  DisplayPrint(0, 3, "B:" + String(g_BatteryChargeCurrent, 0) + " ", true);
 
-  DisplayPrint(0, 3, "R:" + String(g_MotorCurrent[MOTOR_CURRENT_RIGHT], 0) + " ", true);
-  DisplayPrint(6, 3, "L:" + String(g_MotorCurrent[MOTOR_CURRENT_LEFT], 0) + " ", true);
-  DisplayPrint(12, 3, "C:" + String(g_MotorCurrent[MOTOR_CURRENT_CUT], 0) + " ", true);
+  // DisplayPrint(0, 3, "R:" + String(g_MotorCurrent[MOTOR_CURRENT_RIGHT], 0) + " ", true);
+  // DisplayPrint(6, 3, "L:" + String(g_MotorCurrent[MOTOR_CURRENT_LEFT], 0) + " ", true);
+  // DisplayPrint(12, 3, "C:" + String(g_MotorCurrent[MOTOR_CURRENT_CUT], 0) + " ", true);
 
   if ((millis() - LastTaskRefreshed > MOWER_DATA_DISPLAY_INTERVAL*30))
   {

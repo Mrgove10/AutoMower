@@ -5,6 +5,7 @@
 #include "MowerMoves/MowerMoves.h"
 #include "MotionMotor/MotionMotor.h"
 #include "MowerStates/MowerStates.h"
+#include "MowerDisplay/MowerDisplay.h"
 #include "CutMotor/CutMotor.h"
 #include "Sonar/Sonar.h"
 #include "Tilt/Tilt.h"
@@ -32,6 +33,9 @@ void MowerIdle(const bool StateChange, const MowerState PreviousState)
     DebugPrintln("");
     LogPrintln("Mower Idle", TAG_MOWING, DBG_INFO);
 
+    // Change display with refresh
+    idleDisplay(true);
+
     // Reset mower error code (not needed after error acknowledgement implemented)
     g_CurrentErrorCode = ERROR_NO_ERROR;
 
@@ -45,6 +49,9 @@ void MowerIdle(const bool StateChange, const MowerState PreviousState)
     CutMotorStop(true);
     // }
   }
+
+    // Update display
+    idleDisplay();
 
   // Waiting for input ?
   // Send telemetry
@@ -428,6 +435,9 @@ void MowerInError(const bool StateChange, const MowerState PreviousState)
     MowerStop();
     CutMotorStop(true);
 
+    // Change display with refresh
+    errorDisplay(true);
+
     // Suspend Sonar readings
     //    g_SonarReadEnabled = false;
 
@@ -442,6 +452,9 @@ void MowerInError(const bool StateChange, const MowerState PreviousState)
   }
   else
   {
+    // Update display
+    errorDisplay();
+
     // wait for user action (keypad action)
     // sound SOS beep
   }

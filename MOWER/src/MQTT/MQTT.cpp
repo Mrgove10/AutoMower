@@ -175,7 +175,7 @@ void MQTTCallback(char *topic, byte *message, unsigned int length)
 
       if (Val1Str == "ACKNOWLEDGE")
       {
-        DebugPrintln("Mower Acknowledgement requested", DBG_ERROR, true);
+        DebugPrintln("Mower Acknowledgement requested (Remote)", DBG_ERROR, true);
         g_CurrentState = MowerState::idle;
         g_CurrentErrorCode = ERROR_NO_ERROR;
       }

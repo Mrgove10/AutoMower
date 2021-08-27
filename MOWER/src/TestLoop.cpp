@@ -17,6 +17,7 @@
 #include "CutMotor/CutMotor.h"
 #include <pin_definitions.h>
 #include "Display/Display.h"
+#include "MowerDisplay/MowerDisplay.h"
 
 void TestLoop()
 {
@@ -33,6 +34,7 @@ void TestLoop()
   MotorCurrentRead(MOTOR_CURRENT_CUT);
 
   KeypadRead();
+  testDisplay(true);
 
   //  TemperatureRead(TEMPERATURE_1_RED);   // not needed : Done by FanCheck()
   //  TemperatureRead(TEMPERATURE_2_BLUE);   // not needed : Done by FanCheck()

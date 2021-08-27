@@ -118,7 +118,7 @@ bool TemperatureSensorCheck(int sensor)
     {
       temperature = TemperatureRead(TEMPERATURE_1_RED, true);
     }
-    sensorStr = "1-Red";
+    sensorStr = "1-Cut";
   }
   if (sensor == TEMPERATURE_2_BLUE)
   {
@@ -127,7 +127,7 @@ bool TemperatureSensorCheck(int sensor)
     {
       temperature = TemperatureRead(TEMPERATURE_2_BLUE, true);
     }
-    sensorStr = "2-Blue";
+    sensorStr = "2-Motion";
   }
 
   DebugPrintln(sensorStr + " Temperature  " + String(temperature, 2), DBG_INFO, true);

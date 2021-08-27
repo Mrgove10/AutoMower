@@ -339,6 +339,25 @@ bool g_CutMotorAlarm = false;
 
 int g_CurrentErrorCode = ERROR_NO_ERROR; // Current Error code
 
+/************************* Mower Menu definitions *********************************/
+
+// contains the text to display @ bottom of screen to act as a menu
+String g_menuString[STATES_COUNT] = {"Mow |Base|Test|Dtls ",   // Idle
+                                     "MowA|MowB|Zzzz|Dtls ",   // Docked
+                                     "Idle|    |    |Dtls ",   // Mowing
+                                     "Idle|    |    |Dtls ",   // Going_to_base
+                                     "Idle|    |    |Dtls ",   // Leaving_base
+                                     "Ack |Text|    |Dtls ",   //Error
+                                     "Tst |Mtn |Cut |Dtls "};  // Test
+
+String g_StatesString[STATES_COUNT] = {"   IDLE   ",   // Idle
+                                       "  DOCKED  ",   // Docked
+                                       "  MOWING  ",   // Mowing
+                                       " TO BASE  ",   // Going_to_base
+                                       "FROM BASE ",   // Leaving_base
+                                       "  ERROR   ",   //Error
+                                       "   TEST   "};  // Test
+
 /************************* Mower operation statistics *********************************/
 
 long g_totalObstacleDectections = 0; // Total number of obstacle detections   (Saved to EEPROM)

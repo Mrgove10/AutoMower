@@ -79,6 +79,7 @@ void MySetup(void)
   DebugPrint(__DATE__);
   DebugPrint(" ");
   DebugPrintln(__TIME__);
+  
   DebugPrintln("Free sketch space: " + String(ESP.getFreeSketchSpace()));
   String Resetreason = "Reset core 1:" + String(char_reset_reason(0)) + " core 2:" + String(char_reset_reason(1)) + " - Sketch compiled: " + String(__DATE__) + " " + String(__TIME__);
   DebugPrintln(Resetreason, true);

@@ -1,5 +1,6 @@
 #include <Arduino.h>
 #include "Environment_definitions.h"
+#include "states.h"
 
 /************************* MQTT *********************************/
 #include <PubSubClient.h>
@@ -74,7 +75,7 @@ extern int8_t g_sigcode_diff[PERIMETER_SIGNAL_CODE_LENGTH];
 #define I2S_ADC_CHANNEL ADC1_CHANNEL_3 /*!< ADC1 channel 3 is GPIO39 */
 
 // The principle is to capture in one buffer at least 2 Perimeter cable codes
-// Additinnaly, the code is over-sampled 4 times as it is red 4 times faster than the sender sends the code.
+// Additionnaly, the code is over-sampled 4 times as it is read 4 times faster than the sender sends the code.
 // This oversamplin is needed as the coil detects the change of magnetic field cause by the chnage of direction(because the change of field)
 // of the current in the perimeter wire and this field does not last very long.
 // In practice, the sender sends a 1 or 0 or -1 at 9 kHz (the pulse is therefore 104 microseconds long) and the mower sensing function read the
@@ -239,9 +240,14 @@ extern unsigned long g_LastDisplayUpdate;             // Used to trigger screen 
 
 /************************* Keypad variables *********************************/
 
-#define KEYPAD_READ_INTERVAL 100 // in ms
+#define KEYPAD_READ_INTERVAL 250 // in ms
 #define KEYPAD_MAX_KEYS 4
 #define KEYPAD_GPIO 1 // GPIO B
+
+#define KEYPAD_KEY_1 0
+#define KEYPAD_KEY_2 1
+#define KEYPAD_KEY_3 2
+#define KEYPAD_KEY_4 3
 
 //extern const int g_KeyPins[KEYPAD_MAX_KEYS];
 extern bool g_KeyPressed[KEYPAD_MAX_KEYS];
@@ -328,12 +334,12 @@ extern bool g_BatteryIsCharging;  // Indicates whether the battery is charging (
 #define VOLTAGE_RANGE_MAX 17000 // in mV
 
 // #define VOLTAGE_DETECTION_THRESHOLD 9
-#define BATTERY_0_PERCENT_VOLTAGE 11200                // in mV
+#define BATTERY_0_PERCENT_VOLTAGE 11000                // in mV
 #define BATTERY_VOLTAGE_LOW_THRESHOLD 11250            // in mV
+#define BATTERY_VOLTAGE_RETURN_TO_BASE_THRESHOLD 11300 // in mV
 #define BATTERY_VOLTAGE_MEDIUM_THRESHOLD 11500         // in mV
-#define BATTERY_VOLTAGE_NORMAL_THRESHOLD 12000         // in mV
-#define BATTERY_VOLTAGE_RETURN_TO_BASE_THRESHOLD 11500 // in mV
-#define BATTERY_VOLTAGE_TO_START_CHARGE 12300           // in mv
+#define BATTERY_VOLTAGE_NORMAL_THRESHOLD 12100         // in mV
+#define BATTERY_VOLTAGE_TO_START_CHARGE 12300          // in mv
 #define BATTERY_VOLTAGE_FULL_THRESHOLD 12400           // in mV
 #define BATTERY_VOLTAGE_TO_STOP_CHARGE BATTERY_VOLTAGE_FULL_THRESHOLD  // in mv
 
@@ -429,7 +435,7 @@ extern volatile bool g_TiltTriggered[TILT_COUNT];
 #define FAN_UPDATE_INTERVAL 15000                     // in ms
 #define FAN_START_THRESHOLD 29.5f                     // in deg C
 #define FAN_STOP_THRESHOLD FAN_START_THRESHOLD - 1.5f // in deg C
-#define FAN_TEST_DURATION 5000                        // in ms
+#define FAN_TEST_DURATION 3000                        // in ms
 
 extern const int g_FanPin[FAN_COUNT];
 extern bool g_FanOn[FAN_COUNT];
@@ -611,6 +617,23 @@ extern bool g_CutMotorAlarm;
 
 extern int g_CurrentErrorCode; // Current Error code
 
+/************************* Mower Menu definitions *********************************/
+
+#define MENU_IDLE_TXT "Idle"
+#define MENU_DETAILS_TXT "Dtls"
+#define MENU_RETURN_MENU "Back|    |    |    "
+
+#define DISPLAY_REFRESH_INTERVAL 2000  // in ms
+#define DISPLAY_IDLE_REFRESH_INTERVAL 10 * 60 * 1000  // in ms
+#define DISPLAY_MOWING_REFRESH_INTERVAL 1000  // in ms
+#define DISPLAY_ERROR_REFRESH_INTERVAL 5000  // in ms
+#define DISPLAY_TEST_REFRESH_INTERVAL 5000  // in ms
+
+#define STATES_COUNT 7      // number of states in States enum (messy but did not find how to easly derive automatically number of elements from enum)
+
+extern String g_menuString[STATES_COUNT];  // contains the text to display @ bottom of screen to act as a menu
+extern String g_StatesString[STATES_COUNT]; // contains the text description of a state
+
 /************************* Mower operation statistics *********************************/
 
 extern long g_totalObstacleDectections; // Total number of obstacle detections   (Save to EEPROM)
@@ -623,8 +646,6 @@ extern long g_totalObstacleDectections; // Total number of obstacle detections  
 
 #define UNKNOWN_FLOAT -999.99F
 #define UNKNOWN_INT -999
-
-#include "states.h"
 
 extern MowerState g_CurrentState;
 extern MowerState g_PreviousState;
