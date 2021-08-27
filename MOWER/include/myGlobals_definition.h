@@ -258,8 +258,8 @@ extern bool g_KeyPressed[KEYPAD_MAX_KEYS];
 extern Adafruit_MCP23017 IOExtend;
 
 /************************* Rain Sensor variables *********************************/
-#define RAIN_SENSOR_CHECK_THRESHOLD 1
-#define RAIN_SENSOR_RAINING_THRESHOLD 50 // this may have to be placed in a parameter
+#define RAIN_SENSOR_CHECK_THRESHOLD 10
+#define RAIN_SENSOR_RAINING_THRESHOLD 100 // this may have to be placed in a parameter
 #define RAIN_READ_INTERVAL 30000         // in ms
 
 /************************* I2C HMC5883L Compasss Sensor variables *********************************/
@@ -479,11 +479,11 @@ extern float g_WheelPerimeterTrackingCorrection[MOTION_MOTOR_COUNT]; // from per
 #define MOWER_MOVES_SPEED_NORMAL 80 // in %
 #define MOWER_MOVES_SPEED_MAX 100   // in %
 
-#define MOWER_MOVES_REVERSE 75 // in %
+#define MOWER_MOVES_REVERSE 85 // in %
 
 #define MOWER_MOVES_TURN_SPEED 80
 #define MOWER_MOVES_TURN_ANGLE_RATIO 360.0f / 6000.0f // in Angle degrees per ms
-#define MOWER_MOVES_REVERSE_FOR_TURN_DURATION 2500    // in ms
+#define MOWER_MOVES_REVERSE_FOR_TURN_DURATION 3500    // in ms
 
 #define SONAR_MIN_DISTANCE_FOR_SLOWING 25      // in cm
 #define SONAR_MIN_DISTANCE_FOR_TURN 40         // in cm
@@ -508,9 +508,9 @@ extern unsigned long g_totalMowingTime; // Total time spent mowing, in minutes (
 #define PERIMETER_SEARCH_REVERSE_MAX_TIME 4000    // in ms
 #define PERIMETER_SEARCH_REVERSE_SPEED 80         // in %
 #define PERIMETER_SEARCH_REVERSE_TIME 1000        // in %
-#define PERIMETER_SEARCH_FORWARD_MAX_TIME_1 30000 // in ms
+#define PERIMETER_SEARCH_FORWARD_MAX_TIME_1 60000 // in ms
 // #define PERIMETER_SEARCH_FORWARD_MAX_TIME_2 5000 // in ms
-#define PERIMETER_SEARCH_FORWARD_SPEED 80 // in %
+#define PERIMETER_SEARCH_FORWARD_SPEED 100 // in %
 #define PERIMETER_SEARCH_FORWARD_TIME 500 // in ms
 // #define PERIMETER_SEARCH_CLOCKWISE_TURN_ANGLE 135 // in deg
 // #define PERIMETER_SEARCH_COUNTER_CLOCKWISE_TURN_ANGLE -135 // in deg
@@ -522,7 +522,7 @@ extern unsigned long g_totalMowingTime; // Total time spent mowing, in minutes (
 // Back to base function
 #define BACK_TO_BASE_HEADING 0                 // in deg 0=North
 #define BACK_TO_BASE_CLOCKWISE false           // in which direction to follow wire
-#define BACK_TO_BASE_SPEED 90                  // in %
+#define BACK_TO_BASE_SPEED 100                 // in %
 #define FOLLOW_WIRE_MAX_CONSECUTVE_OBSTACLES 0 // Setting to 0 will stop the wire tracking function on first obstacle
 
 // Obstacle detection causes

@@ -224,15 +224,15 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
   // Is it raining ?
   //--------------------------------
 
-  if (isRaining())
-  {
-    DebugPrintln("Raining : returning to base", DBG_INFO, true);
-    MowerStop();
-    CutMotorStop();
-    g_totalMowingTime = g_totalMowingTime + (millis() - mowingStartTime);   // in minutes
-    g_CurrentState = MowerState::going_to_base;
-    return;
-  }
+  // if (isRaining())
+  // {
+  //   DebugPrintln("Raining : returning to base", DBG_INFO, true);
+  //   MowerStop();
+  //   CutMotorStop();
+  //   g_totalMowingTime = g_totalMowingTime + (millis() - mowingStartTime);   // in minutes
+  //   g_CurrentState = MowerState::going_to_base;
+  //   return;
+  // }
 
   //--------------------------------
   // Environment sensing for approaching objects
@@ -272,9 +272,12 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
     }
     else
     {
-      // Start mowing again
-      MowerForward(MOWER_MOWING_TRAVEL_SPEED);
-      CutMotorStart(bladeDirection, MOWER_MOWING_CUTTING_SPEED);
+      // Start mowing again if inside perimeter
+      if (g_isInsidePerimeter)
+      { 
+        MowerForward(MOWER_MOWING_TRAVEL_SPEED);
+        CutMotorStart(bladeDirection, MOWER_MOWING_CUTTING_SPEED);
+      }
     }
   }
 
@@ -1155,16 +1158,16 @@ int CheckObstacleAndAct(const bool Bumper, const int Front, const int Left, cons
   if (millis() % 2 == 0)
   {
     firstSide = SONAR_RIGHT;
-    firstSideAngle = random(45, 90);
+    firstSideAngle = random(45, 200);
     secondSide = SONAR_LEFT;
-    secondSideAngle = random(-90, -45);
+    secondSideAngle = random(-200, -45);
   }
   else
   {
     firstSide = SONAR_LEFT;
-    firstSideAngle = random(-90, -45);
+    firstSideAngle = random(-200, -45);
     secondSide = SONAR_RIGHT;
-    secondSideAngle = random(45, 90);
+    secondSideAngle = random(45, 200);
   }
 
   //--------------------------------
