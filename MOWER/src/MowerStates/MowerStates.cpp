@@ -104,6 +104,7 @@ void MowerDocked(const bool StateChange, const MowerState PreviousState)
 void MowerMowing(const bool StateChange, const MowerState PreviousState)
 {
   static unsigned long mowingStartTime = 0;
+  static unsigned long lastCutDirectionChange = 0;
   static int bladeDirection = CUT_MOTOR_FORWARD;
   static int outsideCount = 0;
 
@@ -172,10 +173,14 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
     {
       bladeDirection = CUT_MOTOR_REVERSE;
     }
-
+    lastCutDirectionChange = millis();
+  
     // Start Mowing
-    MowerForward(MOWER_MOVES_SPEED_SLOW);
+
     CutMotorStart(bladeDirection, MOWER_MOWING_CUTTING_SPEED);
+    // Give time for cut motor to start
+    delay(MOWER_MOWING_CUT_START_WAIT);
+    MowerForward(MOWER_MOVES_SPEED_SLOW);
 
     g_MowingLoopCnt = 0;
     outsideCount = 0;
@@ -271,6 +276,24 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
   // }
 
   //--------------------------------
+  // Is it time for a cut direction change?
+  //--------------------------------
+
+  if (millis() - lastCutDirectionChange > MOWER_MOWING_CUT_DIRECTION_CHANGE_INTERVAL)
+  {
+    bladeDirection = -1 * bladeDirection;
+    CutMotorStop(true);
+    MowerStop();
+    // wait for blade to slow down
+    delay(20000);
+    CutMotorStart(bladeDirection, MOWER_MOWING_CUTTING_SPEED);
+    // Give time for cut motor to start
+    delay(MOWER_MOWING_CUT_START_WAIT);
+    MowerForward(MOWER_MOWING_TRAVEL_SPEED);
+    lastCutDirectionChange = millis();
+  }
+
+  //--------------------------------
   // Environment sensing for approaching objects
   //--------------------------------
   if (!MowerSlowDownApproachingObstables(20,
@@ -280,8 +303,15 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
                                          SONAR_MIN_DISTANCE_FOR_SLOWING,
                                          PERIMETER_APPROACHING_THRESHOLD))
   {
+    if (!g_CutMotorOn)
+    {
+      CutMotorStart(bladeDirection, MOWER_MOWING_CUTTING_SPEED);
+      // Give time for cut motor to start
+      delay(MOWER_MOWING_CUT_START_WAIT);
+    }
     MowerSpeed(MOWER_MOWING_TRAVEL_SPEED);
-    CutMotorStart(bladeDirection, MOWER_MOWING_CUTTING_SPEED);
+
+
   }
 
   //--------------------------------
@@ -311,8 +341,13 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
       // Start mowing again if inside perimeter
       if (g_isInsidePerimeter)
       { 
+        if (!g_CutMotorOn)
+        {
+          CutMotorStart(bladeDirection, MOWER_MOWING_CUTTING_SPEED);
+          // Give time for cut motor to start
+          delay(MOWER_MOWING_CUT_START_WAIT);
+        }
         MowerForward(MOWER_MOWING_TRAVEL_SPEED);
-        CutMotorStart(bladeDirection, MOWER_MOWING_CUTTING_SPEED);
       }
     }
   }

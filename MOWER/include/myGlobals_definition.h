@@ -499,6 +499,8 @@ extern float g_WheelPerimeterTrackingCorrection[MOTION_MOTOR_COUNT]; // from per
 #define MOWER_MOWING_TRAVEL_SPEED 100
 #define MOWER_MOWING_MAX_CONSECUTVE_OBSTACLES 5
 #define MOWER_MOWING_MAX_CONSECUTVE_OUTSIDE 30
+#define MOWER_MOWING_CUT_DIRECTION_CHANGE_INTERVAL 10 * 60 * 1000  // in ms, thow often the mower stops to chnage cut motor rotation direction
+#define MOWER_MOWING_CUT_START_WAIT 5000  // in ms, time to wait after starting cut motor before starting motion motors. Especailly susefull when battery in not @ 100%
 extern unsigned long g_totalMowingTime; // Total time spent mowing, in minutes (Saved to EEPROM)
 
 // Perimeter search function
