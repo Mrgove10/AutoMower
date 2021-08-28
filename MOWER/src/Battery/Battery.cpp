@@ -13,13 +13,13 @@
  */
 void BatteryCurrentSensorSetup()
 {
-  if (BatteryChargeSensor.begin())
+  if (!BatteryChargeSensor.begin())
   {
     LogPrintln("Battery charge current Sensor not found !", TAG_CHECK, DBG_ERROR);
   }
   else
   {
-    DebugPrintln("Battery charge current Sensor found !", DBG_VERBOSE, true);
+    DebugPrintln("Battery charge current Sensor found", DBG_VERBOSE, true);
   }
 
   BatteryChargeSensor.setCalibration_32V_2A();

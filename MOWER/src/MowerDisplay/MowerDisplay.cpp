@@ -177,10 +177,12 @@ void idleDisplay(bool refresh)
   if (!inSubmenu && g_KeyPressed[KEYPAD_KEY_1])
   {
     g_CurrentState = MowerState::mowing;
+    delay(400);  // to ensure key is released 
   }
   if (!inSubmenu && g_KeyPressed[KEYPAD_KEY_2])
   {
     g_CurrentState = MowerState::going_to_base;
+    delay(400);  // to ensure key is released 
   }
   if (!inSubmenu && g_KeyPressed[KEYPAD_KEY_3])
   {
@@ -241,7 +243,7 @@ void mowingDisplay(bool refresh)
             DisplayPrint(0, 1, "SL:" + String(g_SonarDistance[SONAR_LEFT]) +
                                " SF:" + String(g_SonarDistance[SONAR_FRONT]) + 
                                " SR:" + String(g_SonarDistance[SONAR_RIGHT]), true);
-            DisplayPrint(0, 1, "Rain:" + String(isRaining(true)), true);
+            DisplayPrint(0, 2, "Rain:" + String(isRaining(true)), true);
             menuDisplay(-1);
             break;
         case 4:
@@ -261,16 +263,28 @@ void mowingDisplay(bool refresh)
     {
       // Display State and other state related informations
       headerDisplay("", true);
+      // Display IN/OUT Perimeter wire
       DisplayPrint(5,1,g_StatesString[int(g_CurrentState)]);
       if (g_isInsidePerimeter)
       {
-        DisplayPrint(0,2,"IN",true);
+        DisplayPrint(0,2,"I",true);
       }
       else
       {
-        DisplayPrint(0,2,"OUT",true);
+        DisplayPrint(0,2,"O",true);
       }
-      DisplayPrint(5,2,"Mag:" + String(g_PerimeterMagnitude) + " Smag:" + String(g_PerimeterSmoothMagnitude),true);
+
+      // Display Cut motor direction
+      if (g_CutMotorDirection == CUT_MOTOR_FORWARD)
+      {
+        DisplayPrint(2,2,">",true);
+      }
+      else
+      {
+        DisplayPrint(2,2,"<",true);
+      }
+
+      DisplayPrint(4,2,"M:" + String(g_PerimeterMagnitude) + " S:" + String(g_PerimeterSmoothMagnitude) + "   ",true);
     }
     lastRefresh = millis();
     internalRefresh = false;
@@ -281,14 +295,18 @@ void mowingDisplay(bool refresh)
   if (!inSubmenu && g_KeyPressed[KEYPAD_KEY_1])
   {
     g_CurrentState = MowerState::idle;
+    delay(400);  // to ensure key is released 
   }
   if (!inSubmenu && g_KeyPressed[KEYPAD_KEY_2])
   {
     g_CurrentState = MowerState::going_to_base;
+    delay(400);  // to ensure key is released 
   }
   if (!inSubmenu && g_KeyPressed[KEYPAD_KEY_3])
   {
-    // Do nothing
+    inSubmenu = true;
+    submenuNum = 3;
+    internalRefresh = true;
   }
   if (!inSubmenu && g_KeyPressed[KEYPAD_KEY_4])
   {
@@ -365,13 +383,13 @@ void toBaseDisplay(bool refresh)
       DisplayPrint(5,1,g_StatesString[int(g_CurrentState)]);
       if (g_isInsidePerimeter)
       {
-        DisplayPrint(0,2,"IN",true);
+        DisplayPrint(0,2,"I",true);
       }
       else
       {
-        DisplayPrint(0,2,"OUT",true);
+        DisplayPrint(0,2,"O",true);
       }
-      DisplayPrint(5,2,"CL:" + String(g_WheelPerimeterTrackingCorrection[MOTOR_CURRENT_LEFT]) + " CR:" + String(g_WheelPerimeterTrackingCorrection[MOTOR_CURRENT_RIGHT]),true);
+      DisplayPrint(2,2,"CL:" + String(g_WheelPerimeterTrackingCorrection[MOTOR_CURRENT_LEFT]) + " CR:" + String(g_WheelPerimeterTrackingCorrection[MOTOR_CURRENT_RIGHT]),true);
     }
     lastRefresh = millis();
     internalRefresh = false;
@@ -520,10 +538,10 @@ void headerDisplay(String title, bool now)
     {
         chargingChar = " ";
     }
-    DisplayPrint(15,0,chargingChar,true);
+    DisplayPrint(16,0,chargingChar,true);
 
     // Display Battery SOC
-    if (g_BatterySOC < 99.4f)
+    if (g_BatterySOC > 99.4f)
     {
         DisplayPrint(17,0,String(g_BatterySOC,0),true);
     }

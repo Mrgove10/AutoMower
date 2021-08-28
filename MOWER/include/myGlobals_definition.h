@@ -343,7 +343,7 @@ extern bool g_BatteryIsCharging;  // Indicates whether the battery is charging (
 #define BATTERY_VOLTAGE_MEDIUM_THRESHOLD 11500         // in mV
 #define BATTERY_VOLTAGE_NORMAL_THRESHOLD 12100         // in mV
 #define BATTERY_VOLTAGE_TO_START_CHARGE 12300          // in mv
-#define BATTERY_VOLTAGE_FULL_THRESHOLD 12400           // in mV
+#define BATTERY_VOLTAGE_FULL_THRESHOLD 12500           // in mV
 #define BATTERY_VOLTAGE_TO_STOP_CHARGE BATTERY_VOLTAGE_FULL_THRESHOLD  // in mv
 
 #define BATTERY_VOLTAGE_OK 0               // if above BATTERY_VOLTAGE_NORMAL_THRESHOLD
@@ -631,10 +631,10 @@ extern int g_CurrentErrorCode; // Current Error code
 
 #define DISPLAY_REFRESH_INTERVAL 2000                   // in ms
 #define DISPLAY_IDLE_REFRESH_INTERVAL 10 * 60 * 1000    // in ms
-#define DISPLAY_MOWING_REFRESH_INTERVAL 1000            // in ms
+#define DISPLAY_MOWING_REFRESH_INTERVAL 500            // in ms
 #define DISPLAY_ERROR_REFRESH_INTERVAL 5000             // in ms
 #define DISPLAY_TEST_REFRESH_INTERVAL 5000              // in ms
-#define DISPLAY_TO_BASE_REFRESH_INTERVAL 1000           // in ms
+#define DISPLAY_TO_BASE_REFRESH_INTERVAL 500           // in ms
 
 #define STATES_COUNT 7      // number of states in States enum (messy but did not find how to easly derive automatically number of elements from enum)
 

@@ -4,6 +4,7 @@
 #include "Utils/Utils.h"
 #include "OTA/OTA.h"
 #include "EEPROM/EEPROM.h"
+#include "Fan/Fan.h"
 #include "Temperature/Temperature.h"
 #include "MotionMotor/MotionMotor.h"
 #include "CutMotor/CutMotor.h"
@@ -115,6 +116,8 @@ void MQTTCallback(char *topic, byte *message, unsigned int length)
     else if (Command == "RESTART")
     {
       LogPrintln("Request for AutoMower RESTART", TAG_RESET, DBG_INFO);
+      FanStop(FAN_1_RED);
+      FanStop(FAN_2_BLUE);
       MowerStop();
       CutMotorStop();
       EEPROMSave(true);
@@ -416,6 +419,7 @@ void MQTTSendTelemetry()
     JSONDataPayload.add("Obstcl", String(g_totalObstacleDectections));
     JSONDataPayload.add("MowTim", String(int(g_totalMowingTime/60000)));
     JSONDataPayload.add("Heap", String(esp_get_free_heap_size()));
+    JSONDataPayload.add("CPUTemp", String(temperatureRead(), 1));
 
     JSONDataPayload.toString(JSONDataPayloadStr, false);
     JSONDataPayloadStr.toCharArray(MQTTpayload, JSONDataPayloadStr.length() + 1);
