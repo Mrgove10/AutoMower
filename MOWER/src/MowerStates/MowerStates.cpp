@@ -105,6 +105,7 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
 {
   static unsigned long mowingStartTime = 0;
   static int bladeDirection = CUT_MOTOR_FORWARD;
+  static int outsideCount = 0;
 
   //--------------------------------
   // Actions to take when entering the mowing state
@@ -177,7 +178,7 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
     CutMotorStart(bladeDirection, MOWER_MOWING_CUTTING_SPEED);
 
     g_MowingLoopCnt = 0;
-
+    outsideCount = 0;
   }
 
   //--------------------------------
@@ -216,6 +217,28 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
     g_totalMowingTime = g_totalMowingTime + (millis() - mowingStartTime);   // in minutes
     g_CurrentState = MowerState::error;
     g_CurrentErrorCode = ERROR_NO_PERIMETER_SIGNAL;
+    return;
+  }
+
+  //--------------------------------
+  // Is mower outside for too long ?
+  //--------------------------------
+  if (!g_isInsidePerimeter)
+  {
+    outsideCount = outsideCount + 1;
+  }
+  else
+  {
+    outsideCount = max(0, outsideCount - 2);
+  }
+  if (outsideCount > MOWER_MOWING_MAX_CONSECUTVE_OUTSIDE)
+  {
+    MowerStop();
+    CutMotorStop();
+    DebugPrintln("Mower outside Perimeter for too long (" + String(outsideCount) + ")", DBG_ERROR, true);
+    g_totalMowingTime = g_totalMowingTime + (millis() - mowingStartTime);   // in minutes
+    g_CurrentState = MowerState::error;
+    g_CurrentErrorCode = ERROR_MOWING_OUTSIDE_TOO_LONG;
     return;
   }
 

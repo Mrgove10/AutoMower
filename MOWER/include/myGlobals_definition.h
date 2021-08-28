@@ -498,7 +498,7 @@ extern float g_WheelPerimeterTrackingCorrection[MOTION_MOTOR_COUNT]; // from per
 // Mowing
 #define MOWER_MOWING_TRAVEL_SPEED 100
 #define MOWER_MOWING_MAX_CONSECUTVE_OBSTACLES 5
-
+#define MOWER_MOWING_MAX_CONSECUTVE_OUTSIDE 30
 extern unsigned long g_totalMowingTime; // Total time spent mowing, in minutes (Saved to EEPROM)
 
 // Perimeter search function
@@ -600,6 +600,7 @@ extern bool g_CutMotorAlarm;
 #define ERROR_MOWING_NO_START_TILT_ACTIVE 102
 #define ERROR_MOWING_NO_START_NO_PERIMETER_SIGNAL 103
 #define ERROR_MOWING_CONSECUTIVE_OBSTACLES 104
+#define ERROR_MOWING_OUTSIDE_TOO_LONG 105
 
 #define ERROR_WIRE_SEARCH_NO_START_BUMPER_ACTIVE 200
 #define ERROR_WIRE_SEARCH_NO_START_OBJECT_TOO_CLOSE 201
