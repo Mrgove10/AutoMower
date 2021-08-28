@@ -15,6 +15,9 @@ void MowerStop()
   DebugPrintln("Mower Stop", DBG_VERBOSE, true);
   MotionMotorStop(MOTION_MOTOR_RIGHT);
   MotionMotorStop(MOTION_MOTOR_LEFT);
+  
+  // Wait before any movement is made - To limit mechanical stress
+  delay(150);
 }
 
 /**
@@ -56,6 +59,8 @@ void MowerReverse(const int Speed, const int Duration)
   MotionMotorStart(MOTION_MOTOR_LEFT, MOTION_MOTOR_REVERSE, Speed);
   delay(Duration);
   MowerStop();
+  // Wait before any movement is made - To limit mechanical stress
+  delay(150);
 }
 
 /**
@@ -107,6 +112,8 @@ void MowerReserseAndTurn(const int Angle, const int Duration, const bool OnSpot)
 {
   MowerReverse(MOWER_MOVES_REVERSE, Duration);
   MowerTurn(Angle, OnSpot);
+  // Wait before any movement is made - To limit mechanical stress
+  delay(150);
 }
 
 /**
