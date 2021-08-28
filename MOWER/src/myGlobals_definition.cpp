@@ -32,7 +32,7 @@ SemaphoreHandle_t g_MySerialSemaphore;
 /************************* OTA *********************************/
 
 bool g_otaFlag = false;
-unsigned long g_OTAelapsed = 0;
+//unsigned long g_OTAelapsed = 0;
 
 /************************* Timer ISR *********************************/
 

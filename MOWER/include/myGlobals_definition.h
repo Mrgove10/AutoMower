@@ -37,7 +37,7 @@ extern SemaphoreHandle_t g_MySerialSemaphore;
 #define OTA_TIMEOUT 180000
 
 extern bool g_otaFlag;
-extern unsigned long g_OTAelapsed;
+//extern unsigned long g_OTAelapsed;
 
 /************************* Timer ISR *********************************/
 

@@ -21,6 +21,8 @@ void OTASetup(void)
 
   ArduinoOTA.setHostname(ESPHOSTNAME);
 
+  ArduinoOTA.setTimeout(OTA_TIMEOUT);
+
   // No authentication by default
   //  ArduinoOTA.setPassword("1234");
   ArduinoOTA.onStart([]()
@@ -80,9 +82,9 @@ void OTAHandle(void)
 {
   if (g_otaFlag)
   {
-    unsigned long otaStart;
-    g_OTAelapsed = 0;
-    otaStart = millis();
+    unsigned long otaStart = millis();
+//    g_OTAelapsed = 0;
+//    otaStart = millis();
 
     IPAddress ip = WiFi.localIP();
 
@@ -113,11 +115,11 @@ void OTAHandle(void)
 
     //    MQTTUnSubscribe(); // no MQTT update to avoid any interruption during upload
 
-    while (g_OTAelapsed < OTA_TIMEOUT)
+    while (millis() - otaStart < OTA_TIMEOUT)
     {
       ArduinoOTA.handle();
-      g_OTAelapsed = millis() - otaStart;
-      delay(250);
+//      g_OTAelapsed = millis() - otaStart;
+      delay(50);
     }
     DebugPrintln("Upload timeout", DBG_ERROR, true);
     DisplayPrint(2, 3, F("   Timeout !    "));
