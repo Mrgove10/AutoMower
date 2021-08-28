@@ -208,7 +208,7 @@ void idleDisplay(bool refresh)
  * Display the mowing state screen
  * @param refresh boolean to force full screen update
  * */
-void mowingDisplay(bool refresh = false)
+void mowingDisplay(bool refresh)
 {
   static bool inSubmenu = false;
   static int submenuNum = 0;
@@ -311,7 +311,7 @@ void mowingDisplay(bool refresh = false)
  * Display the going to base state screen
  * @param refresh boolean to force full screen update
  * */
-void toBaseDisplay(bool refresh = false)
+void toBaseDisplay(bool refresh)
 {
   static bool inSubmenu = false;
   static int submenuNum = 0;

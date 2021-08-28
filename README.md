@@ -124,6 +124,24 @@ In this state the mower is doing nthing and wait for the next command.
 }
 ```
 
+#### ESP restart
+
+**Description** : This command causes the ESP to reset itself. This stops the mower (motor stops), saves values to EEPROM and triggers a system reboot.
+
+**Command** : `RESTART`
+
+**Val1** : No Val1 value expected for this command (any value sent will be ignored)
+
+**Val2** : No Val2 value expected for this command (any value sent will be ignored)
+
+**Message Example** :
+
+```json
+{
+  "Command":"RESTART"
+}
+```
+
 #### Change Trace Level
 
 **Description** : This command enables to change the current trace visualisation level to the specified level. Any message "below" the specified level are no longer displayed on the console (USB serial port) or the Telnet console.

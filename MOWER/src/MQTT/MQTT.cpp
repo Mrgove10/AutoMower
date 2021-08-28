@@ -3,6 +3,7 @@
 #include "Environment_definitions.h"
 #include "Utils/Utils.h"
 #include "OTA/OTA.h"
+#include "EEPROM/EEPROM.h"
 #include "Temperature/Temperature.h"
 #include "MotionMotor/MotionMotor.h"
 #include "CutMotor/CutMotor.h"
@@ -109,6 +110,17 @@ void MQTTCallback(char *topic, byte *message, unsigned int length)
       LogPrintln("Request for OTA update", TAG_OTA, DBG_INFO);
       g_otaFlag = true;
       OTAHandle();
+    }
+
+    else if (Command == "RESTART")
+    {
+      LogPrintln("Request for AutoMower RESTART", TAG_RESET, DBG_INFO);
+      MowerStop();
+      CutMotorStop();
+      EEPROMSave(true);
+      SerialAndTelnet.handle(); // Refresh Telnet Session
+      delay(2000);
+      ESP.restart();
     }
 
     else if (Command == "TEST")
