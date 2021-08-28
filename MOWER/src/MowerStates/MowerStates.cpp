@@ -36,6 +36,9 @@ void MowerIdle(const bool StateChange, const MowerState PreviousState)
     // Change display with refresh
     idleDisplay(true);
 
+    //change Telemetry frequency
+    g_MQTTSendInterval = MQTT_TELEMETRY_SEND_INTERVAL_SLOW;
+
     // Reset mower error code (not needed after error acknowledgement implemented)
     g_CurrentErrorCode = ERROR_NO_ERROR;
 
@@ -70,6 +73,15 @@ void MowerIdle(const bool StateChange, const MowerState PreviousState)
  */
 void MowerDocked(const bool StateChange, const MowerState PreviousState)
 {
+  if (StateChange)
+  {
+    // Cancel any outstanding wheel speed corrections
+    MotionMotorsTrackingAdjustSpeed(0, 0);
+
+    //change Telemetry frequency
+    g_MQTTSendInterval = MQTT_TELEMETRY_SEND_INTERVAL_FAST;
+
+  }
   // wait for GO
   // send telemetry
   // if battery is egnoth
@@ -107,6 +119,7 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
     mowingDisplay(true);
 
     //change Telemetry frequency
+    g_MQTTSendInterval = MQTT_TELEMETRY_SEND_INTERVAL_FAST;
 
     // Reset mower error code (not needed after error acknowledgement implemented)
     g_CurrentErrorCode = ERROR_NO_ERROR;
@@ -321,6 +334,9 @@ void MowerGoingToBase(const bool StateChange, const MowerState PreviousState)
     // Change display with refresh
     toBaseDisplay(true);
 
+    //change Telemetry frequency
+    g_MQTTSendInterval = MQTT_TELEMETRY_SEND_INTERVAL_FAST;
+
     // Reset mower error code (not needed after error acknowledgement implemented)
     g_CurrentErrorCode = ERROR_NO_ERROR;
 
@@ -425,6 +441,10 @@ void MowerLeavingBase(const bool StateChange, const MowerState PreviousState)
 
     // Open Battery charge relay to reduce energy consumption of keepong relay closed
     BatteryChargeRelayOpen();
+
+    //change Telemetry frequency
+    g_MQTTSendInterval = MQTT_TELEMETRY_SEND_INTERVAL_FAST;
+
   }
 
   // go backward for 50 cm
@@ -454,6 +474,9 @@ void MowerInError(const bool StateChange, const MowerState PreviousState)
 
     // Change display with refresh
     errorDisplay(true);
+
+    //change Telemetry frequency
+    g_MQTTSendInterval = MQTT_TELEMETRY_SEND_INTERVAL;
 
     // Suspend Sonar readings
     //    g_SonarReadEnabled = false;

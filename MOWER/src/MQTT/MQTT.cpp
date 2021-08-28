@@ -367,7 +367,7 @@ void MQTTSendTelemetry()
   static unsigned long LastTelemetryDataSent = 0;
   char MQTTpayload[MQTT_MAX_PAYLOAD];
 
-  if ((millis() - LastTelemetryDataSent > MQTT_TELEMETRY_SEND_INTERVAL))
+  if ((millis() - LastTelemetryDataSent > g_MQTTSendInterval))
   {
     unsigned long StartSend = millis();
 

@@ -13,6 +13,8 @@ WiFiClient espClient;
 PubSubClient MQTTclient(espClient);
 
 int g_MQTTErrorCount = 0;
+unsigned long g_MQTTSendInterval = MQTT_TELEMETRY_SEND_INTERVAL;
+
 
 /************************* JSON *********************************/
 
