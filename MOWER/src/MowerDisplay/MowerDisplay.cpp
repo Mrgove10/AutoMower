@@ -43,6 +43,9 @@ void errorDisplay(bool refresh)
             /* Action submenu - No display */
             break;
         case 2:
+            /* Action submenu - No display */
+            break;
+        case 3:
             DisplayClear();
             DisplayPrint(0,0, errorStr.substring(0,min(int(errorStr.length()),20)), true);
             if (errorStr.length() >= 20)
@@ -54,9 +57,6 @@ void errorDisplay(bool refresh)
               DisplayPrint(0,2, errorStr.substring(40,min(int(errorStr.length()),60)), true);
             }
             menuDisplay(-1);
-            break;
-        case 3:
-            /* Action submenu - No display */
             break;
         case 4:
             DisplayClear();
@@ -81,20 +81,20 @@ void errorDisplay(bool refresh)
   KeypadRead();
   if (!inSubmenu && g_KeyPressed[KEYPAD_KEY_1])
   {
-    DebugPrintln("Mower Acknowledgement requested (local)", DBG_ERROR, true);
-    g_CurrentState = MowerState::idle;
-    g_CurrentErrorCode = ERROR_NO_ERROR;
-    delay(250);  // to ensure key is released 
+    // Do nothing
   }
   if (!inSubmenu && g_KeyPressed[KEYPAD_KEY_2])
   {
-    inSubmenu = true;
-    submenuNum = 2;
-    internalRefresh = true;
+    DebugPrintln("Mower Acknowledgement requested (local)", DBG_ERROR, true);
+    g_CurrentState = MowerState::idle;
+    g_CurrentErrorCode = ERROR_NO_ERROR;
+    delay(400);  // to ensure key is released 
   }
   if (!inSubmenu && g_KeyPressed[KEYPAD_KEY_3])
   {
-    // Do nothing
+    inSubmenu = true;
+    submenuNum = 3;
+    internalRefresh = true;
   }
   if (!inSubmenu && g_KeyPressed[KEYPAD_KEY_4])
   {
@@ -367,9 +367,9 @@ void toBaseDisplay(bool refresh)
                                " L:" + String(g_MotorCurrent[MOTOR_CURRENT_LEFT], 0) + 
                                " Ch:" + String(g_BatteryChargeCurrent, 0), true);
             // Display PID Parameters
-            DisplayPrint(0, 2, "P:" + String(g_ParamPerimeterTrackPIDKp, 4) +
-                               " I:" + String(g_ParamPerimeterTrackPIDKi, 4) + 
-                               " D:" + String(g_ParamPerimeterTrackPIDKd, 4), true);
+            DisplayPrint(0, 2, "P:" + String(g_ParamPerimeterTrackPIDKp, 3) +
+                               " I:" + String(g_ParamPerimeterTrackPIDKi, 3) + 
+                               " D:" + String(g_ParamPerimeterTrackPIDKd, 3), true);
             menuDisplay(-1);
             break;
         default:
@@ -463,14 +463,8 @@ void dockedDisplay(bool refresh)
         case 4:
             DisplayClear();
             headerDisplay(g_StatesString[int(g_CurrentState)], true);
-            // Display currents
-            DisplayPrint(0, 1, "R:" + String(g_MotorCurrent[MOTOR_CURRENT_RIGHT], 0) +
-                               " L:" + String(g_MotorCurrent[MOTOR_CURRENT_LEFT], 0) + 
-                               " Ch:" + String(g_BatteryChargeCurrent, 0), true);
-            // Display PID Parameters
-            DisplayPrint(0, 2, "P:" + String(g_ParamPerimeterTrackPIDKp, 4) +
-                               " I:" + String(g_ParamPerimeterTrackPIDKi, 4) + 
-                               " D:" + String(g_ParamPerimeterTrackPIDKd, 4), true);
+            // Display temperatures
+            DisplayPrint(0,2, "Mot:" + String(g_Temperature[TEMPERATURE_2_BLUE], 1) + " Cut: " + String(g_Temperature[TEMPERATURE_1_RED], 1), true);
             menuDisplay(-1);
             break;
         default:
@@ -482,7 +476,104 @@ void dockedDisplay(bool refresh)
       // Display State and other state related informations
       headerDisplay("", true);
       DisplayPrint(5,1,g_StatesString[int(g_CurrentState)]);
-      DisplayPrint(0,2,"Charging:" + String(g_BatteryChargeCurrent,0) + " mA",true);
+      DisplayPrint(0,2,"Charging:" + String(g_BatteryChargeCurrent,0) + " mA   ",true);
+    }
+    lastRefresh = millis();
+    internalRefresh = false;
+  }
+
+  // Manage keys pressed
+  KeypadRead();
+  if (!inSubmenu && g_KeyPressed[KEYPAD_KEY_1])
+  {
+    // Do nothing
+  }
+  if (!inSubmenu && g_KeyPressed[KEYPAD_KEY_2])
+  {
+    g_CurrentState = MowerState::leaving_base;
+  }
+  if (!inSubmenu && g_KeyPressed[KEYPAD_KEY_3])
+  {
+    // Do nothing
+  }
+  if (!inSubmenu && g_KeyPressed[KEYPAD_KEY_4])
+  {
+    inSubmenu = true;
+    submenuNum = 4;
+    internalRefresh = true;
+  }
+
+  // leaving submenu using "1" key
+  if (inSubmenu && g_KeyPressed[KEYPAD_KEY_1])
+  {
+    inSubmenu = false;
+    submenuNum = 0;
+    internalRefresh = true;
+    delay(400);  // to ensure key is released 
+  }
+}
+
+/**
+ * Display the leaving base state screen
+ * @param refresh boolean to force full screen update
+ * */
+void LeavingBaseDisplay(bool refresh)
+{
+  static bool inSubmenu = false;
+  static int submenuNum = 0;
+  static unsigned long lastRefresh = 0;
+  static bool internalRefresh = false;
+
+  if ((refresh || internalRefresh) && !inSubmenu)
+  { 
+    // Clear screen and display header and menu bar
+    DisplayClear();
+    headerDisplay("", true);
+    menuDisplay(int(g_CurrentState));
+  }
+
+  if (millis() - lastRefresh > DISPLAY_LEAVING_BASE_REFRESH_INTERVAL || refresh || internalRefresh)
+  {
+    if (inSubmenu)
+    {
+        switch (submenuNum)
+        {
+        case 1:
+            /* Action submenu - No display */
+            break;
+        case 2:
+            /* Action submenu - No display */
+            break;
+        case 3:
+            /* Action submenu - No display */
+            break;
+        case 4:
+            DisplayClear();
+            headerDisplay(g_StatesString[int(g_CurrentState)], true);
+            // Display currents
+            DisplayPrint(0, 1, "R:" + String(g_MotorCurrent[MOTOR_CURRENT_RIGHT], 0) +
+                               " L:" + String(g_MotorCurrent[MOTOR_CURRENT_LEFT], 0) + 
+                               " Ch:" + String(g_BatteryChargeCurrent, 0), true);
+            menuDisplay(-1);
+            break;
+        default:
+            break;
+        }
+    }
+    else
+    {
+      // Display State and other state related informations
+      headerDisplay("", true);
+      DisplayPrint(5,1,g_StatesString[int(g_CurrentState)]);
+      if (g_isInsidePerimeter)
+      {
+        DisplayPrint(0,2,"I",true);
+      }
+      else
+      {
+        DisplayPrint(0,2,"O",true);
+      }
+//      DisplayPrint(2,2,"CL:" + String(g_WheelPerimeterTrackingCorrection[MOTOR_CURRENT_LEFT]) + " CR:" + String(g_WheelPerimeterTrackingCorrection[MOTOR_CURRENT_RIGHT]),true);
     }
     lastRefresh = millis();
     internalRefresh = false;

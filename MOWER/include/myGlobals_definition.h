@@ -500,6 +500,7 @@ extern float g_WheelPerimeterTrackingCorrection[MOTION_MOTOR_COUNT]; // from per
 #define MOWER_MOWING_MAX_CONSECUTVE_OBSTACLES 5
 #define MOWER_MOWING_MAX_CONSECUTVE_OUTSIDE 30
 #define MOWER_MOWING_CUT_DIRECTION_CHANGE_INTERVAL 20 * 60 * 1000  // in ms, how often the mower stops to change cut motor rotation direction
+#define MOWER_MOWING_CUTTING_DIRECTION_WAIT_TIME 30 * 1000      // in ms, time to wait cut motor has stopped
 #define MOWER_MOWING_CUT_START_WAIT 5000  // in ms, time to wait after starting cut motor before starting motion motors. Especailly susefull when battery in not @ 100%
 extern unsigned long g_totalMowingTime; // Total time spent mowing, in minutes (Saved to EEPROM)
 
@@ -530,6 +531,11 @@ extern unsigned long g_totalMowingTime; // Total time spent mowing, in minutes (
 #define BACK_TO_BASE_CLOCKWISE false           // in which direction to follow wire
 #define BACK_TO_BASE_SPEED 100                 // in %
 #define FOLLOW_WIRE_MAX_CONSECUTVE_OBSTACLES 0 // Setting to 0 will stop the wire tracking function on first obstacle
+
+// Leaving Base base function
+#define LEAVING_BASE_REVERSE_SPEED 80                 // in %
+#define LEAVING_BASE_REVERSE_DURATION 10 * 1000       // in ms
+//#define LEAVING_BASE_FORWARD_SPEED 100                 // in %
 
 // Obstacle detection causes
 #define OBSTACLE_DETECTED_NONE 0
@@ -637,6 +643,7 @@ extern int g_CurrentErrorCode; // Current Error code
 #define DISPLAY_TEST_REFRESH_INTERVAL 5000              // in ms
 #define DISPLAY_TO_BASE_REFRESH_INTERVAL 500           // in ms
 #define DISPLAY_DOCKED_REFRESH_INTERVAL 1000           // in ms
+#define DISPLAY_LEAVING_BASE_REFRESH_INTERVAL 1000           // in ms
 
 #define STATES_COUNT 7      // number of states in States enum (messy but did not find how to easly derive automatically number of elements from enum)
 

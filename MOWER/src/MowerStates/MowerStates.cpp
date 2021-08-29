@@ -32,7 +32,7 @@ void MowerIdle(const bool StateChange, const MowerState PreviousState)
   if (StateChange)
   {
     DebugPrintln("");
-    LogPrintln("Mower Idle", TAG_MOWING, DBG_INFO);
+    LogPrintln("Mower Idle", TAG_STATES, DBG_INFO);
 
     // Change display with refresh
     idleDisplay(true);
@@ -76,13 +76,13 @@ void MowerDocked(const bool StateChange, const MowerState PreviousState)
 {
   if (StateChange)
   {
-    LogPrintln("Mower Docked", TAG_TO_BASE, DBG_INFO);
+    LogPrintln("Mower Docked", TAG_STATES, DBG_INFO);
 
     // Cancel any outstanding wheel speed corrections
     MotionMotorsTrackingAdjustSpeed(0, 0);
 
     //change Telemetry frequency
-    g_MQTTSendInterval = MQTT_TELEMETRY_SEND_INTERVAL;
+    g_MQTTSendInterval = MQTT_TELEMETRY_SEND_INTERVAL_SLOW;
 
   // Change display with refresh
     dockedDisplay(true);
@@ -90,13 +90,6 @@ void MowerDocked(const bool StateChange, const MowerState PreviousState)
 
   // Update display 
     dockedDisplay();
-
-  // wait for GO
-  // send telemetry
-  // if battery is egnoth
-  // GO
-  // else
-  // send error bat low
 }
 
 //---------------------------------------------------------------------------------------------------------------------------
@@ -290,15 +283,31 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
 
   if (millis() - lastCutDirectionChange > MOWER_MOWING_CUT_DIRECTION_CHANGE_INTERVAL)
   {
-    bladeDirection = (-1) * bladeDirection;
+    // determine new cut motor rotation direction
+    if (bladeDirection == CUT_MOTOR_FORWARD)
+    {
+      bladeDirection = CUT_MOTOR_REVERSE;
+    }
+    if (bladeDirection == CUT_MOTOR_REVERSE)
+    {
+      bladeDirection = CUT_MOTOR_FORWARD;
+    }
+    // Stop blades and mower
     CutMotorStop(true);
     MowerStop();
-    // wait for blade to slow down
-    delay(20000);
+
+    // Wait for blade to stop
+    delay(MOWER_MOWING_CUTTING_DIRECTION_WAIT_TIME);
+
+    // Start cut motor with new direction
     CutMotorStart(bladeDirection, MOWER_MOWING_CUTTING_SPEED);
+
     // Give time for cut motor to start
     delay(MOWER_MOWING_CUT_START_WAIT);
+
     MowerForward(MOWER_MOWING_TRAVEL_SPEED);
+
+    // Memorise time of direction change
     lastCutDirectionChange = millis();
   }
 
@@ -364,8 +373,6 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
 
   // Update display
   mowingDisplay();
-
-  // TO DO When to stop mowing and go back to base
 }
 
 //---------------------------------------------------------------------------------------------------------------------------
@@ -508,20 +515,28 @@ void MowerLeavingBase(const bool StateChange, const MowerState PreviousState)
 {
   if (StateChange)
   {
+    LogPrintln("Mower leaving Base", TAG_STATES, DBG_INFO);
+
     // Cancel any outstanding wheel speed corrections
     MotionMotorsTrackingAdjustSpeed(0, 0);
 
-    // Open Battery charge relay to reduce energy consumption of keepong relay closed
+    // Cancel any outstanding wheel speed corrections
+    MotionMotorsTrackingAdjustSpeed(0, 0);
+
+    // Open Battery charge relay to reduce energy consumption of keeping relay closed
     BatteryChargeRelayOpen();
 
     //change Telemetry frequency
     g_MQTTSendInterval = MQTT_TELEMETRY_SEND_INTERVAL_FAST;
   }
 
-  // go backward for 50 cm
-  //  uTurn();
-  //go forward
-  // g_CurrentState = MowerState::mowing;
+  // Reverse out of base
+  int exitAngle = random(-180, -270);
+
+  MowerReserseAndTurn(exitAngle, LEAVING_BASE_REVERSE_DURATION, true); // reverse and turn random angle
+
+  // for the moment, mow from the spot
+  g_CurrentState = MowerState::mowing;
 }
 
 //---------------------------------------------------------------------------------------------------------------------------

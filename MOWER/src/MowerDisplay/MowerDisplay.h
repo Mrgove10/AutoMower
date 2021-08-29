@@ -40,6 +40,12 @@ void toBaseDisplay(bool refresh = false);
 void dockedDisplay(bool refresh = false);
 
 /**
+ * Display the leaving base state screen
+ * @param refresh boolean to force full screen update
+ * */
+void LeavingBaseDisplay(bool refresh = false);
+
+/**
  * Display the ERROR state screen
  * @param refresh boolean to force full screen update
  * */

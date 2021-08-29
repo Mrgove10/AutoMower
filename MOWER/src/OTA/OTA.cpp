@@ -119,7 +119,7 @@ void OTAHandle(void)
 
     //    MQTTUnSubscribe(); // no MQTT update to avoid any interruption during upload
 
-    while (millis() - otaStart < OTA_TIMEOUT)
+    while (millis() - otaStart > OTA_TIMEOUT)
     {
       ArduinoOTA.handle();
 //      g_OTAelapsed = millis() - otaStart;
