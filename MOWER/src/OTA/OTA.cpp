@@ -7,6 +7,7 @@
 #include "CutMotor/CutMotor.h"
 #include "Fan/Fan.h"
 #include "MQTT/MQTT.h"
+#include "EEPROM/EEPROM.h"
 #include "FastAnaReadTsk/FastAnaReadTsk.h"
 #include "PerimeterTsk/PerimeterTsk.h"
 #include "AnaReadTsk/AnaReadTsk.h"
@@ -112,6 +113,9 @@ void OTAHandle(void)
     PerimeterProcessingLoopTaskSuspend();
     SonarReadLoopTaskSuspend();
     AnaReadLoopTaskSuspend();
+
+    //Save to EEPROM
+    EEPROMSave(true);
 
     //    MQTTUnSubscribe(); // no MQTT update to avoid any interruption during upload
 

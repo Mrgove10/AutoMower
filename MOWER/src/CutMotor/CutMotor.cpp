@@ -111,14 +111,8 @@ void CutMotorSetSpeed(const int Speed)
     {
       DebugPrintln("Cut Motor speed " + String(Speed) + " too low : not applied", DBG_VERBOSE, true);
 
-      if (g_CutMotorDirection == CUT_MOTOR_FORWARD)
-      {
-        ledcWrite(CUT_MOTOR_PWM_CHANNEL_FORWARD, 0);
-      }
-      if (g_CutMotorDirection == CUT_MOTOR_REVERSE)
-      {
-        ledcWrite(CUT_MOTOR_PWM_CHANNEL_REVERSE, 0);
-      }
+      ledcWrite(CUT_MOTOR_PWM_CHANNEL_FORWARD, 0);
+      ledcWrite(CUT_MOTOR_PWM_CHANNEL_REVERSE, 0);
       g_CutMotorSpeed = 0;
     }
     else

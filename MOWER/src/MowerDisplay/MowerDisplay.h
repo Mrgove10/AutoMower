@@ -34,6 +34,12 @@ void mowingDisplay(bool refresh = false);
 void toBaseDisplay(bool refresh = false);
 
 /**
+ * Display the docked state screen
+ * @param refresh boolean to force full screen update
+ * */
+void dockedDisplay(bool refresh = false);
+
+/**
  * Display the ERROR state screen
  * @param refresh boolean to force full screen update
  * */

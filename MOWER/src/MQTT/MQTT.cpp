@@ -378,13 +378,17 @@ void MQTTSendTelemetry()
 
     JSONDataPayload.clear();
 
+    // Status Data
     JSONDataPayload.add("State", String ((int) g_CurrentState));
     JSONDataPayload.add("Error", String (g_CurrentErrorCode));
+
+    // Battery data
     JSONDataPayload.add("BatVolt", String(float(g_BatteryVoltage / 1000.0f), 2));
     JSONDataPayload.add("ChargeCur", String(g_BatteryChargeCurrent, 2));
     JSONDataPayload.add("BatSOC", String(g_BatterySOC,1));
     JSONDataPayload.add("BatCharging", String(g_BatteryIsCharging));
-
+    
+    // MotionMotor Data
     JSONDataPayload.add("DrvMotTemp", String(g_Temperature[TEMPERATURE_2_BLUE], 1));
     JSONDataPayload.add("DrvMotTempEr", String(g_TempErrorCount[TEMPERATURE_2_BLUE]));
     JSONDataPayload.add("RMotCur", String(g_MotorCurrent[MOTOR_CURRENT_RIGHT]));
@@ -393,6 +397,7 @@ void MQTTSendTelemetry()
     JSONDataPayload.add("LMotSpd", String(g_MotionMotorSpeed[MOTION_MOTOR_LEFT] * g_MotionMotorDirection[MOTION_MOTOR_LEFT]));
     JSONDataPayload.add("DrvMotFan", String(g_FanOn[FAN_2_BLUE]));
 
+    // Cut motor data
     JSONDataPayload.add("CMotTemp", String(g_Temperature[TEMPERATURE_1_RED], 1));
     JSONDataPayload.add("CMotTempEr", String(g_TempErrorCount[TEMPERATURE_1_RED]));
     JSONDataPayload.add("CMotCur", String(g_MotorCurrent[MOTOR_CURRENT_CUT], 2));
@@ -400,12 +405,15 @@ void MQTTSendTelemetry()
     JSONDataPayload.add("CMotAlm", String(g_CutMotorAlarm));
     JSONDataPayload.add("CMotFan", String(g_FanOn[FAN_1_RED]));
 
+    // Sonar data
     JSONDataPayload.add("FSnrDist", String(g_SonarDistance[SONAR_FRONT]));
     JSONDataPayload.add("RSnrDist", String(g_SonarDistance[SONAR_RIGHT]));
     JSONDataPayload.add("LSnrDist", String(g_SonarDistance[SONAR_LEFT]));
 
+    // Compass & Gyro data
     JSONDataPayload.add("CompHead", String(g_CompassHeading));
 
+    // GPS Data
     JSONDataPayload.add("GPSHead", String(g_GPSHeading, 1));
     JSONDataPayload.add("GPSSat", String(g_GPSSatellitesFix));
     JSONDataPayload.add("g_GPSHdop", String(g_GPSHdop, 2));
@@ -414,12 +422,19 @@ void MQTTSendTelemetry()
     JSONDataPayload.add("GPSLat", String(g_GPSLatitude, 2));
     JSONDataPayload.add("GPSLon", String(g_GPSLongitude, 2));
 
-    JSONDataPayload.add("RSSI", String(WiFi.RSSI()));
-
+    // Mowing Statistics data
     JSONDataPayload.add("Obstcl", String(g_totalObstacleDectections));
     JSONDataPayload.add("MowTim", String(int(g_totalMowingTime/60000)));
+
+    // Perimeter data
+    JSONDataPayload.add("Mag", String(g_PerimeterMagnitude));
+    JSONDataPayload.add("SMag", String(g_PerimeterSmoothMagnitude));
+    JSONDataPayload.add("InOut", String(g_isInsidePerimeter));
+
+    // ESP System data
     JSONDataPayload.add("Heap", String(esp_get_free_heap_size()));
     JSONDataPayload.add("CPUTemp", String(temperatureRead(), 1));
+    JSONDataPayload.add("RSSI", String(WiFi.RSSI()));
 
     JSONDataPayload.toString(JSONDataPayloadStr, false);
     JSONDataPayloadStr.toCharArray(MQTTpayload, JSONDataPayloadStr.length() + 1);

@@ -8,6 +8,7 @@
 #include "MowerDisplay/MowerDisplay.h"
 #include "CutMotor/CutMotor.h"
 #include "Sonar/Sonar.h"
+#include "Battery/Battery.h"
 #include "Tilt/Tilt.h"
 #include "Bumper/Bumper.h"
 #include "Rain/Rain.h"
@@ -75,12 +76,21 @@ void MowerDocked(const bool StateChange, const MowerState PreviousState)
 {
   if (StateChange)
   {
+    LogPrintln("Mower Docked", TAG_TO_BASE, DBG_INFO);
+
     // Cancel any outstanding wheel speed corrections
     MotionMotorsTrackingAdjustSpeed(0, 0);
 
     //change Telemetry frequency
-    g_MQTTSendInterval = MQTT_TELEMETRY_SEND_INTERVAL_FAST;
+    g_MQTTSendInterval = MQTT_TELEMETRY_SEND_INTERVAL;
+
+  // Change display with refresh
+    dockedDisplay(true);
   }
+
+  // Update display 
+    dockedDisplay();
+
   // wait for GO
   // send telemetry
   // if battery is egnoth
@@ -280,7 +290,7 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
 
   if (millis() - lastCutDirectionChange > MOWER_MOWING_CUT_DIRECTION_CHANGE_INTERVAL)
   {
-    bladeDirection = -1 * bladeDirection;
+    bladeDirection = (-1) * bladeDirection;
     CutMotorStop(true);
     MowerStop();
     // wait for blade to slow down
@@ -468,12 +478,19 @@ void MowerGoingToBase(const bool StateChange, const MowerState PreviousState)
     };
   }
 
+
   // Update display
   toBaseDisplay();
 
-  // TO DO conditions to end wire tracking
+  // Check if base reached - Current is flowing
+  BatteryChargeCurrentRead(true);
+  if (g_BatteryChargeCurrent > PERIMETER_SEARCH_AT_BASE_CURRENT)
+  {
+    MowerStop();
+    LogPrintln("Mower arrived at base", TAG_TO_BASE, DBG_INFO);
 
-  //  g_CurrentState = MowerState::idle;
+    g_CurrentState = MowerState::docked;
+  }
 }
 
 //---------------------------------------------------------------------------------------------------------------------------
@@ -669,7 +686,8 @@ bool MowerFindWire(const bool reset, int *phase, const int heading, const bool c
     if (g_isInsidePerimeter && millis() - searchStartTime < PERIMETER_SEARCH_FORWARD_MAX_TIME_1)
     {
       // Environment sensing for approaching objects
-      if (!MowerSlowDownApproachingObstables(PERIMETER_SEARCH_FORWARD_SPEED - MOWER_MOVES_SPEED_SLOW,
+      // if (!MowerSlowDownApproachingObstables(PERIMETER_SEARCH_FORWARD_SPEED - MOWER_MOVES_SPEED_SLOW,
+      if (!MowerSlowDownApproachingObstables(10,
                                              SONAR_MIN_DISTANCE_FOR_SLOWING,
                                              SONAR_MIN_DISTANCE_FOR_SLOWING,
                                              SONAR_MIN_DISTANCE_FOR_SLOWING,
@@ -932,17 +950,21 @@ bool MowerFollowWire(bool *reset, const int heading, const bool clockwise)
   if (clockwise)
   {
     colisionDetected = OBSTACLE_DETECTED_NONE != CheckObstacleAndAct(true,
-                                                                     SONAR_MIN_DISTANCE_FOR_STOP,
+                                                                    //  SONAR_MIN_DISTANCE_FOR_STOP,
+                                                                     0, // no Front detection
                                                                      0, // no left detection
-                                                                     SONAR_MIN_DISTANCE_FOR_STOP,
+                                                                    //  SONAR_MIN_DISTANCE_FOR_STOP,
+                                                                    0,
                                                                      false,  // no perimeter detection
                                                                      false); // no action (for the moment ???????????????)
   }
   else
   {
     colisionDetected = OBSTACLE_DETECTED_NONE != CheckObstacleAndAct(true,
-                                                                     SONAR_MIN_DISTANCE_FOR_STOP,
-                                                                     SONAR_MIN_DISTANCE_FOR_STOP,
+                                                                    //  SONAR_MIN_DISTANCE_FOR_STOP,
+                                                                     0, // no Front detection
+                                                                    //  SONAR_MIN_DISTANCE_FOR_STOP,
+                                                                     0,
                                                                      0,      // no right detection
                                                                      false,  // no perimeter detection
                                                                      false); // no action (for the moment ???????????????)

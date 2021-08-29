@@ -499,7 +499,7 @@ extern float g_WheelPerimeterTrackingCorrection[MOTION_MOTOR_COUNT]; // from per
 #define MOWER_MOWING_TRAVEL_SPEED 100
 #define MOWER_MOWING_MAX_CONSECUTVE_OBSTACLES 5
 #define MOWER_MOWING_MAX_CONSECUTVE_OUTSIDE 30
-#define MOWER_MOWING_CUT_DIRECTION_CHANGE_INTERVAL 10 * 60 * 1000  // in ms, thow often the mower stops to chnage cut motor rotation direction
+#define MOWER_MOWING_CUT_DIRECTION_CHANGE_INTERVAL 20 * 60 * 1000  // in ms, how often the mower stops to change cut motor rotation direction
 #define MOWER_MOWING_CUT_START_WAIT 5000  // in ms, time to wait after starting cut motor before starting motion motors. Especailly susefull when battery in not @ 100%
 extern unsigned long g_totalMowingTime; // Total time spent mowing, in minutes (Saved to EEPROM)
 
@@ -511,7 +511,7 @@ extern unsigned long g_totalMowingTime; // Total time spent mowing, in minutes (
 #define PERIMETER_SEARCH_FINISHED 4
 
 #define PERIMETER_SEARCH_REVERSE_MAX_TIME 4000    // in ms
-#define PERIMETER_SEARCH_REVERSE_SPEED 80         // in %
+#define PERIMETER_SEARCH_REVERSE_SPEED 90         // in %
 #define PERIMETER_SEARCH_REVERSE_TIME 1000        // in %
 #define PERIMETER_SEARCH_FORWARD_MAX_TIME_1 60000 // in ms
 // #define PERIMETER_SEARCH_FORWARD_MAX_TIME_2 5000 // in ms
@@ -523,6 +523,7 @@ extern unsigned long g_totalMowingTime; // Total time spent mowing, in minutes (
 // #define PERIMETER_SEARCH_TURN_MAX_TIME 10000 // in ms
 #define PERIMETER_SEARCH_TURN_MAX_ITERATIONS 180 / PERIMETER_SEARCH_ANGLE_INCREMENT // in loop counts. It should not be necessary to turn more than 150 deg depending on wire approach angle
 #define PERIMETER_SEARCH_MAX_CONSECUTVE_OBSTACLES 3
+#define PERIMETER_SEARCH_AT_BASE_CURRENT 5
 
 // Back to base function
 #define BACK_TO_BASE_HEADING 0                 // in deg 0=North
@@ -635,6 +636,7 @@ extern int g_CurrentErrorCode; // Current Error code
 #define DISPLAY_ERROR_REFRESH_INTERVAL 5000             // in ms
 #define DISPLAY_TEST_REFRESH_INTERVAL 5000              // in ms
 #define DISPLAY_TO_BASE_REFRESH_INTERVAL 500           // in ms
+#define DISPLAY_DOCKED_REFRESH_INTERVAL 1000           // in ms
 
 #define STATES_COUNT 7      // number of states in States enum (messy but did not find how to easly derive automatically number of elements from enum)
 
