@@ -80,7 +80,6 @@ void MowerDocked(const bool StateChange, const MowerState PreviousState)
 
     //change Telemetry frequency
     g_MQTTSendInterval = MQTT_TELEMETRY_SEND_INTERVAL_FAST;
-
   }
   // wait for GO
   // send telemetry
@@ -310,8 +309,6 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
       delay(MOWER_MOWING_CUT_START_WAIT);
     }
     MowerSpeed(MOWER_MOWING_TRAVEL_SPEED);
-
-
   }
 
   //--------------------------------
@@ -502,7 +499,6 @@ void MowerLeavingBase(const bool StateChange, const MowerState PreviousState)
 
     //change Telemetry frequency
     g_MQTTSendInterval = MQTT_TELEMETRY_SEND_INTERVAL_FAST;
-
   }
 
   // go backward for 50 cm
@@ -919,7 +915,6 @@ bool MowerFollowWire(bool *reset, const int heading, const bool clockwise)
   {
     MowerSpeed(BACK_TO_BASE_SPEED);
     speedAdjustment = 0;
-
   }
   else
   {
@@ -1134,7 +1129,6 @@ void MotionMotorsTrackingAdjustSpeed(const int leftMotorAjustment, const int rig
  */
 bool CheckPreConditions(const int Tilt, const int Bumper, const int Front, const int Left, const int Right, const int Perimeter, const bool ErrorMode)
 {
-
   // Tilt checks (activated or not)
 
   if (Tilt != ERROR_NO_ERROR && (TiltRead(TILT_HORIZONTAL) || TiltRead(TILT_VERTICAL)))

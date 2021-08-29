@@ -1,5 +1,9 @@
 {
-	"folders": [{
+	"folders": [
+		{
+			"name": "webapp",
+			"path": "APP"
+		},{
 			"name": "mower",
 			"path": "MOWER"
 		},
@@ -17,7 +21,10 @@
 		}
 	],
 	"extensions": {
-		"recommendations": ["platformio.platformio-ide"]
+		"recommendations": [
+			"platformio.platformio-ide",
+			"me-dutour-mathieu.vscode-github-actions"
+		]
 	},
 	"settings": {
 		"files.associations": {

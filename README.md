@@ -1,7 +1,8 @@
 # Automower
 
 [![PlatformIO CI](https://github.com/Mrgove10/AutoMower/actions/workflows/mower.yml/badge.svg)](https://github.com/Mrgove10/AutoMower/actions/workflows/mower.yml)
-[![WebApp CI](https://github.com/Mrgove10/AutoMower/actions/workflows/webapp.yml/badge.svg)](https://github.com/Mrgove10/AutoMower/actions/workflows/webapp.yml)[![CodeFactor](https://www.codefactor.io/repository/github/mrgove10/automower/badge)](https://www.codefactor.io/repository/github/mrgove10/automower)
+[![WebApp CI](https://github.com/Mrgove10/AutoMower/actions/workflows/webapp.yml/badge.svg)](https://github.com/Mrgove10/AutoMower/actions/workflows/webapp.yml)
+[![CodeFactor](https://www.codefactor.io/repository/github/mrgove10/automower/badge)](https://www.codefactor.io/repository/github/mrgove10/automower)
 
 **Note: This project is a work in progress !!**
 
@@ -14,6 +15,7 @@
       - [Mower State changes](#mower-state-changes)
       - [Calibration](#calibration)
       - [Over The Air program update (OTA)](#over-the-air-program-update-ota)
+      - [ESP restart](#esp-restart)
       - [Change Trace Level](#change-trace-level)
       - [Parameter value change](#parameter-value-change)
       - [Test & Debug commands](#test--debug-commands)
