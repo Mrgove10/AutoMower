@@ -326,7 +326,6 @@ void DisplayTaskStatus(const String task)
   }
 
   DebugPrintln(" (" + String(millis()-startMillis) + "ms, heap: " + String(esp_get_free_heap_size()) +", temp:" + String(temperatureRead(), 1) + " deg)", DBG_VERBOSE, true, true);
-
 }
 
 /**

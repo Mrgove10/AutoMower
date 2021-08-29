@@ -64,7 +64,6 @@ ICACHE_RAM_ATTR void PerimeterTimerISR(void)
   // To monitor normal task behaviour, we check that the queue is not full, indicating that the processing task is not runing or is running too slowly
   if (QueueReturn != pdPASS)
   {
-
     // Decided not to protect with a semaphore the access to full queue counter as this a non critical variable and this avoids unecessary system overload
     //    xSemaphoreTake(g_MyglobalSemaphore, portMAX_DELAY);
     g_PerimeterQueuefull = g_PerimeterQueuefull + 1;

@@ -33,7 +33,6 @@ void MotorCurrentSensorSetup()
 
   // Test to see if cut motor need larger calibration
   MotorCurrentSensor[MOTOR_CURRENT_CUT].setCalibration_32V_2A();
-
 }
 
 /**

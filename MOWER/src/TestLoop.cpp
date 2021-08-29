@@ -55,7 +55,6 @@ void TestLoop()
 
   if ((millis() - LastRefresh > 2000))
   {
-
     // Motion motor loop
     MotionSpeed = MotionSpeed + (1 * MotionSens);
     if (MotionSpeed > 120)

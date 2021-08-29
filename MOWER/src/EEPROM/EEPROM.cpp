@@ -151,7 +151,6 @@ void EEPROMSave(boolean immediatly)
 {
   if (immediatly || millis() - g_LastEepromWriteTime > EEPROM_WRITE_FREQUENCY)
   {
-
     g_EEPROMLoad.Load.Data.LastEepromSaveTime.year = myTime.year();
     g_EEPROMLoad.Load.Data.LastEepromSaveTime.month = myTime.month();
     g_EEPROMLoad.Load.Data.LastEepromSaveTime.day = myTime.day();
