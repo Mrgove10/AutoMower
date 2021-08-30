@@ -13,6 +13,7 @@
 #include "AnaReadTsk/AnaReadTsk.h"
 #include "Sonar/Sonar.h"
 #include "Display/Display.h"
+#include "MowerDisplay/MowerDisplay.h"
 
 /* OTA init procedure */
 
@@ -22,7 +23,7 @@ void OTASetup(void)
 
   ArduinoOTA.setHostname(ESPHOSTNAME);
 
-  ArduinoOTA.setTimeout(OTA_TIMEOUT);
+  // ArduinoOTA.setTimeout(OTA_TIMEOUT);
 
   // No authentication by default
   //  ArduinoOTA.setPassword("1234");
@@ -83,9 +84,11 @@ void OTAHandle(void)
 {
   if (g_otaFlag)
   {
-    unsigned long otaStart = millis();
+    unsigned long otaStart = 0;
 //    g_OTAelapsed = 0;
 //    otaStart = millis();
+
+    ArduinoOTA.begin();
 
     IPAddress ip = WiFi.localIP();
 
@@ -119,21 +122,29 @@ void OTAHandle(void)
 
     //    MQTTUnSubscribe(); // no MQTT update to avoid any interruption during upload
 
-    while (millis() - otaStart > OTA_TIMEOUT)
+    otaStart = millis();
+    
+    while (millis() - otaStart < OTA_TIMEOUT)
     {
       ArduinoOTA.handle();
 //      g_OTAelapsed = millis() - otaStart;
-      delay(50);
+      int timeLeft = int ((OTA_TIMEOUT-(millis()-otaStart))/1000UL);
+      DisplayPrint(14, 1, String(timeLeft) + "s  ");
+      // DebugPrintln("Untill OTA timeout:" + String(timeLeft), DBG_DEBUG, true);
+      // SerialAndTelnet.handle();
+      delay(500);
     }
     DebugPrintln("Upload timeout", DBG_ERROR, true);
-    DisplayPrint(2, 3, F("   Timeout !    "));
+    DisplayPrint(2, 2, F("   Timeout !    "));
     delay(TEST_SEQ_STEP_WAIT + TEST_SEQ_STEP_ERROR_WAIT);
+    DisplayClear();
 
     MQTTInit(false);
-    //    MQTTReconnect();
-    //    MQTTSubscribe();
+    MQTTReconnect();
+    MQTTSubscribe();
     delay(1000);
     LogPrintln("OTA upload request timeout", TAG_OTA, DBG_WARNING);
+    SerialAndTelnet.handle();
 
     g_otaFlag = false;
 
@@ -147,5 +158,8 @@ void OTAHandle(void)
 
     // Set mower back to Idle state
     g_CurrentState = MowerState::idle;
+    idleDisplay(true);
+
+    SerialAndTelnet.handle();
   }
 }

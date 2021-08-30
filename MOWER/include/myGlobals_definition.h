@@ -34,7 +34,7 @@ extern SemaphoreHandle_t g_MySerialSemaphore;
 #include <ArduinoOTA.h>
 
 #define OTA_PORT 3232
-#define OTA_TIMEOUT 180000
+#define OTA_TIMEOUT 180000UL
 
 extern bool g_otaFlag;
 //extern unsigned long g_OTAelapsed;
