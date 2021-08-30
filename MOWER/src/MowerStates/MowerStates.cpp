@@ -54,8 +54,8 @@ void MowerIdle(const bool StateChange, const MowerState PreviousState)
     // }
   }
 
-    // Update display
-    idleDisplay();
+  // Update display
+  idleDisplay();
 
   // Waiting for input ?
   // Send telemetry
@@ -528,12 +528,16 @@ void MowerLeavingBase(const bool StateChange, const MowerState PreviousState)
 
     //change Telemetry frequency
     g_MQTTSendInterval = MQTT_TELEMETRY_SEND_INTERVAL_FAST;
+    // Change display with refresh
+    LeavingBaseDisplay(true);
   }
 
   // Reverse out of base
   int exitAngle = random(-180, -270);
 
   MowerReserseAndTurn(exitAngle, LEAVING_BASE_REVERSE_DURATION, true); // reverse and turn random angle
+
+  LeavingBaseDisplay();
 
   // for the moment, mow from the spot
   g_CurrentState = MowerState::mowing;

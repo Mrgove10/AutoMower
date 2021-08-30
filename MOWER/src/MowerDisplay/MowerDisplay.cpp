@@ -152,8 +152,8 @@ void idleDisplay(bool refresh)
             headerDisplay(g_StatesString[int(g_CurrentState)], true);
             DisplayPrint(0, 1, "Mot:" + String(g_Temperature[TEMPERATURE_2_BLUE], 1) + " Cut: " + String(g_Temperature[TEMPERATURE_1_RED], 1), true);
             // Display currents
-            DisplayPrint(0, 2, "R:" + String(g_MotorCurrent[MOTOR_CURRENT_RIGHT], 0) +
-                               " L:" + String(g_MotorCurrent[MOTOR_CURRENT_LEFT], 0) + 
+            DisplayPrint(0, 2, "L:" + String(g_MotorCurrent[MOTOR_CURRENT_LEFT], 0) +
+                               " R:" + String(g_MotorCurrent[MOTOR_CURRENT_RIGHT], 0) + 
                                " Ch:" + String(g_BatteryChargeCurrent, 0), true);
             menuDisplay(-1);
             break;
@@ -250,8 +250,8 @@ void mowingDisplay(bool refresh)
             DisplayClear();
             headerDisplay(g_StatesString[int(g_CurrentState)], true);
             DisplayPrint(0, 1, "Mot:" + String(g_Temperature[TEMPERATURE_2_BLUE], 1) + " Cut: " + String(g_Temperature[TEMPERATURE_1_RED], 1), true);
-            DisplayPrint(0, 2, "R:" + String(g_MotorCurrent[MOTOR_CURRENT_RIGHT], 0) + " ", true);
-            DisplayPrint(6, 2, "L:" + String(g_MotorCurrent[MOTOR_CURRENT_LEFT], 0) + " ", true);
+            DisplayPrint(0, 2, "L:" + String(g_MotorCurrent[MOTOR_CURRENT_LEFT], 0) + " ", true);
+            DisplayPrint(6, 2, "R:" + String(g_MotorCurrent[MOTOR_CURRENT_RIGHT], 0) + " ", true);
             DisplayPrint(12, 2, "C:" + String(g_MotorCurrent[MOTOR_CURRENT_CUT], 0) + " ", true);
             menuDisplay(-1);
             break;
@@ -363,8 +363,8 @@ void toBaseDisplay(bool refresh)
             DisplayClear();
             headerDisplay(g_StatesString[int(g_CurrentState)], true);
             // Display currents
-            DisplayPrint(0, 1, "R:" + String(g_MotorCurrent[MOTOR_CURRENT_RIGHT], 0) +
-                               " L:" + String(g_MotorCurrent[MOTOR_CURRENT_LEFT], 0) + 
+            DisplayPrint(0, 1, "L:" + String(g_MotorCurrent[MOTOR_CURRENT_LEFT], 0) +
+                               " R:" + String(g_MotorCurrent[MOTOR_CURRENT_RIGHT], 0) + 
                                " Ch:" + String(g_BatteryChargeCurrent, 0), true);
             // Display PID Parameters
             DisplayPrint(0, 2, "P:" + String(g_ParamPerimeterTrackPIDKp, 3) +
@@ -389,7 +389,7 @@ void toBaseDisplay(bool refresh)
       {
         DisplayPrint(0,2,"O",true);
       }
-      DisplayPrint(2,2,"CL:" + String(g_WheelPerimeterTrackingCorrection[MOTOR_CURRENT_LEFT]) + " CR:" + String(g_WheelPerimeterTrackingCorrection[MOTOR_CURRENT_RIGHT]),true);
+      DisplayPrint(2,2,"CL:" + String(g_WheelPerimeterTrackingCorrection[MOTOR_CURRENT_LEFT], 0) + " CR:" + String(g_WheelPerimeterTrackingCorrection[MOTOR_CURRENT_RIGHT], 0),true);
     }
     lastRefresh = millis();
     internalRefresh = false;
@@ -551,8 +551,8 @@ void LeavingBaseDisplay(bool refresh)
             DisplayClear();
             headerDisplay(g_StatesString[int(g_CurrentState)], true);
             // Display currents
-            DisplayPrint(0, 1, "R:" + String(g_MotorCurrent[MOTOR_CURRENT_RIGHT], 0) +
-                               " L:" + String(g_MotorCurrent[MOTOR_CURRENT_LEFT], 0) + 
+            DisplayPrint(0, 1, "L:" + String(g_MotorCurrent[MOTOR_CURRENT_LEFT], 0) +
+                               " RL:" + String(g_MotorCurrent[MOTOR_CURRENT_RIGHT], 0) + 
                                " Ch:" + String(g_BatteryChargeCurrent, 0), true);
             menuDisplay(-1);
             break;

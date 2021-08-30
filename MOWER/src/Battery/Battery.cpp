@@ -40,8 +40,7 @@ bool BatteryCurrentSensorCheck(void)
   if (BatteryChargeSensor.success())
   {
     DebugPrintln("Charge Sensor ok, Value: " + String(g_BatteryChargeCurrent, 0), DBG_INFO, true);
-    DisplayPrint(2, 2, F("Charge OK: "));
-    DisplayPrint(7, 3, String(g_BatteryChargeCurrent, 0) + F(" mA"));
+    DisplayPrint(1, 2, "Charge OK: " + String(g_BatteryChargeCurrent, 0) + " mA");
     delay(TEST_SEQ_STEP_WAIT);
     return true;
   }
@@ -130,7 +129,7 @@ bool BatteryVoltageCheck(void)
   DisplayClear();
   DisplayPrint(0, 0, F("Battery Test"));
   DisplayPrint(2, 2, "Battery " + StatusStr[status]);
-  DisplayPrint(7, 3, String(float(g_BatteryVoltage / 1000.0f), 1) + " V");
+  DisplayPrint(12, 3, String(float(g_BatteryVoltage / 1000.0f), 1) + " V");
 
   if (status <= BATTERY_VOLTAGE_LOW)
   {

@@ -15,7 +15,7 @@ void NtpSetup(void)
 
   waitForSync();
 
-  DisplayPrint(2, 1, myTime.dateTime("H:i:s"));
+  DisplayPrint(8, 1, myTime.dateTime("H:i:s"));
   delay(TEST_SEQ_STEP_WAIT);
 
   DebugPrint("Local Time is: " + myTime.dateTime(), DBG_ALWAYS, false);

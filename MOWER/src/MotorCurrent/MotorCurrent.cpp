@@ -55,7 +55,7 @@ bool MotorCurrentSensorCheck(int sensor)
   if (MotorCurrentSensor[sensor].success())
   {
     DebugPrintln(sensorStr[sensor] + " Motor Current Sensor ok", DBG_INFO, true);
-    DisplayPrint(8, sensor + 1, F("OK"));
+    DisplayPrint(8, sensor + 1, "OK " + String(g_MotorCurrent[sensor], 0) + " mA");
 
     delay(TEST_SEQ_STEP_WAIT);
     return true;
