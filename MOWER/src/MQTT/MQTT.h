@@ -8,6 +8,6 @@ void MQTTSubscribe();
 void MQTTUnSubscribe();
 void MQTTReconnect();
 void MQTTDisconnect();
-void MQTTSendTelemetry();
+void MQTTSendTelemetry(const bool now = false);
 
 #endif

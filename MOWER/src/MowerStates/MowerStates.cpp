@@ -15,6 +15,7 @@
 #include "Battery/Battery.h"
 #include "Utils/Utils.h"
 #include "Display/Display.h"
+#include "MQTT/MQTT.h"
 
 //---------------------------------------------------------------------------------------------------------------------------
 //
@@ -38,7 +39,10 @@ void MowerIdle(const bool StateChange, const MowerState PreviousState)
     idleDisplay(true);
 
     //change Telemetry frequency
-    g_MQTTSendInterval = MQTT_TELEMETRY_SEND_INTERVAL_SLOW;
+    g_MQTTSendInterval = MQTT_TELEMETRY_SEND_INTERVAL;
+
+    // Force a Telemetry send
+    MQTTSendTelemetry(true);
 
     // Reset mower error code (not needed after error acknowledgement implemented)
     g_CurrentErrorCode = ERROR_NO_ERROR;
@@ -60,8 +64,12 @@ void MowerIdle(const bool StateChange, const MowerState PreviousState)
   // Update display
   idleDisplay();
 
-  // Waiting for input ?
-  // Send telemetry
+  // If charge current is detected, mower is assumed to be on base and changes status to docked
+  if (g_BatteryChargeCurrent > MOWER_AT_BASE_CURRENT)
+  {
+    LogPrintln("Mower on charge", TAG_STATES, DBG_INFO);
+    g_CurrentState = MowerState::docked;
+  }
 }
 
 //---------------------------------------------------------------------------------------------------------------------------
@@ -86,6 +94,9 @@ void MowerDocked(const bool StateChange, const MowerState PreviousState)
 
     //change Telemetry frequency
     g_MQTTSendInterval = MQTT_TELEMETRY_SEND_INTERVAL_SLOW;
+
+    // Force a Telemetry send
+    MQTTSendTelemetry(true);
 
   // Change display with refresh
     dockedDisplay(true);
@@ -529,8 +540,14 @@ void MowerLeavingBase(const bool StateChange, const MowerState PreviousState)
     // Open Battery charge relay to reduce energy consumption of keeping relay closed
     BatteryChargeRelayOpen();
 
+  //  Reset battery charge current to 0
+    g_BatteryChargeCurrent = 0;
     //change Telemetry frequency
     g_MQTTSendInterval = MQTT_TELEMETRY_SEND_INTERVAL_FAST;
+
+    // Force a Telemetry send
+    MQTTSendTelemetry(true);
+
     // Change display with refresh
     LeavingBaseDisplay(true);
   }
@@ -568,8 +585,11 @@ void MowerInError(const bool StateChange, const MowerState PreviousState)
     // Change display with refresh
     errorDisplay(true);
 
-    //change Telemetry frequency
+    // Change Telemetry frequency
     g_MQTTSendInterval = MQTT_TELEMETRY_SEND_INTERVAL;
+
+    // Force a Telemetry send
+    MQTTSendTelemetry(true);
 
     // Suspend Sonar readings
     //    g_SonarReadEnabled = false;

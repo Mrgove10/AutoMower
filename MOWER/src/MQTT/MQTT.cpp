@@ -334,7 +334,7 @@ void MQTTReconnect()
 void MQTTDisconnect(void)
 {
   MQTTclient.disconnect();
-  DebugPrint("Disconnected from MQTT server", DBG_WARNING, true);
+  DebugPrintln("Disconnected from MQTT server", DBG_WARNING, true);
 }
 
 void MQTTInit(const bool Display)
@@ -359,7 +359,7 @@ void MQTTInit(const bool Display)
   {
     if (status)
     {
-      DisplayPrint(2, 3, F("Connected"));
+      DisplayPrint(8, 3, F("Connected"));
     }
     else
     {
@@ -370,12 +370,12 @@ void MQTTInit(const bool Display)
   }
 }
 
-void MQTTSendTelemetry()
+void MQTTSendTelemetry(const bool now)
 {
   static unsigned long LastTelemetryDataSent = 0;
   char MQTTpayload[MQTT_MAX_PAYLOAD];
 
-  if ((millis() - LastTelemetryDataSent > g_MQTTSendInterval))
+  if ((millis() - LastTelemetryDataSent > g_MQTTSendInterval) || now)
   {
     unsigned long StartSend = millis();
 
