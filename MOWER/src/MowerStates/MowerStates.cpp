@@ -433,7 +433,7 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
   }
 
 // If spiral mowing mode and circle time is elapsed, update speeds
-  if(isSpiral && millis() - lastSpiralSpeedAdjustment > stepDuration)
+  if (isSpiral && (millis() - lastSpiralSpeedAdjustment > stepDuration))
   {
     switch (g_mowingMode)
     {
@@ -446,7 +446,7 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
       default:
         break;
     }
-    stepDuration = stepDuration + g_spiralStepTimeIncrement[spiralStep];
+    stepDuration = stepDuration + (g_spiralStepTimeIncrement[spiralStep] * MOWER_MOWING_SPIRAL_CIRCLES_PER_STEP);
     spiralStep = spiralStep + 1;
 
     // If last step is reached, stop spiral mow
