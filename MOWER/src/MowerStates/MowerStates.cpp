@@ -181,14 +181,14 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
     mowingStartTime = millis();
 
     // Determine random cutting motor rotation direction
-    if (millis() % 2 == 0) 
-    {
+    // if (millis() % 2 == 0) 
+    // {
       bladeDirection = CUT_MOTOR_FORWARD;
-    }
-    else
-    {
-      bladeDirection = CUT_MOTOR_REVERSE;
-    }
+    // }
+    // else
+    // {
+    //   bladeDirection = CUT_MOTOR_REVERSE;
+    // }
     lastCutDirectionChange = millis();
   
     // Start Mowing
@@ -294,7 +294,6 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
   //--------------------------------
   // Is it time for a cut direction change?
   //--------------------------------
-
   if (millis() - lastCutDirectionChange > MOWER_MOWING_CUT_DIRECTION_CHANGE_INTERVAL)
   {
     // determine new cut motor rotation direction
@@ -306,6 +305,9 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
     {
       bladeDirection = CUT_MOTOR_FORWARD;
     }
+
+    DebugPrintln("Chaging cut motor rotation direction to " + String(bladeDirection) , DBG_INFO, true);
+
     // Stop blades and mower
     CutMotorStop(true);
     MowerStop();
