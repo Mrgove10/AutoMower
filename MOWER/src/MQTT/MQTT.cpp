@@ -237,6 +237,11 @@ void MQTTCallback(char *topic, byte *message, unsigned int length)
         g_CurrentState = MowerState::test;
       }
     }
+    else if (Command == "TEST_ARC_FORWARD")
+    {
+      MowerArc(MOTION_MOTOR_FORWARD, int(Val1), int(Val2));
+    }
+
 #ifdef MQTT_GRAPH_DEBUG
     else if (Command == "START_MQTT_GRAPH_DEBUG")
     {

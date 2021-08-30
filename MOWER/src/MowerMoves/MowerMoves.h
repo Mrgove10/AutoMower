@@ -53,4 +53,12 @@ void MowerReserseAndTurn(const int Angle, const int Duration, const bool OnSpot 
  */
 bool MowerSlowDownApproachingObstables(const int SpeedDelta, const int Front = 0, const int Left = 0, const int Right = 0, const int Perimeter = 0);
 
+/**
+ * Mower arc function : mower moves in given direction with motors running at a different speed, thus turning forming an arc : used for spiral mowing
+ * @param direction forward (MOTION_MOTOR_FORWARD) or reverse (MOTION_MOTOR_REVERSE)
+ * @param leftSpeed Left motor speed (in %)
+ * @param rightSpeed Right motor speed (in %)
+ */
+void MowerArc(const int direction, const int leftSpeed, const int rightSpeed);
+
 #endif

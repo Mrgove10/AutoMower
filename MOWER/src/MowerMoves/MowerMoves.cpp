@@ -206,6 +206,26 @@ bool MowerSlowDownApproachingObstables(const int SpeedDelta, const int Front, co
   return SpeedReductiontiggered;
 }
 
+/**
+ * Mower arc function : mower moves in given direction with motors running at a different speed, thus turning forming an arc : used for spiral mowing
+ * @param direction forward (MOTION_MOTOR_FORWARD) or reverse (MOTION_MOTOR_REVERSE)
+ * @param leftSpeed Left motor speed (in %)
+ * @param rightSpeed Right motor speed (in %)
+ */
+void MowerArc(const int direction, const int leftSpeed, const int rightSpeed)
+{
+  if (direction == MOTION_MOTOR_FORWARD)
+  {
+    DebugPrintln("Mower arc Forward (Left:" + String(leftSpeed) + "%, Right:" + String(rightSpeed) + "%)" , DBG_VERBOSE, true);
+  }
+  else
+  {
+    DebugPrintln("Mower arc Reverse (Left:" + String(leftSpeed) + "%, Right:" + String(rightSpeed) + "%)" , DBG_VERBOSE, true);
+  }
+  MotionMotorStart(MOTION_MOTOR_RIGHT, direction, rightSpeed);
+  MotionMotorStart(MOTION_MOTOR_LEFT, direction, leftSpeed);
+}
+
 /*
 void getMeUnstuck()
 {
