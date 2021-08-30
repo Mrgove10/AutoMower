@@ -43,6 +43,9 @@ void MowerIdle(const bool StateChange, const MowerState PreviousState)
     // Reset mower error code (not needed after error acknowledgement implemented)
     g_CurrentErrorCode = ERROR_NO_ERROR;
 
+    // Close Battery charge relay to be able to detect base station
+    BatteryChargeRelayClose();
+
 #ifdef MQTT_PID_GRAPH_DEBUG
     g_MQTTPIDGraphDebug = false; // for testing
 #endif
@@ -491,7 +494,7 @@ void MowerGoingToBase(const bool StateChange, const MowerState PreviousState)
 
   // Check if base reached - Current is flowing
   BatteryChargeCurrentRead(true);
-  if (g_BatteryChargeCurrent > PERIMETER_SEARCH_AT_BASE_CURRENT)
+  if (g_BatteryChargeCurrent > MOWER_AT_BASE_CURRENT)
   {
     MowerStop();
     LogPrintln("Mower arrived at base", TAG_TO_BASE, DBG_INFO);

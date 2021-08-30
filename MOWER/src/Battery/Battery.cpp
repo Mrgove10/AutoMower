@@ -65,7 +65,6 @@ bool BatteryChargeCurrentRead(const bool Now)
   static float smoothedCurrent = UNKNOWN_FLOAT;
   float busvoltage = 0;
 
-
   if ((millis() - LastBatteryChargeCurrentRead > BATTERY_CHARGE_READ_INTERVAL) || Now)
   {
     float current_mA = 0;
@@ -87,7 +86,8 @@ bool BatteryChargeCurrentRead(const bool Now)
         current_mA = 0;
       }
 
-      if (smoothedCurrent == UNKNOWN_FLOAT)
+    // Reset average on first value and on leaving base
+      if (smoothedCurrent == UNKNOWN_FLOAT || g_CurrentState == MowerState::leaving_base)
       {
         smoothedCurrent = abs(current_mA);
       }

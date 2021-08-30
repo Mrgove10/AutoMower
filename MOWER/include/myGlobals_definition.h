@@ -524,7 +524,8 @@ extern unsigned long g_totalMowingTime; // Total time spent mowing, in minutes (
 // #define PERIMETER_SEARCH_TURN_MAX_TIME 10000 // in ms
 #define PERIMETER_SEARCH_TURN_MAX_ITERATIONS 180 / PERIMETER_SEARCH_ANGLE_INCREMENT // in loop counts. It should not be necessary to turn more than 150 deg depending on wire approach angle
 #define PERIMETER_SEARCH_MAX_CONSECUTVE_OBSTACLES 3
-#define PERIMETER_SEARCH_AT_BASE_CURRENT 5
+
+#define MOWER_AT_BASE_CURRENT 25    // in mA
 
 // Back to base function
 #define BACK_TO_BASE_HEADING 0                 // in deg 0=North
