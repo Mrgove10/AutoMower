@@ -284,7 +284,23 @@ void mowingDisplay(bool refresh)
         DisplayPrint(2,2,"<",true);
       }
 
-      DisplayPrint(4,2,"M:" + String(g_PerimeterMagnitude) + " S:" + String(g_PerimeterSmoothMagnitude) + "   ",true);
+      // Display Mowing mode
+      switch (g_mowingMode)
+      {
+      case MOWER_MOWING_MODE_RANDOM:
+         DisplayPrint(3,2,"$",true);
+        break;
+      case MOWER_MOWING_MODE_SPIRAL_CLOCKWISE:
+         DisplayPrint(3,2,"@",true);
+        break;
+      case MOWER_MOWING_MODE_SPIRAL_COUNTER_CLOCKWISE:
+         DisplayPrint(3,2,"C",true);
+        break;
+      default:
+        break;
+      }
+
+      DisplayPrint(5,2,"M:" + String(g_PerimeterMagnitude) + " S:" + String(g_PerimeterSmoothMagnitude) + "   ",true);
     }
     lastRefresh = millis();
     internalRefresh = false;

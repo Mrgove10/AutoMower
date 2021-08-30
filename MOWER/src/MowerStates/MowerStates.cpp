@@ -124,6 +124,14 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
   static int bladeDirection = CUT_MOTOR_FORWARD;
   static int outsideCount = 0;
 
+  // Varibales to manage spiral mowing
+  static unsigned long stepDuration = MOWER_MOWING_SPIRAL_START_CIRCLE_DURATION * MOWER_MOWING_SPIRAL_CIRCLES_PER_STEP;
+  static int spiralStep = 0;      // curren step;
+  static int rightSpeed = 0;      // right motor speed
+  static int leftSpeed = 0;       // left motor speed
+  static bool isSpiral = false;   // indicates if mowing mode si of spiral type
+  static unsigned long lastSpiralSpeedAdjustment = 0;  // time of last spiral speed change
+
   //--------------------------------
   // Actions to take when entering the mowing state
   //--------------------------------
@@ -196,7 +204,36 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
     CutMotorStart(bladeDirection, MOWER_MOWING_CUTTING_SPEED);
     // Give time for cut motor to start
     delay(MOWER_MOWING_CUT_START_WAIT);
-    MowerForward(MOWER_MOVES_SPEED_SLOW);
+
+    // Initialise speed according to mowing mode
+    switch (g_mowingMode)
+    {
+      case MOWER_MOWING_MODE_RANDOM:
+        rightSpeed = MOWER_MOVES_SPEED_NORMAL;
+        leftSpeed = MOWER_MOVES_SPEED_NORMAL;
+        isSpiral = false;
+        break;
+      case MOWER_MOWING_MODE_SPIRAL_CLOCKWISE:
+        rightSpeed = MOTION_MOTOR_MIN_SPEED;
+        leftSpeed = MOWER_MOVES_SPEED_NORMAL;
+        isSpiral = true;
+        spiralStep = 0;
+        lastSpiralSpeedAdjustment = millis();
+        break;
+      case MOWER_MOWING_MODE_SPIRAL_COUNTER_CLOCKWISE:
+        rightSpeed = MOWER_MOVES_SPEED_NORMAL;
+        leftSpeed = MOTION_MOTOR_MIN_SPEED;
+        isSpiral = true;
+        spiralStep = 0;
+        lastSpiralSpeedAdjustment = millis();
+        break;
+      default:
+        break;
+    }
+
+    // Start mower forward
+    MowerArc(MOTION_MOTOR_FORWARD, leftSpeed, rightSpeed);
+//    MowerForward(MOWER_MOVES_SPEED_NORMAL);
 
     g_MowingLoopCnt = 0;
     outsideCount = 0;
@@ -306,7 +343,7 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
       bladeDirection = CUT_MOTOR_FORWARD;
     }
 
-    DebugPrintln("Chaging cut motor rotation direction to " + String(bladeDirection) , DBG_INFO, true);
+    DebugPrintln("Changing cut motor rotation direction to " + String(bladeDirection), DBG_INFO, true);
 
     // Stop blades and mower
     CutMotorStop(true);
@@ -321,7 +358,9 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
     // Give time for cut motor to start
     delay(MOWER_MOWING_CUT_START_WAIT);
 
-    MowerForward(MOWER_MOWING_TRAVEL_SPEED);
+    MowerArc(MOTION_MOTOR_FORWARD, leftSpeed, rightSpeed);
+
+//    MowerForward(MOWER_MOWING_TRAVEL_SPEED);
 
     // Memorise time of direction change
     lastCutDirectionChange = millis();
@@ -343,7 +382,8 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
       // Give time for cut motor to start
       delay(MOWER_MOWING_CUT_START_WAIT);
     }
-    MowerSpeed(MOWER_MOWING_TRAVEL_SPEED);
+    MowerArc(MOTION_MOTOR_FORWARD, leftSpeed, rightSpeed);
+    // MowerSpeed(MOWER_MOWING_TRAVEL_SPEED);
   }
 
   //--------------------------------
@@ -370,6 +410,14 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
     }
     else
     {
+      // In case of obstacle or perimeter reached, spiral mowing mode ends
+      if (isSpiral)
+      {
+        rightSpeed = MOWER_MOWING_TRAVEL_SPEED;
+        leftSpeed = MOWER_MOWING_TRAVEL_SPEED;
+        isSpiral = false;
+      }
+
       // Start mowing again if inside perimeter
       if (g_isInsidePerimeter)
       { 
@@ -382,6 +430,40 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
         MowerForward(MOWER_MOWING_TRAVEL_SPEED);
       }
     }
+  }
+
+// If spiral mowing mode and circle time is elapsed, update speeds
+  if(isSpiral && millis() - lastSpiralSpeedAdjustment > stepDuration)
+  {
+    switch (g_mowingMode)
+    {
+      case MOWER_MOWING_MODE_SPIRAL_CLOCKWISE:
+        rightSpeed = rightSpeed + MOWER_MOWING_SPIRAL_SPEED_INCREMENT;
+        break;
+      case MOWER_MOWING_MODE_SPIRAL_COUNTER_CLOCKWISE:
+        leftSpeed = leftSpeed + MOWER_MOWING_SPIRAL_SPEED_INCREMENT;
+        break;
+      default:
+        break;
+    }
+    stepDuration = stepDuration + g_spiralStepTimeIncrement[spiralStep];
+    spiralStep = spiralStep + 1;
+
+    // If last step is reached, stop spiral mow
+    if (spiralStep == MOWER_MOWING_SPIRAL_MAX_STEP) 
+    { 
+      isSpiral = false;
+      rightSpeed = MOWER_MOWING_SPIRAL_MAX_SPEED;
+      leftSpeed = MOWER_MOWING_SPIRAL_MAX_SPEED;
+    }
+    
+    DebugPrintln("Spiral mowing: step " + String(spiralStep) + ", changing motor speeds to Left:" + String(leftSpeed) + "%, Right:" + String(rightSpeed) + "%", DBG_INFO, true);
+
+    //Memorise last change
+    lastSpiralSpeedAdjustment = millis();
+
+    // Update motor speeds
+    MowerArc(MOTION_MOTOR_FORWARD, leftSpeed, rightSpeed);
   }
 
   g_totalMowingTime = g_totalMowingTime + (millis() - mowingStartTime);   // in minutes

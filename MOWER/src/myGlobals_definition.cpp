@@ -301,6 +301,16 @@ float g_WheelPerimeterTrackingCorrection[MOTION_MOTOR_COUNT] = {0, 0}; // from p
 /************************* Mower Moves variables *********************************/
 
 // Mowing
+unsigned long g_spiralStepTimeIncrement[MOWER_MOWING_SPIRAL_MAX_STEP] = {
+  200,  200,  200,  200,  200,  200,  200,  200,  200,  200,
+  200,  200,  200,  200,  200,  200,  200,  200,  500,  500,
+  500,  500,  500,  500,  500,  500,  500,  500,  500, 1000,
+ 1000, 1000, 1000, 1200, 1200, 1200, 1200, 1200, 1200, 1200,
+ 1200, 1200, 1200, 6000, 6000, 6000, 6000, 6000, 6000, 13000,
+ 13000, 13000, 13000, 13000, 13000};
+
+int g_mowingMode = MOWER_MOWING_MODE_RANDOM;  // Random by default
+
 unsigned long g_totalMowingTime = 0; // Total time spent mowing, in minutes (Saved to EEPROM)
 
 // Move count variables

@@ -79,14 +79,31 @@ In this state the mower is doing nthing and wait for the next command.
 
 - `TEST` : This is the command to trigger the mower's startup test sequence. At the end, the mower will retun to `IDLE` state.
 
-**Val2** : No Val2 value expected for the above commands (any value sent will be ignored)
+**Val2** : 
+
+- For `MOWING` state, possible values for Val1 are:
+  - `0` for Random mowing.
+  - `1` for spiral mowing clockwise 
+  - `2` for spiral mowing counter clockwise
+- No Val2 value expected for other states (any value sent will be ignored)
 
 **Message Example** :
+
+Set mower to idle state:
 
 ```json
 {
   "Command":"STATE_CHANGE",
   "Val1":"IDLE"
+}
+```
+Set mower to clockwise spiral mowing:
+
+```json
+{
+  "Command":"STATE_CHANGE",
+  "Val1":"MOWING",
+  "Val2":"1"
 }
 ```
 

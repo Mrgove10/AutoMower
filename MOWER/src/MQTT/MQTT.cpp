@@ -184,6 +184,7 @@ void MQTTCallback(char *topic, byte *message, unsigned int length)
         else
         {
           g_CurrentState = MowerState::mowing;
+          g_mowingMode = Val2;
         }
       }
       else if (Val1Str == "TO_BASE")

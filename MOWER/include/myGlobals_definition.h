@@ -502,6 +502,21 @@ extern float g_WheelPerimeterTrackingCorrection[MOTION_MOTOR_COUNT]; // from per
 #define MOWER_MOWING_CUT_DIRECTION_CHANGE_INTERVAL 20 * 60 * 1000  // in ms, how often the mower stops to change cut motor rotation direction
 #define MOWER_MOWING_CUTTING_DIRECTION_WAIT_TIME 30 * 1000      // in ms, time to wait cut motor has stopped
 #define MOWER_MOWING_CUT_START_WAIT 5000  // in ms, time to wait after starting cut motor before starting motion motors. Especailly susefull when battery in not @ 100%
+
+#define MOWER_MOWING_MODE_RANDOM 0                      // Ramdomised mowing
+#define MOWER_MOWING_MODE_SPIRAL_CLOCKWISE 1            // Mowing is done in a right spiral (clockwise)
+#define MOWER_MOWING_MODE_SPIRAL_COUNTER_CLOCKWISE 2    // Mowing is done in a left spiral (counter clockwise)
+
+#define MOWER_MOWING_SPIRAL_MIN_SPEED (MOTION_MOTOR_MIN_SPEED - 1)  // Minimum speed for inner-circle wheel for spiral mowing mode
+#define MOWER_MOWING_SPIRAL_MAX_SPEED MOWER_MOWING_TRAVEL_SPEED     // Maximum speed for inner-circle wheel for spiral mowing mode
+#define MOWER_MOWING_SPIRAL_SPEED_INCREMENT 1                       // Speed increment on each step for spiral mowing mode
+#define MOWER_MOWING_SPIRAL_CIRCLES_PER_STEP 2                      // Number of circles per step for spiral mowing mode
+#define MOWER_MOWING_SPIRAL_MAX_STEP (MOWER_MOWING_SPIRAL_MAX_SPEED - MOWER_MOWING_SPIRAL_MIN_SPEED) / MOWER_MOWING_SPIRAL_SPEED_INCREMENT  // Maximum number of steps
+#define MOWER_MOWING_SPIRAL_START_CIRCLE_DURATION 10 * 1000         // in ms, for 1 circle
+
+extern unsigned long g_spiralStepTimeIncrement[MOWER_MOWING_SPIRAL_MAX_STEP]; // in ms, time to add to 
+
+extern int g_mowingMode;
 extern unsigned long g_totalMowingTime; // Total time spent mowing, in minutes (Saved to EEPROM)
 
 // Perimeter search function

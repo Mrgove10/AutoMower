@@ -216,11 +216,25 @@ void MowerArc(const int direction, const int leftSpeed, const int rightSpeed)
 {
   if (direction == MOTION_MOTOR_FORWARD)
   {
-    DebugPrintln("Mower arc Forward (Left:" + String(leftSpeed) + "%, Right:" + String(rightSpeed) + "%)" , DBG_VERBOSE, true);
+    if (leftSpeed != rightSpeed)
+    {
+      DebugPrintln("Mower arc Forward (Left:" + String(leftSpeed) + "%, Right:" + String(rightSpeed) + "%)", DBG_VERBOSE, true);
+    }
+    else
+    {
+      DebugPrintln("Mower Forward @ " + String(leftSpeed) + "%", DBG_VERBOSE, true);
+    }
   }
   else
   {
-    DebugPrintln("Mower arc Reverse (Left:" + String(leftSpeed) + "%, Right:" + String(rightSpeed) + "%)" , DBG_VERBOSE, true);
+    if (leftSpeed != rightSpeed)
+    {
+      DebugPrintln("Mower arc Reverse (Left:" + String(leftSpeed) + "%, Right:" + String(rightSpeed) + "%)", DBG_VERBOSE, true);
+    }
+    else
+    {
+      DebugPrintln("Mower Reverse @ " + String(leftSpeed) + "%", DBG_VERBOSE, true);
+    }
   }
   MotionMotorStart(MOTION_MOTOR_RIGHT, direction, rightSpeed);
   MotionMotorStart(MOTION_MOTOR_LEFT, direction, leftSpeed);
