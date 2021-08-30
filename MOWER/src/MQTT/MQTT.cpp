@@ -106,6 +106,12 @@ void MQTTCallback(char *topic, byte *message, unsigned int length)
     String Val2Str = JSONData.stringValue;
     float Val2 = Val2Str.toFloat();
 
+//-------------------------------------------------------------------------
+//
+// Permanent functions
+//
+//-------------------------------------------------------------------------
+
     if (Command == "OTA")
     {
       LogPrintln("Request for OTA update", TAG_OTA, DBG_INFO);
@@ -149,39 +155,6 @@ void MQTTCallback(char *topic, byte *message, unsigned int length)
         g_debugLevel = DBG_INFO;
         DebugPrintln("Debug level to INFO", DBG_INFO, true);
       }
-    }
-
-    else if (Command == "TEST_MOTOR")
-    {
-      MotionMotorTest(MOTION_MOTOR_RIGHT); //TEMPORAIRE
-      MotionMotorTest(MOTION_MOTOR_LEFT);  //TEMPORAIRE
-    }
-
-    else if (Command == "TEST_CUTMOTOR")
-    {
-      CutMotorTest();
-    }
-
-    else if (Command == "TEST_STOP")
-    {
-      MowerStop();
-    }
-
-    else if (Command == "TEST_FORWARD")
-    {
-      MowerForward(int(Val1));
-      delay(int(Val2 * 1000));
-      MowerStop();
-    }
-
-    else if (Command == "TEST_REVERSE")
-    {
-      MowerReverse(int(Val1), int(Val2 * 1000));
-    }
-
-    else if (Command == "TEST_TURN")
-    {
-      MowerTurn(int(Val1), bool(Val2));
     }
 
     else if (Command == "STATE_CHANGE")
@@ -237,6 +210,57 @@ void MQTTCallback(char *topic, byte *message, unsigned int length)
         g_CurrentState = MowerState::test;
       }
     }
+
+    else if (Command == "CALIBRATE")
+    {
+      PerimeterRawValuesCalibration(PERIMETER_RAW_SAMPLES);
+      DebugPrintln("Calibration offset changed to " + String(g_PerimeterOffset), DBG_INFO, true);
+    }
+
+    else if (Command == "PARAMETER")
+    {
+      ParameterChangeValue(Val1Str, Val2); // Value changed and saved in EEPROM
+    }
+
+//-------------------------------------------------------------------------
+//
+// Test ONLY functions
+//
+//-------------------------------------------------------------------------
+
+    else if (Command == "TEST_MOTOR")
+    {
+      MotionMotorTest(MOTION_MOTOR_RIGHT); //TEMPORAIRE
+      MotionMotorTest(MOTION_MOTOR_LEFT);  //TEMPORAIRE
+    }
+
+    else if (Command == "TEST_CUTMOTOR")
+    {
+      CutMotorTest();
+    }
+
+    else if (Command == "TEST_STOP")
+    {
+      MowerStop();
+    }
+
+    else if (Command == "TEST_FORWARD")
+    {
+      MowerForward(int(Val1));
+      delay(int(Val2 * 1000));
+      MowerStop();
+    }
+
+    else if (Command == "TEST_REVERSE")
+    {
+      MowerReverse(int(Val1), int(Val2 * 1000));
+    }
+
+    else if (Command == "TEST_TURN")
+    {
+      MowerTurn(int(Val1), bool(Val2));
+    }
+
     else if (Command == "TEST_ARC_FORWARD")
     {
       MowerArc(MOTION_MOTOR_FORWARD, int(Val1), int(Val2));
@@ -272,21 +296,16 @@ void MQTTCallback(char *topic, byte *message, unsigned int length)
     }
 #endif
 
-    else if (Command == "CALIBRATE")
-    {
-      PerimeterRawValuesCalibration(PERIMETER_RAW_SAMPLES);
-      DebugPrintln("Calibration offset changed to " + String(g_PerimeterOffset), DBG_INFO, true);
-    }
-
-    else if (Command == "PARAMETER")
-    {
-      ParameterChangeValue(Val1Str, Val2); // Value changed and saved in EEPROM
-    }
-
     else if (Command == "TUNE_OFFSET")
     {
       g_PerimeterOffset = g_PerimeterOffset + int(Val1); // only for testing purposes
     }
+
+//-------------------------------------------------------------------------
+//
+// End of Test ONLY functions
+//
+//-------------------------------------------------------------------------
 
     else
     {
