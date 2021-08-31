@@ -15,36 +15,39 @@ module.exports = {
     filename: 'bundle.js',
     publicPath: '/'
   },
+  performance: {
+    hints: false 
+  },
   plugins: [
     new CopyPlugin({
       patterns: [
         {
           from: "style/index.css",
           to: "styles/index.css",
-          force: true,
+          force: true
         },
         // fontawesome
         {
-          from: "node_modules/@fortawesome/fontawesome-free/css/all.css",
+          from: "node_modules/@fortawesome/fontawesome-free/css/all.min.css",
           to: "styles/fa/css/all.css",
-          force: true,
+          force: true
         },
         {
           from: "node_modules/@fortawesome/fontawesome-free/webfonts/",
           to: "styles/fa/webfonts/",
-          force: true,
+          force: true
         },
         // leaflet
         {
           from: "node_modules/leaflet/dist/leaflet.css",
           to: "styles/leaflet.css",
-          force: true,
+          force: true
         },
         // bootstrap
         {
           from: "node_modules/bootstrap/dist/css/bootstrap.min.css",
           to: "styles/bootstrap.min.css",
-          force: true,
+          force: true
         },
       ],
     }),
