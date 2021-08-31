@@ -148,8 +148,8 @@ extern unsigned int g_inQueue;            // Accumulated I2S notification queue 
 #define PERIMETER_USE_DIFFERENTIAL_SIGNAL true
 #define PERIMETER_SWAP_COIL_POLARITY false
 // #define PERIMETER_IN_OUT_DETECTION_THRESHOLD 1000
-#define PERIMETER_IN_OUT_DETECTION_THRESHOLD 400
-#define PERIMETER_APPROACHING_THRESHOLD 300
+#define PERIMETER_IN_OUT_DETECTION_THRESHOLD 600
+#define PERIMETER_APPROACHING_THRESHOLD 500
 // #define PERIMETER_APPROACHING_THRESHOLD PERIMETER_IN_OUT_DETECTION_THRESHOLD/ 2
 
 extern hw_timer_t *g_PerimeterTimerhandle; // Perimeter processing task timer based trigger ISR handle
@@ -319,31 +319,31 @@ extern float g_Temperature[TEMPERATURE_COUNT];
 /************************* INA219 I2C Battery Charge current sensor variables *********************************/
 #include <Adafruit_INA219.h>
 
-#define BATTERY_CHARGE_READ_INTERVAL 5000   // in ms
-#define BATTERY_CHECK_INTERVAL 15000 // in ms
-#define BATTERY_CHARGE_CURRENT_MIN 1    // in mA, used to filter out very low sensor readings
-#define BATTERY_CHARGE_CURRENT_TO_STOP_CHARGE 300  // in mA, used to stop charging when charging current is low
-#define BATTERY_CHARGE_CURRENT_CHARGING_THRESHOLD 50 // in mA, used to determine if battery is charging
+#define BATTERY_CHARGE_READ_INTERVAL 5000               // in ms
+#define BATTERY_CHECK_INTERVAL 15000                    // in ms
+#define BATTERY_CHARGE_CURRENT_MIN 1                    // in mA, used to filter out very low sensor readings
+#define BATTERY_CHARGE_CURRENT_TO_STOP_CHARGE 350       // in mA, used to stop charging when charging current is low
+#define BATTERY_CHARGE_CURRENT_CHARGING_THRESHOLD 30    // in mA, used to determine if battery is charging
 
 extern Adafruit_INA219 BatteryChargeSensor;
 
 extern float g_BatteryChargeCurrent;
-extern float g_BatterySOC;  // Indicates the battery state of charge in %
-extern bool g_BatteryRelayIsClosed;  // Indicates whether the battery relay is closed (true) or not (false)
-extern bool g_BatteryIsCharging;  // Indicates whether the battery is charging (true) or not (false)
+extern float g_BatterySOC;              // Indicates the battery state of charge in %
+extern bool g_BatteryRelayIsClosed;     // Indicates whether the battery relay is closed (true) or not (false)
+extern bool g_BatteryIsCharging;        // Indicates whether the battery is charging (true) or not (false)
 
 /************************* Voltage variables *********************************/
 
 #define VOLTAGE_RANGE_MAX 17000 // in mV
 
 // #define VOLTAGE_DETECTION_THRESHOLD 9
-#define BATTERY_0_PERCENT_VOLTAGE 11000                // in mV
-#define BATTERY_VOLTAGE_LOW_THRESHOLD 11250            // in mV
-#define BATTERY_VOLTAGE_RETURN_TO_BASE_THRESHOLD 11300 // in mV
-#define BATTERY_VOLTAGE_MEDIUM_THRESHOLD 11500         // in mV
-#define BATTERY_VOLTAGE_NORMAL_THRESHOLD 12100         // in mV
-#define BATTERY_VOLTAGE_TO_START_CHARGE 12300          // in mv
-#define BATTERY_VOLTAGE_FULL_THRESHOLD 12500           // in mV
+#define BATTERY_0_PERCENT_VOLTAGE 10900                // in mV
+#define BATTERY_VOLTAGE_LOW_THRESHOLD 11150            // in mV
+#define BATTERY_VOLTAGE_RETURN_TO_BASE_THRESHOLD 11100 // in mV
+#define BATTERY_VOLTAGE_MEDIUM_THRESHOLD 11400         // in mV
+#define BATTERY_VOLTAGE_NORMAL_THRESHOLD 12000         // in mV
+#define BATTERY_VOLTAGE_TO_START_CHARGE 12200          // in mv
+#define BATTERY_VOLTAGE_FULL_THRESHOLD 12400           // in mV
 #define BATTERY_VOLTAGE_TO_STOP_CHARGE BATTERY_VOLTAGE_FULL_THRESHOLD  // in mv
 
 #define BATTERY_VOLTAGE_OK 0               // if above BATTERY_VOLTAGE_NORMAL_THRESHOLD
@@ -491,7 +491,7 @@ extern float g_WheelPerimeterTrackingCorrection[MOTION_MOTOR_COUNT]; // from per
 #define SONAR_MIN_DISTANCE_FOR_SLOWING 25      // in cm
 #define SONAR_MIN_DISTANCE_FOR_TURN 40         // in cm
 #define SONAR_MIN_DISTANCE_FOR_STOP 15         // in cm
-#define SONAR_MIN_DISTANCE_FOR_PRECONDITION 20 // in cm
+#define SONAR_MIN_DISTANCE_FOR_PRECONDITION 10 // in cm
 
 #define PERIMETER_MIN_MAGNITUDE_FOR_OUT_DETECTION 200 // to prevent spurious out of perimeter detections
 
@@ -507,9 +507,9 @@ extern float g_WheelPerimeterTrackingCorrection[MOTION_MOTOR_COUNT]; // from per
 #define MOWER_MOWING_MODE_SPIRAL_CLOCKWISE 1            // Mowing is done in a right spiral (clockwise)
 #define MOWER_MOWING_MODE_SPIRAL_COUNTER_CLOCKWISE 2    // Mowing is done in a left spiral (counter clockwise)
 
-#define MOWER_MOWING_SPIRAL_MIN_SPEED (MOTION_MOTOR_MIN_SPEED - 1)  // Minimum speed for inner-circle wheel for spiral mowing mode
+#define MOWER_MOWING_SPIRAL_MIN_SPEED (MOTION_MOTOR_MIN_SPEED + 5)  // Minimum speed for inner-circle wheel for spiral mowing mode
 #define MOWER_MOWING_SPIRAL_MAX_SPEED MOWER_MOWING_TRAVEL_SPEED     // Maximum speed for inner-circle wheel for spiral mowing mode
-#define MOWER_MOWING_SPIRAL_SPEED_INCREMENT 1                       // Speed increment on each step for spiral mowing mode
+#define MOWER_MOWING_SPIRAL_SPEED_INCREMENT 2                       // Speed increment on each step for spiral mowing mode
 #define MOWER_MOWING_SPIRAL_CIRCLES_PER_STEP 2                      // Number of circles per step for spiral mowing mode
 #define MOWER_MOWING_SPIRAL_MAX_STEP (MOWER_MOWING_SPIRAL_MAX_SPEED - MOWER_MOWING_SPIRAL_MIN_SPEED) / MOWER_MOWING_SPIRAL_SPEED_INCREMENT  // Maximum number of steps
 #define MOWER_MOWING_SPIRAL_START_CIRCLE_DURATION 10 * 1000         // in ms, for 1 circle
@@ -641,6 +641,7 @@ extern bool g_CutMotorAlarm;
 #define ERROR_FOLLOW_WIRE_NO_START_TILT_ACTIVE 212
 #define ERROR_FOLLOW_WIRE_NO_START_NO_PERIMETER_SIGNAL 213
 #define ERROR_FOLLOW_WIRE_CONSECUTIVE_OBSTACLES 214
+#define ERROR_FOLLOW_WIRE_OUTSIDE_TOO_LONG 215
 
 #define ERROR_UNDEFINED 999
 
@@ -654,12 +655,12 @@ extern int g_CurrentErrorCode; // Current Error code
 
 #define DISPLAY_REFRESH_INTERVAL 2000                   // in ms
 #define DISPLAY_IDLE_REFRESH_INTERVAL 10 * 60 * 1000    // in ms
-#define DISPLAY_MOWING_REFRESH_INTERVAL 500            // in ms
+#define DISPLAY_MOWING_REFRESH_INTERVAL 500             // in ms
 #define DISPLAY_ERROR_REFRESH_INTERVAL 5000             // in ms
 #define DISPLAY_TEST_REFRESH_INTERVAL 5000              // in ms
-#define DISPLAY_TO_BASE_REFRESH_INTERVAL 500           // in ms
-#define DISPLAY_DOCKED_REFRESH_INTERVAL 1000           // in ms
-#define DISPLAY_LEAVING_BASE_REFRESH_INTERVAL 1000           // in ms
+#define DISPLAY_TO_BASE_REFRESH_INTERVAL 500            // in ms
+#define DISPLAY_DOCKED_REFRESH_INTERVAL 1000            // in ms
+#define DISPLAY_LEAVING_BASE_REFRESH_INTERVAL 1000      // in ms
 
 #define STATES_COUNT 7      // number of states in States enum (messy but did not find how to easly derive automatically number of elements from enum)
 

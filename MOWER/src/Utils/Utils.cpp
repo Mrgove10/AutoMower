@@ -212,6 +212,8 @@ String ErrorString(const int errorCode)
       return String(F("Wire tracking cannot start: no perimeter signal"));
     case ERROR_FOLLOW_WIRE_CONSECUTIVE_OBSTACLES:
       return String(F("Wire tracking Stopped: too many successive obstacles"));
+    case ERROR_FOLLOW_WIRE_OUTSIDE_TOO_LONG:
+      return String(F("Wire tracking Stopped: outside perimeter for too long"));
 
       // Undefined errors
     case ERROR_UNDEFINED:

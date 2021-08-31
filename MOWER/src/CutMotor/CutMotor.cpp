@@ -72,7 +72,7 @@ void CutMotorStop(const bool Immedate)
 
   CutMotorSetSpeed(0);
 
-  if (Immedate)
+  if (Immedate && g_CutMotorOn)
   {
     // A fast stop is acheived by injecting a brief opposite direction rotation order
 

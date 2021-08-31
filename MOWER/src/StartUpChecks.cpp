@@ -18,10 +18,10 @@
 
 /**
  * Runs all Mower checks on Startup
- * 
+ * @param true to indicate that all tests are to be performed of false to perform minimum tests (false by default)
  * @return true if all checks pass
  */
-bool StartupChecks(void)
+bool StartupChecks(const bool allTests)
 {
   bool allChecks = true;
 
@@ -110,11 +110,12 @@ bool StartupChecks(void)
     allChecks = false;
   };
 
-  DebugPrintln(" ");
-
-  FanTest(FAN_1_RED);
-  FanTest(FAN_2_BLUE);
-
+  if (allTests)
+  {
+    DebugPrintln(" ");
+    FanTest(FAN_1_RED);
+    FanTest(FAN_2_BLUE);
+  }
   DebugPrintln(" ");
 
   if (!CompassSensorCheck())

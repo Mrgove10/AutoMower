@@ -209,19 +209,19 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
     switch (g_mowingMode)
     {
       case MOWER_MOWING_MODE_RANDOM:
-        rightSpeed = MOWER_MOVES_SPEED_NORMAL;
-        leftSpeed = MOWER_MOVES_SPEED_NORMAL;
+        rightSpeed = MOWER_MOWING_TRAVEL_SPEED;
+        leftSpeed = MOWER_MOWING_TRAVEL_SPEED;
         isSpiral = false;
         break;
       case MOWER_MOWING_MODE_SPIRAL_CLOCKWISE:
         rightSpeed = MOTION_MOTOR_MIN_SPEED;
-        leftSpeed = MOWER_MOVES_SPEED_NORMAL;
+        leftSpeed = MOWER_MOWING_TRAVEL_SPEED;
         isSpiral = true;
         spiralStep = 0;
         lastSpiralSpeedAdjustment = millis();
         break;
       case MOWER_MOWING_MODE_SPIRAL_COUNTER_CLOCKWISE:
-        rightSpeed = MOWER_MOVES_SPEED_NORMAL;
+        rightSpeed = MOWER_MOWING_TRAVEL_SPEED;
         leftSpeed = MOTION_MOTOR_MIN_SPEED;
         isSpiral = true;
         spiralStep = 0;
@@ -344,6 +344,7 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
     }
 
     DebugPrintln("Changing cut motor rotation direction to " + String(bladeDirection), DBG_INFO, true);
+    DisplayPrint(0,2, F("Cut direct. change"));
 
     // Stop blades and mower
     CutMotorStop(true);
@@ -369,7 +370,7 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
   //--------------------------------
   // Environment sensing for approaching objects
   //--------------------------------
-  if (!MowerSlowDownApproachingObstables(20,
+  if (!MowerSlowDownApproachingObstables(15,
   // if (!MowerSlowDownApproachingObstables(MOWER_MOWING_TRAVEL_SPEED - MOWER_MOVES_SPEED_SLOW,
                                          SONAR_MIN_DISTANCE_FOR_SLOWING,
                                          SONAR_MIN_DISTANCE_FOR_SLOWING,
@@ -393,8 +394,7 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
   // TO DO : if outside, mower gets "locked-out"!!
 
   if (OBSTACLE_DETECTED_NONE != CheckObstacleAndAct(true,
-                                                    // SONAR_MIN_DISTANCE_FOR_STOP,
-                                                    0,
+                                                    SONAR_MIN_DISTANCE_FOR_STOP,
                                                     SONAR_MIN_DISTANCE_FOR_STOP,
                                                     SONAR_MIN_DISTANCE_FOR_STOP,
                                                     true,
@@ -416,6 +416,7 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
         rightSpeed = MOWER_MOWING_TRAVEL_SPEED;
         leftSpeed = MOWER_MOWING_TRAVEL_SPEED;
         isSpiral = false;
+        g_mowingMode = MOWER_MOWING_MODE_RANDOM;
       }
 
       // Start mowing again if inside perimeter
@@ -453,6 +454,7 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
     if (spiralStep == MOWER_MOWING_SPIRAL_MAX_STEP) 
     { 
       isSpiral = false;
+      g_mowingMode = MOWER_MOWING_MODE_RANDOM;
       rightSpeed = MOWER_MOWING_SPIRAL_MAX_SPEED;
       leftSpeed = MOWER_MOWING_SPIRAL_MAX_SPEED;
     }
@@ -976,6 +978,7 @@ bool MowerFollowWire(bool *reset, const int heading, const bool clockwise)
 {
   static unsigned long lastPIDUpdate = 0;
   int speedAdjustment = 0;
+  static int outsideCount = 0;
 
   if (*reset)
   {
@@ -1011,7 +1014,7 @@ bool MowerFollowWire(bool *reset, const int heading, const bool clockwise)
     // Turn the PID on
     g_PerimeterTrackPID.SetMode(AUTOMATIC);
     g_PerimeterTrackPID.SetTunings(g_ParamPerimeterTrackPIDKp, g_ParamPerimeterTrackPIDKi, g_ParamPerimeterTrackPIDKd, P_ON_E);
-    g_PerimeterTrackPID.SetOutputLimits(-70, 70); // in %
+    g_PerimeterTrackPID.SetOutputLimits(-60, 60); // in %
     g_PerimeterTrackPID.SetControllerDirection(DIRECT);
     g_PerimeterTrackPID.SetSampleTime(PERIMETER_TRACKING_PID_INTERVAL);
 
@@ -1024,6 +1027,8 @@ bool MowerFollowWire(bool *reset, const int heading, const bool clockwise)
 
     // Move forward
     MowerForward(BACK_TO_BASE_SPEED);
+
+    outsideCount = 0;
   }
 
   //--------------------------------
@@ -1040,7 +1045,7 @@ bool MowerFollowWire(bool *reset, const int heading, const bool clockwise)
   bool SlowedDown = false;
   if (clockwise)
   {
-    SlowedDown = MowerSlowDownApproachingObstables(10,
+    SlowedDown = MowerSlowDownApproachingObstables(5,
                                                    SONAR_MIN_DISTANCE_FOR_SLOWING,
                                                    0, // no left detection
                                                    SONAR_MIN_DISTANCE_FOR_SLOWING,
@@ -1048,7 +1053,7 @@ bool MowerFollowWire(bool *reset, const int heading, const bool clockwise)
   }
   else
   {
-    SlowedDown = MowerSlowDownApproachingObstables(10,
+    SlowedDown = MowerSlowDownApproachingObstables(5,
                                                    SONAR_MIN_DISTANCE_FOR_SLOWING,
                                                    SONAR_MIN_DISTANCE_FOR_SLOWING,
                                                    0,  // no right detection
@@ -1062,7 +1067,7 @@ bool MowerFollowWire(bool *reset, const int heading, const bool clockwise)
   }
   else
   {
-    speedAdjustment = 10;
+    speedAdjustment = 5;
   }
 
   //--------------------------------
@@ -1142,6 +1147,27 @@ bool MowerFollowWire(bool *reset, const int heading, const bool clockwise)
     // stop mower
     // either trigger a wire search or declare an error
     // return false;
+  }
+
+  //--------------------------------
+  // Is mower outside for too long ?
+  //--------------------------------
+  if (!g_isInsidePerimeter)
+  {
+    outsideCount = outsideCount + 1;
+  }
+  else
+  {
+    outsideCount = max(0, outsideCount - 2);
+  }
+  if (outsideCount > MOWER_MOWING_MAX_CONSECUTVE_OUTSIDE)
+  {
+    MowerStop();
+    CutMotorStop();
+    DebugPrintln("Mower outside Perimeter for too long (" + String(outsideCount) + ")", DBG_ERROR, true);
+    g_CurrentState = MowerState::error;
+    g_CurrentErrorCode = ERROR_FOLLOW_WIRE_OUTSIDE_TOO_LONG;
+    return false;
   }
 
   //--------------------------------
@@ -1242,9 +1268,6 @@ bool MowerFollowWire(bool *reset, const int heading, const bool clockwise)
 #endif
   }
   return true;
-
-  // TO DO
-  // when to stop ????? When charging has started ??
 }
 
 /**
@@ -1536,7 +1559,7 @@ int CheckObstacleAndAct(const bool Bumper, const int Front, const int Left, cons
     if (ActionMode)
     {
       MowerStop();
-      CutMotorStop(false);
+      // CutMotorStop(false);
 
       if (g_SonarDistance[SONAR_RIGHT] > SONAR_MIN_DISTANCE_FOR_TURN) // check if it's clear on right side
       {
@@ -1570,7 +1593,7 @@ int CheckObstacleAndAct(const bool Bumper, const int Front, const int Left, cons
     if (ActionMode)
     {
       MowerStop();
-      CutMotorStop(false);
+      // CutMotorStop(false);
 
       if (g_SonarDistance[SONAR_LEFT] > SONAR_MIN_DISTANCE_FOR_TURN) // check if it's clear on left side
       {

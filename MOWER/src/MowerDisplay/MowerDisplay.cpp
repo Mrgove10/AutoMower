@@ -5,7 +5,6 @@
 #include "MowerDisplay/MowerDisplay.h"
 #include "Utils/Utils.h"
 #include "Display/Display.h"
-#include "StartupChecks.h"
 #include "MotionMotor/MotionMotor.h"
 #include "CutMotor/CutMotor.h"
 #include "Keypad/Keypad.h"
@@ -186,7 +185,7 @@ void idleDisplay(bool refresh)
   }
   if (!inSubmenu && g_KeyPressed[KEYPAD_KEY_3])
   {
-    StartupChecks();
+    StartupChecks(true);
     internalRefresh = true;
   }
   if (!inSubmenu && g_KeyPressed[KEYPAD_KEY_4])
@@ -452,6 +451,7 @@ void dockedDisplay(bool refresh)
   static int submenuNum = 0;
   static unsigned long lastRefresh = 0;
   static bool internalRefresh = false;
+  static unsigned long refreshInterval = DISPLAY_DOCKED_REFRESH_INTERVAL;
 
   if ((refresh || internalRefresh) && !inSubmenu)
   { 
@@ -461,7 +461,16 @@ void dockedDisplay(bool refresh)
     menuDisplay(int(g_CurrentState));
   }
 
-  if (millis() - lastRefresh > DISPLAY_DOCKED_REFRESH_INTERVAL || refresh || internalRefresh)
+  if (g_BatteryChargeCurrent == 0) 
+  {
+    refreshInterval = DISPLAY_DOCKED_REFRESH_INTERVAL * 300;
+  }
+  else 
+  {
+    refreshInterval = DISPLAY_DOCKED_REFRESH_INTERVAL;
+  }
+
+  if (millis() - lastRefresh > refreshInterval || refresh || internalRefresh)
   {
     if (inSubmenu)
     {
@@ -682,7 +691,7 @@ void testDisplay(bool refresh)
   KeypadRead();
   if (!inSubmenu && g_KeyPressed[KEYPAD_KEY_1])
   {
-    StartupChecks();
+    StartupChecks(true);
   }
   if (!inSubmenu && g_KeyPressed[KEYPAD_KEY_2])
   {
