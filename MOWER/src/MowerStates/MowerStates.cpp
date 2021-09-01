@@ -1014,7 +1014,7 @@ bool MowerFollowWire(bool *reset, const int heading, const bool clockwise)
     // Turn the PID on
     g_PerimeterTrackPID.SetMode(AUTOMATIC);
     g_PerimeterTrackPID.SetTunings(g_ParamPerimeterTrackPIDKp, g_ParamPerimeterTrackPIDKi, g_ParamPerimeterTrackPIDKd, P_ON_E);
-    g_PerimeterTrackPID.SetOutputLimits(-60, 60); // in %
+    g_PerimeterTrackPID.SetOutputLimits(-50, 50); // in %
     g_PerimeterTrackPID.SetControllerDirection(DIRECT);
     g_PerimeterTrackPID.SetSampleTime(PERIMETER_TRACKING_PID_INTERVAL);
 
@@ -1046,16 +1046,16 @@ bool MowerFollowWire(bool *reset, const int heading, const bool clockwise)
   if (clockwise)
   {
     SlowedDown = MowerSlowDownApproachingObstables(5,
-                                                   SONAR_MIN_DISTANCE_FOR_SLOWING,
+                                                   SONAR_MIN_DISTANCE_FOR_SLOWING/2,
                                                    0, // no left detection
-                                                   SONAR_MIN_DISTANCE_FOR_SLOWING,
+                                                   SONAR_MIN_DISTANCE_FOR_SLOWING/2,
                                                    200); // no perimeter detection
   }
   else
   {
     SlowedDown = MowerSlowDownApproachingObstables(5,
-                                                   SONAR_MIN_DISTANCE_FOR_SLOWING,
-                                                   SONAR_MIN_DISTANCE_FOR_SLOWING,
+                                                   SONAR_MIN_DISTANCE_FOR_SLOWING/2,
+                                                   SONAR_MIN_DISTANCE_FOR_SLOWING/2,
                                                    0,  // no right detection
                                                    200); // no perimeter detection
   }
@@ -1160,7 +1160,7 @@ bool MowerFollowWire(bool *reset, const int heading, const bool clockwise)
   {
     outsideCount = max(0, outsideCount - 2);
   }
-  if (outsideCount > MOWER_MOWING_MAX_CONSECUTVE_OUTSIDE)
+  if (outsideCount > PERIMETER_TRACKING_MAX_CONSECUTVE_OUTSIDE)
   {
     MowerStop();
     CutMotorStop();

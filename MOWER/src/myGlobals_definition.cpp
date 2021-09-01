@@ -310,7 +310,7 @@ float g_WheelPerimeterTrackingCorrection[MOTION_MOTOR_COUNT] = {0, 0}; // from p
 //  6500, 6500, 6500, 6500, 6500};
 
 unsigned long g_spiralStepTimeIncrement[MOWER_MOWING_SPIRAL_MAX_STEP] = {
-  150,  150,  150,  150,  150,  150,  150,  150,  150,  200,
+  100,  100,  100,  100,  100,  100,  150,  150,  150,  200,
   200,  200,  200,  200,  400,  400,  500,  500,  500,  500,
   500, 2500, 2500, 2500, 4000, 4100, 4200, 4300, 4400, 4500};
 

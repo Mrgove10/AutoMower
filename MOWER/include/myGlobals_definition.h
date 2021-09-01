@@ -342,7 +342,7 @@ extern bool g_BatteryIsCharging;        // Indicates whether the battery is char
 #define BATTERY_VOLTAGE_RETURN_TO_BASE_THRESHOLD 11100 // in mV
 #define BATTERY_VOLTAGE_MEDIUM_THRESHOLD 11400         // in mV
 #define BATTERY_VOLTAGE_NORMAL_THRESHOLD 12000         // in mV
-#define BATTERY_VOLTAGE_TO_START_CHARGE 12200          // in mv
+#define BATTERY_VOLTAGE_TO_START_CHARGE 12350          // in mv
 #define BATTERY_VOLTAGE_FULL_THRESHOLD 12400           // in mV
 #define BATTERY_VOLTAGE_TO_STOP_CHARGE BATTERY_VOLTAGE_FULL_THRESHOLD  // in mv
 
@@ -539,6 +539,7 @@ extern unsigned long g_totalMowingTime; // Total time spent mowing, in minutes (
 // #define PERIMETER_SEARCH_TURN_MAX_TIME 10000 // in ms
 #define PERIMETER_SEARCH_TURN_MAX_ITERATIONS 180 / PERIMETER_SEARCH_ANGLE_INCREMENT // in loop counts. It should not be necessary to turn more than 150 deg depending on wire approach angle
 #define PERIMETER_SEARCH_MAX_CONSECUTVE_OBSTACLES 3
+#define PERIMETER_TRACKING_MAX_CONSECUTVE_OUTSIDE 200
 
 #define MOWER_AT_BASE_CURRENT 25    // in mA
 
