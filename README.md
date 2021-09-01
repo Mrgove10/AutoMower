@@ -46,8 +46,8 @@ Communication is done through MQTT, and the following topics are used:
  ```json
 {
   "Command":"<Command>",
-  "Val1":"<Command_Dependant_String_1",
-  "Val2":"<Command_Dependant_String_2"
+  "Val1":"<Command_Dependant_String_1>",
+  "Val2":"<Command_Dependant_String_2>"
 }
 ```
 
