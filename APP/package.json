@@ -6,10 +6,13 @@
   "license": "MIT",
   "scripts": {
     "build": "webpack",
-    "serve": "concurrently \"npx http-server\" \"npx webpack --watch\""
+    "serve": "concurrently \"npx http-server\" \"npx webpack --watch\"",
+    "lint": "eslint */*",
+    "lint:fix": "eslint */* --fix"
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.15.4",
+    "axios": "^0.21.1",
     "bootstrap": "^5.1.0",
     "leaflet": "^1.7.1",
     "mqtt": "^4.2.8"
@@ -17,8 +20,12 @@
   "devDependencies": {
     "concurrently": "^6.2.1",
     "copy-webpack-plugin": "^9.0.1",
-    "webpack": "^5.51.1",
-    "webpack-cli": "^4.8.0",
-    "webpack-dev-server": "3.11.2"
+    "eslint": "^7.32.0",
+    "eslint-config-standard": "^16.0.3",
+    "eslint-plugin-import": "^2.24.2",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^5.1.0",
+    "webpack": "^5.52.0",
+    "webpack-cli": "^4.8.0"
   }
 }

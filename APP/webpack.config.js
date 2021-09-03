@@ -1,5 +1,5 @@
-const path = require('path');
-const CopyPlugin = require("copy-webpack-plugin");
+const path = require('path')
+const CopyPlugin = require('copy-webpack-plugin')
 
 module.exports = {
   mode: 'development',
@@ -8,7 +8,8 @@ module.exports = {
     './src/index.js',
     './src/routing.js',
     './src/map.js',
-    './src/comm.js'
+    './src/comm.js',
+    './src/schedule.js'
   ],
   output: {
     path: path.resolve(__dirname, 'dist/'),
@@ -16,40 +17,40 @@ module.exports = {
     publicPath: '/'
   },
   performance: {
-    hints: false 
+    hints: false
   },
   plugins: [
     new CopyPlugin({
       patterns: [
         {
-          from: "style/index.css",
-          to: "styles/index.css",
+          from: 'style/index.css',
+          to: 'styles/index.css',
           force: true
         },
         // fontawesome
         {
-          from: "node_modules/@fortawesome/fontawesome-free/css/all.min.css",
-          to: "styles/fa/css/all.css",
+          from: 'node_modules/@fortawesome/fontawesome-free/css/all.min.css',
+          to: 'styles/fa/css/all.css',
           force: true
         },
         {
-          from: "node_modules/@fortawesome/fontawesome-free/webfonts/",
-          to: "styles/fa/webfonts/",
+          from: 'node_modules/@fortawesome/fontawesome-free/webfonts/',
+          to: 'styles/fa/webfonts/',
           force: true
         },
         // leaflet
         {
-          from: "node_modules/leaflet/dist/leaflet.css",
-          to: "styles/leaflet.css",
+          from: 'node_modules/leaflet/dist/leaflet.css',
+          to: 'styles/leaflet.css',
           force: true
         },
         // bootstrap
         {
-          from: "node_modules/bootstrap/dist/css/bootstrap.min.css",
-          to: "styles/bootstrap.min.css",
+          from: 'node_modules/bootstrap/dist/css/bootstrap.min.css',
+          to: 'styles/bootstrap.min.css',
           force: true
-        },
-      ],
-    }),
-  ],
-};
+        }
+      ]
+    })
+  ]
+}
