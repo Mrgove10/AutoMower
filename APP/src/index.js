@@ -6,6 +6,7 @@ import { createTable } from './schedule'
 getConfig()
 getSchedule()
 createTable()
+getSchedule()
 
 window.start = function () {
     console.log('Sending Start')

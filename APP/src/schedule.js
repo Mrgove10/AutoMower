@@ -2,9 +2,10 @@ import { days, getSchedule } from './config'
 
 const d = new Date()
 
-export async function createTable () {
-    const schedule = await getSchedule()
-
+/**
+ * Create the table structure for the schedule page
+ */
+export function createTable () {
     // table header
     days.forEach((day) => {
         document.getElementById('tableheader').innerHTML = document.getElementById('tableheader').innerHTML + `<th width="14.28%">${day}</th>`
@@ -19,6 +20,13 @@ export async function createTable () {
         })
         document.getElementById('tablebody').innerHTML = current + strDay + '</tr>'
     }
+}
+
+/**
+ * Add the schedule colors in the table
+ */
+export async function addSchedule () {
+    const schedule = await getSchedule()
 
     // schedule coloring
     days.forEach((day) => {

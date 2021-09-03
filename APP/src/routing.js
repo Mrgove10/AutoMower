@@ -1,3 +1,8 @@
+/**
+ * Change the page of the application
+ * Since this is a single page app, the trick is to hide and unhide css part of the page
+ * @param [home,schedule,advanced] page
+ */
 window.changepage = function (page) {
     console.log('changing page : ' + page)
     switch (page) {
