@@ -217,6 +217,7 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
         rightSpeed = MOTION_MOTOR_MIN_SPEED;
         leftSpeed = MOWER_MOWING_TRAVEL_SPEED;
         isSpiral = true;
+        stepDuration = MOWER_MOWING_SPIRAL_START_CIRCLE_DURATION * MOWER_MOWING_SPIRAL_CIRCLES_PER_STEP;
         spiralStep = 0;
         lastSpiralSpeedAdjustment = millis();
         break;
@@ -224,6 +225,7 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
         rightSpeed = MOWER_MOWING_TRAVEL_SPEED;
         leftSpeed = MOTION_MOTOR_MIN_SPEED;
         isSpiral = true;
+        stepDuration = MOWER_MOWING_SPIRAL_START_CIRCLE_DURATION * MOWER_MOWING_SPIRAL_CIRCLES_PER_STEP;
         spiralStep = 0;
         lastSpiralSpeedAdjustment = millis();
         break;
@@ -365,6 +367,7 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
 
     // Memorise time of direction change
     lastCutDirectionChange = millis();
+    DisplayPrint(0,2, F("                  "));
   }
 
   //--------------------------------
@@ -1158,7 +1161,8 @@ bool MowerFollowWire(bool *reset, const int heading, const bool clockwise)
   }
   else
   {
-    outsideCount = max(0, outsideCount - 2);
+    // outsideCount = max(0, outsideCount - 2);
+    outsideCount = 0;
   }
   if (outsideCount > PERIMETER_TRACKING_MAX_CONSECUTVE_OUTSIDE)
   {
