@@ -336,11 +336,11 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
   if (millis() - lastCutDirectionChange > MOWER_MOWING_CUT_DIRECTION_CHANGE_INTERVAL)
   {
     // determine new cut motor rotation direction
-    if (bladeDirection == CUT_MOTOR_FORWARD)
+    if (g_CutMotorDirection == CUT_MOTOR_FORWARD)
     {
       bladeDirection = CUT_MOTOR_REVERSE;
     }
-    if (bladeDirection == CUT_MOTOR_REVERSE)
+    if (g_CutMotorDirection == CUT_MOTOR_REVERSE)
     {
       bladeDirection = CUT_MOTOR_FORWARD;
     }

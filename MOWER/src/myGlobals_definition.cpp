@@ -186,7 +186,7 @@ float g_CompassYField = 0;
 #include <TinyGPS++.h>
 
 TinyGPSPlus GPS; // The TinyGPS++ object
-//HardwareSerial Serial2;
+// HardwareSerial Serial2(1);
 
 float g_GPSHeading; // in Degrees
 int g_GPSSatellitesFix = 0;
@@ -224,7 +224,6 @@ float g_BatteryChargeCurrent = 0;
 #include <Adafruit_INA219.h>
 
 Adafruit_INA219 BatteryChargeSensor = Adafruit_INA219(BATTERY_INA219_I2C_ADDRESS);
-
 
 float g_BatterySOC = 0;  // Indicates the battery state of charge in %
 bool g_BatteryRelayIsClosed;  // Indicates whether the battery relay is closed (true) or not (false)

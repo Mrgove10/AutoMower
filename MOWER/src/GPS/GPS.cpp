@@ -16,6 +16,8 @@ void GPSSetup()
 
   GPS_UART.flush();
 
+  GPS_UART.setRxBufferSize(GPS_RX_BUFFER_SIZE);
+
   DebugPrintln("GPS setup Done", DBG_VERBOSE, true);
 }
 
@@ -36,21 +38,22 @@ void GPSRead(const bool Now)
       DebugPrintln("GPS Serial data: " + String(GPS_UART.available()) + " ", DBG_VERBOSE, true);
     }
 
-    String buf;
+    String buf = "";
     while (GPS_UART.available() > 0)
     {
       char c = GPS_UART.read();
       buf = buf + c;
       GPS.encode(c);
     }
-    /*
-    if (buf.length() > 0 ) 
+
+/*    if (buf.length() > 0 ) 
     {
       Serial.println("GPS Buffer:[" + buf + "]");
-//      DebugPrintln (String(buf), DBG_VERBOSE);
+      DebugPrintln ("[" + buf + "]", DBG_VERBOSE);
       GPSDetails();
     }
 */
+
     if (GPS.location.isValid())
     {
       g_GPSSatellitesFix = GPS.satellites.value();

@@ -286,9 +286,10 @@ extern float g_CompassYField;
 #include <TinyGPS++.h>
 
 #define GPS_BAUD 115200UL
-#define GPS_READ_INTERVAL 500
+#define GPS_READ_INTERVAL 1000  // in ms
 #define GPS_UART Serial2
 #define GPS_CHARS_TO_DETECT 20
+#define GPS_RX_BUFFER_SIZE 1024
 
 extern TinyGPSPlus GPS; // The TinyGPS++ object
 extern HardwareSerial Serial2;

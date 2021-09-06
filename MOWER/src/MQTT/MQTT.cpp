@@ -441,11 +441,11 @@ void MQTTSendTelemetry(const bool now)
     // GPS Data
     JSONDataPayload.add("GPSHead", String(g_GPSHeading, 1));
     JSONDataPayload.add("GPSSat", String(g_GPSSatellitesFix));
-    JSONDataPayload.add("g_GPSHdop", String(g_GPSHdop, 2));
+    JSONDataPayload.add("GPSHdop", String(g_GPSHdop, 2));
     JSONDataPayload.add("GPSSpd", String(g_GPSSpeed, 2));
     JSONDataPayload.add("GPSAlt", String(g_GPSAltitude, 2));
-    JSONDataPayload.add("GPSLat", String(g_GPSLatitude, 2));
-    JSONDataPayload.add("GPSLon", String(g_GPSLongitude, 2));
+    JSONDataPayload.add("GPSLat", String(g_GPSLatitude, 8));
+    JSONDataPayload.add("GPSLon", String(g_GPSLongitude, 8));
 
     // Mowing Statistics data
     JSONDataPayload.add("Obstcl", String(g_totalObstacleDectections));
