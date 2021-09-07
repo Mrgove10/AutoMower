@@ -1,4 +1,5 @@
-import { days, getSchedule } from './config'
+import { getSchedule } from './config'
+import { days } from './jsons/days'
 
 const d = new Date()
 
@@ -46,17 +47,21 @@ export async function addSchedule () {
                 })
             }
         } else {
-            console.log('no shedule for ' + day)
+            console.log('no schedule for ' + day)
         }
     })
+    outlineHour()
+}
 
+function outlineHour () {
     // outline the current day
     let dayNum = 0
     days.forEach((day) => {
         for (let i = 0; i < 24; i++) {
             const id = i + '_' + day
             if (d.getHours() === i && d.getDay() === dayNum) {
-                console.log(d.getHours(), d.getDay())
+                // console.log(d.getHours(), d.getDay())
+                console.log(id)
                 document.getElementById(id).style = 'outline:inset;'
             }
         }

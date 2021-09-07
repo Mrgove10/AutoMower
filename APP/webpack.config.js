@@ -9,7 +9,8 @@ module.exports = {
     './src/routing.js',
     './src/map.js',
     './src/comm.js',
-    './src/schedule.js'
+    './src/schedule.js',
+    './src/utils/utils.js'
   ],
   output: {
     path: path.resolve(__dirname, 'dist/'),

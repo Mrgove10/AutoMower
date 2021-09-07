@@ -1,21 +1,27 @@
-import { sendCommand } from './comm'
-import { getConfig, getSchedule, mowerStates } from './config'
-import { createTable } from './schedule'
+import { getConfig, getSchedule, APIUrl } from './config'
+import { mowerStates } from './jsons/states'
+import { createTable, addSchedule } from './schedule'
+const axios = require('axios').default
 
 // Entry point
-getConfig()
-getSchedule()
-createTable()
-getSchedule()
+async function main () {
+    getConfig()
+    getSchedule()
+    createTable()
+    await addSchedule()
+}
+
+main()
 
 window.start = function () {
     console.log('Sending Start')
-    sendCommand('STATE_CHANGE', 'MOWING')
+    // sendCommand('STATE_CHANGE', 'MOWING')
 }
 
-window.stop = function () {
+window.stop = async function () {
     console.log('Sending Stop')
-    sendCommand('STATE_CHANGE', 'IDLE')
+    await axios.get(APIUrl + '/STOP')
+    // sendCommand('STATE_CHANGE', 'IDLE')
 }
 
 window.setStateIcon = function (State) {

@@ -246,7 +246,7 @@
         "topic": "",
         "payloadType": "date",
         "x": 150,
-        "y": 340,
+        "y": 440,
         "wires": [
             [
                 "5511cddecfdaf440"
@@ -265,7 +265,7 @@
         "encoding": "none",
         "allProps": false,
         "x": 440,
-        "y": 340,
+        "y": 440,
         "wires": [
             [
                 "b48cb84da0c5835c"
@@ -281,7 +281,7 @@
         "action": "",
         "pretty": false,
         "x": 690,
-        "y": 340,
+        "y": 440,
         "wires": [
             [
                 "26d1bfb6a128d168"
@@ -301,7 +301,7 @@
         "statusVal": "",
         "statusType": "auto",
         "x": 860,
-        "y": 340,
+        "y": 440,
         "wires": []
     },
     {
@@ -335,5 +335,124 @@
                 "b507dfcc73843faa"
             ]
         ]
+    },
+    {
+        "id": "9cf3e330ece9a7c3",
+        "type": "link in",
+        "z": "0cefd40a70793065",
+        "name": "Send Data To API In",
+        "links": [
+            "599d90f9d1419bb2"
+        ],
+        "x": 215,
+        "y": 560,
+        "wires": [
+            [
+                "6e3dae7ff0e2b211"
+            ]
+        ]
+    },
+    {
+        "id": "6e3dae7ff0e2b211",
+        "type": "websocket out",
+        "z": "0cefd40a70793065",
+        "name": "Websockt for web APP",
+        "server": "b125b9f16442a822",
+        "client": "",
+        "x": 600,
+        "y": 560,
+        "wires": []
+    },
+    {
+        "id": "56627974eeaeb387",
+        "type": "inject",
+        "z": "0cefd40a70793065",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "2",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payloadType": "date",
+        "x": 190,
+        "y": 700,
+        "wires": [
+            [
+                "3ae2cee1e8efdf23"
+            ]
+        ]
+    },
+    {
+        "id": "3ae2cee1e8efdf23",
+        "type": "function",
+        "z": "0cefd40a70793065",
+        "name": "",
+        "func": "function getRandomArbitrary(min, max) {\n    return Math.random() * (max - min) + min;\n}\n\nmsg.payload = {\n    \"State\": Math.floor(getRandomArbitrary(1, 7)),\n    \"Error\": \"0\",\n    \"BatVolt\": getRandomArbitrary(9,13),\n    \"ChargeCur\": \"0.00\",\n    \"BatSOC\": getRandomArbitrary(0, 100),\n    \"BatCharging\": \"0\",\n    \"DrvMotTemp\": getRandomArbitrary(12, 100),\n    \"DrvMotTempEr\": \"0\",\n    \"RMotCur\": \"18.00\",\n    \"RMotSpd\": \"0\",\n    \"LMotCur\": \"18.02\",\n    \"LMotSpd\": \"0\",\n    \"DrvMotFan\": \"0\",\n    \"CMotTemp\": getRandomArbitrary(12, 100),\n    \"CMotTempEr\": \"4\",\n    \"CMotCur\": \"0.21\",\n    \"CMotSpd\": \"0.00\",\n    \"CMotAlm\": \"0\",\n    \"CMotFan\": \"0\",\n    \"FSnrDist\": \"5\",\n    \"RSnrDist\": \"51\",\n    \"LSnrDist\": \"37\",\n    \"CompHead\": \"0.00\",\n    \"GPSHead\": \"0.0\",\n    \"GPSSat\": \"0\",\n    \"g_GPSHdop\": \"-999.99\",\n    \"GPSSpd\": \"-999.99\",\n    \"GPSAlt\": \"-999.99\",\n    \"GPSLat\": \"-999.99\",\n    \"GPSLon\": \"-999.99\",\n    \"Obstcl\": \"540\",\n    \"MowTim\": \"851\",\n    \"Mag\": \"34\",\n    \"SMag\": \"21\",\n    \"InOut\": \"1\",\n    \"Heap\": \"158960\",\n    \"CPUTemp\": getRandomArbitrary(23, 100),\n    \"RSSI\": getRandomArbitrary(20, 100)\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 370,
+        "y": 700,
+        "wires": [
+            [
+                "6e3dae7ff0e2b211"
+            ]
+        ]
+    },
+    {
+        "id": "c3d2161f8500989b",
+        "type": "http in",
+        "z": "0cefd40a70793065",
+        "name": "",
+        "url": "/AM/STOP",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 120,
+        "y": 300,
+        "wires": [
+            [
+                "2a640d820bb04765"
+            ]
+        ]
+    },
+    {
+        "id": "2a640d820bb04765",
+        "type": "link out",
+        "z": "0cefd40a70793065",
+        "name": "Emergency Stop In",
+        "links": [
+            "f7ac5760ed21a3b4"
+        ],
+        "x": 275,
+        "y": 300,
+        "wires": []
+    },
+    {
+        "id": "0dc96467b4d56b4c",
+        "type": "comment",
+        "z": "0cefd40a70793065",
+        "name": "Simulating the mower",
+        "info": "",
+        "x": 200,
+        "y": 660,
+        "wires": []
+    },
+    {
+        "id": "b125b9f16442a822",
+        "type": "websocket-listener",
+        "path": "/AM/ws",
+        "wholemsg": "false"
     }
 ]

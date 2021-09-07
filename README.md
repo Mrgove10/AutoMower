@@ -412,7 +412,50 @@ Set mower to clockwise spiral mowing:
 
 ## Receiving information from the Mower
 
-// TO DO
+The data send by the mower looks like this :
+
+``` json
+{
+    "State": "1",
+    "Error": "0",
+    "BatVolt": "12.49",
+    "ChargeCur": "0.00",
+    "BatSOC": "100.0",
+    "BatCharging": "0",
+    "DrvMotTemp": "25.3",
+    "DrvMotTempEr": "0",
+    "RMotCur": "18.00",
+    "RMotSpd": "0",
+    "LMotCur": "18.02",
+    "LMotSpd": "0",
+    "DrvMotFan": "0",
+    "CMotTemp": "23.0",
+    "CMotTempEr": "4",
+    "CMotCur": "0.21",
+    "CMotSpd": "0.00",
+    "CMotAlm": "0",
+    "CMotFan": "0",
+    "FSnrDist": "5",
+    "RSnrDist": "51",
+    "LSnrDist": "37",
+    "CompHead": "0.00",
+    "GPSHead": "0.0",
+    "GPSSat": "0",
+    "g_GPSHdop": "-999.99",
+    "GPSSpd": "-999.99",
+    "GPSAlt": "-999.99",
+    "GPSLat": "-999.99",
+    "GPSLon": "-999.99",
+    "Obstcl": "540",
+    "MowTim": "851",
+    "Mag": "34",
+    "SMag": "21",
+    "InOut": "1",
+    "Heap": "158960",
+    "CPUTemp": "41.7",
+    "RSSI": "-81"
+}
+```
 
 ## Tasks
 

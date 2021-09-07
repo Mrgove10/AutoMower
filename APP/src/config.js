@@ -1,46 +1,5 @@
 const axios = require('axios').default
 
-export const mowerStates = {
-    idle: {
-        humanName: 'Idle',
-        icon: ''
-    },
-    docked: {
-        humanName: 'Docked',
-        icon: '<i class="fas fa - home"></i>'
-    },
-    mowing: {
-        humanName: 'Mowing',
-        icon: ''
-    },
-    going_to_base: {
-        humanName: 'Going to the dock',
-        icon: ''
-    },
-    leaving_base: {
-        humanName: 'Leaving dock',
-        icon: ''
-    },
-    error: {
-        humanName: 'Error',
-        icon: ''
-    },
-    test: {
-        humanName: 'test',
-        icon: ''
-    }
-}
-
-export const days = [
-    'Monday',
-    'Tuesday',
-    'Wednesday',
-    'Thursday',
-    'Friday',
-    'Saturday',
-    'Sunday'
-]
-
 export const APIUrl = 'http://192.168.1.38:1880/AM'
 let config = {}
 let schedule = {}
