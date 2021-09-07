@@ -78,16 +78,19 @@ void FanCheck(const int Fan, const bool Now)
 {
   static unsigned long LastFanCheck[FAN_COUNT] = {0, 0};
 
+  const float fanStartThreshold[FAN_COUNT] = {FAN_1_START_THRESHOLD, FAN_2_START_THRESHOLD};
+  const float fanStopThreshold[FAN_COUNT] = {FAN_1_STOP_THRESHOLD, FAN_2_STOP_THRESHOLD};
+
   if ((millis() - LastFanCheck[Fan] > FAN_UPDATE_INTERVAL) || Now)
   {
     float temperature = TemperatureRead(Fan, true);
-    if (!g_FanOn[Fan] && (temperature != UNKNOWN_FLOAT) && (temperature > FAN_START_THRESHOLD))
+    if (!g_FanOn[Fan] && (temperature != UNKNOWN_FLOAT) && (temperature > fanStartThreshold[Fan]))
     {
       DebugPrintln("Fan " + String(Fan + 1) + " Started", DBG_INFO, true);
       g_FanOn[Fan] = true;
       FanStart(Fan);
     }
-    if (g_FanOn[Fan] && (temperature != UNKNOWN_FLOAT) && (temperature < FAN_STOP_THRESHOLD))
+    if (g_FanOn[Fan] && (temperature != UNKNOWN_FLOAT) && (temperature < fanStopThreshold[Fan]))
     {
       DebugPrintln("Fan " + String(Fan + 1) + " Stopped", DBG_INFO, true);
       g_FanOn[Fan] = false;

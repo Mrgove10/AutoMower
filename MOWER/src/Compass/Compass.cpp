@@ -94,7 +94,7 @@ void CompassRead(const bool Now)
 
     DebugPrintln("Compass Heading:" + String(g_CompassHeading, COMPASS_PRECISION) +
                      " Corrected: " + String(g_CompassHeadingCorrected, COMPASS_PRECISION),
-                 DBG_INFO, true);
+                 DBG_DEBUG, true);
 
     LastCompassRead = millis();
   }

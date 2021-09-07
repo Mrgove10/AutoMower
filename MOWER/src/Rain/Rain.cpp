@@ -15,7 +15,7 @@ bool RainSensorCheck(void)
 {
   int raw = ProtectedAnalogRead(PIN_ESP_RAIN);
 
-  DebugPrintln("Raw Rain value: " + String(raw), DBG_VERBOSE, true);
+  DebugPrintln("Raw Rain value: " + String(raw), DBG_DEBUG, true);
 
   DisplayClear();
   DisplayPrint(0, 0, F("Rain Test"));
@@ -50,7 +50,7 @@ bool RainSensorCheck(void)
 bool isRaining(const bool Now)
 {
   static unsigned long LastRainRead = 0;
-  static int raw = 0;
+  int raw = 0;
   static float smoothValue = UNKNOWN_FLOAT;
 
   if ((millis() - LastRainRead > RAIN_READ_INTERVAL) || Now)

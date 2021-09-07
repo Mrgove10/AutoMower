@@ -27,6 +27,7 @@
 #include "AnaReadTsk/AnaReadTsk.h"
 #include "PerimeterTsk/PerimeterTsk.h"
 #include "Battery/Battery.h"
+#include "GyroAccel/GyroAccel.h"
 #include "StartupChecks.h"
 
 void MySetup(void)
@@ -131,6 +132,8 @@ void MySetup(void)
   TiltSetup();
 
   GPSSetup(); // Done by Analog Read task ??
+
+  GyroAccelSetup();
 
   // Start other RTOS tasks
   SonarReadLoopTaskCreate();

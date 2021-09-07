@@ -35,14 +35,14 @@ void GPSRead(const bool Now)
     if (GPS_UART.available() > 0)
     {
       //      Serial.println("GPS Serial data: " + String (GPS_UART.available()) + " ");
-      DebugPrintln("GPS Serial data: " + String(GPS_UART.available()) + " ", DBG_VERBOSE, true);
+      // DebugPrintln("GPS Serial data: " + String(GPS_UART.available()) + " ", DBG_VERBOSE, true);
     }
 
-    String buf = "";
+    // String buf = "";
     while (GPS_UART.available() > 0)
     {
       char c = GPS_UART.read();
-      buf = buf + c;
+      // buf = buf + c;
       GPS.encode(c);
     }
 
@@ -81,7 +81,7 @@ bool GPSCheck(void)
   DisplayClear();
   DisplayPrint(0, 0, F("GPS Test"));
 
-  if (GPS.charsProcessed() > GPS_CHARS_TO_DETECT)
+  if (GPS.passedChecksum() > GPS_MESSAGES_TO_DETECT)
   {
     DebugPrintln("GPS ok", DBG_INFO, true);
     DisplayPrint(2, 2, "GPS Ok");

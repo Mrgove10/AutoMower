@@ -182,13 +182,21 @@ float g_CompassHeadingCorrected = 0;
 float g_CompassXField = 0;
 float g_CompassYField = 0;
 
+/************************* I2C GY-521 MPU6050 Gyroscope / Accelerometer Sensor variables *********************************/
+
+float g_AccelAngleErrorX = 0; // Accel error X
+float g_AccelAngleErrorY = 0; // Accel error Y
+
+float g_GyroErrorX = 0;       // Gyro error X
+float g_GyroErrorY = 0;       // Gyro error Y
+
 /************************* UART NEO-N8M GPS variables *********************************/
 #include <TinyGPS++.h>
 
 TinyGPSPlus GPS; // The TinyGPS++ object
 // HardwareSerial Serial2(1);
 
-float g_GPSHeading; // in Degrees
+double g_GPSHeading; // in Degrees
 int g_GPSSatellitesFix = 0;
 double g_GPSHdop = UNKNOWN_FLOAT;
 double g_GPSSpeed = UNKNOWN_FLOAT;

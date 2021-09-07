@@ -270,7 +270,7 @@ extern Adafruit_MCP23017 IOExtend;
 
 extern Adafruit_HMC5883_Unified Compass;
 
-//#define COMPASS_PRESENT
+#define COMPASS_PRESENT true
 #define COMPASS_ID 12345
 #define COMPASS_PRECISION 1
 #define COMPASS_X_HEADING_CORRECTION -3.5f
@@ -282,19 +282,30 @@ extern float g_CompassHeadingCorrected; // in Degrees
 extern float g_CompassXField;
 extern float g_CompassYField;
 
+/************************* I2C GY-521 MPU6050 Gyroscope / Accelerometer Sensor variables *********************************/
+
+// #define RAD_TO_DEG 180 / 3.141592654f      //This value is for pasing from radians to degrees values
+
+extern float g_AccelAngleErrorX; // Accel error X
+extern float g_AccelAngleErrorY; // Accel error Y
+
+extern float g_GyroErrorX;       // Gyro error X
+extern float g_GyroErrorY;       // Gyro error Y
+
 /************************* UART NEO-N8M GPS variables *********************************/
 #include <TinyGPS++.h>
 
 #define GPS_BAUD 115200UL
 #define GPS_READ_INTERVAL 1000  // in ms
 #define GPS_UART Serial2
-#define GPS_CHARS_TO_DETECT 20
+// #define GPS_CHARS_TO_DETECT 20
+#define GPS_MESSAGES_TO_DETECT 10       // Number of messages received with a valid checksum
 #define GPS_RX_BUFFER_SIZE 1024
 
 extern TinyGPSPlus GPS; // The TinyGPS++ object
 extern HardwareSerial Serial2;
 
-extern float g_GPSHeading; // in Degrees
+extern double g_GPSHeading; // in Degrees
 extern int g_GPSSatellitesFix;
 extern double g_GPSHdop;
 extern double g_GPSSpeed;
@@ -433,13 +444,15 @@ extern volatile bool g_TiltTriggered[TILT_COUNT];
 
 /************************* Fan variables *********************************/
 
-#define FAN_COUNT 2 // Number of Fans
-#define FAN_1_RED 0
-#define FAN_2_BLUE 1
-#define FAN_UPDATE_INTERVAL 15000                     // in ms
-#define FAN_START_THRESHOLD 29.5f                     // in deg C
-#define FAN_STOP_THRESHOLD FAN_START_THRESHOLD - 1.5f // in deg C
-#define FAN_TEST_DURATION 3000                        // in ms
+#define FAN_COUNT 2                                     // Number of Fans
+#define FAN_1_RED 0                                     // Cut motor Fan
+#define FAN_2_BLUE 1                                    // Drive motor Fan
+#define FAN_UPDATE_INTERVAL 15000                       // in ms
+#define FAN_1_START_THRESHOLD 28.5f                     // in deg C
+#define FAN_1_STOP_THRESHOLD FAN_1_START_THRESHOLD - 1.5f // in deg C
+#define FAN_2_START_THRESHOLD 29.5f                     // in deg C
+#define FAN_2_STOP_THRESHOLD FAN_2_START_THRESHOLD - 1.5f // in deg C
+#define FAN_TEST_DURATION 3000                          // in ms
 
 extern const int g_FanPin[FAN_COUNT];
 extern bool g_FanOn[FAN_COUNT];

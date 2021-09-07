@@ -169,7 +169,7 @@ bool MowerSlowDownApproachingObstables(const int SpeedDelta, const int Front, co
 
   if (Perimeter > 0 && abs(g_PerimeterMagnitudeAvg) > Perimeter)
   {
-    DebugPrintln("Approaching perimeter: Slowing down ! (" + String(g_PerimeterMagnitude) + ")", DBG_DEBUG, true);
+    DebugPrintln("Approaching perimeter: Slowing down ! (" + String(g_PerimeterMagnitude) + ")", DBG_VERBOSE, true);
     SpeedReductiontiggered = true;
   }
 
