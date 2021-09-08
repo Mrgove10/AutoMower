@@ -14,6 +14,7 @@
 #include "GPS/GPS.h"
 #include "MotionMotor/MotionMotor.h"
 #include "CutMotor/CutMotor.h"
+#include "GyroAccel/GyroAccel.h"
 #include "Display/Display.h"
 
 /**
@@ -119,6 +120,13 @@ bool StartupChecks(const bool allTests)
   DebugPrintln(" ");
 
   if (!CompassSensorCheck())
+  {
+    allChecks = false;
+  };
+
+  DebugPrintln(" ");
+
+  if (!GyroAccelCheck())
   {
     allChecks = false;
   };

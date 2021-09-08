@@ -184,11 +184,35 @@ float g_CompassYField = 0;
 
 /************************* I2C GY-521 MPU6050 Gyroscope / Accelerometer Sensor variables *********************************/
 
-float g_AccelAngleErrorX = 0; // Accel error X
-float g_AccelAngleErrorY = 0; // Accel error Y
+float g_AccelRawX = 0;
+float g_AccelRawY = 0;
+float g_AccelRawZ = 0;
+float g_MPUTemperature = 0;
+float g_GyroRawX = 0;
+float g_GyroRawY = 0;
+float g_GyroRawZ = 0;
 
-float g_GyroErrorX = 0;       // Gyro error X
-float g_GyroErrorY = 0;       // Gyro error Y
+float g_GyroErrorX = 0;       // Gyro error X (Stored in EEPROM)
+float g_GyroErrorY = 0;       // Gyro error Y (Stored in EEPROM)
+float g_GyroErrorZ = 0;       // Gyro error Z (Stored in EEPROM)
+
+float g_AccelErrorX = 0;      // Accel error X (Saved in EEPROM)
+float g_AccelErrorY = 0;      // Accel error Y (Saved in EEPROM)
+
+float g_pitchAngle;
+float g_rollAngle;
+
+
+// float g_AccelAngleErrorX = 0; // Accel error X
+// float g_AccelAngleErrorY = 0; // Accel error Y
+// float g_AccelAngleX = 0;      // Accel Angle X
+// float g_AccelAngleY = 0;      // Accel Angle Y
+
+// float g_GyroAngleX = 0;       // Gyro Angle X
+// float g_GyroAngleY = 0;       // Gyro Angle Y
+
+// float g_GyroAccelAngleX = 0;  // combined Gyro and Accel angle X
+// float g_GyroAccelAngleY = 0;  // combined Gyro and Accel angle Y
 
 /************************* UART NEO-N8M GPS variables *********************************/
 #include <TinyGPS++.h>
@@ -323,8 +347,6 @@ unsigned long g_spiralStepTimeIncrement[MOWER_MOWING_SPIRAL_MAX_STEP] = {
 
 int g_mowingMode = MOWER_MOWING_MODE_RANDOM;  // Random by default
 
-unsigned long g_totalMowingTime = 0; // Total time spent mowing, in minutes (Saved to EEPROM)
-
 // Move count variables
 int g_successiveObstacleDectections = 0; // successive obstacle detections (to trigger appropriate reaction)
 
@@ -375,7 +397,12 @@ String g_StatesString[STATES_COUNT] = {"   IDLE   ",   // Idle
 
 /************************* Mower operation statistics *********************************/
 
+unsigned long g_totalMowingTime = 0; // Total time spent mowing, in minutes (Saved to EEPROM)
 long g_totalObstacleDectections = 0; // Total number of obstacle detections   (Saved to EEPROM)
+
+unsigned long g_partialMowingTime; // Partial time spent mowing, in minutes (Saved to EEPROM)
+unsigned long g_operationTime;     // Total time spent in operation (not docked) (Saved to EEPROM)
+unsigned long g_chargingTime;      // Total time spent charging
 
 /************************* Program variables *********************************/
 

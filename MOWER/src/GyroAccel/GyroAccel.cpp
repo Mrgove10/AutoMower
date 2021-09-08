@@ -6,8 +6,11 @@
 #include "Utils/Utils.h"
 #include "Display/Display.h"
 #include "GyroAccel/GyroAccel.h"
+#include "EEPROM/EEPROM.h"
 
-// This code is adapted from https://electronoobs.com/images/Robotica/tut_9/MPU6050_acc_read_example.zip
+// This code is adapted from 
+// https://electronoobs.com/images/Robotica/tut_9/MPU6050_acc_read_example.zip, and 
+// Joop Brokking Website: http://www.brokking.net/imu.html
 
 /**
  * GY-521 MPU6050 Setup function
@@ -28,7 +31,7 @@ void GyroAccelSetup()
   //Gyro config
   Wire.beginTransmission(GYRO_MPU6050_I2C_ADDRESS);  // begin, Send the sensor adress
   Wire.write(0x1B);                                  // We want to write to the GYRO_CONFIG register (1B hex)
-  Wire.write(0x10);                                  // Set the register bits as 00010000 (1000dps full scale)
+  Wire.write(0x08);                                  // Set the register bits as 00001000 (500dps full scale)
   Wire.endTransmission(true);                        // End the transmission with the gyro
   
   //Acc config
@@ -41,59 +44,63 @@ void GyroAccelSetup()
   xSemaphoreGive(g_I2CSemaphore);
 
   DebugPrintln("Gyro/Accel setup Done", DBG_VERBOSE, true);
-
-  // Calibrate Accelerometer and Gyroscope
-
-  AccelErrorCalibration(500);
-  GyroErrorCalibration(500);
 }
 
 /**
- * GY-521 MPU6050 Acceleration error calibration function
+ * GY-521 MPU6050 Gyroscope and Acceleration calibration function
  * @param number of samples to establish calibration
  *
  */
-void AccelErrorCalibration(const int samples)
-{
-  // to establish acceleration error, we take the average error for X and Y
+// void AccelErrorCalibration(const int samples)
+// {
+//   // to establish acceleration error, we take the average error for X and Y
 
-  // Variables to store the raw data read from sensor
-  float AccelRawX = 0;
-  float AccelRawY = 0;
-  float AccelRawZ = 0;
+//   // Variables to store the raw data read from sensor
+//   float AccelRawX = 0;
+//   float AccelRawY = 0;
+//   float AccelRawZ = 0;
 
-  // Variables to store accumulated error
-  float totalAngleErrorX = 0;
-  float totalAngleErrorY = 0;
+//   // Variables to store accumulated error
+//   float totalAngleErrorX = 0;
+//   float totalAngleErrorY = 0;
 
-  // Ensure exlusive access to I2C
-  xSemaphoreTake(g_I2CSemaphore, portMAX_DELAY);
+//   DebugPrintln("Start of accel calibration on " + String(samples) + " samples", DBG_VERBOSE, true);
 
-  for(int i = 0; i < samples; i ++)
-  {
-    Wire.beginTransmission(GYRO_MPU6050_I2C_ADDRESS);
-    Wire.write(0x3B);                               //Ask for the 0x3B register- correspond to AcX
-    Wire.endTransmission(false);
-    Wire.requestFrom(GYRO_MPU6050_I2C_ADDRESS, 6, 1); 
+//   // Ensure exlusive access to I2C
+//   xSemaphoreTake(g_I2CSemaphore, portMAX_DELAY);
+
+//   for(int i = 0; i < samples; i ++)
+//   {
+//     Wire.beginTransmission(GYRO_MPU6050_I2C_ADDRESS);
+//     Wire.write(0x3B);                               //Ask for the 0x3B register- correspond to AcX
+//     Wire.endTransmission(false);
+//     Wire.requestFrom(GYRO_MPU6050_I2C_ADDRESS, 6, 1); 
     
-    AccelRawX=(Wire.read()<<8|Wire.read())/4096.0 ; //each value needs two registres
-    AccelRawY=(Wire.read()<<8|Wire.read())/4096.0 ;
-    AccelRawZ=(Wire.read()<<8|Wire.read())/4096.0 ;
+//     AccelRawX=(Wire.read() << 8 | Wire.read()) / 4096.0 ; //each value needs two registres
+//     AccelRawY=(Wire.read() << 8 | Wire.read()) / 4096.0 ;
+//     AccelRawZ=(Wire.read() << 8 | Wire.read()) / 4096.0 ;
 
-    totalAngleErrorX = totalAngleErrorX + ((atan((AccelRawY)/sqrt(pow((AccelRawX),2) + pow((AccelRawZ),2))) * RAD_TO_DEG));
-    totalAngleErrorY = totalAngleErrorY + ((atan(-1*(AccelRawX)/sqrt(pow((AccelRawY),2) + pow((AccelRawZ),2))) * RAD_TO_DEG));
+//     totalAngleErrorX = totalAngleErrorX + ((atan((AccelRawY)/sqrt(pow((AccelRawX),2) + pow((AccelRawZ),2))) * RAD_TO_DEG));
+//     totalAngleErrorY = totalAngleErrorY + ((atan(-1*(AccelRawX)/sqrt(pow((AccelRawY),2) + pow((AccelRawZ),2))) * RAD_TO_DEG));
 
-    delay(5);
-  }
+//     delay(5);
+//   }
 
-  // Free access to I2C for other tasks
-  xSemaphoreGive(g_I2CSemaphore);
+//   // Free access to I2C for other tasks
+//   xSemaphoreGive(g_I2CSemaphore);
 
-  g_AccelAngleErrorX = totalAngleErrorX / samples;
-  g_AccelAngleErrorY = totalAngleErrorY / samples;
+//   g_AccelAngleErrorX = totalAngleErrorX / samples;
+//   g_AccelAngleErrorY = totalAngleErrorY / samples;
 
-  DebugPrintln("Accel calibration done (X:" + String(g_AccelAngleErrorX,1) + ", Y:" + String(g_AccelAngleErrorY,1) + ")", DBG_INFO, true);
-}
+//   LogPrintln("Accel calibration done (X:" + String(g_AccelAngleErrorX, 1) + ", Y:" + String(g_AccelAngleErrorY, 1) + ")", TAG_VALUE, DBG_INFO);
+
+//   // Reset total angle value
+//   g_GyroAccelAngleX = 0;
+//   g_GyroAccelAngleY = 0;
+  
+//   // Save calibration to EEPROM
+//   EEPROMSave(true);
+// }
 
 /**
  * GY-521 MPU6050 Gyroscope error calibration function
@@ -105,36 +112,278 @@ void GyroErrorCalibration(const int samples)
   // to establish gyroscope error, we take the average error for X and Y
 
   // Variables to store the raw data read from sensor
-  float gyroRawX = 0;
-  float gyroRawY = 0;
+  float gyroRawXtotal = 0;
+  float gyroRawYtotal = 0;
+  float gyroRawZtotal = 0;
+  float accelRawXtotal = 0;
+  float accelRawYtotal = 0;
 
-  // Variables to store accumulated error
-  float totalGyroErrorX = 0;
-  float totalGyroErrorY = 0;
+  // Reset calibration values as they are being used in data read function
+  g_GyroErrorX = 0;
+  g_GyroErrorY = 0;
+  g_GyroErrorZ = 0;
+  g_AccelErrorX = 0;
+  g_AccelErrorY = 0;
+  
+  DebugPrintln("Start of gyro calibration on " + String(samples) + " samples", DBG_VERBOSE, true);
+
+  for(int i = 0; i < samples; i ++)
+  {
+    int16_t AccelRawX;
+    int16_t AccelRawY;
+    int16_t AccelRawZ;
+    int16_t MPUTemperatureRaw;
+    int16_t GyroRawX;
+    int16_t GyroRawY;
+    int16_t GyroRawZ;
+  
+    // Read the data from the sensor
+
+    // Ensure exlusive access to I2C
+    xSemaphoreTake(g_I2CSemaphore, portMAX_DELAY);
+
+    Wire.beginTransmission(GYRO_MPU6050_I2C_ADDRESS);     //begin, Send the slave address
+    Wire.write(0x3B);                                     //Ask for the 0x3B register- correspond to AcX
+    Wire.endTransmission(false);                          //keep the transmission and next
+    Wire.requestFrom(GYRO_MPU6050_I2C_ADDRESS, 14, 1);    //We ask for next 6 registers starting with the 3B  
+    while(Wire.available() < 14);                         //Wait until all the bytes are received
+
+    AccelRawX = (Wire.read() << 8 | Wire.read());
+    AccelRawY = (Wire.read() << 8 | Wire.read());
+    AccelRawZ = (Wire.read() << 8 | Wire.read());
+    MPUTemperatureRaw = (Wire.read() << 8 | Wire.read());
+    GyroRawX = (Wire.read() << 8 | Wire.read());
+    GyroRawY = (Wire.read() << 8 | Wire.read());
+    GyroRawZ = (Wire.read() << 8 | Wire.read());
+
+    // Free access to I2C for other tasks
+    xSemaphoreGive(g_I2CSemaphore);
+
+  // Serial.println("X:" + String(GyroRawX) + " Y:" + String(GyroRawY) +" Z:" + String(GyroRawZ) + " Temp: " + String(MPUTemperatureRaw));
+
+    GyroAccelDataRead();
+
+    // Sum the values
+    gyroRawXtotal = gyroRawXtotal + GyroRawX;
+    gyroRawYtotal = gyroRawYtotal + GyroRawY;
+    gyroRawZtotal = gyroRawZtotal + GyroRawZ;
+
+    accelRawXtotal = accelRawXtotal + AccelRawX;
+    accelRawYtotal = accelRawYtotal + AccelRawY;
+    
+    delay(10);
+  }
+
+  g_GyroErrorX = gyroRawXtotal / samples;
+  g_GyroErrorY = gyroRawYtotal / samples;
+  g_GyroErrorZ = gyroRawZtotal / samples;
+
+  g_AccelErrorX = accelRawXtotal / samples;
+  g_AccelErrorY = accelRawYtotal / samples;
+  
+  LogPrintln("Gyro calibration done (GX:" + String(g_GyroErrorX, 5) + 
+            ", GY:" + String(g_GyroErrorY, 5) + 
+            ", GZ:" + String(g_GyroErrorZ, 5) + 
+            ", AX:" + String(g_AccelErrorX, 5) +
+            ", AY:" + String(g_AccelErrorY, 5) + 
+            ")", TAG_VALUE, DBG_INFO);
+
+  // Reset total angle value
+  g_pitchAngle = 0;
+  g_rollAngle = 0;
+
+  // Save calibration to EEPROM
+  EEPROMSave(true);
+
+  // Reset value calculations
+  PitchRollCalc(true, true);
+}
+
+/**
+ * GY-521 MPU6050 gyroscope and Acceleration raw values read function
+ *
+ */
+void GyroAccelDataRead(void)
+{
+  int16_t AccelRawX;
+  int16_t AccelRawY;
+  int16_t AccelRawZ;
+  int16_t MPUTemperatureRaw;
+  int16_t GyroRawX;
+  int16_t GyroRawY;
+  int16_t GyroRawZ;
+  
+  static unsigned long lastReadTime = millis();
 
   // Ensure exlusive access to I2C
   xSemaphoreTake(g_I2CSemaphore, portMAX_DELAY);
 
-  for(int i = 0; i < samples; i ++)
-  {
-    Wire.beginTransmission(GYRO_MPU6050_I2C_ADDRESS);            // begin, Send the slave adress 
-    Wire.write(0x43);                                            // First adress of the Gyro data
-    Wire.endTransmission(false);
-    Wire.requestFrom(GYRO_MPU6050_I2C_ADDRESS, 4, 1);           // We ask for just 4 registers 
+  Wire.beginTransmission(GYRO_MPU6050_I2C_ADDRESS);     //begin, Send the slave address
+  Wire.write(0x3B);                                     //Ask for the 0x3B register- correspond to AcX
+  Wire.endTransmission(false);                          //keep the transmission and next
+  Wire.requestFrom(GYRO_MPU6050_I2C_ADDRESS, 14, 1);    //We ask for next 6 registers starting with the 3B  
+  while(Wire.available() < 14);                         //Wait until all the bytes are received
 
-    gyroRawX=Wire.read()<<8|Wire.read();     //Once again we shif and sum
-    gyroRawY=Wire.read()<<8|Wire.read();
+  AccelRawX = (Wire.read() << 8 | Wire.read());
+  AccelRawY = (Wire.read() << 8 | Wire.read());
+  AccelRawZ = (Wire.read() << 8 | Wire.read());
+  MPUTemperatureRaw = (Wire.read() << 8 | Wire.read());
+  GyroRawX = (Wire.read() << 8 | Wire.read());
+  GyroRawY = (Wire.read() << 8 | Wire.read());
+  GyroRawZ = (Wire.read() << 8 | Wire.read());
 
-    totalGyroErrorX = totalGyroErrorX + (gyroRawX/32.8); 
-    totalGyroErrorY = totalGyroErrorY + (gyroRawY/32.8);
-
-    delay(5);
-  }
+  unsigned long readTime = millis();
 
   // Free access to I2C for other tasks
   xSemaphoreGive(g_I2CSemaphore);
 
-  g_GyroErrorX = totalGyroErrorX / samples;
-  g_GyroErrorY = totalGyroErrorY / samples;
-  DebugPrintln("Gyro calibration done (X:" + String(g_GyroErrorX,1) + ", Y:" + String(g_GyroErrorY,1) + ")", DBG_INFO, true);
+  // Serial.println("X:" + String(GyroRawX) + " Y:" + String(GyroRawY) +" Z:" + String(GyroRawZ) + " Temp: " + String(MPUTemperatureRaw));
+
+  // Read values are adjusted to take into account sensor sensitivity (based on selected ranges) and calibration
+  g_AccelRawX = float(AccelRawX - g_AccelErrorX) / 4096 ;
+  g_AccelRawY = float(AccelRawY - g_AccelErrorY) / 4096 ;
+  g_AccelRawZ = float(AccelRawZ) / 4096;
+  g_MPUTemperature = float(MPUTemperatureRaw) / 340.0f + 36.53f;
+  g_GyroRawX = (float(GyroRawX - g_GyroErrorX) / 65.5 * (float(readTime - lastReadTime) / 1000));
+  g_GyroRawY = (float(GyroRawY - g_GyroErrorY) / 65.5 * (float(readTime - lastReadTime) / 1000));
+  g_GyroRawZ = (float(GyroRawZ - g_GyroErrorZ) / 65.5 * (float(readTime - lastReadTime) / 1000));
+
+  Serial.println("\t\t\t\t\t\tAX:" + String(g_AccelRawX, 3) + " AY:" + String(g_AccelRawY, 3) +" AZ:" + String(g_AccelRawZ, 3) + " | GX:" + String(g_GyroRawX, 3) + " GY:" + String(g_GyroRawY, 3) +" GZ:" + String(g_GyroRawZ, 3) + " Temp:" + String(g_MPUTemperature, 2));
+
+  lastReadTime = readTime;
+}
+
+/**
+ * GY-521 MPU6050 Pitch and Roll calculation function
+ * @param Now true to force an immediate read
+ * @param reset  true to force a pitch an roll reset
+ * 
+ */
+void PitchRollCalc(const bool Now, const bool reset)
+{
+  static float pitchAngle = 0;
+  static float rollAngle = 0;
+  static float AccelPitchAngle = 0;
+  static float AccelrollAngle = 0;
+  static bool initDone = false;
+
+  static unsigned long LastPitchRollCalc = 0;
+
+  if ((millis() - LastPitchRollCalc > GYRO_ACCEL_ANGLE_CALC_INTERVAL) || Now)
+  {
+    // Read latest sensor data
+    GyroAccelDataRead();
+
+    // Calculate gyro angle values
+    pitchAngle = pitchAngle + g_GyroRawX + g_GyroRawY * sin(g_GyroRawZ * DEG_TO_RAD);
+    rollAngle =  rollAngle + g_GyroRawY - g_pitchAngle * sin(g_GyroRawZ * DEG_TO_RAD);
+
+    // Accelerometer angle calculations
+    float accelTotalVector = sqrt((g_AccelRawX * g_AccelRawX) + (g_AccelRawY * g_AccelRawY) + (g_AccelRawZ * g_AccelRawZ));  //Calculate the total accelerometer vector
+    AccelPitchAngle = asin(g_AccelRawY / accelTotalVector) * RAD_TO_DEG;
+    AccelrollAngle = asin(g_AccelRawX / accelTotalVector) * -RAD_TO_DEG;
+
+    // If the Sensor is already started
+    if (initDone && !reset)
+    {
+      pitchAngle = pitchAngle * 0.99 + AccelPitchAngle * 0.01;  //Correct the drift of the gyro pitch angle with the accelerometer pitch angle
+      rollAngle = rollAngle * 0.99 + AccelrollAngle * 0.01;     //Correct the drift of the gyro roll angle with the accelerometer roll angle
+    }
+    // At first start
+    else
+    {
+      pitchAngle = AccelPitchAngle;   // Set the gyro pitch angle equal to the accelerometer pitch angle 
+      rollAngle = AccelrollAngle;     // Set the gyro roll angle equal to the accelerometer roll angle
+      initDone = true;
+    }
+
+    // To dampen the pitch and roll angles a complementary filter is used
+    g_pitchAngle = g_pitchAngle * 0.8 + pitchAngle * 0.2;
+    g_rollAngle = g_rollAngle * 0.8 + rollAngle * 0.2;
+    LastPitchRollCalc = millis();
+
+    DebugPrintln("Pitch: " + String(g_pitchAngle, 3) + ", Roll:" + String(g_rollAngle, 3), DBG_DEBUG, true);
+  }
+}
+/**
+ * GY-521 MPU6050 Gyro Angle value read function
+ *
+ */
+// void GyroAngleRead(void)
+// {
+//   static unsigned long lastReadTime = millis();
+//   float GyroRawX = 0;
+//   float GyroRawY = 0;
+
+//   // Ensure exlusive access to I2C
+//   xSemaphoreTake(g_I2CSemaphore, portMAX_DELAY);
+
+//   Wire.beginTransmission(GYRO_MPU6050_I2C_ADDRESS);            //begin, Send the slave adrress
+//   Wire.write(0x43);                                            //First adress of the Gyro data
+//   Wire.endTransmission(false);
+//   Wire.requestFrom(GYRO_MPU6050_I2C_ADDRESS, 4, 1);           //We ask for just 4 registers
+
+//   unsigned long readTime = millis();
+
+//   GyroRawX = Wire.read() << 8 | Wire.read();     //Once again we shif and sum
+//   GyroRawY = Wire.read() << 8 | Wire.read();
+
+//   // Free access to I2C for other tasks
+//   xSemaphoreGive(g_I2CSemaphore);
+
+//   /*Now in order to obtain the gyro data in degrees/seconds we have to divide first
+//   the raw value by 32.8 because that's the value that the datasheet gives us for a 1000dps range*/
+//   GyroRawX = (GyroRawX / 32.8) - g_GyroErrorX; 
+//   GyroRawY = (GyroRawY / 32.8) - g_GyroErrorY;
+
+//   /*Now we integrate the raw value in degrees per seconds in order to obtain the angle
+//   * If you multiply degrees/seconds by seconds you obtain degrees */
+
+//   g_GyroAngleX = GyroRawX * (readTime - lastReadTime) / 1000;
+//   g_GyroAngleY = GyroRawY * (readTime - lastReadTime) / 1000;
+
+//   lastReadTime = readTime;
+
+//   DebugPrintln("Gyro angle: [X:" + String(g_GyroAngleX, 1) + ", Y:" + String(g_GyroAngleY, 1) + "]" + " in " + String(readTime - lastReadTime) + " ms", DBG_VERBOSE, true);
+// }
+
+/**
+ * GY-521 MPU6050 Combined Gyro/Accel Angle read function
+ * 
+ * @param Now true to force an immediate read
+ */
+// void GyroAccelAngleRead(const bool Now)
+// {
+//   static unsigned long LastGyroAccelAngleRead = 0;
+
+//   if ((millis() - LastGyroAccelAngleRead > GYRO_ACCEL_ANGLE_READ_INTERVAL) || Now)
+//   {
+//     GyroAngleRead();
+//     AccelAngleRead();
+
+//     g_GyroAccelAngleX = 0.98 * (g_GyroAccelAngleX + g_GyroAngleX) + 0.02 * g_AccelAngleX;
+//     g_GyroAccelAngleY = 0.98 * (g_GyroAccelAngleY + g_GyroAngleY) + 0.02 * g_AccelAngleY;
+
+//     DebugPrintln("Total angles: [X:" + String(g_GyroAccelAngleX, 1) + ", Y:" + String(g_GyroAccelAngleY, 1) + "]", DBG_VERBOSE, true);
+    
+//     LastGyroAccelAngleRead = millis();
+//   }
+// }
+
+/**
+ * Checks to see if Gyro/Accel is connected (and hopefully functionning)
+ * @return true if is ok
+ */
+bool GyroAccelCheck(void)
+{
+  PitchRollCalc(true);
+
+  DisplayClear();
+  DisplayPrint(0, 0, F("Gyro/Accel Test"));
+
+  DisplayPrint(2, 2, "Pitch:" + String(g_pitchAngle, 1));
+  DisplayPrint(2, 3, "Roll:" + String(g_rollAngle, 1));
+
+  delay(TEST_SEQ_STEP_WAIT);
+  return true;
 }

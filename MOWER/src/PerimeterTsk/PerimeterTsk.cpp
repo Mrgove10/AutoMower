@@ -93,19 +93,19 @@ void PerimeterProcessingSetup(void)
   g_lastIsInsidePerimeterTime = 0;
 
   // Trigger calibration to calculate offset
-  BaseType_t xHigherPriorityTaskWoken = pdFALSE;
-  BaseType_t QueueReturn;
-  byte Message = PERIMETER_TASK_PROCESSING_CALIBRATION; // for perimeter Readings calibration
+  // BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+  // BaseType_t QueueReturn;
+  // byte Message = PERIMETER_TASK_PROCESSING_CALIBRATION; // for perimeter Readings calibration
 
-  QueueReturn = xQueueSendToBackFromISR(g_PerimeterTimerQueue, &Message, &xHigherPriorityTaskWoken);
-  if (QueueReturn == pdPASS)
-  {
-    DebugPrintln("Perimeter readings calibration requested", DBG_VERBOSE, true);
-  }
-  if (xHigherPriorityTaskWoken)
-  {
-    portYIELD_FROM_ISR();
-  }
+  // QueueReturn = xQueueSendToBackFromISR(g_PerimeterTimerQueue, &Message, &xHigherPriorityTaskWoken);
+  // if (QueueReturn == pdPASS)
+  // {
+  //   DebugPrintln("Perimeter readings calibration requested", DBG_VERBOSE, true);
+  // }
+  // if (xHigherPriorityTaskWoken)
+  // {
+  //   portYIELD_FROM_ISR();
+  // }
 }
 
 /**

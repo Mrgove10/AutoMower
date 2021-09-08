@@ -8,6 +8,7 @@
 #include "MotorCurrent/MotorCurrent.h"
 #include "Compass/Compass.h"
 #include "GPS/GPS.h"
+#include "GyroAccel/GyroAccel.h"
 #include "Utils/Utils.h"
 
 #include <driver/adc.h>
@@ -137,7 +138,8 @@ void AnaReadLoopTask(void *dummyParameter)
     // Read GPS data
     GPSRead(false); // The read interval check is performed by the function
 
-    // Read Gyro data
+    // Read Gyro / Accel Angle data
+    PitchRollCalc(false);
 
     // Read Compass data
     CompassRead(false); // The read interval check is performed by the function

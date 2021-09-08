@@ -12,6 +12,7 @@
 #include "StartupChecks.h"
 #include "Display/Display.h"
 #include "PerimeterTsk/PerimeterTsk.h"
+#include "GyroAccel/GyroAccel.h"
 
 void MQTTSubscribe()
 {
@@ -94,17 +95,40 @@ void MQTTCallback(char *topic, byte *message, unsigned int length)
     FirebaseJsonData JSONData;
     String JSONDataPayloadStr;
 
-    JSONDataPayload.setJsonData(messageTemp);
-    JSONDataPayload.get(JSONData, "Command");
-    String Command = JSONData.stringValue;
+    String Command = "";
+    String Val1Str = "";
+    float Val1 = UNKNOWN_FLOAT;
+    String Val2Str = "";
+    float Val2 = UNKNOWN_FLOAT;
 
+    JSONDataPayload.setJsonData(messageTemp);
+
+    // Extract Command value from JSON structure
+    JSONDataPayload.get(JSONData, "Command");
+    if (JSONData.success)
+    {
+      Command = JSONData.stringValue;
+      DebugPrintln ("Command: " + Command, DBG_DEBUG, true);
+    }
+
+    // Extract Val1 value from JSON structure
     JSONDataPayload.get(JSONData, "Val1");
-    String Val1Str = JSONData.stringValue;
-    float Val1 = Val1Str.toFloat();
+    if (JSONData.success) 
+    {
+      Val1Str = JSONData.stringValue;
+      Val1 = Val1Str.toFloat();
+      DebugPrintln(" Val1: <" + Val1Str + "> [" + String(Val1, 5) + "]", 0, false, true);
+    }
+
+    // Extract Val2 valu from JSON structure
 
     JSONDataPayload.get(JSONData, "Val2");
-    String Val2Str = JSONData.stringValue;
-    float Val2 = Val2Str.toFloat();
+    if (JSONData.success) 
+    {
+      Val2Str = JSONData.stringValue;
+      Val2 = Val2Str.toFloat();
+      DebugPrintln("Val2: <" + Val2Str + "> [" + String(Val2, 5) + "]", 0, false, true);
+    }
 
 //-------------------------------------------------------------------------
 //
@@ -214,8 +238,23 @@ void MQTTCallback(char *topic, byte *message, unsigned int length)
 
     else if (Command == "CALIBRATE")
     {
-      PerimeterRawValuesCalibration(PERIMETER_RAW_SAMPLES);
-      DebugPrintln("Calibration offset changed to " + String(g_PerimeterOffset), DBG_INFO, true);
+      if (Val1Str == "PERIMETER")
+      {
+        PerimeterRawValuesCalibration(PERIMETER_RAW_SAMPLES);
+        DebugPrintln("Calibration offset changed to " + String(g_PerimeterOffset), DBG_INFO, true);
+      }
+      else if (Val1Str == "GYRO")
+      {
+        GyroErrorCalibration(GYRO_CALIBRATION_SAMPLES);
+      }
+      // else if (Val1Str == "ACCEL")
+      // {
+      //   AccelErrorCalibration(ACCEL_CALIBRATION_SAMPLES);
+      // }
+      else
+      {
+        DebugPrintln("Calibration value unspecified", DBG_ERROR, true);
+      }
     }
 
     else if (Command == "PARAMETER")
@@ -455,6 +494,10 @@ void MQTTSendTelemetry(const bool now)
     JSONDataPayload.add("Mag", String(g_PerimeterMagnitude));
     JSONDataPayload.add("SMag", String(g_PerimeterSmoothMagnitude));
     JSONDataPayload.add("InOut", String(g_isInsidePerimeter));
+
+    // Mower Angle data
+    JSONDataPayload.add("Pitch", String(g_pitchAngle, 1));
+    JSONDataPayload.add("Roll", String(g_rollAngle, 1));
 
     // ESP System data
     JSONDataPayload.add("Heap", String(esp_get_free_heap_size()));

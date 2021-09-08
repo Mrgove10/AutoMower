@@ -109,11 +109,15 @@ Set mower to clockwise spiral mowing:
 
 #### Calibration
 
-**Description** : This command triggers the perimeter signal offset calibration
+**Description** : This command triggers the calibration of the specified sensor
 
 **Command** : `CALIBRATION`
 
-**Val1** : No Val1 value expected for this command (any value sent will be ignored)
+**Val1** : Val1 contains the string code of the sensor to calibrate. Possible values are:
+
+- `PERIMETER` : for perimeter signal offset calibration,
+
+- `GYRO` : for gyroscope angle error calibration,
 
 **Val2** : No Val2 value expected for this command (any value sent will be ignored)
 
@@ -121,7 +125,8 @@ Set mower to clockwise spiral mowing:
 
 ```json
 {
-  "Command":"CALIBRATION"
+  "Command":"CALIBRATION",
+  "Val1":"PERIMETER"
 }
 ```
 
@@ -441,7 +446,7 @@ The data send by the mower looks like this :
     "CompHead": "0.00",
     "GPSHead": "0.0",
     "GPSSat": "0",
-    "g_GPSHdop": "-999.99",
+    "GPSHdop": "-999.99",
     "GPSSpd": "-999.99",
     "GPSAlt": "-999.99",
     "GPSLat": "-999.99",

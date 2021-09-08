@@ -78,8 +78,21 @@ void EEPROMSetup(void)
 
     g_EEPROMValid = true;
 
-    // Stored parameters
+    // Stored calibrations
     g_PerimeterOffset = g_EEPROMLoad.Load.Data.PerimeterSignalOffset;
+    g_GyroErrorX = g_EEPROMLoad.Load.Data.GyroErrorX;
+    g_GyroErrorY = g_EEPROMLoad.Load.Data.GyroErrorY;
+    g_GyroErrorZ = g_EEPROMLoad.Load.Data.GyroErrorZ;
+    g_AccelErrorX = g_EEPROMLoad.Load.Data.AccelErrorX;
+    g_AccelErrorY = g_EEPROMLoad.Load.Data.AccelErrorY;
+
+    DebugPrintln("EEPROM value for g_GyroErrorX: " + String(g_GyroErrorX, 5), DBG_INFO);
+    DebugPrintln("EEPROM value for g_GyroErrorY: " + String(g_GyroErrorY, 5), DBG_INFO);
+    DebugPrintln("EEPROM value for g_GyroErrorZ: " + String(g_GyroErrorZ, 5), DBG_INFO);
+    DebugPrintln("EEPROM value for g_AccelErrorX: " + String(g_AccelErrorX, 5), DBG_INFO);
+    DebugPrintln("EEPROM value for g_AccelErrorY: " + String(g_AccelErrorY, 5), DBG_INFO);
+
+    // Stored parameters
     g_ParamPerimeterTrackPIDKp = g_EEPROMLoad.Load.Data.ParamPerimeterTrackPIDKp;
     g_ParamPerimeterTrackPIDKi = g_EEPROMLoad.Load.Data.ParamPerimeterTrackPIDKi;
     g_ParamPerimeterTrackPIDKd = g_EEPROMLoad.Load.Data.ParamPerimeterTrackPIDKd;
@@ -90,9 +103,15 @@ void EEPROMSetup(void)
     // Stored Statistics
     g_totalObstacleDectections = g_EEPROMLoad.Load.Data.totalObstacleDectections;
     g_totalMowingTime = g_EEPROMLoad.Load.Data.totalMowingTime;
+    g_partialMowingTime = g_EEPROMLoad.Load.Data.partialMowingTime;
+    g_operationTime = g_EEPROMLoad.Load.Data.operationTime;
+    g_chargingTime = g_EEPROMLoad.Load.Data.chargingTime;
 
     DebugPrintln("EEPROM value for g_totalObstacleDectections: " + String(g_totalObstacleDectections), DBG_INFO);
     DebugPrintln("EEPROM value for g_totalMowingTime: " + String(g_totalMowingTime), DBG_INFO);
+    DebugPrintln("EEPROM value for g_partialMowingTime: " + String(g_partialMowingTime), DBG_INFO);
+    DebugPrintln("EEPROM value for g_operationTime: " + String(g_operationTime), DBG_INFO);
+    DebugPrintln("EEPROM value for g_chargingTime: " + String(g_chargingTime), DBG_INFO);
   }
 }
 
@@ -158,8 +177,15 @@ void EEPROMSave(boolean immediatly)
     g_EEPROMLoad.Load.Data.LastEepromSaveTime.minute = myTime.minute();
     g_EEPROMLoad.Load.Data.LastEepromSaveTime.second = myTime.second();
 
-    // Stored parameters
+    // Stored calibrations
     g_EEPROMLoad.Load.Data.PerimeterSignalOffset = g_PerimeterOffset;
+    g_EEPROMLoad.Load.Data.GyroErrorX = g_GyroErrorX;
+    g_EEPROMLoad.Load.Data.GyroErrorY = g_GyroErrorY;
+    g_EEPROMLoad.Load.Data.GyroErrorZ = g_GyroErrorZ;
+    g_EEPROMLoad.Load.Data.AccelErrorX = g_AccelErrorX;
+    g_EEPROMLoad.Load.Data.AccelErrorY = g_AccelErrorY;
+
+    // Stored parameters
     g_EEPROMLoad.Load.Data.ParamPerimeterTrackPIDKp = g_ParamPerimeterTrackPIDKp;
     g_EEPROMLoad.Load.Data.ParamPerimeterTrackPIDKi = g_ParamPerimeterTrackPIDKi;
     g_EEPROMLoad.Load.Data.ParamPerimeterTrackPIDKd = g_ParamPerimeterTrackPIDKd;
@@ -170,6 +196,9 @@ void EEPROMSave(boolean immediatly)
     // Stored Statistics
     g_EEPROMLoad.Load.Data.totalObstacleDectections = g_totalObstacleDectections;
     g_EEPROMLoad.Load.Data.totalMowingTime = g_totalMowingTime;
+    g_EEPROMLoad.Load.Data.partialMowingTime = g_partialMowingTime;
+    g_EEPROMLoad.Load.Data.operationTime = g_operationTime;
+    g_EEPROMLoad.Load.Data.chargingTime = g_chargingTime;
 
     EEPROMWrite();
   }
@@ -188,18 +217,28 @@ void EEPROMInitialise(void)
   g_EEPROMLoad.Load.Data.LastEepromSaveTime.minute = myTime.minute();
   g_EEPROMLoad.Load.Data.LastEepromSaveTime.second = myTime.second();
 
-  // Stored parameters
+  // Stored calibrations
   g_EEPROMLoad.Load.Data.PerimeterSignalOffset = 0;
+  g_EEPROMLoad.Load.Data.GyroErrorX = 0;
+  g_EEPROMLoad.Load.Data.GyroErrorY = 0;
+  g_EEPROMLoad.Load.Data.GyroErrorZ = 0;
+  g_EEPROMLoad.Load.Data.AccelErrorX = 0;
+  g_EEPROMLoad.Load.Data.AccelErrorY = 0;
+
+  // Stored parameters
   g_EEPROMLoad.Load.Data.ParamPerimeterTrackPIDKp = 0;
   g_EEPROMLoad.Load.Data.ParamPerimeterTrackPIDKi = 0;
   g_EEPROMLoad.Load.Data.ParamPerimeterTrackPIDKd = 0;
   g_EEPROMLoad.Load.Data.PerimeterTrackSetpoint = 0;
-  g_EEPROMLoad.Load.Data.PerimeterSignalLostThreshold = g_PerimeterSignalLostThreshold;
-  g_EEPROMLoad.Load.Data.PerimeterSignalLowTrackThreshold = g_PerimeterSignalLowTrackThreshold;
+  g_EEPROMLoad.Load.Data.PerimeterSignalLostThreshold = 0;
+  g_EEPROMLoad.Load.Data.PerimeterSignalLowTrackThreshold = 0;
 
   // Stored Statistics
   g_EEPROMLoad.Load.Data.totalObstacleDectections = 0;
   g_EEPROMLoad.Load.Data.totalMowingTime = 0;
+  g_EEPROMLoad.Load.Data.partialMowingTime = 0;
+  g_EEPROMLoad.Load.Data.operationTime = 0;
+  g_EEPROMLoad.Load.Data.chargingTime = 0;
 
   for (int i = 0; i < EEPROM_SPARE_SIZE - 1; i++)
   {

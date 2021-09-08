@@ -195,7 +195,7 @@ extern int8_t g_PerimeterSamplesForMatchedFilter[I2S_DMA_BUFFER_LENGTH];
 #define ANA_READ_TASK_STACK_SIZE 5000   // Stack assigned to task (in bytes)
 #define ANA_READ_TASK_NAME "AnaReadTsk" // Task name
 
-#define ANA_READ_TASK_LOOP_WAIT 100 // In ms
+#define ANA_READ_TASK_LOOP_WAIT 50 // In ms
 
 extern TaskHandle_t g_AnaReadTaskHandle; // Analog Read task RTOS task handle
 extern SemaphoreHandle_t g_I2CSemaphore; // I2C resource protection semaphore
@@ -284,13 +284,40 @@ extern float g_CompassYField;
 
 /************************* I2C GY-521 MPU6050 Gyroscope / Accelerometer Sensor variables *********************************/
 
-// #define RAD_TO_DEG 180 / 3.141592654f      //This value is for pasing from radians to degrees values
+#define GYRO_ACCEL_ANGLE_CALC_INTERVAL 250
+#define GYRO_CALIBRATION_SAMPLES 500       // number of samples used to perform calibration
 
-extern float g_AccelAngleErrorX; // Accel error X
-extern float g_AccelAngleErrorY; // Accel error Y
+// #define ACCEL_PITCH_CALIBRATION -0.015
+// #define ACCEL_ROLL_CALIBRATION -0.005
 
-extern float g_GyroErrorX;       // Gyro error X
-extern float g_GyroErrorY;       // Gyro error Y
+extern float g_AccelRawX;
+extern float g_AccelRawY;
+extern float g_AccelRawZ;
+extern float g_MPUTemperature;
+extern float g_GyroRawX;
+extern float g_GyroRawY;
+extern float g_GyroRawZ;
+
+extern float g_GyroErrorX;       // Gyro error X (Saved in EEPROM)
+extern float g_GyroErrorY;       // Gyro error Y (Saved in EEPROM)
+extern float g_GyroErrorZ;       // Gyro error Z (Saved in EEPROM)
+extern float g_AccelErrorX;      // Accel error X (Saved in EEPROM)
+extern float g_AccelErrorY;      // Accel error Y (Saved in EEPROM)
+
+
+extern float g_pitchAngle;
+extern float g_rollAngle;
+
+// extern float g_AccelAngleErrorX; // Accel error X
+// extern float g_AccelAngleErrorY; // Accel error Y
+// extern float g_AccelAngleX;      // Accel Angle X
+// extern float g_AccelAngleY;      // Accel Angle Y
+
+// extern float g_GyroAngleX;       // Gyro Angle X
+// extern float g_GyroAngleY;       // Gyro Angle Y
+
+// extern float g_GyroAccelAngleX;  // combined Gyro and Accel angle X
+// extern float g_GyroAccelAngleY;  // combined Gyro and Accel angle Y
 
 /************************* UART NEO-N8M GPS variables *********************************/
 #include <TinyGPS++.h>
@@ -531,7 +558,6 @@ extern float g_WheelPerimeterTrackingCorrection[MOTION_MOTOR_COUNT]; // from per
 extern unsigned long g_spiralStepTimeIncrement[MOWER_MOWING_SPIRAL_MAX_STEP]; // in ms, time to add to 
 
 extern int g_mowingMode;
-extern unsigned long g_totalMowingTime; // Total time spent mowing, in minutes (Saved to EEPROM)
 
 // Perimeter search function
 
@@ -684,7 +710,12 @@ extern String g_StatesString[STATES_COUNT]; // contains the text description of 
 
 /************************* Mower operation statistics *********************************/
 
+extern unsigned long g_totalMowingTime; // Total time spent mowing, in minutes (Saved to EEPROM)
 extern long g_totalObstacleDectections; // Total number of obstacle detections   (Save to EEPROM)
+
+extern unsigned long g_partialMowingTime; // Partial time spent mowing, in minutes (Saved to EEPROM)
+extern unsigned long g_operationTime;     // Total time spent in operation (not docked) (Saved to EEPROM)
+extern unsigned long g_chargingTime;      // Total time spent charging
 
 /************************* Test sequence variables *********************************/
 #define TEST_SEQ_STEP_WAIT 750
