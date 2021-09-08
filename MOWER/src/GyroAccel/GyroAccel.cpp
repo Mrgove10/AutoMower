@@ -248,7 +248,7 @@ void GyroAccelDataRead(void)
   g_GyroRawY = (float(GyroRawY - g_GyroErrorY) / 65.5 * (float(readTime - lastReadTime) / 1000));
   g_GyroRawZ = (float(GyroRawZ - g_GyroErrorZ) / 65.5 * (float(readTime - lastReadTime) / 1000));
 
-  Serial.println("\t\t\t\t\t\tAX:" + String(g_AccelRawX, 3) + " AY:" + String(g_AccelRawY, 3) +" AZ:" + String(g_AccelRawZ, 3) + " | GX:" + String(g_GyroRawX, 3) + " GY:" + String(g_GyroRawY, 3) +" GZ:" + String(g_GyroRawZ, 3) + " Temp:" + String(g_MPUTemperature, 2));
+  // Serial.println("\t\t\t\t\t\tAX:" + String(g_AccelRawX, 3) + " AY:" + String(g_AccelRawY, 3) +" AZ:" + String(g_AccelRawZ, 3) + " | GX:" + String(g_GyroRawX, 3) + " GY:" + String(g_GyroRawY, 3) +" GZ:" + String(g_GyroRawZ, 3) + " Temp:" + String(g_MPUTemperature, 2));
 
   lastReadTime = readTime;
 }
@@ -269,6 +269,12 @@ void PitchRollCalc(const bool Now, const bool reset)
 
   static unsigned long LastPitchRollCalc = 0;
 
+  if (reset)
+  {
+    pitchAngle = 0;
+    rollAngle = 0;
+  }
+  
   if ((millis() - LastPitchRollCalc > GYRO_ACCEL_ANGLE_CALC_INTERVAL) || Now)
   {
     // Read latest sensor data
