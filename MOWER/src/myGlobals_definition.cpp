@@ -305,6 +305,7 @@ volatile bool g_BumperTriggered[BUMPER_COUNT] = {false, false};
 
 String g_tiltStr[TILT_COUNT] = {"Horizontal", "Vertical"};
 int g_tiltPin[TILT_COUNT] = {PIN_ESP_TILT_HORIZONTAL, PIN_ESP_TILT_VERTICAL};
+bool g_tiltRestMode[TILT_COUNT] = {TILT_INACTIVE_AT_REST, TILT_ACTIVE_AT_REST};
 
 portMUX_TYPE g_TiltMux[TILT_COUNT] = {portMUX_INITIALIZER_UNLOCKED, portMUX_INITIALIZER_UNLOCKED};
 

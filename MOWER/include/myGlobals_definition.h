@@ -460,10 +460,14 @@ extern volatile bool g_BumperTriggered[BUMPER_COUNT];
 #define TILT_HORIZONTAL 0
 #define TILT_VERTICAL 1
 
+#define TILT_INACTIVE_AT_REST true
+#define TILT_ACTIVE_AT_REST false
+
 #define TILT_DEBOUNCE_TIMEOUT 100 // in ms
 
 extern String g_tiltStr[TILT_COUNT];
 extern int g_tiltPin[TILT_COUNT];
+extern bool g_tiltRestMode[TILT_COUNT];
 
 extern portMUX_TYPE g_TiltMux[TILT_COUNT];
 

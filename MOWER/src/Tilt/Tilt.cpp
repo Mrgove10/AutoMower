@@ -15,7 +15,7 @@
 ICACHE_RAM_ATTR void horizontalTiltISR(void)
 {
   static unsigned long LastHorizontalTiltChange = 0;
-  static bool LastHorizontalTitltStatus = false; // assumption is that tilt is functionning on start and in not triggered (normally open contact)
+  static bool LastHorizontalTitltStatus = false; // assumption is that tilt is functionning on start and in not triggered (normally opened contact)
 
   LastHorizontalTitltStatus = !LastHorizontalTitltStatus; // Capture every status change
 
@@ -35,14 +35,14 @@ ICACHE_RAM_ATTR void horizontalTiltISR(void)
 ICACHE_RAM_ATTR void verticalTiltISR(void)
 {
   static unsigned long LastVerticalTiltChange = 0;
-  static bool LastVerticalTiltStatus = false; // assumption is that tilt is functionning on start and in not triggered (normally open contact)
+  static bool LastVerticalTiltStatus = true; // assumption is that tilt is functionning on start and in not triggered (normally closed contact)
 
   LastVerticalTiltStatus = !LastVerticalTiltStatus; // Capture every status change
 
   if (millis() - LastVerticalTiltChange > TILT_DEBOUNCE_TIMEOUT)
   {
     portENTER_CRITICAL_ISR(&g_TiltMux[TILT_VERTICAL]);
-    g_TiltTriggered[TILT_VERTICAL] = (LastVerticalTiltStatus == LOW);
+    g_TiltTriggered[TILT_VERTICAL] = (LastVerticalTiltStatus == HIGH);
     LastVerticalTiltChange = millis();
     portEXIT_CRITICAL_ISR(&g_TiltMux[TILT_VERTICAL]);
   }
@@ -55,7 +55,7 @@ ICACHE_RAM_ATTR void verticalTiltISR(void)
 void TiltSetup(void)
 {
   pinMode(PIN_ESP_TILT_HORIZONTAL, INPUT_PULLUP);
-  attachInterrupt(digitalPinToInterrupt(PIN_ESP_TILT_HORIZONTAL), horizontalTiltISR, CHANGE);
+  attachInterrupt(digitalPinToInterrupt(PIN_ESP_TILT_HORIZONTAL), horizontalTiltISR, CHANGE); 
 
   pinMode(PIN_ESP_TILT_VERTICAL, INPUT_PULLUP);
   attachInterrupt(digitalPinToInterrupt(PIN_ESP_TILT_VERTICAL), verticalTiltISR, CHANGE);
@@ -82,7 +82,7 @@ bool TiltSensorCheck(int tilt)
 
   DebugPrintln(g_tiltStr[tilt] + " tilt input value: " + String(raw), DBG_VERBOSE, true);
 
-  if (raw)
+  if (raw == g_tiltRestMode[tilt])
   {
     DebugPrintln(g_tiltStr[tilt] + " tilt sensor Ok", DBG_INFO, true);
     DisplayPrint(2, 2 + tilt, g_tiltStr[tilt] + " OK");
