@@ -14,6 +14,7 @@
 #include "Rain/Rain.h"
 #include "Battery/Battery.h"
 #include "Utils/Utils.h"
+#include "Buzzer/Buzzer.h"
 #include "Display/Display.h"
 #include "MQTT/MQTT.h"
 
@@ -59,6 +60,9 @@ void MowerIdle(const bool StateChange, const MowerState PreviousState)
     MowerStop();
     CutMotorStop();
     // }
+
+    playTune(g_readyTune, sizeof(g_readyTune) / sizeof(noteStruct));
+
   }
 
   // Update display
@@ -141,6 +145,9 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
     DebugPrintln("");
     LogPrintln("Mowing Started", TAG_MOWING, DBG_INFO);
 
+    // Sound starting beep to notify environment
+    playTune(g_longBeep, sizeof(g_longBeep) / sizeof(noteStruct), 3);
+
     //change Telemetry frequency
     g_MQTTSendInterval = MQTT_TELEMETRY_SEND_INTERVAL_FAST;
 
@@ -175,12 +182,6 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
     //--------------------------------
     // Start mowing (code below only executed if no error detected)
     //--------------------------------
-
-    // Sound starting beep to notify environment
-    if (PreviousState == MowerState::idle)
-    {
-      // TO DO Beep
-    }
 
     //Initialise Mowing start time
     mowingStartTime = millis();
@@ -665,6 +666,8 @@ void MowerLeavingBase(const bool StateChange, const MowerState PreviousState)
  */
 void MowerInError(const bool StateChange, const MowerState PreviousState)
 {
+  static unsigned long lastTunePlay = 0;
+
   if (StateChange)
   {
     // STOP all motors
@@ -697,8 +700,13 @@ void MowerInError(const bool StateChange, const MowerState PreviousState)
     // Update display
     errorDisplay();
 
+    if (millis() - lastTunePlay > MOWER_ERROR_TUNE_PLAY_INTERVAL)
+    {
+      playTune(g_SOS, sizeof(g_SOS) / sizeof(noteStruct));
+      lastTunePlay = millis();
+    }
+
     // wait for user action (keypad action)
-    // sound SOS beep
   }
 }
 

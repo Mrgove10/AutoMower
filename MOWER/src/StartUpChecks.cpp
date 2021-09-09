@@ -15,6 +15,7 @@
 #include "MotionMotor/MotionMotor.h"
 #include "CutMotor/CutMotor.h"
 #include "GyroAccel/GyroAccel.h"
+#include "Buzzer/Buzzer.h"
 #include "Display/Display.h"
 
 /**
@@ -159,6 +160,8 @@ bool StartupChecks(const bool allTests)
   DebugPrintln("");
   DebugPrintln("End of AutoMower startup checks.....", DBG_INFO, true);
   DebugPrintln("");
+
+  playTune(g_readyTune, sizeof(g_readyTune) / sizeof(noteStruct));
 
   SerialAndTelnet.handle();
 

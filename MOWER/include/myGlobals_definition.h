@@ -3,6 +3,7 @@
 #include "states.h"
 
 /************************* MQTT *********************************/
+
 #include <PubSubClient.h>
 
 #define MQTT_TELEMETRY_SEND_INTERVAL_SLOW 2 * 60 * 1000 // in ms
@@ -15,12 +16,14 @@ extern int g_MQTTErrorCount;
 extern unsigned long g_MQTTSendInterval;
 
 /************************* JSON *********************************/
+
 #include <FirebaseJson.h>
 
 extern FirebaseJson JSONDataPayload;
 extern String JSONDataPayloadStr;
 
 /************************* Debug management using TelnetSpy *********************************/
+
 #include <TelnetSpy.h>
 #define MySERIAL SerialAndTelnet
 #define TCP_PORT 1000
@@ -31,6 +34,7 @@ extern int g_debugLevel;
 extern SemaphoreHandle_t g_MySerialSemaphore;
 
 /************************* OTA *********************************/
+
 #include <ArduinoOTA.h>
 
 #define OTA_PORT 3232
@@ -72,6 +76,7 @@ extern int8_t g_sigcode_diff[PERIMETER_SIGNAL_CODE_LENGTH];
 #define PERIMETER_SUBSAMPLE 4
 
 /************************* High speed Analog Read task *********************************/
+
 #define I2S_PORT I2S_NUM_0
 #define I2S_READ_TIMEOUT 1             // in RTOS ticks
 #define I2S_ADC_UNIT ADC_UNIT_1        // ADC Unit used
@@ -190,6 +195,7 @@ extern int g_rawWritePtrCopy;                     // Pointer to last value writt
 extern int8_t g_PerimeterSamplesForMatchedFilter[I2S_DMA_BUFFER_LENGTH];
 
 /************************* Analog Read task *********************************/
+
 #define ANA_READ_TASK_ESP_CORE 1        // Core assigned to task
 #define ANA_READ_TASK_PRIORITY 1        // Priority assigned to task
 #define ANA_READ_TASK_STACK_SIZE 5000   // Stack assigned to task (in bytes)
@@ -212,6 +218,7 @@ extern bool g_EEPROMUpdate;
 extern unsigned long g_LastEepromWriteTime;
 
 /************************* Eztime *********************************/
+
 // do not place before EEprom definition section or causes conflict !!
 #include <ezTime.h>
 extern Timezone myTime;
@@ -219,6 +226,7 @@ extern Timezone myTime;
 #define POSIXTZ "CET-1CEST,M3.5.0,M10.5.0/3"
 
 /************************* Display variables *********************************/
+
 // The type of screen connected is defined int he Environment_definitions.h file
 
 #ifdef DISPLAY_LCD2004
@@ -256,16 +264,19 @@ extern unsigned long g_LastDisplayUpdate;             // Used to trigger screen 
 extern bool g_KeyPressed[KEYPAD_MAX_KEYS];
 
 /************************* MCP23017 I2C IO Extender variables *********************************/
+
 #include <Adafruit_MCP23017.h>
 
 extern Adafruit_MCP23017 IOExtend;
 
 /************************* Rain Sensor variables *********************************/
+
 #define RAIN_SENSOR_CHECK_THRESHOLD 0
 #define RAIN_SENSOR_RAINING_THRESHOLD 100 // this may have to be placed in a parameter
 #define RAIN_READ_INTERVAL 30000         // in ms
 
 /************************* I2C HMC5883L Compasss Sensor variables *********************************/
+
 #include <Adafruit_HMC5883_U.h>
 
 extern Adafruit_HMC5883_Unified Compass;
@@ -320,6 +331,7 @@ extern float g_rollAngle;
 // extern float g_GyroAccelAngleY;  // combined Gyro and Accel angle Y
 
 /************************* UART NEO-N8M GPS variables *********************************/
+
 #include <TinyGPS++.h>
 
 #define GPS_BAUD 115200UL
@@ -341,6 +353,7 @@ extern double g_GPSLatitude;
 extern double g_GPSLongitude;
 
 /************************* DS18D20 temperature sensor variables *********************************/
+
 #include <DallasTemperature.h>
 extern OneWire TemperatureOneWire;
 extern DallasTemperature TemperatureSensors;
@@ -356,6 +369,7 @@ extern int g_TempErrorCount[TEMPERATURE_COUNT];
 extern float g_Temperature[TEMPERATURE_COUNT];
 
 /************************* INA219 I2C Battery Charge current sensor variables *********************************/
+
 #include <Adafruit_INA219.h>
 
 #define BATTERY_CHARGE_READ_INTERVAL 5000               // in ms
@@ -407,6 +421,7 @@ extern Adafruit_INA219 MotorCurrentSensor[MOTOR_CURRENT_COUNT];
 extern float g_MotorCurrent[MOTOR_CURRENT_COUNT];
 
 /************************* Sonar Read task *********************************/
+
 #define SONAR_READ_TASK_ESP_CORE 1          // Core assigned to task
 #define SONAR_READ_TASK_PRIORITY 1          // Priority assigned to task
 #define SONAR_READ_TASK_STACK_SIZE 3000     // Stack assigned to task (in bytes)
@@ -421,6 +436,7 @@ extern TaskHandle_t g_SonarReadTaskHandle; // Sonar Read task RTOS task handle
 extern bool g_SonarReadEnabled; // Global variable to suspend sonar sensor reading
 
 /************************* HC-SR04 Sonar sensor variables *********************************/
+
 #include <Wire.h>
 #include <NewPing.h>
 
@@ -487,6 +503,25 @@ extern volatile bool g_TiltTriggered[TILT_COUNT];
 
 extern const int g_FanPin[FAN_COUNT];
 extern bool g_FanOn[FAN_COUNT];
+
+/************************* Buzzer variables *********************************/
+
+typedef struct
+{
+  int frequency;
+  int tone;
+  int duration;
+  int pause;
+} noteStruct;
+
+#define BUZZER_FREQ 250    // in Hz ?
+#define BUZZER_RESOLUTION 12
+#define BUZZER_CHANNEL 4
+
+extern noteStruct g_startTune[3];
+extern noteStruct g_readyTune[3];
+extern noteStruct g_SOS[9];
+extern noteStruct g_longBeep[1];
 
 /************************* Motion Motor variables *********************************/
 
@@ -691,6 +726,7 @@ extern bool g_CutMotorAlarm;
 #define ERROR_UNDEFINED 999
 
 extern int g_CurrentErrorCode; // Current Error code
+#define MOWER_ERROR_TUNE_PLAY_INTERVAL 10000    // in ms
 
 /************************* Mower Menu definitions *********************************/
 
@@ -722,6 +758,7 @@ extern unsigned long g_operationTime;     // Total time spent in operation (not 
 extern unsigned long g_chargingTime;      // Total time spent charging
 
 /************************* Test sequence variables *********************************/
+
 #define TEST_SEQ_STEP_WAIT 750
 #define TEST_SEQ_STEP_ERROR_WAIT 1000
 

@@ -28,6 +28,7 @@
 #include "PerimeterTsk/PerimeterTsk.h"
 #include "Battery/Battery.h"
 #include "GyroAccel/GyroAccel.h"
+#include "Buzzer/Buzzer.h"
 #include "StartupChecks.h"
 
 void MySetup(void)
@@ -60,6 +61,9 @@ void MySetup(void)
   // in case of unexpected reset during mower operation, immediatly stop all motors (setup function sets motor to stop after setup)
   MotionMotorSetup();
   CutMotorSetup();
+
+  BuzzerSetup();
+  BuzzerCheck();
 
   MotorCurrentSensorSetup(); // Done by Analog Read task
   CompassSensorSetup();      // Done by Analog Read task ??

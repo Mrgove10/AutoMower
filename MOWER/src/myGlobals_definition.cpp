@@ -94,6 +94,7 @@ unsigned int g_inQueue = 0;            // Accumulated I2S notification queue wai
 // volatile long g_Triggers = 0;
 
 /************************* Perimeter data processing task *********************************/
+
 hw_timer_t *g_PerimeterTimerhandle = NULL; // Perimeter processing task timer based trigger ISR handle
 
 QueueHandle_t g_PerimeterTimerQueue; // Queue red by Perimeter processing task
@@ -134,6 +135,7 @@ int g_rawWritePtrCopy;                     // Pointer to last value written to g
 int8_t g_PerimeterSamplesForMatchedFilter[I2S_DMA_BUFFER_LENGTH];
 
 /************************* Analog Read task *********************************/
+
 TaskHandle_t g_AnaReadTaskHandle; // Sonar Read task RTOS task handle
 SemaphoreHandle_t g_I2CSemaphore; // I2C resource protection semaphore
 
@@ -168,11 +170,13 @@ unsigned long g_LastDisplayUpdate = 0;             // Used to trigger screen bac
 bool g_KeyPressed[KEYPAD_MAX_KEYS] = {false, false, false, false};
 
 /************************* MCP23017 I2C IO Extender variables *********************************/
+
 #include <Adafruit_MCP23017.h>
 
 Adafruit_MCP23017 IOExtend;
 
 /************************* I2C HMC5883L Compasss Sensor variables *********************************/
+
 #include <Adafruit_HMC5883_U.h>
 
 Adafruit_HMC5883_Unified Compass = Adafruit_HMC5883_Unified(COMPASS_ID);
@@ -215,6 +219,7 @@ float g_rollAngle;
 // float g_GyroAccelAngleY = 0;  // combined Gyro and Accel angle Y
 
 /************************* UART NEO-N8M GPS variables *********************************/
+
 #include <TinyGPS++.h>
 
 TinyGPSPlus GPS; // The TinyGPS++ object
@@ -229,6 +234,7 @@ double g_GPSLatitude = UNKNOWN_FLOAT;
 double g_GPSLongitude = UNKNOWN_FLOAT;
 
 /************************* DS18D20 temperature sensor variables *********************************/
+
 #include <DallasTemperature.h>
 
 OneWire TemperatureOneWire(PIN_ESP_TEMP);
@@ -250,9 +256,11 @@ int g_TempErrorCount[TEMPERATURE_COUNT] = {0, 0};
 float g_Temperature[TEMPERATURE_COUNT] = {0, 0};
 
 /************************* ACS712 Battery Charge current sensor variables *********************************/
+
 float g_BatteryChargeCurrent = 0;
 
 /************************* INA219 I2C Battery Charge current sensor variables *********************************/
+
 #include <Adafruit_INA219.h>
 
 Adafruit_INA219 BatteryChargeSensor = Adafruit_INA219(BATTERY_INA219_I2C_ADDRESS);
@@ -315,6 +323,28 @@ volatile bool g_TiltTriggered[TILT_COUNT] = {false, false};
 
 const int g_FanPin[FAN_COUNT] = {PIN_MCP_FAN_1, PIN_MCP_FAN_2};
 bool g_FanOn[FAN_COUNT] = {false, false};
+
+/************************* Buzzer variables *********************************/
+
+noteStruct g_startTune[] = {{2000, 500, 100, 0},
+                            {500, 600, 500, 0},
+                            {1000, 500, 100, 0}};
+
+noteStruct g_readyTune[] = {{500, 600, 250, 5},
+                            {1000, 700, 200, 5},
+                            {500, 600, 250, 5}};
+
+noteStruct g_SOS[] = {{2000, 1500, 150, 100},
+                      {2000, 1500, 150, 100},
+                      {2000, 1500, 150, 100},
+                      {2000, 1500, 450, 100},
+                      {2000, 1500, 450, 100},
+                      {2000, 1500, 450, 100},
+                      {2000, 1500, 150, 100},
+                      {2000, 1500, 150, 100},
+                      {2000, 1500, 150, 100}};
+
+noteStruct g_longBeep[] = {{1500, 1000, 1500, 0}};
 
 /************************* Motion Motor variables *********************************/
 
