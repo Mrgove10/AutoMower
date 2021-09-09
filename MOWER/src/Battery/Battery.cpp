@@ -314,7 +314,7 @@ void BatteryChargeCheck(const bool Now)
 
     // Determine State of Charge
 
-    g_BatterySOC = (map(int(g_BatteryVoltage), int(BATTERY_0_PERCENT_VOLTAGE), int(BATTERY_VOLTAGE_FULL_THRESHOLD), 0, 100));
+    g_BatterySOC = (map(int(g_BatteryVoltage), int(BATTERY_0_PERCENT_VOLTAGE), int(BATTERY_VOLTAGE_FULL_THRESHOLD), 0, 1000))/10;
     
     if (g_BatteryVoltage <= BATTERY_0_PERCENT_VOLTAGE)
     { 
