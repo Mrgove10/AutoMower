@@ -149,7 +149,8 @@ void idleDisplay(bool refresh)
         case 4:
             DisplayClear();
             headerDisplay(g_StatesString[int(g_CurrentState)], true);
-            DisplayPrint(0, 1, "Mot:" + String(g_Temperature[TEMPERATURE_2_BLUE], 1) + " Cut: " + String(g_Temperature[TEMPERATURE_1_RED], 1), true);
+            // DisplayPrint(0, 1, "Mot:" + String(g_Temperature[TEMPERATURE_2_BLUE], 1) + " Cut: " + String(g_Temperature[TEMPERATURE_1_RED], 1), true);
+            DisplayPrint(0, 1, "Pit:" + String(g_pitchAngle, 1) + " Rol: " + String(g_rollAngle, 1) + "    ", true);
             // Display currents
             DisplayPrint(0, 2, "L:" + String(g_MotorCurrent[MOTOR_CURRENT_LEFT], 0) +
                                " R:" + String(g_MotorCurrent[MOTOR_CURRENT_RIGHT], 0) + 
@@ -162,6 +163,7 @@ void idleDisplay(bool refresh)
     }
     else
     {
+      headerDisplay("", true);
       // Display State and other state related informations
       DisplayPrint(5,1,g_StatesString[int(g_CurrentState)]);
       String timeStr = myTime.dateTime("H:i:s");

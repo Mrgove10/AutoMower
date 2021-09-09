@@ -270,7 +270,7 @@ extern Adafruit_MCP23017 IOExtend;
 
 extern Adafruit_HMC5883_Unified Compass;
 
-#define COMPASS_PRESENT true
+// #define COMPASS_PRESENT true
 #define COMPASS_ID 12345
 #define COMPASS_PRECISION 1
 #define COMPASS_X_HEADING_CORRECTION -3.5f
@@ -699,7 +699,7 @@ extern int g_CurrentErrorCode; // Current Error code
 #define MENU_RETURN_MENU "Back|    |    |    "
 
 #define DISPLAY_REFRESH_INTERVAL 2000                   // in ms
-#define DISPLAY_IDLE_REFRESH_INTERVAL 10 * 60 * 1000    // in ms
+#define DISPLAY_IDLE_REFRESH_INTERVAL 1000              // in ms
 #define DISPLAY_MOWING_REFRESH_INTERVAL 500             // in ms
 #define DISPLAY_ERROR_REFRESH_INTERVAL 5000             // in ms
 #define DISPLAY_TEST_REFRESH_INTERVAL 5000              // in ms

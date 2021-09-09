@@ -308,7 +308,7 @@ void PitchRollCalc(const bool Now, const bool reset)
     g_rollAngle = g_rollAngle * 0.8 + rollAngle * 0.2;
     LastPitchRollCalc = millis();
 
-    DebugPrintln("Pitch: " + String(g_pitchAngle, 3) + ", Roll:" + String(g_rollAngle, 3), DBG_DEBUG, true);
+    // DebugPrintln("Pitch: " + String(g_pitchAngle, 3) + ", Roll:" + String(g_rollAngle, 3), DBG_VERBOSE, true);
   }
 }
 /**
