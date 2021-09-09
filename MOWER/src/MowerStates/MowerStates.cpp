@@ -57,7 +57,7 @@ void MowerIdle(const bool StateChange, const MowerState PreviousState)
     // if (PreviousState == MowerState::mowing)
     // {
     MowerStop();
-    CutMotorStop(true);
+    CutMotorStop();
     // }
   }
 
@@ -141,9 +141,6 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
     DebugPrintln("");
     LogPrintln("Mowing Started", TAG_MOWING, DBG_INFO);
 
-    // Change display with refresh
-    mowingDisplay(true);
-
     //change Telemetry frequency
     g_MQTTSendInterval = MQTT_TELEMETRY_SEND_INTERVAL_FAST;
 
@@ -189,14 +186,14 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
     mowingStartTime = millis();
 
     // Determine random cutting motor rotation direction
-    // if (millis() % 2 == 0) 
-    // {
+    if (millis() % 2 == 0) 
+    {
       bladeDirection = CUT_MOTOR_FORWARD;
-    // }
-    // else
-    // {
-    //   bladeDirection = CUT_MOTOR_REVERSE;
-    // }
+    }
+    else
+    {
+      bladeDirection = CUT_MOTOR_REVERSE;
+    }
     lastCutDirectionChange = millis();
   
     // Start Mowing
@@ -204,6 +201,9 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
     CutMotorStart(bladeDirection, MOWER_MOWING_CUTTING_SPEED);
     // Give time for cut motor to start
     delay(MOWER_MOWING_CUT_START_WAIT);
+
+    // Change display with refresh
+    mowingDisplay(true);
 
     // Initialise speed according to mowing mode
     switch (g_mowingMode)
@@ -349,8 +349,8 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
     DisplayPrint(0,2, F("Cut direct. change"));
 
     // Stop blades and mower
-    CutMotorStop(true);
     MowerStop();
+    CutMotorStop();
 
     // Wait for blade to stop
     delay(MOWER_MOWING_CUTTING_DIRECTION_WAIT_TIME);

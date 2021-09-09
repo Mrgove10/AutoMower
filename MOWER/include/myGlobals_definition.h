@@ -541,8 +541,8 @@ extern float g_WheelPerimeterTrackingCorrection[MOTION_MOTOR_COUNT]; // from per
 #define MOWER_MOWING_MAX_CONSECUTVE_OBSTACLES 5
 #define MOWER_MOWING_MAX_CONSECUTVE_OUTSIDE 30
 #define MOWER_MOWING_CUT_DIRECTION_CHANGE_INTERVAL 20 * 60 * 1000  // in ms, how often the mower stops to change cut motor rotation direction
-#define MOWER_MOWING_CUTTING_DIRECTION_WAIT_TIME 30 * 1000      // in ms, time to wait cut motor has stopped
-#define MOWER_MOWING_CUT_START_WAIT 5000  // in ms, time to wait after starting cut motor before starting motion motors. Especailly susefull when battery in not @ 100%
+#define MOWER_MOWING_CUTTING_DIRECTION_WAIT_TIME 15 * 1000      // in ms, time to wait cut motor has stopped
+#define MOWER_MOWING_CUT_START_WAIT 2000  // in ms, time to wait after starting cut motor before starting motion motors. Especailly susefull when battery in not @ 100%
 
 #define MOWER_MOWING_MODE_RANDOM 0                      // Ramdomised mowing
 #define MOWER_MOWING_MODE_SPIRAL_CLOCKWISE 1            // Mowing is done in a right spiral (clockwise)
@@ -636,8 +636,8 @@ extern double g_ParamPerimeterTrackPIDKd; // Kd PID Parameter for wire tracking 
 #define CUT_MOTOR_REVERSE -1
 #define CUT_MOTOR_MIN_SPEED 10
 
-#define CUT_MOTOR_FAST_STOP_INVERSE_SPEED 100   // full inverse speed
-#define CUT_MOTOR_FAST_STOP_INVERSE_DURATION 750 // in ms
+#define CUT_MOTOR_FAST_STOP_INVERSE_SPEED 85   // full inverse speed
+#define CUT_MOTOR_FAST_STOP_INVERSE_DURATION 1500 // in ms
 
 #define CUT_MOTOR_CHECK_INTERVAL 2000 // in ms
 

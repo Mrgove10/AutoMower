@@ -48,7 +48,7 @@ void CutMotorStart(const int Direction, const int Speed)
     g_CutMotorOn = true;
     g_CutMotorDirection = CUT_MOTOR_FORWARD;
     CutMotorSetSpeed(Speed);
-    DebugPrintln("Cut Motor start Forward", DBG_VERBOSE, true);
+    DebugPrintln("Cut Motor start Forward", DBG_DEBUG, true);
   }
 
   if (Direction == CUT_MOTOR_REVERSE)
@@ -56,7 +56,7 @@ void CutMotorStart(const int Direction, const int Speed)
     g_CutMotorOn = true;
     g_CutMotorDirection = CUT_MOTOR_REVERSE;
     CutMotorSetSpeed(Speed);
-    DebugPrintln("Cut Motor start Reverse", DBG_VERBOSE, true);
+    DebugPrintln("Cut Motor start Reverse", DBG_DEBUG, true);
   }
   IOExtendProtectedWrite(PIN_MCP_MOTOR_CUT_LN1, HIGH);
   IOExtendProtectedWrite(PIN_MCP_MOTOR_CUT_LN2, HIGH);
@@ -105,7 +105,7 @@ void CutMotorStop(const bool Immedate)
  */
 void CutMotorSetSpeed(const int Speed)
 {
-  if (Speed > 0 && Speed <= 100)
+  if (Speed >= 0 && Speed <= 100)
   {
     if ((Speed < CUT_MOTOR_MIN_SPEED) && (Speed != 0))
     {
@@ -121,16 +121,18 @@ void CutMotorSetSpeed(const int Speed)
 
       if (g_CutMotorDirection == CUT_MOTOR_FORWARD)
       {
+        ledcWrite(CUT_MOTOR_PWM_CHANNEL_REVERSE, 0);
         ledcWrite(CUT_MOTOR_PWM_CHANNEL_FORWARD, (uint32_t)(Speed * 4096) / 100);
       }
       if (g_CutMotorDirection == CUT_MOTOR_REVERSE)
       {
-        ledcWrite(CUT_MOTOR_PWM_CHANNEL_REVERSE, (uint32_t) (Speed * 4096) /100);
+        ledcWrite(CUT_MOTOR_PWM_CHANNEL_FORWARD, 0);
+        ledcWrite(CUT_MOTOR_PWM_CHANNEL_REVERSE, (uint32_t)(Speed * 4096) /100);
       }
       g_CutMotorSpeed = Speed;
     }
   }
-};
+}
 
 /**
  * Cut Motor test function
@@ -176,6 +178,8 @@ void CutMotorTest(void)
   delay(2 * DURATION);
 
   //Reverse
+
+  DisplayPrint(4, 2, "Stop !", true);
 
   CutMotorStop(true);
   delay(DURATION);
