@@ -261,7 +261,7 @@ extern bool g_KeyPressed[KEYPAD_MAX_KEYS];
 extern Adafruit_MCP23017 IOExtend;
 
 /************************* Rain Sensor variables *********************************/
-#define RAIN_SENSOR_CHECK_THRESHOLD 10
+#define RAIN_SENSOR_CHECK_THRESHOLD 0
 #define RAIN_SENSOR_RAINING_THRESHOLD 100 // this may have to be placed in a parameter
 #define RAIN_READ_INTERVAL 30000         // in ms
 

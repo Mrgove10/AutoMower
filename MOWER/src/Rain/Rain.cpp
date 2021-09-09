@@ -20,7 +20,7 @@ bool RainSensorCheck(void)
   DisplayClear();
   DisplayPrint(0, 0, F("Rain Test"));
 
-  if (raw > RAIN_SENSOR_CHECK_THRESHOLD)
+  if (raw >= RAIN_SENSOR_CHECK_THRESHOLD)
   {
     DebugPrintln("Rain Sensor Ok", DBG_INFO, true);
     DisplayPrint(2, 2, F("Rain OK"));
