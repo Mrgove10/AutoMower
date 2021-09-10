@@ -479,6 +479,9 @@ extern volatile bool g_BumperTriggered[BUMPER_COUNT];
 #define TILT_INACTIVE_AT_REST true
 #define TILT_ACTIVE_AT_REST false
 
+#define TILT_VERTICAL_ACTIVATED false   // used to toggle on or off the use of tilt sensors
+#define TILT_HORIZONTAL_ACTIVATED false // used to toggle on or off the use of tilt sensors
+
 #define TILT_DEBOUNCE_TIMEOUT 100 // in ms
 
 extern String g_tiltStr[TILT_COUNT];

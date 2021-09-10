@@ -63,6 +63,9 @@ void MowerIdle(const bool StateChange, const MowerState PreviousState)
 
     playTune(g_readyTune, sizeof(g_readyTune) / sizeof(noteStruct));
 
+    // reset Tilt activation variables
+    g_TiltTriggered[TILT_HORIZONTAL] = false;
+    g_TiltTriggered[TILT_VERTICAL] = false;
   }
 
   // Update display

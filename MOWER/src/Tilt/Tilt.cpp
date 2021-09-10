@@ -19,7 +19,7 @@ ICACHE_RAM_ATTR void horizontalTiltISR(void)
 
   LastHorizontalTitltStatus = !LastHorizontalTitltStatus; // Capture every status change
 
-  if (millis() - LastHorizontalTiltChange > TILT_DEBOUNCE_TIMEOUT)
+  if (millis() - LastHorizontalTiltChange > TILT_DEBOUNCE_TIMEOUT && TILT_HORIZONTAL_ACTIVATED)
   {
     portENTER_CRITICAL_ISR(&g_TiltMux[TILT_HORIZONTAL]);
     g_TiltTriggered[TILT_HORIZONTAL] = (LastHorizontalTitltStatus == LOW);
@@ -39,7 +39,7 @@ ICACHE_RAM_ATTR void verticalTiltISR(void)
 
   LastVerticalTiltStatus = !LastVerticalTiltStatus; // Capture every status change
 
-  if (millis() - LastVerticalTiltChange > TILT_DEBOUNCE_TIMEOUT)
+  if (millis() - LastVerticalTiltChange > TILT_DEBOUNCE_TIMEOUT && TILT_VERTICAL_ACTIVATED)
   {
     portENTER_CRITICAL_ISR(&g_TiltMux[TILT_VERTICAL]);
     g_TiltTriggered[TILT_VERTICAL] = (LastVerticalTiltStatus == HIGH);
