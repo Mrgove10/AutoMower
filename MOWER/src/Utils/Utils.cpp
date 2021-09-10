@@ -184,6 +184,8 @@ String ErrorString(const int errorCode)
       return String(F("Mowing Stopped: too many successive obstacles"));
     case ERROR_MOWING_OUTSIDE_TOO_LONG:
       return String(F("Mowing Stopped: Out of perimeter for too long"));
+    case ERROR_MOWING_CUT_MOTOR_OVERCURRENT:
+      return String(F("Mowing Stopped: Cut motor in overcurrent"));
     case ERROR_WIRE_SEARCH_NO_START_BUMPER_ACTIVE:
       return String(F("Wire search cannot start: bumper activated"));
     case ERROR_WIRE_SEARCH_NO_START_OBJECT_TOO_CLOSE:

@@ -43,13 +43,13 @@ void TestLoop()
   //  SonarRead(SONAR_FRONT, true);
   //  SonarRead(SONAR_LEFT, true);
 
-  BatteryVoltageRead();
+  // BatteryVoltageRead();
 
-  CompassRead();
+  // CompassRead();
 
-  GPSRead(true);
+  // GPSRead(true);
 
-  CutMotorCheck();
+  // CutMotorCheck();
 
   static unsigned long LastRefresh = 0;
 

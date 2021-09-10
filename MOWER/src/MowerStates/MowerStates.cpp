@@ -148,6 +148,9 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
     DebugPrintln("");
     LogPrintln("Mowing Started", TAG_MOWING, DBG_INFO);
 
+    // Change display with refresh
+    mowingDisplay(true);
+
     // Sound starting beep to notify environment
     playTune(g_longBeep, sizeof(g_longBeep) / sizeof(noteStruct), 3);
 
@@ -206,7 +209,7 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
     // Give time for cut motor to start
     delay(MOWER_MOWING_CUT_START_WAIT);
 
-    // Change display with refresh
+    // Refresh display
     mowingDisplay(true);
 
     // Initialise speed according to mowing mode
@@ -307,6 +310,17 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
   }
 
   //--------------------------------
+  // Is Cut motor in overcurrent situation ?
+  //--------------------------------
+
+  if (!CutMotorCheck(CUT_MOTOR_OVERCURRENT_THRESHOLD, false))
+  {
+    CutMotorStop();
+    DebugPrintln("Cut motor in overcurrent situation", DBG_ERROR, true);
+    g_CurrentState = MowerState::error;
+    g_CurrentErrorCode = ERROR_MOWING_CUT_MOTOR_OVERCURRENT;
+  }
+  //--------------------------------
   // Is Battery level above threshold ?
   //--------------------------------
 
@@ -405,6 +419,7 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
                                                     SONAR_MIN_DISTANCE_FOR_STOP,
                                                     SONAR_MIN_DISTANCE_FOR_STOP,
                                                     true,
+                                                    MOTION_MOTOR_OVERCURRENT_THRESHOLD,
                                                     true))
   {
     // Check if number of consecutive obstacle detection is above threshold and put mower in Error mode
@@ -624,8 +639,11 @@ void MowerLeavingBase(const bool StateChange, const MowerState PreviousState)
   {
     LogPrintln("Mower leaving Base", TAG_STATES, DBG_INFO);
 
-    // Cancel any outstanding wheel speed corrections
-    MotionMotorsTrackingAdjustSpeed(0, 0);
+    // Change display with refresh
+    LeavingBaseDisplay(true);
+
+    // Sound starting beep to notify environment
+    playTune(g_longBeep, sizeof(g_longBeep) / sizeof(noteStruct), 3);
 
     // Cancel any outstanding wheel speed corrections
     MotionMotorsTrackingAdjustSpeed(0, 0);
@@ -633,15 +651,16 @@ void MowerLeavingBase(const bool StateChange, const MowerState PreviousState)
     // Open Battery charge relay to reduce energy consumption of keeping relay closed
     BatteryChargeRelayOpen();
 
-  //  Reset battery charge current to 0
+    // Reset battery charge current to 0
     g_BatteryChargeCurrent = 0;
-    //change Telemetry frequency
+    
+    // Change Telemetry frequency
     g_MQTTSendInterval = MQTT_TELEMETRY_SEND_INTERVAL_FAST;
 
     // Force a Telemetry send
     MQTTSendTelemetry(true);
 
-    // Change display with refresh
+    // Refresh display
     LeavingBaseDisplay(true);
   }
 
@@ -845,6 +864,7 @@ bool MowerFindWire(const bool reset, int *phase, const int heading, const bool c
                                                         SONAR_MIN_DISTANCE_FOR_STOP,
                                                         SONAR_MIN_DISTANCE_FOR_STOP,
                                                         false, //  no Perimeter detection (and action)
+                                                        MOTION_MOTOR_OVERCURRENT_THRESHOLD,
                                                         true))
       {
         // Check if number of consecutive obstacle detection is above threshold and put mower in Error mode
@@ -1101,6 +1121,7 @@ bool MowerFollowWire(bool *reset, const int heading, const bool clockwise)
                                                                     //  SONAR_MIN_DISTANCE_FOR_STOP,
                                                                     0,
                                                                      false,  // no perimeter detection
+                                                                     0, // no Overcurrent detection
                                                                      false); // no action (for the moment ???????????????)
   }
   else
@@ -1112,6 +1133,7 @@ bool MowerFollowWire(bool *reset, const int heading, const bool clockwise)
                                                                      0,
                                                                      0,      // no right detection
                                                                      false,  // no perimeter detection
+                                                                     0, // no Overcurrent detection
                                                                      false); // no action (for the moment ???????????????)
   }
 
@@ -1404,16 +1426,19 @@ bool CheckPreConditions(const int Tilt, const int Bumper, const int Front, const
  * @param Left as optional int: sonar measured left distance to trigger detection/action. 0 disbales the check. Default is 0
  * @param Right as optional int: sonar measured right distance to trigger detection/action. 0 disbales the check. Default is 0
  * @param Perimeter as optional boolean: outside perimeter wire to trigger detection/action. 0 disables the check. Absolute value is used to perform the check (applies to both inside and outside perimeter wire).  Default is 0.
+ * @param MotorOverCurrent as optional int: over current on any of the motion motors to trigger detection/action. 0 disbales the check. Default is 0
  * @param ActionMode as optional boolean: if true, changes action is performed if condition is detected (default is false).
  * @return integer indicating which detection was detected.
  */
-int CheckObstacleAndAct(const bool Bumper, const int Front, const int Left, const int Right, const bool Perimeter, const bool ActionMode)
+int CheckObstacleAndAct(const bool Bumper, const int Front, const int Left, const int Right, const bool Perimeter, const int MotorOverCurrent, const bool ActionMode)
 {
   int firstSide = 0;  // first side to check distance before acting on obstacle detection 
   int secondSide = 0; // Second side to check distance before acting on obstacle detection
   String SideStr[SONAR_COUNT] = {"", "Left", "Right"};
   int firstSideAngle = 0; // Angle to turn for first direction
   int secondSideAngle = 0; // Angle to turn for second direction
+
+  static unsigned long lastMotionMotorOverCurrent = 0;
 
   // Determine random order for sides to check
   if (millis() % 2 == 0)
@@ -1522,7 +1547,7 @@ int CheckObstacleAndAct(const bool Bumper, const int Front, const int Left, cons
   //    Stop motion and cutting,
   //    if possible to turn left, reverse and turn left by a "small" angle (~ less than 90 degrees)
   //    if not possible, if possible to turn right, reverse and turn right by a "small" angle (~ less than 90 degrees)
-  //    if not possible, reverse further and turn to  be ready to go in "opposite direction"
+  //    if not possible, reverse further and turn to be ready to go in "opposite direction"
 
   if (Front != 0 && (g_SonarDistance[SONAR_FRONT] < Front))
   {
@@ -1626,6 +1651,69 @@ int CheckObstacleAndAct(const bool Bumper, const int Front, const int Left, cons
     g_totalObstacleDectections = g_totalObstacleDectections + 1;
     g_successiveObstacleDectections = g_successiveObstacleDectections + 1;
     return OBSTACLE_DETECTED_RIGHT;
+  }
+
+  //--------------------------------
+  // Motion motor overcurrent detection
+  //--------------------------------
+  // Reaction to motion motor overcurrent collision is as follows:
+  //    Stop motion and cutting,
+  //    if possible to turn left, reverse and turn left by a "small" angle (~ less than 90 degrees)
+  //    if not possible, if possible to turn right, reverse and turn right by a "small" angle (~ less than 90 degrees)
+  //    if not possible, reverse further and turn to be ready to go in "opposite direction"
+
+  if (g_MotorCurrent[MOTOR_CURRENT_LEFT] > MotorOverCurrent || 
+      g_MotorCurrent[MOTOR_CURRENT_RIGHT] > MotorOverCurrent)
+  {
+    // Check if first time
+    if (lastMotionMotorOverCurrent == 0)
+    {
+      lastMotionMotorOverCurrent = millis();
+    }
+    else
+    {
+      if (millis() - lastMotionMotorOverCurrent > MOTION_MOTOR_OVERCURRENT_DURATION)
+      {
+        lastMotionMotorOverCurrent = 0;
+
+        DebugPrintln("Motion Motor Overcurent detected !", DBG_DEBUG, true);
+        if (ActionMode)
+        {
+          // Stop motion and stop cutting motor
+          MowerStop();
+          CutMotorStop();
+
+          if (g_SonarDistance[firstSide] > SONAR_MIN_DISTANCE_FOR_TURN) // check if it's clear on first side
+          {
+            DebugPrintln("Turning " + SideStr[firstSide] , DBG_VERBOSE, true);
+            MowerReserseAndTurn(firstSideAngle, MOWER_MOVES_REVERSE_FOR_TURN_DURATION, true); // reverse and turn random angle
+          }
+          else
+          {
+            if (g_SonarDistance[secondSide] > SONAR_MIN_DISTANCE_FOR_TURN) // check if it's clear on second side
+            {
+              DebugPrintln("Reversing and turning " + SideStr[secondSide], DBG_VERBOSE, true);
+              MowerReserseAndTurn(secondSideAngle, MOWER_MOVES_REVERSE_FOR_TURN_DURATION, true); // reverse and turn random angle
+            }
+            else
+            {
+              DebugPrintln("Reversing and going back", DBG_VERBOSE, true);
+              MowerReserseAndTurn(random(135, 225), MOWER_MOVES_REVERSE_FOR_TURN_DURATION * 2, true); // reverse and turn right 135 degrees....and hope for the best !
+            }
+          }
+        }
+
+        // count as an obstable detection
+        g_totalObstacleDectections = g_totalObstacleDectections + 1;
+        g_successiveObstacleDectections = g_successiveObstacleDectections + 1;
+
+        return OBSTACLE_DETECTED_OVERCURRENT;
+      }
+      else
+      {
+        lastMotionMotorOverCurrent = 0;
+      }
+    }
   }
 
   // reset successive detections counter (we only get to here if no obstacle has been detected)

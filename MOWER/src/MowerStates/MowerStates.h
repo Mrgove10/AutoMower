@@ -97,8 +97,10 @@ bool CheckPreConditions(const int Tilt = ERROR_NO_ERROR, const int Bumper = ERRO
  * @param Right as optional int: sonar measured right distance to trigger detection/action. 0 disbales the check. Default is 0
  * @param Perimeter as optional boolean: outside perimeter wire to trigger detection/action. 0 disables the check. Absolute value is used to perform the check (applies to both inside and outside perimeter wire).  Default is 0.
  * @param ActionMode (optional) , if true, changes action is performed if condition is detected (default is false).
+ * @param MotorOverCurrent as optional int: over current on any of the motion motors to trigger detection/action. 0 disbales the check. Default is 0
+ * 
  * @return integer indicating which detection was detected.
  */
-int CheckObstacleAndAct(const bool Bumper = false, const int Front = 0, const int Left = 0, const int Right = 0, const bool Perimeter = false, const bool ActionMode = false);
+int CheckObstacleAndAct(const bool Bumper = false, const int Front = 0, const int Left = 0, const int Right = 0, const bool Perimeter = false, const int MotorOverCurrent = 0, const bool ActionMode = false);
 
 #endif

@@ -221,16 +221,46 @@ void CutMotorTest(void)
 
 /**
  * Cut Motor Check function
+ * @param cutOffCurrent (in mA) cutoff current threshold to trigger motor protection stop
  * @param Now true to force immediate check
+ * @return boolean indicating if check is ok (true) or not (false)
  */
-void CutMotorCheck(const bool Now)
+bool CutMotorCheck(int cutOffCurrent, const bool Now)
 {
   static unsigned long LastCutMotorCheck = 0;
+  static unsigned long lastCutMotorOverCurrent = 0;
 
   if ((millis() - LastCutMotorCheck > CUT_MOTOR_CHECK_INTERVAL) || Now)
   {
     g_CutMotorAlarm = (IOExtendProtectedRead(PIN_MCP_MOTOR_CUT_HIGH_AMP) == 1);
-    // DebugPrintln("Cut Motor Status: " + String(g_CutMotorAlarm), DBG_VERBOSE, true);
+    if (g_CutMotorAlarm)
+    {
+      DebugPrintln("Cut Motor alarm Status: " + String(g_CutMotorAlarm), DBG_VERBOSE, true);
+    }
     LastCutMotorCheck = millis();
+
+    if (g_MotorCurrent[MOTOR_CURRENT_CUT] > cutOffCurrent || g_CutMotorAlarm)
+    {
+      // Check if first time
+      if (lastCutMotorOverCurrent == 0)
+      {
+        lastCutMotorOverCurrent = millis();
+      }
+      else
+      {
+        if (millis() - lastCutMotorOverCurrent > CUT_MOTOR_OVERCURRENT_DURATION)
+        {
+          lastCutMotorOverCurrent = 0;
+          return false;
+        }
+      }
+    }
+    else
+    {
+      lastCutMotorOverCurrent = 0;
+    }
   }
+
+  // no problem
+  return true;
 }

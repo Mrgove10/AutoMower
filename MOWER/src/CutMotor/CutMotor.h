@@ -32,8 +32,11 @@ void CutMotorStop(const bool Immedate = false);
 
 /**
  * Cut Motor Check function
+ * @param cutOffCurrent (in mA) cutoff current threshold to trigger motor protection stop
  * @param Now true to force immediate check
+ * @return boolean indicating if check is ok (true) or not (false)
+ * 
  */
-void CutMotorCheck(const bool Now = false);
+bool CutMotorCheck(int cutOffCurrent, const bool Now = false);
 
 #endif

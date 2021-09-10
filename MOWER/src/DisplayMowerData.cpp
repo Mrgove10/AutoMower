@@ -56,8 +56,6 @@ void DisplayMowerData()
 
   //  GPSRead(true);
 
-  CutMotorCheck();
-
   static unsigned long LastRefreshed = 0;
   static unsigned long LastTaskRefreshed = 0;
 

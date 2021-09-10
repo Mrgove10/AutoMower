@@ -13,7 +13,7 @@ void NtpSetup(void)
                             // myTime.setLocation("Europe/Paris");
   myTime.setPosix(POSIXTZ);
 
-  waitForSync();
+  waitForSync(30);  // wait for 30 seconds max
 
   DisplayPrint(8, 1, myTime.dateTime("H:i:s"));
   delay(TEST_SEQ_STEP_WAIT);
