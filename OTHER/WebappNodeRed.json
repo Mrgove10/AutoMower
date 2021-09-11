@@ -150,25 +150,6 @@
         ]
     },
     {
-        "id": "1ca19896f898c336",
-        "type": "file in",
-        "z": "0cefd40a70793065",
-        "name": "",
-        "filename": "AutoMower/WebAppSchedule.json",
-        "format": "utf8",
-        "chunk": false,
-        "sendError": false,
-        "encoding": "none",
-        "allProps": false,
-        "x": 620,
-        "y": 240,
-        "wires": [
-            [
-                "20b4e45d6b395131"
-            ]
-        ]
-    },
-    {
         "id": "3ad9f72f462a182e",
         "type": "json",
         "z": "0cefd40a70793065",
@@ -180,7 +161,7 @@
         "y": 240,
         "wires": [
             [
-                "1ca19896f898c336"
+                "efc175acbdd715b2"
             ]
         ]
     },
@@ -367,6 +348,7 @@
         "id": "56627974eeaeb387",
         "type": "inject",
         "z": "0cefd40a70793065",
+        "d": true,
         "name": "",
         "props": [
             {
@@ -448,6 +430,24 @@
         "x": 200,
         "y": 660,
         "wires": []
+    },
+    {
+        "id": "efc175acbdd715b2",
+        "type": "file",
+        "z": "0cefd40a70793065",
+        "name": "",
+        "filename": "AutoMower/WebAppSchedule.json",
+        "appendNewline": true,
+        "createDir": true,
+        "overwriteFile": "true",
+        "encoding": "none",
+        "x": 600,
+        "y": 240,
+        "wires": [
+            [
+                "20b4e45d6b395131"
+            ]
+        ]
     },
     {
         "id": "b125b9f16442a822",
