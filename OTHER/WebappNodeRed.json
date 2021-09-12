@@ -210,6 +210,7 @@
         "id": "ce89d2eb37f35801",
         "type": "inject",
         "z": "0cefd40a70793065",
+        "d": true,
         "name": "",
         "props": [
             {
@@ -278,7 +279,8 @@
         "tosidebar": true,
         "console": false,
         "tostatus": false,
-        "complete": "false",
+        "complete": "payload",
+        "targetType": "msg",
         "statusVal": "",
         "statusType": "auto",
         "x": 860,
@@ -329,20 +331,10 @@
         "y": 560,
         "wires": [
             [
-                "6e3dae7ff0e2b211"
+                "26d1bfb6a128d168",
+                "0c2840f3685ce7cc"
             ]
         ]
-    },
-    {
-        "id": "6e3dae7ff0e2b211",
-        "type": "websocket out",
-        "z": "0cefd40a70793065",
-        "name": "Websockt for web APP",
-        "server": "b125b9f16442a822",
-        "client": "",
-        "x": 600,
-        "y": 560,
-        "wires": []
     },
     {
         "id": "56627974eeaeb387",
@@ -388,7 +380,7 @@
         "y": 700,
         "wires": [
             [
-                "6e3dae7ff0e2b211"
+                "0c2840f3685ce7cc"
             ]
         ]
     },
@@ -398,14 +390,15 @@
         "z": "0cefd40a70793065",
         "name": "",
         "url": "/AM/STOP",
-        "method": "get",
+        "method": "post",
         "upload": false,
         "swaggerDoc": "",
         "x": 120,
         "y": 300,
         "wires": [
             [
-                "2a640d820bb04765"
+                "2a640d820bb04765",
+                "56e809a9d613b0b2"
             ]
         ]
     },
@@ -417,8 +410,8 @@
         "links": [
             "f7ac5760ed21a3b4"
         ],
-        "x": 275,
-        "y": 300,
+        "x": 295,
+        "y": 360,
         "wires": []
     },
     {
@@ -450,7 +443,70 @@
         ]
     },
     {
-        "id": "b125b9f16442a822",
+        "id": "56e809a9d613b0b2",
+        "type": "http response",
+        "z": "0cefd40a70793065",
+        "name": "",
+        "statusCode": "200",
+        "headers": {},
+        "x": 340,
+        "y": 300,
+        "wires": []
+    },
+    {
+        "id": "47a5b0369f6590e9",
+        "type": "http in",
+        "z": "0cefd40a70793065",
+        "name": "",
+        "url": "/AM/Mow",
+        "method": "post",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 580,
+        "y": 300,
+        "wires": [
+            [
+                "24d574630c021b07",
+                "76860f74a40b59ef"
+            ]
+        ]
+    },
+    {
+        "id": "24d574630c021b07",
+        "type": "link out",
+        "z": "0cefd40a70793065",
+        "name": "Stqrt mow in",
+        "links": [
+            "9d9b11ef896892a6"
+        ],
+        "x": 755,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "76860f74a40b59ef",
+        "type": "http response",
+        "z": "0cefd40a70793065",
+        "name": "",
+        "statusCode": "200",
+        "headers": {},
+        "x": 800,
+        "y": 300,
+        "wires": []
+    },
+    {
+        "id": "0c2840f3685ce7cc",
+        "type": "websocket out",
+        "z": "0cefd40a70793065",
+        "name": "Websockt for web APP",
+        "server": "2fa3dcb537a02731",
+        "client": "",
+        "x": 600,
+        "y": 560,
+        "wires": []
+    },
+    {
+        "id": "2fa3dcb537a02731",
         "type": "websocket-listener",
         "path": "/AM/ws",
         "wholemsg": "false"
