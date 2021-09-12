@@ -123,7 +123,7 @@
         "topic": "",
         "payload": "{\"Command\":\"OTA\"}",
         "payloadType": "json",
-        "x": 770,
+        "x": 1010,
         "y": 120,
         "wires": [
             [
@@ -140,7 +140,7 @@
         "qos": "",
         "retain": "false",
         "broker": "571acea9.12d868",
-        "x": 980,
+        "x": 1220,
         "y": 240,
         "wires": []
     },
@@ -310,7 +310,7 @@
         "type": "debug",
         "z": "d6d24cd5e6d1be6f",
         "name": "Write Telemetry data",
-        "active": true,
+        "active": false,
         "tosidebar": true,
         "console": false,
         "tostatus": false,
@@ -404,7 +404,7 @@
         "topic": "",
         "payload": "{\"Command\":\"TEST\"}",
         "payloadType": "json",
-        "x": 750,
+        "x": 990,
         "y": 160,
         "wires": [
             [
@@ -429,7 +429,7 @@
         "topic": "",
         "payload": "{\"Command\":\"DEBUG\",\"Val1\":\"VERBOSE\"}",
         "payloadType": "json",
-        "x": 740,
+        "x": 980,
         "y": 200,
         "wires": [
             [
@@ -454,7 +454,7 @@
         "topic": "",
         "payload": "{\"Command\":\"DEBUG\",\"Val1\":\"DEBUG\"}",
         "payloadType": "json",
-        "x": 750,
+        "x": 990,
         "y": 240,
         "wires": [
             [
@@ -479,7 +479,7 @@
         "topic": "",
         "payload": "{\"Command\":\"DEBUG\",\"Val1\":\"INFO\"}",
         "payloadType": "json",
-        "x": 760,
+        "x": 1000,
         "y": 280,
         "wires": [
             [
@@ -504,7 +504,7 @@
         "topic": "",
         "payload": "{\"Command\":\"TEST_MOTOR\"}",
         "payloadType": "str",
-        "x": 750,
+        "x": 990,
         "y": 320,
         "wires": [
             [
@@ -529,7 +529,7 @@
         "topic": "",
         "payload": "{\"Command\":\"TEST_FORWARD\",\"Val1\":\"100\",\"Val2\":\"5\"}",
         "payloadType": "json",
-        "x": 1240,
+        "x": 1480,
         "y": 160,
         "wires": [
             [
@@ -546,7 +546,7 @@
         "qos": "",
         "retain": "false",
         "broker": "571acea9.12d868",
-        "x": 1500,
+        "x": 1740,
         "y": 240,
         "wires": []
     },
@@ -567,7 +567,7 @@
         "topic": "",
         "payload": "{\"Command\":\"TEST_REVERSE\",\"Val1\":\"75\",\"Val2\":\"5\"}",
         "payloadType": "json",
-        "x": 1250,
+        "x": 1490,
         "y": 200,
         "wires": [
             [
@@ -592,7 +592,7 @@
         "topic": "",
         "payload": "{\"Command\":\"TEST_STOP\"}",
         "payloadType": "str",
-        "x": 1290,
+        "x": 1530,
         "y": 120,
         "wires": [
             [
@@ -617,7 +617,7 @@
         "topic": "",
         "payload": "{\"Command\":\"TEST_TURN\",\"Val1\":\"90\"}",
         "payloadType": "json",
-        "x": 1270,
+        "x": 1510,
         "y": 280,
         "wires": [
             [
@@ -642,7 +642,7 @@
         "topic": "",
         "payload": "{\"Command\":\"TEST_TURN\",\"Val1\":\"-45\"}",
         "payloadType": "json",
-        "x": 1270,
+        "x": 1510,
         "y": 520,
         "wires": [
             [
@@ -667,7 +667,7 @@
         "topic": "",
         "payload": "{\"Command\":\"TEST_TURN\",\"Val1\":\"45\"}",
         "payloadType": "json",
-        "x": 1270,
+        "x": 1510,
         "y": 360,
         "wires": [
             [
@@ -692,7 +692,7 @@
         "topic": "",
         "payload": "{\"Command\":\"TEST_TURN\",\"Val1\":\"-90\"}",
         "payloadType": "json",
-        "x": 1270,
+        "x": 1510,
         "y": 440,
         "wires": [
             [
@@ -717,7 +717,7 @@
         "topic": "",
         "payload": "{\"Command\":\"TEST_TURN\",\"Val1\":\"180\"}",
         "payloadType": "json",
-        "x": 1260,
+        "x": 1500,
         "y": 240,
         "wires": [
             [
@@ -742,7 +742,7 @@
         "topic": "",
         "payload": "{\"Command\":\"TEST_TURN\",\"Val1\":\"-180\"}",
         "payloadType": "json",
-        "x": 1260,
+        "x": 1500,
         "y": 400,
         "wires": [
             [
@@ -767,7 +767,7 @@
         "topic": "",
         "payload": "{\"Command\":\"TEST_CUTMOTOR\"}",
         "payloadType": "str",
-        "x": 740,
+        "x": 980,
         "y": 360,
         "wires": [
             [
@@ -784,7 +784,7 @@
         "qos": "",
         "retain": "false",
         "broker": "571acea9.12d868",
-        "x": 480,
+        "x": 700,
         "y": 240,
         "wires": []
     },
@@ -805,7 +805,7 @@
         "topic": "",
         "payload": "{\"Command\":\"STATE_CHANGE\",\"Val1\":\"IDLE\"}",
         "payloadType": "json",
-        "x": 210,
+        "x": 330,
         "y": 120,
         "wires": [
             [
@@ -830,7 +830,7 @@
         "topic": "",
         "payload": "{\"Command\":\"STATE_CHANGE\",\"Val1\":\"DOCKED\"}",
         "payloadType": "json",
-        "x": 200,
+        "x": 320,
         "y": 160,
         "wires": [
             [
@@ -855,7 +855,7 @@
         "topic": "",
         "payload": "{\"Command\":\"STATE_CHANGE\",\"Val1\":\"MOWING\",\"Val2\":\"0\"}",
         "payloadType": "json",
-        "x": 170,
+        "x": 290,
         "y": 200,
         "wires": [
             [
@@ -880,7 +880,7 @@
         "topic": "",
         "payload": "{\"Command\":\"STATE_CHANGE\",\"Val1\":\"TO_BASE\"}",
         "payloadType": "json",
-        "x": 200,
+        "x": 320,
         "y": 320,
         "wires": [
             [
@@ -905,7 +905,7 @@
         "topic": "",
         "payload": "{\"Command\":\"STATE_CHANGE\",\"Val1\":\"FROM_BASE\"}",
         "payloadType": "json",
-        "x": 190,
+        "x": 310,
         "y": 360,
         "wires": [
             [
@@ -930,7 +930,7 @@
         "topic": "",
         "payload": "{\"Command\":\"STATE_CHANGE\",\"Val1\":\"ERROR\"}",
         "payloadType": "json",
-        "x": 210,
+        "x": 330,
         "y": 400,
         "wires": [
             [
@@ -955,7 +955,7 @@
         "topic": "",
         "payload": "{\"Command\":\"STATE_CHANGE\",\"Val1\":\"TEST\"}",
         "payloadType": "json",
-        "x": 200,
+        "x": 320,
         "y": 440,
         "wires": [
             [
@@ -980,7 +980,7 @@
         "topic": "",
         "payload": "{\"Command\":\"TEST_TURN\",\"Val1\":\"90\",\"Val2\":\"1\"}",
         "payloadType": "json",
-        "x": 1240,
+        "x": 1480,
         "y": 320,
         "wires": [
             [
@@ -1005,7 +1005,7 @@
         "topic": "",
         "payload": "{\"Command\":\"TEST_TURN\",\"Val1\":\"-90\",\"Val2\":\"1\"}",
         "payloadType": "json",
-        "x": 1240,
+        "x": 1480,
         "y": 480,
         "wires": [
             [
@@ -1030,7 +1030,7 @@
         "topic": "",
         "payload": "{\"Command\":\"TEST_TURN\",\"Val1\":\"-360\",\"Val2\":\"1\"}",
         "payloadType": "json",
-        "x": 1240,
+        "x": 1480,
         "y": 560,
         "wires": [
             [
@@ -1055,7 +1055,7 @@
         "topic": "",
         "payload": "{\"Command\":\"TEST_FORWARD\",\"Val1\":\"100\",\"Val2\":\"30\"}",
         "payloadType": "json",
-        "x": 1280,
+        "x": 1520,
         "y": 80,
         "wires": [
             [
@@ -1080,7 +1080,7 @@
         "topic": "",
         "payload": "{\"Command\":\"START_MQTT_GRAPH_DEBUG\"}",
         "payloadType": "str",
-        "x": 700,
+        "x": 940,
         "y": 420,
         "wires": [
             [
@@ -1105,7 +1105,7 @@
         "topic": "",
         "payload": "{\"Command\":\"STOP_MQTT_GRAPH_DEBUG\"}",
         "payloadType": "str",
-        "x": 700,
+        "x": 940,
         "y": 460,
         "wires": [
             [
@@ -1130,7 +1130,7 @@
         "topic": "",
         "payload": "{\"Command\":\"TEST_STOP\"}",
         "payloadType": "str",
-        "x": 210,
+        "x": 330,
         "y": 480,
         "wires": [
             [
@@ -1155,7 +1155,7 @@
         "topic": "",
         "payload": "{\"Command\":\"TUNE_OFFSET\",\"Val1\":\"5\"}",
         "payloadType": "str",
-        "x": 200,
+        "x": 320,
         "y": 520,
         "wires": [
             [
@@ -1180,7 +1180,7 @@
         "topic": "",
         "payload": "{\"Command\":\"TUNE_OFFSET\",\"Val1\":\"-5\"}",
         "payloadType": "str",
-        "x": 200,
+        "x": 320,
         "y": 560,
         "wires": [
             [
@@ -1205,7 +1205,7 @@
         "topic": "",
         "payload": "{\"Command\":\"CALIBRATE\",\"Val1\":\"PERIMETER\"}",
         "payloadType": "str",
-        "x": 170,
+        "x": 290,
         "y": 600,
         "wires": [
             [
@@ -1230,7 +1230,7 @@
         "topic": "",
         "payload": "{\"Command\":\"START_MQTT_GRAPH_RAW_DEBUG\"}",
         "payloadType": "str",
-        "x": 680,
+        "x": 920,
         "y": 500,
         "wires": [
             [
@@ -1255,7 +1255,7 @@
         "topic": "",
         "payload": "{\"Command\":\"STOP_MQTT_GRAPH_RAW_DEBUG\"}",
         "payloadType": "str",
-        "x": 680,
+        "x": 920,
         "y": 540,
         "wires": [
             [
@@ -1280,7 +1280,7 @@
         "topic": "",
         "payload": "{\"Command\":\"STATE_CHANGE\",\"Val1\":\"ACKNOWLEDGE\"}",
         "payloadType": "json",
-        "x": 180,
+        "x": 300,
         "y": 80,
         "wires": [
             [
@@ -1305,7 +1305,7 @@
         "topic": "",
         "payload": "{\"Command\":\"START_MQTT_PID_GRAPH_DEBUG\"}",
         "payloadType": "str",
-        "x": 680,
+        "x": 920,
         "y": 580,
         "wires": [
             [
@@ -1330,7 +1330,7 @@
         "topic": "",
         "payload": "{\"Command\":\"STOP_MQTT_PID_GRAPH_DEBUG\"}",
         "payloadType": "str",
-        "x": 690,
+        "x": 930,
         "y": 620,
         "wires": [
             [
@@ -1344,7 +1344,7 @@
         "z": "d6d24cd5e6d1be6f",
         "name": "State Changes",
         "info": "",
-        "x": 440,
+        "x": 560,
         "y": 60,
         "wires": []
     },
@@ -1354,7 +1354,7 @@
         "z": "d6d24cd5e6d1be6f",
         "name": "Debug commands",
         "info": "",
-        "x": 960,
+        "x": 1200,
         "y": 60,
         "wires": []
     },
@@ -1364,7 +1364,7 @@
         "z": "d6d24cd5e6d1be6f",
         "name": "Basic Mower Moves",
         "info": "",
-        "x": 1510,
+        "x": 1750,
         "y": 60,
         "wires": []
     },
@@ -1484,7 +1484,7 @@
         "once": false,
         "onceDelay": 0.1,
         "topic": "",
-        "payload": "{\"Command\":\"PARAMETER\",\"Val1\":\"PerimTtrkSetPt\",\"Val2\":\"-10\"}",
+        "payload": "{\"Command\":\"PARAMETER\",\"Val1\":\"PerimTtrkSetPt\",\"Val2\":\"-500\"}",
         "payloadType": "json",
         "x": 180,
         "y": 960,
@@ -1821,7 +1821,7 @@
         "topic": "",
         "payload": "{\"Command\":\"RESTART\"}",
         "payloadType": "json",
-        "x": 760,
+        "x": 1000,
         "y": 80,
         "wires": [
             [
@@ -1846,7 +1846,7 @@
         "topic": "",
         "payload": "{\"Command\":\"STATE_CHANGE\",\"Val1\":\"MOWING\",\"Val2\":\"1\"}",
         "payloadType": "json",
-        "x": 170,
+        "x": 290,
         "y": 240,
         "wires": [
             [
@@ -1871,7 +1871,7 @@
         "topic": "",
         "payload": "{\"Command\":\"STATE_CHANGE\",\"Val1\":\"MOWING\",\"Val2\":\"2\"}",
         "payloadType": "json",
-        "x": 150,
+        "x": 270,
         "y": 280,
         "wires": [
             [
@@ -1899,8 +1899,8 @@
         "links": [
             "2a640d820bb04765"
         ],
-        "x": 355,
-        "y": 100,
+        "x": 135,
+        "y": 120,
         "wires": [
             [
                 "4e27f06c67c8495c"
@@ -1918,7 +1918,7 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 480,
+        "x": 460,
         "y": 120,
         "wires": [
             [
@@ -1943,7 +1943,7 @@
         "topic": "",
         "payload": "{\"Command\":\"CALIBRATE\",\"Val1\":\"ACCEL\"}",
         "payloadType": "str",
-        "x": 180,
+        "x": 300,
         "y": 680,
         "wires": [
             [
@@ -1968,7 +1968,7 @@
         "topic": "",
         "payload": "{\"Command\":\"CALIBRATE\",\"Val1\":\"GYRO\"}",
         "payloadType": "str",
-        "x": 180,
+        "x": 300,
         "y": 640,
         "wires": [
             [
@@ -1984,8 +1984,8 @@
         "links": [
             "24d574630c021b07"
         ],
-        "x": 355,
-        "y": 140,
+        "x": 135,
+        "y": 200,
         "wires": [
             [
                 "8287995aea480820"
@@ -2004,7 +2004,7 @@
         "finalize": "",
         "libs": [],
         "x": 460,
-        "y": 180,
+        "y": 200,
         "wires": [
             [
                 "dec10993840a7d26"
