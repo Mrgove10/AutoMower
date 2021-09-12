@@ -1467,7 +1467,7 @@ int CheckObstacleAndAct(const bool Bumper, const int Front, const int Left, cons
 
   if (!Bumper && (BumperRead(BUMPER_RIGHT) || BumperRead(BUMPER_LEFT)))
   {
-    DebugPrintln("Bumper collision detected ! ", DBG_DEBUG, true);
+    LogPrintln("Bumper collision detected ! ", TAG_MOWING, DBG_DEBUG);
     if (ActionMode)
     {
       // Stop motion and stop cutting motor
@@ -1551,7 +1551,7 @@ int CheckObstacleAndAct(const bool Bumper, const int Front, const int Left, cons
 
   if (Front != 0 && (g_SonarDistance[SONAR_FRONT] < Front))
   {
-    DebugPrintln("Font sonar proximity ! (" + String(g_SonarDistance[SONAR_FRONT]) + "cm)", DBG_DEBUG, true);
+    LogPrintln("Font sonar proximity ! (" + String(g_SonarDistance[SONAR_FRONT]) + "cm)", TAG_MOWING, DBG_DEBUG);
     if (ActionMode)
     {
       // Stop motion and stop cutting motor
@@ -1595,7 +1595,7 @@ int CheckObstacleAndAct(const bool Bumper, const int Front, const int Left, cons
 
   if (Left != 0 && (g_SonarDistance[SONAR_LEFT] < Left))
   {
-    DebugPrintln("Left sonar proximity ! (" + String(g_SonarDistance[SONAR_LEFT]) + "cm)", DBG_DEBUG, true);
+    LogPrintln("Left sonar proximity ! (" + String(g_SonarDistance[SONAR_LEFT]) + "cm)", TAG_MOWING, DBG_DEBUG);
     if (ActionMode)
     {
       MowerStop();
@@ -1629,7 +1629,7 @@ int CheckObstacleAndAct(const bool Bumper, const int Front, const int Left, cons
 
   if (Right != 0 && (g_SonarDistance[SONAR_RIGHT] < Right))
   {
-    DebugPrintln("Right sonar proximity ! (" + String(g_SonarDistance[SONAR_RIGHT]) + "cm)", DBG_DEBUG, true);
+    LogPrintln("Right sonar proximity ! (" + String(g_SonarDistance[SONAR_RIGHT]) + "cm)", TAG_MOWING, DBG_DEBUG);
     if (ActionMode)
     {
       MowerStop();
@@ -1676,7 +1676,7 @@ int CheckObstacleAndAct(const bool Bumper, const int Front, const int Left, cons
       {
         lastMotionMotorOverCurrent = 0;
 
-        DebugPrintln("Motion Motor Overcurent detected !", DBG_DEBUG, true);
+        LogPrintln("Motion Motor Overcurent detected !", TAG_MOWING, DBG_DEBUG);
         if (ActionMode)
         {
           // Stop motion and stop cutting motor

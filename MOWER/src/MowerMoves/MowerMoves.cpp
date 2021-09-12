@@ -110,8 +110,18 @@ void MowerTurn(const int Angle, const bool OnSpot)
  */
 void MowerReserseAndTurn(const int Angle, const int Duration, const bool OnSpot)
 {
-  MowerReverse(MOWER_MOVES_REVERSE, Duration);
-  MowerTurn(Angle, OnSpot);
+  int correctedAngle = Angle;
+  int correctedDuration = Duration;
+
+  // Check if mower facing downwards, increase turning angle and duration to compensate for tilt angle
+  if (g_pitchAngle < MOTION_MOTOR_PITCH_TURN_CORRECTION_ANGLE)
+  {
+    DebugPrintln("Mower facing downwards (Pitch:" + String(g_pitchAngle) + ") : turn angle and duration corrected", DBG_DEBUG, true);
+    correctedAngle = correctedAngle - int(g_pitchAngle * MOTION_MOTOR_PITCH_TURN_CORRECTION_FACTOR);  // pitch angle is negative when going downwards
+    correctedDuration = correctedDuration - int(100 * g_pitchAngle * MOTION_MOTOR_PITCH_TURN_CORRECTION_FACTOR);  // pitch angle is negative when going downwards
+  }
+  MowerReverse(MOWER_MOVES_REVERSE, correctedDuration);
+  MowerTurn(correctedAngle, OnSpot);
   // Wait before any movement is made - To limit mechanical stress
   delay(150);
 }
