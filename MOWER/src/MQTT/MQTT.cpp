@@ -152,6 +152,8 @@ void MQTTCallback(char *topic, byte *message, unsigned int length)
       CutMotorStop();
       EEPROMSave(true);
       SerialAndTelnet.handle(); // Refresh Telnet Session
+      delay(500);
+      WiFi.disconnect();
       delay(2000);
       ESP.restart();
     }
@@ -447,7 +449,7 @@ void MQTTSendTelemetry(const bool now)
     JSONDataPayload.add("Error", String (g_CurrentErrorCode));
 
     // Battery data
-    JSONDataPayload.add("BatVolt", String(float(g_BatteryVoltage / 1000.0f), 2));
+    JSONDataPayload.add("BatVolt", String(float(g_BatteryVoltage / 1000.0f), 3));
     JSONDataPayload.add("ChargeCur", String(g_BatteryChargeCurrent, 2));
     JSONDataPayload.add("BatSOC", String(g_BatterySOC,1));
     JSONDataPayload.add("BatCharging", String(g_BatteryIsCharging));

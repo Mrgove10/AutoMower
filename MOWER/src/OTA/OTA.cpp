@@ -130,8 +130,8 @@ void OTAHandle(void)
 //      g_OTAelapsed = millis() - otaStart;
       int timeLeft = int ((OTA_TIMEOUT-(millis()-otaStart))/1000UL);
       DisplayPrint(14, 1, String(timeLeft) + "s  ");
-      // DebugPrintln("Untill OTA timeout:" + String(timeLeft), DBG_DEBUG, true);
-      // SerialAndTelnet.handle();
+      DebugPrintln("Untill OTA timeout:" + String(timeLeft), DBG_DEBUG, true);
+      SerialAndTelnet.handle();
       delay(500);
     }
     DebugPrintln("Upload timeout", DBG_ERROR, true);

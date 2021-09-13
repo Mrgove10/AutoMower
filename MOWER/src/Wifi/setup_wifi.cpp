@@ -43,16 +43,23 @@ void setup_wifi()
     }
   }
 
-  DebugPrintln("");
-  DebugPrintln("WiFi connected");
-  DisplayPrint(8, 2, F("Connected"));
-  char outBuf[18];
-  IPAddress ip = WiFi.localIP();
-  sprintf(outBuf, "%u.%u.%u.%u", ip[0], ip[1], ip[2], ip[3]);
-  DisplayPrint(2, 3, String(outBuf));
+  if (WiFi.status() != WL_CONNECTED)
+  {
+    ESP.restart();
+  }
+  else 
+  {
+    DebugPrintln("");
+    DebugPrintln("WiFi connected");
+    DisplayPrint(8, 2, F("Connected"));
+    char outBuf[18];
+    IPAddress ip = WiFi.localIP();
+    sprintf(outBuf, "%u.%u.%u.%u", ip[0], ip[1], ip[2], ip[3]);
+    DisplayPrint(2, 3, String(outBuf));
 
-  delay(TEST_SEQ_STEP_WAIT);
+    delay(TEST_SEQ_STEP_WAIT);
 
-  //  DebugPrint("IP address: ");
-  //  DebugPrintln(String(WiFi.localIP()));
+    //  DebugPrint("IP address: ");
+    //  DebugPrintln(String(WiFi.localIP()));
+  }
 }
