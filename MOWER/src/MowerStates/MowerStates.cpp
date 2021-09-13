@@ -1595,7 +1595,7 @@ int CheckObstacleAndAct(const bool Bumper, const int Front, const int Left, cons
 
   if (Left != 0 && (g_SonarDistance[SONAR_LEFT] < Left))
   {
-    LogPrintln("Left sonar proximity ! (" + String(g_SonarDistance[SONAR_LEFT]) + "cm)", TAG_MOWING, DBG_DEBUG);
+    DebugPrintln("Left sonar proximity ! (" + String(g_SonarDistance[SONAR_LEFT]) + "cm)", DBG_DEBUG, true);
     if (ActionMode)
     {
       MowerStop();
@@ -1629,7 +1629,7 @@ int CheckObstacleAndAct(const bool Bumper, const int Front, const int Left, cons
 
   if (Right != 0 && (g_SonarDistance[SONAR_RIGHT] < Right))
   {
-    LogPrintln("Right sonar proximity ! (" + String(g_SonarDistance[SONAR_RIGHT]) + "cm)", TAG_MOWING, DBG_DEBUG);
+    DebugPrintln("Right sonar proximity ! (" + String(g_SonarDistance[SONAR_RIGHT]) + "cm)", DBG_DEBUG, true);
     if (ActionMode)
     {
       MowerStop();
@@ -1676,7 +1676,7 @@ int CheckObstacleAndAct(const bool Bumper, const int Front, const int Left, cons
       {
         lastMotionMotorOverCurrent = 0;
 
-        LogPrintln("Motion Motor Overcurent detected !", TAG_MOWING, DBG_DEBUG);
+        LogPrintln("Motion Motor Overcurent detected (L:" + String(g_MotorCurrent[MOTOR_CURRENT_LEFT],0) + ", R:" + String(g_MotorCurrent[MOTOR_CURRENT_RIGHT],0) + " mA)", TAG_MOWING, DBG_DEBUG);
         if (ActionMode)
         {
           // Stop motion and stop cutting motor
