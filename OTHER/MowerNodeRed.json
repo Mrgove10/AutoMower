@@ -123,11 +123,11 @@
         "topic": "",
         "payload": "{\"Command\":\"OTA\"}",
         "payloadType": "json",
-        "x": 1010,
-        "y": 120,
+        "x": 330,
+        "y": 580,
         "wires": [
             [
-                "813418c72a0c9d90"
+                "dec10993840a7d26"
             ]
         ]
     },
@@ -139,6 +139,11 @@
         "topic": "AutoMower/Command",
         "qos": "",
         "retain": "false",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
         "broker": "571acea9.12d868",
         "x": 1220,
         "y": 240,
@@ -405,7 +410,7 @@
         "payload": "{\"Command\":\"TEST\"}",
         "payloadType": "json",
         "x": 990,
-        "y": 160,
+        "y": 100,
         "wires": [
             [
                 "813418c72a0c9d90"
@@ -430,7 +435,7 @@
         "payload": "{\"Command\":\"DEBUG\",\"Val1\":\"VERBOSE\"}",
         "payloadType": "json",
         "x": 980,
-        "y": 200,
+        "y": 140,
         "wires": [
             [
                 "813418c72a0c9d90"
@@ -455,7 +460,7 @@
         "payload": "{\"Command\":\"DEBUG\",\"Val1\":\"DEBUG\"}",
         "payloadType": "json",
         "x": 990,
-        "y": 240,
+        "y": 180,
         "wires": [
             [
                 "813418c72a0c9d90"
@@ -480,7 +485,7 @@
         "payload": "{\"Command\":\"DEBUG\",\"Val1\":\"INFO\"}",
         "payloadType": "json",
         "x": 1000,
-        "y": 280,
+        "y": 220,
         "wires": [
             [
                 "813418c72a0c9d90"
@@ -505,7 +510,7 @@
         "payload": "{\"Command\":\"TEST_MOTOR\"}",
         "payloadType": "str",
         "x": 990,
-        "y": 320,
+        "y": 260,
         "wires": [
             [
                 "813418c72a0c9d90"
@@ -545,6 +550,11 @@
         "topic": "AutoMower/Command",
         "qos": "",
         "retain": "false",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
         "broker": "571acea9.12d868",
         "x": 1740,
         "y": 240,
@@ -768,7 +778,7 @@
         "payload": "{\"Command\":\"TEST_CUTMOTOR\"}",
         "payloadType": "str",
         "x": 980,
-        "y": 360,
+        "y": 300,
         "wires": [
             [
                 "813418c72a0c9d90"
@@ -931,7 +941,7 @@
         "payload": "{\"Command\":\"STATE_CHANGE\",\"Val1\":\"ERROR\"}",
         "payloadType": "json",
         "x": 330,
-        "y": 400,
+        "y": 520,
         "wires": [
             [
                 "dec10993840a7d26"
@@ -955,11 +965,11 @@
         "topic": "",
         "payload": "{\"Command\":\"STATE_CHANGE\",\"Val1\":\"TEST\"}",
         "payloadType": "json",
-        "x": 320,
-        "y": 440,
+        "x": 1000,
+        "y": 340,
         "wires": [
             [
-                "dec10993840a7d26"
+                "813418c72a0c9d90"
             ]
         ]
     },
@@ -1081,7 +1091,7 @@
         "payload": "{\"Command\":\"START_MQTT_GRAPH_DEBUG\"}",
         "payloadType": "str",
         "x": 940,
-        "y": 420,
+        "y": 500,
         "wires": [
             [
                 "813418c72a0c9d90"
@@ -1106,7 +1116,7 @@
         "payload": "{\"Command\":\"STOP_MQTT_GRAPH_DEBUG\"}",
         "payloadType": "str",
         "x": 940,
-        "y": 460,
+        "y": 540,
         "wires": [
             [
                 "813418c72a0c9d90"
@@ -1130,11 +1140,11 @@
         "topic": "",
         "payload": "{\"Command\":\"TEST_STOP\"}",
         "payloadType": "str",
-        "x": 330,
-        "y": 480,
+        "x": 1010,
+        "y": 380,
         "wires": [
             [
-                "dec10993840a7d26"
+                "813418c72a0c9d90"
             ]
         ]
     },
@@ -1155,11 +1165,11 @@
         "topic": "",
         "payload": "{\"Command\":\"TUNE_OFFSET\",\"Val1\":\"5\"}",
         "payloadType": "str",
-        "x": 320,
-        "y": 520,
+        "x": 1000,
+        "y": 420,
         "wires": [
             [
-                "dec10993840a7d26"
+                "813418c72a0c9d90"
             ]
         ]
     },
@@ -1180,11 +1190,11 @@
         "topic": "",
         "payload": "{\"Command\":\"TUNE_OFFSET\",\"Val1\":\"-5\"}",
         "payloadType": "str",
-        "x": 320,
-        "y": 560,
+        "x": 1000,
+        "y": 460,
         "wires": [
             [
-                "dec10993840a7d26"
+                "813418c72a0c9d90"
             ]
         ]
     },
@@ -1206,7 +1216,7 @@
         "payload": "{\"Command\":\"CALIBRATE\",\"Val1\":\"PERIMETER\"}",
         "payloadType": "str",
         "x": 290,
-        "y": 600,
+        "y": 400,
         "wires": [
             [
                 "dec10993840a7d26"
@@ -1231,7 +1241,7 @@
         "payload": "{\"Command\":\"START_MQTT_GRAPH_RAW_DEBUG\"}",
         "payloadType": "str",
         "x": 920,
-        "y": 500,
+        "y": 580,
         "wires": [
             [
                 "813418c72a0c9d90"
@@ -1256,7 +1266,7 @@
         "payload": "{\"Command\":\"STOP_MQTT_GRAPH_RAW_DEBUG\"}",
         "payloadType": "str",
         "x": 920,
-        "y": 540,
+        "y": 620,
         "wires": [
             [
                 "813418c72a0c9d90"
@@ -1306,7 +1316,7 @@
         "payload": "{\"Command\":\"START_MQTT_PID_GRAPH_DEBUG\"}",
         "payloadType": "str",
         "x": 920,
-        "y": 580,
+        "y": 660,
         "wires": [
             [
                 "813418c72a0c9d90"
@@ -1331,7 +1341,7 @@
         "payload": "{\"Command\":\"STOP_MQTT_PID_GRAPH_DEBUG\"}",
         "payloadType": "str",
         "x": 930,
-        "y": 620,
+        "y": 700,
         "wires": [
             [
                 "813418c72a0c9d90"
@@ -1396,7 +1406,7 @@
         "once": false,
         "onceDelay": 0.1,
         "topic": "",
-        "payload": "{\"Command\":\"PARAMETER\",\"Val1\":\"PerimTtrkngKp\",\"Val2\":\".10\"}",
+        "payload": "{\"Command\":\"PARAMETER\",\"Val1\":\"PerimTtrkngKp\",\"Val2\":\".0015\"}",
         "payloadType": "json",
         "x": 180,
         "y": 780,
@@ -1432,7 +1442,7 @@
         "once": false,
         "onceDelay": 0.1,
         "topic": "",
-        "payload": "{\"Command\":\"PARAMETER\",\"Val1\":\"PerimTtrkngKi\",\"Val2\":\"0.011\"}",
+        "payload": "{\"Command\":\"PARAMETER\",\"Val1\":\"PerimTtrkngKi\",\"Val2\":\"0.125\"}",
         "payloadType": "json",
         "x": 190,
         "y": 840,
@@ -1458,7 +1468,7 @@
         "once": false,
         "onceDelay": 0.1,
         "topic": "",
-        "payload": "{\"Command\":\"PARAMETER\",\"Val1\":\"PerimTtrkngKd\",\"Val2\":\"0.04\"}",
+        "payload": "{\"Command\":\"PARAMETER\",\"Val1\":\"PerimTtrkngKd\",\"Val2\":\"0.01\"}",
         "payloadType": "json",
         "x": 180,
         "y": 900,
@@ -1484,7 +1494,7 @@
         "once": false,
         "onceDelay": 0.1,
         "topic": "",
-        "payload": "{\"Command\":\"PARAMETER\",\"Val1\":\"PerimTtrkSetPt\",\"Val2\":\"-500\"}",
+        "payload": "{\"Command\":\"PARAMETER\",\"Val1\":\"PerimTtrkSetPt\",\"Val2\":\"-70\"}",
         "payloadType": "json",
         "x": 180,
         "y": 960,
@@ -1821,11 +1831,11 @@
         "topic": "",
         "payload": "{\"Command\":\"RESTART\"}",
         "payloadType": "json",
-        "x": 1000,
-        "y": 80,
+        "x": 320,
+        "y": 620,
         "wires": [
             [
-                "813418c72a0c9d90"
+                "dec10993840a7d26"
             ]
         ]
     },
@@ -1944,7 +1954,7 @@
         "payload": "{\"Command\":\"CALIBRATE\",\"Val1\":\"ACCEL\"}",
         "payloadType": "str",
         "x": 300,
-        "y": 680,
+        "y": 480,
         "wires": [
             [
                 "dec10993840a7d26"
@@ -1969,7 +1979,7 @@
         "payload": "{\"Command\":\"CALIBRATE\",\"Val1\":\"GYRO\"}",
         "payloadType": "str",
         "x": 300,
-        "y": 640,
+        "y": 440,
         "wires": [
             [
                 "dec10993840a7d26"

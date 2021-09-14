@@ -1048,7 +1048,7 @@ bool MowerFollowWire(bool *reset, const int heading, const bool clockwise)
     // Turn the PID on
     g_PerimeterTrackPID.SetMode(AUTOMATIC);
     g_PerimeterTrackPID.SetTunings(g_ParamPerimeterTrackPIDKp, g_ParamPerimeterTrackPIDKi, g_ParamPerimeterTrackPIDKd, P_ON_E);
-    g_PerimeterTrackPID.SetOutputLimits(-35, 35); // in %
+    g_PerimeterTrackPID.SetOutputLimits(-50, 50); // in %
     g_PerimeterTrackPID.SetControllerDirection(DIRECT);
     g_PerimeterTrackPID.SetSampleTime(PERIMETER_TRACKING_PID_INTERVAL);
 
@@ -1079,19 +1079,19 @@ bool MowerFollowWire(bool *reset, const int heading, const bool clockwise)
   bool SlowedDown = false;
   if (clockwise)
   {
-    SlowedDown = MowerSlowDownApproachingObstables(5,
+    SlowedDown = MowerSlowDownApproachingObstables(2,
                                                    SONAR_MIN_DISTANCE_FOR_SLOWING/2,
                                                    0, // no left detection
                                                    SONAR_MIN_DISTANCE_FOR_SLOWING/2,
-                                                   500); // no perimeter detection
+                                                   100); // no perimeter detection
   }
   else
   {
-    SlowedDown = MowerSlowDownApproachingObstables(5,
+    SlowedDown = MowerSlowDownApproachingObstables(2,
                                                    SONAR_MIN_DISTANCE_FOR_SLOWING/2,
                                                    SONAR_MIN_DISTANCE_FOR_SLOWING/2,
                                                    0,  // no right detection
-                                                   500); // no perimeter detection
+                                                   100); // no perimeter detection
   }
 
   if (!SlowedDown) // No approaching objects : resume normal speed
