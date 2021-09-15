@@ -10,17 +10,30 @@ window.changepage = function (page) {
             document.getElementById('mainpage').style.display = 'flex'
             document.getElementById('schedule').style.display = 'none'
             document.getElementById('advanced').style.display = 'none'
+            document.getElementById('scheduleEdit').style.display = 'none'
             break
+
         case 'schedule':
             document.getElementById('mainpage').style.display = 'none'
             document.getElementById('schedule').style.display = 'flex'
             document.getElementById('advanced').style.display = 'none'
+            document.getElementById('scheduleEdit').style.display = 'none'
+
+            break
+        case 'scheduleEdit':
+            document.getElementById('mainpage').style.display = 'none'
+            document.getElementById('schedule').style.display = 'none'
+            document.getElementById('advanced').style.display = 'none'
+            document.getElementById('scheduleEdit').style.display = 'flex'
+
             break
         case 'advanced':
             document.getElementById('mainpage').style.display = 'none'
             document.getElementById('schedule').style.display = 'none'
             document.getElementById('advanced').style.display = 'flex'
+            document.getElementById('scheduleEdit').style.display = 'none'
             break
+
         default:
             break
     }

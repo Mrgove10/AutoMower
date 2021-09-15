@@ -1,12 +1,19 @@
 import { getSchedule } from './config'
 import { days } from './jsons/days'
+import * as monaco from 'monaco-editor'
+import CodeMirror from 'codemirror'
+import 'codemirror/lib/codemirror.css'
+import 'codemirror/theme/monokai.css'
 
 const d = new Date()
 
 /**
  * Create the table structure for the schedule page
  */
-export function createTable () {
+export function createTable() {
+    // add edit button
+    document.getElementById('tableheader').innerHTML = '<th><button class="btn btn-secondary" onclick="changepage(\'scheduleEdit\')" href=\'#\'>Edit</button></th>'
+
     // table header
     days.forEach((day) => {
         document.getElementById('tableheader').innerHTML = document.getElementById('tableheader').innerHTML + `<th width="14.28%">${day}</th>`
@@ -26,7 +33,7 @@ export function createTable () {
 /**
  * Add the schedule colors in the table
  */
-export async function addSchedule () {
+export async function addSchedule() {
     const schedule = await getSchedule()
 
     // schedule coloring
@@ -53,7 +60,7 @@ export async function addSchedule () {
     outlineHour()
 }
 
-function outlineHour () {
+function outlineHour() {
     // outline the current day
     let dayNum = 0
     days.forEach((day) => {
@@ -69,57 +76,23 @@ function outlineHour () {
     })
 }
 
-// const schedule = {
-//     "Monday": [
-//         {
-//             start: 5,
-//             end: 12,
-//             zone: "Alpha"
-//         },
-//         {
-//             start: 14,
-//             end: 17,
-//             zone: "Beta"
-//         },
-//     ],
-//     "Tuesday": [
-//         {
-//             start: 1,
-//             end: 5,
-//             zone: "Beta"
-//         },
-//         {
-//             start: 6,
-//             end: 18,
-//             zone: "Alpha"
-//         }
-//     ],
-//     "Wednesday": [
-//         {
-//             start: 7,
-//             end: 19,
-//             zone: "Beta"
-//         }
-//     ],
-//     "Thursday": [
-//         {
-//             start: 8,
-//             end: 20,
-//             zone: "Beta"
-//         }
-//     ],
-//     "Friday": [
-//         {
-//             start: 9,
-//             end: 21,
-//             zone: "Beta"
-//         }
-//     ],
-//     "Sunday": [
-//         {
-//             start: 10,
-//             end: 24,
-//             zone: "Beta"
-//         }
-//     ]
-// }
+export async function textareaedit() {
+    const schedule = await getSchedule()
+    // CodeMirror.fromTextArea(document.getElementById('scheduleTextArea'), {
+    //     lineNumbers: true,
+    //     autofocus: true
+    // });
+    // document.getElementById('scheduleTextArea').innerText = JSON.stringify(schedule)
+    // monaco.editor.create(document.getElementById('ScheduleEdit'), {
+    //     value: schedule,
+    //     language: 'json'
+    // })
+    // const schedule = await getSchedule()
+    // console.log(JSON.stringify(schedule, null, 4))
+    // document.getElementById('scheduleTextArea').innerText = JSON.stringify(schedule, null, 4)
+
+    monaco.editor.create(document.getElementById('container'), {
+        value: 'console.log("Hello, world")',
+        language: 'javascript'
+    })
+}

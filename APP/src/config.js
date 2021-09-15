@@ -1,8 +1,8 @@
 const axios = require('axios').default
 
 export const APIUrl = 'http://192.168.1.38:1880/AM'
-let config = {}
-let schedule = {}
+let config = { mqttUrl: '192.168.1.101', mqttPort: '1883', APIUrl: 'http://192.168.1.3:1880/AM', mowerIP: '192.168.1.100' }
+let schedule = { Monday: [{ start: 5, end: 12, zone: 'Alpha' }, { start: 14, end: 17, zone: 'Beta' }], Tuesday: [{ start: 1, end: 5, zone: 'Beta' }, { start: 6, end: 18, zone: 'Alpha' }], Wednesday: [{ start: 7, end: 19, zone: 'Beta' }], Thursday: [{ start: 8, end: 20, zone: 'Beta' }], Friday: [{ start: 9, end: 21, zone: 'Beta' }], Sunday: [{ start: 10, end: 24, zone: 'Beta' }] }
 
 /**
  * get the config for the server

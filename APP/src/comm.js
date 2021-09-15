@@ -2,7 +2,7 @@ import { mowerStates } from './jsons/states'
 // import { connect } from 'mqtt/dist/mqtt'
 import { updatevalue } from './utils/utils'
 
-const ws = new WebSocket('ws://192.168.1.38:1880/AM/ws')
+const ws = new WebSocket('ws://192.168.1.3:1880/AM/ws')
 
 ws.onmessage = function (event) {
     event = JSON.parse(event.data)

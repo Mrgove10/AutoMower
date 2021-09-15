@@ -1,29 +1,29 @@
 export const mowerStates = {
-    1: {
+    0: {
         humanName: 'Idle',
         icon: '<i class="fas fa-hand-paper"></i>'
     },
-    2: {
+    1: {
         humanName: 'Docked',
         icon: '<i class="fas fa-home"></i>'
     },
-    3: {
+    2: {
         humanName: 'Mowing',
         icon: '<i class="fas fa-bolt"></i>'
     },
-    4: {
+    3: {
         humanName: 'Going to the dock',
         icon: '<i class="fas fa-home"></i><i class="fas fa-arrow-left"></i>'
     },
-    5: {
+    4: {
         humanName: 'Leaving dock',
         icon: '<i class="fas fa-home"></i><i class="fas fa-arrow-right"></i>'
     },
-    6: {
+    5: {
         humanName: 'Error',
         icon: '<i class="fas fa-exclamation-triangle"></i>'
     },
-    7: {
+    6: {
         humanName: 'test',
         icon: '<i class="fas fa-exclamation-triangle"></i>'
     }
