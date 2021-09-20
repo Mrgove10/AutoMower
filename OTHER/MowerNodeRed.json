@@ -1,15 +1,15 @@
 [
     {
-        "id": "d6d24cd5e6d1be6f",
+        "id": "60ab055898a3ccf8",
         "type": "tab",
         "label": "AutoMower",
         "disabled": false,
         "info": ""
     },
     {
-        "id": "993dba22d5ea9d18",
+        "id": "7002edc85e6333b3",
         "type": "mqtt in",
-        "z": "d6d24cd5e6d1be6f",
+        "z": "60ab055898a3ccf8",
         "name": "",
         "topic": "AutoMower/Log",
         "qos": "2",
@@ -19,15 +19,15 @@
         "y": 1500,
         "wires": [
             [
-                "0343da140cf67685",
-                "fb460cd854cf47e2"
+                "0a6fb100cf8184af",
+                "909a6f7cacfdd387"
             ]
         ]
     },
     {
-        "id": "0343da140cf67685",
+        "id": "0a6fb100cf8184af",
         "type": "debug",
-        "z": "d6d24cd5e6d1be6f",
+        "z": "60ab055898a3ccf8",
         "name": "Mower Log Message",
         "active": true,
         "tosidebar": true,
@@ -42,9 +42,9 @@
         "wires": []
     },
     {
-        "id": "fb460cd854cf47e2",
+        "id": "909a6f7cacfdd387",
         "type": "json",
-        "z": "d6d24cd5e6d1be6f",
+        "z": "60ab055898a3ccf8",
         "name": "",
         "property": "payload",
         "action": "",
@@ -53,14 +53,14 @@
         "y": 1500,
         "wires": [
             [
-                "3f6a73815b09d806"
+                "77b6a512c9d7f67b"
             ]
         ]
     },
     {
-        "id": "3f6a73815b09d806",
+        "id": "77b6a512c9d7f67b",
         "type": "function",
-        "z": "d6d24cd5e6d1be6f",
+        "z": "60ab055898a3ccf8",
         "name": "format data",
         "func": "var d = new Date().toJSON().slice(5,19).replace('T', ' ')\n\nvar tmp =[\n    msg.payload.Sender.slice(0,16),\n    msg.payload.Message,\n    msg.payload.Tags,\n    msg.payload.Level\n]\n\nmsg.payload = tmp\n\nmsg.topic=\"INSERT INTO AutoMower_log (`Time`,`Sender`,`Messages`,`Tags`,`Level`) \" + \n\"VALUES (TIMESTAMP(NOW()),?,?,?,?);\"\n\nnode.status({fill:\"green\",shape:\"ring\",text:d});\n\nreturn msg ;\n",
         "outputs": 1,
@@ -71,28 +71,28 @@
         "y": 1500,
         "wires": [
             [
-                "fddb4a5f344e8b79"
+                "d3797ff5b508b113"
             ]
         ]
     },
     {
-        "id": "fddb4a5f344e8b79",
+        "id": "d3797ff5b508b113",
         "type": "mysql",
-        "z": "d6d24cd5e6d1be6f",
+        "z": "60ab055898a3ccf8",
         "mydb": "169ed79e.a6e3e",
         "name": "",
         "x": 640,
         "y": 1500,
         "wires": [
             [
-                "0aaec8f87285b965"
+                "1a2d2af9f33ecb38"
             ]
         ]
     },
     {
-        "id": "0aaec8f87285b965",
+        "id": "1a2d2af9f33ecb38",
         "type": "debug",
-        "z": "d6d24cd5e6d1be6f",
+        "z": "60ab055898a3ccf8",
         "name": "Write AutoMower Log",
         "active": false,
         "tosidebar": true,
@@ -107,9 +107,9 @@
         "wires": []
     },
     {
-        "id": "5051dddf6f2272d7",
+        "id": "fc67af2524fdd87d",
         "type": "inject",
-        "z": "d6d24cd5e6d1be6f",
+        "z": "60ab055898a3ccf8",
         "name": "OTA",
         "props": [
             {
@@ -127,14 +127,14 @@
         "y": 580,
         "wires": [
             [
-                "dec10993840a7d26"
+                "f6bf8e98c9052529"
             ]
         ]
     },
     {
-        "id": "813418c72a0c9d90",
+        "id": "94ee634460c65276",
         "type": "mqtt out",
-        "z": "d6d24cd5e6d1be6f",
+        "z": "60ab055898a3ccf8",
         "name": "",
         "topic": "AutoMower/Command",
         "qos": "",
@@ -150,9 +150,9 @@
         "wires": []
     },
     {
-        "id": "29d3a4a07649a703",
+        "id": "23e6b594fa6fcc3f",
         "type": "function",
-        "z": "d6d24cd5e6d1be6f",
+        "z": "60ab055898a3ccf8",
         "name": "Purge Log100 days",
         "func": "var d = new Date().toJSON().slice(5,19).replace('T', ' ')\n\nmsg.topic=\"DELETE LOW_PRIORITY from AutoMower_log WHERE Time < DATE_SUB(NOW(),INTERVAL '100 0' DAY_HOUR)\"\n\nnode.status({fill:\"green\",shape:\"ring\",text:d});\n\nreturn msg ;\n\n\n",
         "outputs": 1,
@@ -163,28 +163,28 @@
         "y": 1600,
         "wires": [
             [
-                "f31a2bdb3e422ddc"
+                "d8da68abf46abccd"
             ]
         ]
     },
     {
-        "id": "f31a2bdb3e422ddc",
+        "id": "d8da68abf46abccd",
         "type": "mysql",
-        "z": "d6d24cd5e6d1be6f",
+        "z": "60ab055898a3ccf8",
         "mydb": "169ed79e.a6e3e",
         "name": "",
         "x": 520,
         "y": 1600,
         "wires": [
             [
-                "bd8bf0355580c708"
+                "b766875dd9f6d9a2"
             ]
         ]
     },
     {
-        "id": "bd8bf0355580c708",
+        "id": "b766875dd9f6d9a2",
         "type": "debug",
-        "z": "d6d24cd5e6d1be6f",
+        "z": "60ab055898a3ccf8",
         "name": "Deleted Rows",
         "active": true,
         "tosidebar": true,
@@ -199,9 +199,9 @@
         "wires": []
     },
     {
-        "id": "833bd59997170dee",
+        "id": "551fb174f1b59776",
         "type": "inject",
-        "z": "d6d24cd5e6d1be6f",
+        "z": "60ab055898a3ccf8",
         "name": "15 minutes",
         "props": [
             {
@@ -219,15 +219,15 @@
         "y": 1600,
         "wires": [
             [
-                "29d3a4a07649a703",
-                "9b8c96d96b86f370"
+                "23e6b594fa6fcc3f",
+                "81423afc63c27752"
             ]
         ]
     },
     {
-        "id": "f0b76fc148a28764",
+        "id": "e45b8539056bd577",
         "type": "mqtt in",
-        "z": "d6d24cd5e6d1be6f",
+        "z": "60ab055898a3ccf8",
         "name": "",
         "topic": "AutoMower/Telemetry",
         "qos": "2",
@@ -237,17 +237,17 @@
         "y": 1280,
         "wires": [
             [
-                "067962b5190095cc",
-                "ca0ae65395bd9b76",
-                "667b6305ea78df89",
-                "599d90f9d1419bb2"
+                "e7f7c192a381cab5",
+                "789255cc0fc11c9b",
+                "f2e957c0305d729c",
+                "cf513de1afd13a9b"
             ]
         ]
     },
     {
-        "id": "067962b5190095cc",
+        "id": "e7f7c192a381cab5",
         "type": "debug",
-        "z": "d6d24cd5e6d1be6f",
+        "z": "60ab055898a3ccf8",
         "name": "Mower Telemetry data",
         "active": true,
         "tosidebar": true,
@@ -262,9 +262,9 @@
         "wires": []
     },
     {
-        "id": "ca0ae65395bd9b76",
+        "id": "789255cc0fc11c9b",
         "type": "json",
-        "z": "d6d24cd5e6d1be6f",
+        "z": "60ab055898a3ccf8",
         "name": "",
         "property": "payload",
         "action": "",
@@ -273,14 +273,14 @@
         "y": 1280,
         "wires": [
             [
-                "9bdead5b83139be4"
+                "30765684c2f7090e"
             ]
         ]
     },
     {
-        "id": "9bdead5b83139be4",
+        "id": "30765684c2f7090e",
         "type": "function",
-        "z": "d6d24cd5e6d1be6f",
+        "z": "60ab055898a3ccf8",
         "name": "format data",
         "func": "var d = new Date().toJSON().slice(5,19).replace('T', ' ')\n\nif (msg.payload.DrvMotTemp < -50.0) { msg.payload.DrvMotTemp = null;}\nif (msg.payload.CMotTemp < -50.0) { msg.payload.CMotTemp = null;}\nif (msg.payload.GPSHead < -999.0) { msg.payload.GPSHead = null;}\nif (msg.payload.GPSHdop < -999.0) { msg.payload.GPSHdop = null;}\nif (msg.payload.GPSSpd < -999.0) { msg.payload.GPSSpd = null;}\nif (msg.payload.GPSAlt < -999.0) { msg.payload.GPSAlt = null;}\nif (msg.payload.GPSLat < -999.0) { msg.payload.GPSLat = 45.369;}\nif (msg.payload.GPSLon < -999.0) { msg.payload.GPSLon = 5.611;}\nif (msg.payload.Pitch == \"nan\") { msg.payload.Pitch = null;}\nif (msg.payload.Roll == \"nan\") { msg.payload.Roll = null;}\n\nvar tmp =[\n    msg.payload.State,\n    msg.payload.Error,\n    msg.payload.BatVolt,\n    msg.payload.ChargeCur,\n    msg.payload.BatSOC,\n    msg.payload.BatCharging,\n    msg.payload.DrvMotTemp,\n    msg.payload.DrvMotTempEr,\n    msg.payload.DrvMotFan,\n    msg.payload.RMotCur,\n    msg.payload.RMotSpd,\n    msg.payload.LMotCur,\n    msg.payload.LMotSpd,\n    msg.payload.CMotTemp,\n    msg.payload.CMotTempEr,\n    msg.payload.CMotFan,\n    msg.payload.CMotCur,\n    msg.payload.CMotSpd,\n    msg.payload.CMotAlm,\n    msg.payload.FSnrDist,\n    msg.payload.RSnrDist,\n    msg.payload.LSnrDist,\n    msg.payload.CompHead,\n    msg.payload.GPSHead/100,\n    msg.payload.GPSSat,\n    msg.payload.GPSHdop,\n    msg.payload.GPSSpd,\n    msg.payload.GPSAlt,\n    msg.payload.GPSLat,\n    msg.payload.GPSLon,\n    msg.payload.Mag,\n    msg.payload.SMag,\n    msg.payload.InOut,\n    msg.payload.Pitch,\n    msg.payload.Roll,\n    msg.payload.Obstcl,\n    msg.payload.MowTim,\n    msg.payload.RSSI,\n    msg.payload.Heap,\n    msg.payload.CPUTemp\n]\n\nmsg.payload = tmp\n\nmsg.topic =\"INSERT INTO AutoMower_telemetry ( `Time`, `State`, `ErrorNumber`, `BatteryVoltage`,`BatteryChargeCurrent`,`BatterySOC`,`BatteryCharging`,`DriveMotorTemperature`,`DriveMotorTemperatureErr`,`DriveMotorFan`,`RightMotorCurrent`,`RightMotorSpeed`,`LeftMotorCurrent`,`LeftMotorSpeed`,`CutMotorTemperature`,`CutMotorTemperatureErr`,`CutMotorFan`,`CutMotorCurrent`,`CutMotorSpeed`,`CutMotorAlarm`,\" +\n\" `FrontSonarDistance`,`RightSonarDistance`,`LeftSonarDistance`, `CompassHeading`,`GPSHeading`, `GPSSatellitesFix`, `GPSHdop`, `GPSSpeed`, `GPSAltitude`, `GPSLatitude`, `GPSLongitude`, `Magnitude`, `SmoothMagnitude`, `Inside`, `Pitch`, `Roll`, `TotalObstacles`, `TotalMowingTime`, `RSSI`, `Heap`, `CPUTemperature`)\" +\n\"VALUES (TIMESTAMP(NOW()),?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);\"\n\nnode.status({fill:\"green\",shape:\"ring\",text:d});\n\nreturn msg ;\n\n\n",
         "outputs": 1,
@@ -292,28 +292,28 @@
         "y": 1280,
         "wires": [
             [
-                "27b510c84ad25693"
+                "167bd68ee04bb97d"
             ]
         ]
     },
     {
-        "id": "27b510c84ad25693",
+        "id": "167bd68ee04bb97d",
         "type": "mysql",
-        "z": "d6d24cd5e6d1be6f",
+        "z": "60ab055898a3ccf8",
         "mydb": "169ed79e.a6e3e",
         "name": "",
         "x": 790,
         "y": 1280,
         "wires": [
             [
-                "62e7c14f76999dbb"
+                "b64c4dc1a2325200"
             ]
         ]
     },
     {
-        "id": "62e7c14f76999dbb",
+        "id": "b64c4dc1a2325200",
         "type": "debug",
-        "z": "d6d24cd5e6d1be6f",
+        "z": "60ab055898a3ccf8",
         "name": "Write Telemetry data",
         "active": false,
         "tosidebar": true,
@@ -328,9 +328,9 @@
         "wires": []
     },
     {
-        "id": "667b6305ea78df89",
+        "id": "f2e957c0305d729c",
         "type": "function",
-        "z": "d6d24cd5e6d1be6f",
+        "z": "60ab055898a3ccf8",
         "name": "Receive counter",
         "func": "// initialise the counter to 0 if it doesn't exist already\nvar count = flow.get('TelemetryCount')||0;\ncount += 1;\n// store the value back\nflow.set('TelemetryCount',count);\nnode.status({fill:\"green\",shape:\"ring\",text:count});\n// make it part of the outgoing msg object\nmsg.count = count;\nreturn msg;\n",
         "outputs": 1,
@@ -344,9 +344,9 @@
         ]
     },
     {
-        "id": "451568ab1a8017d9",
+        "id": "a50f7c37f3e03030",
         "type": "debug",
-        "z": "d6d24cd5e6d1be6f",
+        "z": "60ab055898a3ccf8",
         "name": "Deleted Rows",
         "active": true,
         "tosidebar": true,
@@ -361,23 +361,23 @@
         "wires": []
     },
     {
-        "id": "2ce2c71bb9f0ae4c",
+        "id": "8e45b054b63e3405",
         "type": "mysql",
-        "z": "d6d24cd5e6d1be6f",
+        "z": "60ab055898a3ccf8",
         "mydb": "169ed79e.a6e3e",
         "name": "",
         "x": 565,
         "y": 1678,
         "wires": [
             [
-                "451568ab1a8017d9"
+                "a50f7c37f3e03030"
             ]
         ]
     },
     {
-        "id": "9b8c96d96b86f370",
+        "id": "81423afc63c27752",
         "type": "function",
-        "z": "d6d24cd5e6d1be6f",
+        "z": "60ab055898a3ccf8",
         "name": "Purge Telemetry 100 days",
         "func": "var d = new Date().toJSON().slice(5,19).replace('T', ' ')\n\nmsg.topic=\"DELETE LOW_PRIORITY from AutoMower_telemetry WHERE Time < DATE_SUB(NOW(),INTERVAL '100 0' DAY_HOUR)\"\n\nnode.status({fill:\"green\",shape:\"ring\",text:d});\n\nreturn msg ;\n\n\n",
         "outputs": 1,
@@ -388,14 +388,14 @@
         "y": 1678,
         "wires": [
             [
-                "2ce2c71bb9f0ae4c"
+                "8e45b054b63e3405"
             ]
         ]
     },
     {
-        "id": "1580e768ccb6e8ca",
+        "id": "e2a68433cb4f8f95",
         "type": "inject",
-        "z": "d6d24cd5e6d1be6f",
+        "z": "60ab055898a3ccf8",
         "name": "Startup TESTS",
         "props": [
             {
@@ -413,14 +413,14 @@
         "y": 100,
         "wires": [
             [
-                "813418c72a0c9d90"
+                "94ee634460c65276"
             ]
         ]
     },
     {
-        "id": "c76765dd5003b7dd",
+        "id": "e5ee571988f6dbe0",
         "type": "inject",
-        "z": "d6d24cd5e6d1be6f",
+        "z": "60ab055898a3ccf8",
         "name": "DBG_VERBOSE",
         "props": [
             {
@@ -438,14 +438,14 @@
         "y": 140,
         "wires": [
             [
-                "813418c72a0c9d90"
+                "94ee634460c65276"
             ]
         ]
     },
     {
-        "id": "463d4710240ef05a",
+        "id": "b6c34fc97d724b80",
         "type": "inject",
-        "z": "d6d24cd5e6d1be6f",
+        "z": "60ab055898a3ccf8",
         "name": "DBG_DEBUG",
         "props": [
             {
@@ -463,14 +463,14 @@
         "y": 180,
         "wires": [
             [
-                "813418c72a0c9d90"
+                "94ee634460c65276"
             ]
         ]
     },
     {
-        "id": "f463f041595d99a6",
+        "id": "785be9dcd165f213",
         "type": "inject",
-        "z": "d6d24cd5e6d1be6f",
+        "z": "60ab055898a3ccf8",
         "name": "DBG_INFO",
         "props": [
             {
@@ -488,14 +488,14 @@
         "y": 220,
         "wires": [
             [
-                "813418c72a0c9d90"
+                "94ee634460c65276"
             ]
         ]
     },
     {
-        "id": "57644a3f7316781e",
+        "id": "b99cba46bbb5bbf1",
         "type": "inject",
-        "z": "d6d24cd5e6d1be6f",
+        "z": "60ab055898a3ccf8",
         "name": "TEST_MOTOR",
         "props": [
             {
@@ -513,14 +513,14 @@
         "y": 260,
         "wires": [
             [
-                "813418c72a0c9d90"
+                "94ee634460c65276"
             ]
         ]
     },
     {
-        "id": "d14c08836f23148f",
+        "id": "72acc547de989200",
         "type": "inject",
-        "z": "d6d24cd5e6d1be6f",
+        "z": "60ab055898a3ccf8",
         "name": "FORWARD 5s @ 100%",
         "props": [
             {
@@ -538,14 +538,14 @@
         "y": 160,
         "wires": [
             [
-                "276205ba93f1c411"
+                "1c9b16bcc94f69fc"
             ]
         ]
     },
     {
-        "id": "276205ba93f1c411",
+        "id": "1c9b16bcc94f69fc",
         "type": "mqtt out",
-        "z": "d6d24cd5e6d1be6f",
+        "z": "60ab055898a3ccf8",
         "name": "",
         "topic": "AutoMower/Command",
         "qos": "",
@@ -561,9 +561,9 @@
         "wires": []
     },
     {
-        "id": "cbf5e4101fb8237f",
+        "id": "7b08daa222c78435",
         "type": "inject",
-        "z": "d6d24cd5e6d1be6f",
+        "z": "60ab055898a3ccf8",
         "name": "REVERSE 5s @ 75%",
         "props": [
             {
@@ -581,14 +581,14 @@
         "y": 200,
         "wires": [
             [
-                "276205ba93f1c411"
+                "1c9b16bcc94f69fc"
             ]
         ]
     },
     {
-        "id": "8da7c896936b1f29",
+        "id": "ddf8216033179c74",
         "type": "inject",
-        "z": "d6d24cd5e6d1be6f",
+        "z": "60ab055898a3ccf8",
         "name": "STOP",
         "props": [
             {
@@ -606,14 +606,14 @@
         "y": 120,
         "wires": [
             [
-                "276205ba93f1c411"
+                "1c9b16bcc94f69fc"
             ]
         ]
     },
     {
-        "id": "80608f8987185c8c",
+        "id": "52d3de8bf44ab8b6",
         "type": "inject",
-        "z": "d6d24cd5e6d1be6f",
+        "z": "60ab055898a3ccf8",
         "name": "TURN R 90Deg",
         "props": [
             {
@@ -631,14 +631,14 @@
         "y": 280,
         "wires": [
             [
-                "276205ba93f1c411"
+                "1c9b16bcc94f69fc"
             ]
         ]
     },
     {
-        "id": "625a68bead65ce1c",
+        "id": "f4050ba5db09a054",
         "type": "inject",
-        "z": "d6d24cd5e6d1be6f",
+        "z": "60ab055898a3ccf8",
         "name": "TURN L 45Deg",
         "props": [
             {
@@ -656,14 +656,14 @@
         "y": 520,
         "wires": [
             [
-                "276205ba93f1c411"
+                "1c9b16bcc94f69fc"
             ]
         ]
     },
     {
-        "id": "4e53d22eeb29cdd9",
+        "id": "4825635ac11e486b",
         "type": "inject",
-        "z": "d6d24cd5e6d1be6f",
+        "z": "60ab055898a3ccf8",
         "name": "TURN R 45Deg",
         "props": [
             {
@@ -681,14 +681,14 @@
         "y": 360,
         "wires": [
             [
-                "276205ba93f1c411"
+                "1c9b16bcc94f69fc"
             ]
         ]
     },
     {
-        "id": "343a6927442de007",
+        "id": "9b9652fdc888513a",
         "type": "inject",
-        "z": "d6d24cd5e6d1be6f",
+        "z": "60ab055898a3ccf8",
         "name": "TURN L 90Deg",
         "props": [
             {
@@ -706,14 +706,14 @@
         "y": 440,
         "wires": [
             [
-                "276205ba93f1c411"
+                "1c9b16bcc94f69fc"
             ]
         ]
     },
     {
-        "id": "7a5f120c32d78313",
+        "id": "08b33146d05fa9cd",
         "type": "inject",
-        "z": "d6d24cd5e6d1be6f",
+        "z": "60ab055898a3ccf8",
         "name": "TURN R 180Deg",
         "props": [
             {
@@ -731,14 +731,14 @@
         "y": 240,
         "wires": [
             [
-                "276205ba93f1c411"
+                "1c9b16bcc94f69fc"
             ]
         ]
     },
     {
-        "id": "f0cd311be1a47807",
+        "id": "f4bbfadc396227c9",
         "type": "inject",
-        "z": "d6d24cd5e6d1be6f",
+        "z": "60ab055898a3ccf8",
         "name": "TURN L 180Deg",
         "props": [
             {
@@ -756,14 +756,14 @@
         "y": 400,
         "wires": [
             [
-                "276205ba93f1c411"
+                "1c9b16bcc94f69fc"
             ]
         ]
     },
     {
-        "id": "f82421e2da568fcd",
+        "id": "62a80c1aabacba03",
         "type": "inject",
-        "z": "d6d24cd5e6d1be6f",
+        "z": "60ab055898a3ccf8",
         "name": "TEST_CUTMOTOR",
         "props": [
             {
@@ -781,14 +781,14 @@
         "y": 300,
         "wires": [
             [
-                "813418c72a0c9d90"
+                "94ee634460c65276"
             ]
         ]
     },
     {
-        "id": "dec10993840a7d26",
+        "id": "f6bf8e98c9052529",
         "type": "mqtt out",
-        "z": "d6d24cd5e6d1be6f",
+        "z": "60ab055898a3ccf8",
         "name": "",
         "topic": "AutoMower/Command",
         "qos": "",
@@ -799,9 +799,9 @@
         "wires": []
     },
     {
-        "id": "f87281d6dee1f2eb",
+        "id": "5269f458955b78fa",
         "type": "inject",
-        "z": "d6d24cd5e6d1be6f",
+        "z": "60ab055898a3ccf8",
         "name": "IDLE",
         "props": [
             {
@@ -819,14 +819,14 @@
         "y": 120,
         "wires": [
             [
-                "4e27f06c67c8495c"
+                "99f6f30c05f981a8"
             ]
         ]
     },
     {
-        "id": "50dbd6a264aa7a78",
+        "id": "35b22b13171f288e",
         "type": "inject",
-        "z": "d6d24cd5e6d1be6f",
+        "z": "60ab055898a3ccf8",
         "name": "DOCKED",
         "props": [
             {
@@ -844,14 +844,14 @@
         "y": 160,
         "wires": [
             [
-                "dec10993840a7d26"
+                "f6bf8e98c9052529"
             ]
         ]
     },
     {
-        "id": "17fb7add63ea9356",
+        "id": "4e75c691236f1f75",
         "type": "inject",
-        "z": "d6d24cd5e6d1be6f",
+        "z": "60ab055898a3ccf8",
         "name": "MOWING - Random",
         "props": [
             {
@@ -869,14 +869,14 @@
         "y": 200,
         "wires": [
             [
-                "8287995aea480820"
+                "202b25cd8d411291"
             ]
         ]
     },
     {
-        "id": "baab7b08114fe65d",
+        "id": "99f149b68a280aff",
         "type": "inject",
-        "z": "d6d24cd5e6d1be6f",
+        "z": "60ab055898a3ccf8",
         "name": "TO_BASE",
         "props": [
             {
@@ -894,14 +894,14 @@
         "y": 320,
         "wires": [
             [
-                "dec10993840a7d26"
+                "cb7cbd119487683a"
             ]
         ]
     },
     {
-        "id": "60dc7a097656e15e",
+        "id": "aeb2402b8bbf41e8",
         "type": "inject",
-        "z": "d6d24cd5e6d1be6f",
+        "z": "60ab055898a3ccf8",
         "name": "FROM_BASE",
         "props": [
             {
@@ -919,14 +919,14 @@
         "y": 360,
         "wires": [
             [
-                "dec10993840a7d26"
+                "f6bf8e98c9052529"
             ]
         ]
     },
     {
-        "id": "b1040e4057176bb9",
+        "id": "daae3de4e4713442",
         "type": "inject",
-        "z": "d6d24cd5e6d1be6f",
+        "z": "60ab055898a3ccf8",
         "name": "ERROR",
         "props": [
             {
@@ -944,14 +944,14 @@
         "y": 520,
         "wires": [
             [
-                "dec10993840a7d26"
+                "f6bf8e98c9052529"
             ]
         ]
     },
     {
-        "id": "65df28522cf68a3a",
+        "id": "d4a8916f822407e1",
         "type": "inject",
-        "z": "d6d24cd5e6d1be6f",
+        "z": "60ab055898a3ccf8",
         "name": "TEST loop",
         "props": [
             {
@@ -969,14 +969,14 @@
         "y": 340,
         "wires": [
             [
-                "813418c72a0c9d90"
+                "94ee634460c65276"
             ]
         ]
     },
     {
-        "id": "958497eff3ca89c0",
+        "id": "41ba9b57a5b97b8e",
         "type": "inject",
-        "z": "d6d24cd5e6d1be6f",
+        "z": "60ab055898a3ccf8",
         "name": "OnSpotTURN R 90Deg",
         "props": [
             {
@@ -994,14 +994,14 @@
         "y": 320,
         "wires": [
             [
-                "276205ba93f1c411"
+                "1c9b16bcc94f69fc"
             ]
         ]
     },
     {
-        "id": "7d2ed9c2e0e49cef",
+        "id": "2814fd3f1a6e6dbf",
         "type": "inject",
-        "z": "d6d24cd5e6d1be6f",
+        "z": "60ab055898a3ccf8",
         "name": "OnSpotTURN L 90Deg",
         "props": [
             {
@@ -1019,14 +1019,14 @@
         "y": 480,
         "wires": [
             [
-                "276205ba93f1c411"
+                "1c9b16bcc94f69fc"
             ]
         ]
     },
     {
-        "id": "9e2b38e08597d602",
+        "id": "3dc0e9c4a1778244",
         "type": "inject",
-        "z": "d6d24cd5e6d1be6f",
+        "z": "60ab055898a3ccf8",
         "name": "OnSpotTURN L 360Deg",
         "props": [
             {
@@ -1044,14 +1044,14 @@
         "y": 560,
         "wires": [
             [
-                "276205ba93f1c411"
+                "1c9b16bcc94f69fc"
             ]
         ]
     },
     {
-        "id": "5c6cc457d702f10a",
+        "id": "434e46fb1a82cb1d",
         "type": "inject",
-        "z": "d6d24cd5e6d1be6f",
+        "z": "60ab055898a3ccf8",
         "name": "Long run",
         "props": [
             {
@@ -1069,14 +1069,14 @@
         "y": 80,
         "wires": [
             [
-                "276205ba93f1c411"
+                "1c9b16bcc94f69fc"
             ]
         ]
     },
     {
-        "id": "7a38ae7b965101b9",
+        "id": "be4627e5c5d6f260",
         "type": "inject",
-        "z": "d6d24cd5e6d1be6f",
+        "z": "60ab055898a3ccf8",
         "name": "START_MQTT_GRAPH_DEBUG",
         "props": [
             {
@@ -1094,14 +1094,14 @@
         "y": 500,
         "wires": [
             [
-                "813418c72a0c9d90"
+                "94ee634460c65276"
             ]
         ]
     },
     {
-        "id": "041da1250705ce25",
+        "id": "f7bb72e8c7867d75",
         "type": "inject",
-        "z": "d6d24cd5e6d1be6f",
+        "z": "60ab055898a3ccf8",
         "name": "STOP_MQTT_GRAPH_DEBUG",
         "props": [
             {
@@ -1119,14 +1119,14 @@
         "y": 540,
         "wires": [
             [
-                "813418c72a0c9d90"
+                "94ee634460c65276"
             ]
         ]
     },
     {
-        "id": "d81b7784475c7647",
+        "id": "fab9a3608a22322c",
         "type": "inject",
-        "z": "d6d24cd5e6d1be6f",
+        "z": "60ab055898a3ccf8",
         "name": "STOP",
         "props": [
             {
@@ -1144,14 +1144,14 @@
         "y": 380,
         "wires": [
             [
-                "813418c72a0c9d90"
+                "94ee634460c65276"
             ]
         ]
     },
     {
-        "id": "31ced3d7df3d0591",
+        "id": "6416edea9a43c0eb",
         "type": "inject",
-        "z": "d6d24cd5e6d1be6f",
+        "z": "60ab055898a3ccf8",
         "name": "Offset +5",
         "props": [
             {
@@ -1169,14 +1169,14 @@
         "y": 420,
         "wires": [
             [
-                "813418c72a0c9d90"
+                "94ee634460c65276"
             ]
         ]
     },
     {
-        "id": "333b5b425ec8cd92",
+        "id": "29084bc11ba21002",
         "type": "inject",
-        "z": "d6d24cd5e6d1be6f",
+        "z": "60ab055898a3ccf8",
         "name": "Offset -5",
         "props": [
             {
@@ -1194,14 +1194,14 @@
         "y": 460,
         "wires": [
             [
-                "813418c72a0c9d90"
+                "94ee634460c65276"
             ]
         ]
     },
     {
-        "id": "416729aa394d9904",
+        "id": "d257c9764b4ee59c",
         "type": "inject",
-        "z": "d6d24cd5e6d1be6f",
+        "z": "60ab055898a3ccf8",
         "name": "CALIBRATE Perimeter",
         "props": [
             {
@@ -1219,14 +1219,14 @@
         "y": 400,
         "wires": [
             [
-                "dec10993840a7d26"
+                "f6bf8e98c9052529"
             ]
         ]
     },
     {
-        "id": "0f1b4b84886b059f",
+        "id": "8b0453459b107dfe",
         "type": "inject",
-        "z": "d6d24cd5e6d1be6f",
+        "z": "60ab055898a3ccf8",
         "name": "START_MQTT_GRAPH_RAW_DEBUG",
         "props": [
             {
@@ -1244,14 +1244,14 @@
         "y": 580,
         "wires": [
             [
-                "813418c72a0c9d90"
+                "94ee634460c65276"
             ]
         ]
     },
     {
-        "id": "e4835abea977739e",
+        "id": "dfc738f33c1f6803",
         "type": "inject",
-        "z": "d6d24cd5e6d1be6f",
+        "z": "60ab055898a3ccf8",
         "name": "STOP_MQTT_GRAPH_RAW_DEBUG",
         "props": [
             {
@@ -1269,14 +1269,14 @@
         "y": 620,
         "wires": [
             [
-                "813418c72a0c9d90"
+                "94ee634460c65276"
             ]
         ]
     },
     {
-        "id": "2cde39b3ddf8a6e4",
+        "id": "440160f2b4fa2df5",
         "type": "inject",
-        "z": "d6d24cd5e6d1be6f",
+        "z": "60ab055898a3ccf8",
         "name": "ACKNOWLEDGE",
         "props": [
             {
@@ -1294,14 +1294,14 @@
         "y": 80,
         "wires": [
             [
-                "dec10993840a7d26"
+                "f6bf8e98c9052529"
             ]
         ]
     },
     {
-        "id": "89e33443a87ef2e1",
+        "id": "14b2731c60e65c3d",
         "type": "inject",
-        "z": "d6d24cd5e6d1be6f",
+        "z": "60ab055898a3ccf8",
         "name": "START_MQTT_PID_GRAPH_DEBUG",
         "props": [
             {
@@ -1319,14 +1319,14 @@
         "y": 660,
         "wires": [
             [
-                "813418c72a0c9d90"
+                "94ee634460c65276"
             ]
         ]
     },
     {
-        "id": "7c55854cd629d5ca",
+        "id": "f41717726b1c09aa",
         "type": "inject",
-        "z": "d6d24cd5e6d1be6f",
+        "z": "60ab055898a3ccf8",
         "name": "STOP_MQTT_PID_GRAPH_DEBUG",
         "props": [
             {
@@ -1344,14 +1344,14 @@
         "y": 700,
         "wires": [
             [
-                "813418c72a0c9d90"
+                "94ee634460c65276"
             ]
         ]
     },
     {
-        "id": "a7adcc0bd8faa401",
+        "id": "ae8b2b5e16645c35",
         "type": "comment",
-        "z": "d6d24cd5e6d1be6f",
+        "z": "60ab055898a3ccf8",
         "name": "State Changes",
         "info": "",
         "x": 560,
@@ -1359,9 +1359,9 @@
         "wires": []
     },
     {
-        "id": "b17ad7a0edd74df0",
+        "id": "eb86e41da72daae9",
         "type": "comment",
-        "z": "d6d24cd5e6d1be6f",
+        "z": "60ab055898a3ccf8",
         "name": "Debug commands",
         "info": "",
         "x": 1200,
@@ -1369,9 +1369,9 @@
         "wires": []
     },
     {
-        "id": "f7a6d19cab70d37f",
+        "id": "205cd5af95f41ab9",
         "type": "comment",
-        "z": "d6d24cd5e6d1be6f",
+        "z": "60ab055898a3ccf8",
         "name": "Basic Mower Moves",
         "info": "",
         "x": 1750,
@@ -1379,9 +1379,9 @@
         "wires": []
     },
     {
-        "id": "d6b0bcbede47de18",
+        "id": "f8214f0901a3eace",
         "type": "mqtt out",
-        "z": "d6d24cd5e6d1be6f",
+        "z": "60ab055898a3ccf8",
         "name": "",
         "topic": "AutoMower/Command",
         "qos": "",
@@ -1392,9 +1392,9 @@
         "wires": []
     },
     {
-        "id": "650fc72d405601f1",
+        "id": "7fa8a9dadd887692",
         "type": "inject",
-        "z": "d6d24cd5e6d1be6f",
+        "z": "60ab055898a3ccf8",
         "name": "PerimTtrkngKp",
         "props": [
             {
@@ -1412,15 +1412,15 @@
         "y": 780,
         "wires": [
             [
-                "d6b0bcbede47de18",
-                "7f95485a32c1426c"
+                "f8214f0901a3eace",
+                "75badbc4d27dde37"
             ]
         ]
     },
     {
-        "id": "1dab0b23f530ac98",
+        "id": "d43cb85a1a3825b4",
         "type": "comment",
-        "z": "d6d24cd5e6d1be6f",
+        "z": "60ab055898a3ccf8",
         "name": "Parameter values",
         "info": "",
         "x": 340,
@@ -1428,9 +1428,9 @@
         "wires": []
     },
     {
-        "id": "6b535c5aeb7789b1",
+        "id": "1f0fb82fad7bc153",
         "type": "inject",
-        "z": "d6d24cd5e6d1be6f",
+        "z": "60ab055898a3ccf8",
         "name": "PerimTtrkngKi",
         "props": [
             {
@@ -1448,15 +1448,15 @@
         "y": 840,
         "wires": [
             [
-                "d6b0bcbede47de18",
-                "e5660f4e176f8513"
+                "f8214f0901a3eace",
+                "d7fdc47a526c23d7"
             ]
         ]
     },
     {
-        "id": "478085ab2e877deb",
+        "id": "35dc28b5be739b1e",
         "type": "inject",
-        "z": "d6d24cd5e6d1be6f",
+        "z": "60ab055898a3ccf8",
         "name": "PerimTtrkngKd",
         "props": [
             {
@@ -1474,15 +1474,15 @@
         "y": 900,
         "wires": [
             [
-                "d6b0bcbede47de18",
-                "284519f936086e13"
+                "f8214f0901a3eace",
+                "78f483c588979802"
             ]
         ]
     },
     {
-        "id": "5b301847d0a55ff9",
+        "id": "d552b30f394d015f",
         "type": "inject",
-        "z": "d6d24cd5e6d1be6f",
+        "z": "60ab055898a3ccf8",
         "name": "PerimTtrkSetPt",
         "props": [
             {
@@ -1500,15 +1500,15 @@
         "y": 960,
         "wires": [
             [
-                "d6b0bcbede47de18",
-                "18465040b4f3f48c"
+                "f8214f0901a3eace",
+                "7955d2e37c9c0e7b"
             ]
         ]
     },
     {
-        "id": "9340ac2fcc087cae",
+        "id": "63aae1cadc0a5a61",
         "type": "inject",
-        "z": "d6d24cd5e6d1be6f",
+        "z": "60ab055898a3ccf8",
         "name": "Template",
         "props": [
             {
@@ -1526,15 +1526,15 @@
         "y": 1140,
         "wires": [
             [
-                "d6b0bcbede47de18",
-                "1ab6edfc5f2d578e"
+                "f8214f0901a3eace",
+                "8cb781859e044999"
             ]
         ]
     },
     {
-        "id": "92b70e43014961a7",
+        "id": "f2be7cec8fd53e1e",
         "type": "debug",
-        "z": "d6d24cd5e6d1be6f",
+        "z": "60ab055898a3ccf8",
         "name": "",
         "active": true,
         "tosidebar": false,
@@ -1549,9 +1549,9 @@
         "wires": []
     },
     {
-        "id": "7f95485a32c1426c",
+        "id": "75badbc4d27dde37",
         "type": "json",
-        "z": "d6d24cd5e6d1be6f",
+        "z": "60ab055898a3ccf8",
         "name": "",
         "property": "payload",
         "action": "obj",
@@ -1560,14 +1560,14 @@
         "y": 780,
         "wires": [
             [
-                "92b70e43014961a7"
+                "f2be7cec8fd53e1e"
             ]
         ]
     },
     {
-        "id": "c5746f599a542a1e",
+        "id": "7de89b6de17d1a72",
         "type": "debug",
-        "z": "d6d24cd5e6d1be6f",
+        "z": "60ab055898a3ccf8",
         "name": "",
         "active": true,
         "tosidebar": false,
@@ -1582,9 +1582,9 @@
         "wires": []
     },
     {
-        "id": "e5660f4e176f8513",
+        "id": "d7fdc47a526c23d7",
         "type": "json",
-        "z": "d6d24cd5e6d1be6f",
+        "z": "60ab055898a3ccf8",
         "name": "",
         "property": "payload",
         "action": "obj",
@@ -1593,14 +1593,14 @@
         "y": 840,
         "wires": [
             [
-                "c5746f599a542a1e"
+                "7de89b6de17d1a72"
             ]
         ]
     },
     {
-        "id": "dc125478f2447206",
+        "id": "ce6ccb1ed2b16bab",
         "type": "debug",
-        "z": "d6d24cd5e6d1be6f",
+        "z": "60ab055898a3ccf8",
         "name": "",
         "active": true,
         "tosidebar": false,
@@ -1615,9 +1615,9 @@
         "wires": []
     },
     {
-        "id": "284519f936086e13",
+        "id": "78f483c588979802",
         "type": "json",
-        "z": "d6d24cd5e6d1be6f",
+        "z": "60ab055898a3ccf8",
         "name": "",
         "property": "payload",
         "action": "obj",
@@ -1626,14 +1626,14 @@
         "y": 900,
         "wires": [
             [
-                "dc125478f2447206"
+                "ce6ccb1ed2b16bab"
             ]
         ]
     },
     {
-        "id": "fb77cf9349000a44",
+        "id": "c5651d946aebd72b",
         "type": "debug",
-        "z": "d6d24cd5e6d1be6f",
+        "z": "60ab055898a3ccf8",
         "name": "",
         "active": true,
         "tosidebar": false,
@@ -1648,9 +1648,9 @@
         "wires": []
     },
     {
-        "id": "18465040b4f3f48c",
+        "id": "7955d2e37c9c0e7b",
         "type": "json",
-        "z": "d6d24cd5e6d1be6f",
+        "z": "60ab055898a3ccf8",
         "name": "",
         "property": "payload",
         "action": "obj",
@@ -1659,14 +1659,14 @@
         "y": 960,
         "wires": [
             [
-                "fb77cf9349000a44"
+                "c5651d946aebd72b"
             ]
         ]
     },
     {
-        "id": "e691dfed1d98ac5c",
+        "id": "f30a172f40afa9e8",
         "type": "inject",
-        "z": "d6d24cd5e6d1be6f",
+        "z": "60ab055898a3ccf8",
         "name": "PerimLostThresld",
         "props": [
             {
@@ -1684,15 +1684,15 @@
         "y": 1020,
         "wires": [
             [
-                "d6b0bcbede47de18",
-                "21cc49882f0b83e7"
+                "f8214f0901a3eace",
+                "3441cf6367f1c961"
             ]
         ]
     },
     {
-        "id": "77b29dbee3569976",
+        "id": "6cfe901e6bc30155",
         "type": "inject",
-        "z": "d6d24cd5e6d1be6f",
+        "z": "60ab055898a3ccf8",
         "name": "PerimTtrkLowThresld",
         "props": [
             {
@@ -1710,15 +1710,15 @@
         "y": 1080,
         "wires": [
             [
-                "0a9cb26da51a47ad",
-                "d6b0bcbede47de18"
+                "2fda79af5bf1f6bf",
+                "f8214f0901a3eace"
             ]
         ]
     },
     {
-        "id": "21cc49882f0b83e7",
+        "id": "3441cf6367f1c961",
         "type": "json",
-        "z": "d6d24cd5e6d1be6f",
+        "z": "60ab055898a3ccf8",
         "name": "",
         "property": "payload",
         "action": "obj",
@@ -1727,14 +1727,14 @@
         "y": 1020,
         "wires": [
             [
-                "dafbe8062efcfb45"
+                "5886a378cc8eb8a0"
             ]
         ]
     },
     {
-        "id": "dafbe8062efcfb45",
+        "id": "5886a378cc8eb8a0",
         "type": "debug",
-        "z": "d6d24cd5e6d1be6f",
+        "z": "60ab055898a3ccf8",
         "name": "",
         "active": true,
         "tosidebar": false,
@@ -1749,9 +1749,9 @@
         "wires": []
     },
     {
-        "id": "0a9cb26da51a47ad",
+        "id": "2fda79af5bf1f6bf",
         "type": "json",
-        "z": "d6d24cd5e6d1be6f",
+        "z": "60ab055898a3ccf8",
         "name": "",
         "property": "payload",
         "action": "obj",
@@ -1760,14 +1760,14 @@
         "y": 1080,
         "wires": [
             [
-                "ff0172629a6d0ff0"
+                "83704d82b1b04c82"
             ]
         ]
     },
     {
-        "id": "ff0172629a6d0ff0",
+        "id": "83704d82b1b04c82",
         "type": "debug",
-        "z": "d6d24cd5e6d1be6f",
+        "z": "60ab055898a3ccf8",
         "name": "",
         "active": true,
         "tosidebar": false,
@@ -1782,9 +1782,9 @@
         "wires": []
     },
     {
-        "id": "5248e1858828d30e",
+        "id": "280103e8cda09e71",
         "type": "debug",
-        "z": "d6d24cd5e6d1be6f",
+        "z": "60ab055898a3ccf8",
         "name": "",
         "active": true,
         "tosidebar": false,
@@ -1799,9 +1799,9 @@
         "wires": []
     },
     {
-        "id": "1ab6edfc5f2d578e",
+        "id": "8cb781859e044999",
         "type": "json",
-        "z": "d6d24cd5e6d1be6f",
+        "z": "60ab055898a3ccf8",
         "name": "",
         "property": "payload",
         "action": "obj",
@@ -1810,14 +1810,14 @@
         "y": 1140,
         "wires": [
             [
-                "5248e1858828d30e"
+                "280103e8cda09e71"
             ]
         ]
     },
     {
-        "id": "3be79f70ea8ca52f",
+        "id": "0815c6b5a8e8f641",
         "type": "inject",
-        "z": "d6d24cd5e6d1be6f",
+        "z": "60ab055898a3ccf8",
         "name": "RESTART",
         "props": [
             {
@@ -1835,14 +1835,14 @@
         "y": 620,
         "wires": [
             [
-                "dec10993840a7d26"
+                "f6bf8e98c9052529"
             ]
         ]
     },
     {
-        "id": "68b48fd7cda3c524",
+        "id": "43e20d68c65d9a0f",
         "type": "inject",
-        "z": "d6d24cd5e6d1be6f",
+        "z": "60ab055898a3ccf8",
         "name": "MOWING - Clockwise",
         "props": [
             {
@@ -1860,14 +1860,14 @@
         "y": 240,
         "wires": [
             [
-                "dec10993840a7d26"
+                "f6bf8e98c9052529"
             ]
         ]
     },
     {
-        "id": "2130f3880fadb785",
+        "id": "530b27549c94fbd5",
         "type": "inject",
-        "z": "d6d24cd5e6d1be6f",
+        "z": "60ab055898a3ccf8",
         "name": "MOWING - Counter Clockw",
         "props": [
             {
@@ -1885,14 +1885,14 @@
         "y": 280,
         "wires": [
             [
-                "dec10993840a7d26"
+                "f6bf8e98c9052529"
             ]
         ]
     },
     {
-        "id": "599d90f9d1419bb2",
+        "id": "cf513de1afd13a9b",
         "type": "link out",
-        "z": "d6d24cd5e6d1be6f",
+        "z": "60ab055898a3ccf8",
         "name": "Send Data To API Out",
         "links": [
             "9cf3e330ece9a7c3"
@@ -1902,9 +1902,9 @@
         "wires": []
     },
     {
-        "id": "f7ac5760ed21a3b4",
+        "id": "3d4540fe10d21731",
         "type": "link in",
-        "z": "d6d24cd5e6d1be6f",
+        "z": "60ab055898a3ccf8",
         "name": "Emergency Stop Out",
         "links": [
             "2a640d820bb04765"
@@ -1913,14 +1913,14 @@
         "y": 120,
         "wires": [
             [
-                "4e27f06c67c8495c"
+                "99f6f30c05f981a8"
             ]
         ]
     },
     {
-        "id": "4e27f06c67c8495c",
+        "id": "99f6f30c05f981a8",
         "type": "function",
-        "z": "d6d24cd5e6d1be6f",
+        "z": "60ab055898a3ccf8",
         "name": "",
         "func": "msg.payload = { \n    \"Command\": \"STATE_CHANGE\", \n    \"Val1\": \"IDLE\"\n}\nreturn msg;",
         "outputs": 1,
@@ -1932,14 +1932,14 @@
         "y": 120,
         "wires": [
             [
-                "dec10993840a7d26"
+                "f6bf8e98c9052529"
             ]
         ]
     },
     {
-        "id": "aa9d7aba17e1348d",
+        "id": "30689bac26b03b22",
         "type": "inject",
-        "z": "d6d24cd5e6d1be6f",
+        "z": "60ab055898a3ccf8",
         "name": "CALIBRATE Accel",
         "props": [
             {
@@ -1957,14 +1957,14 @@
         "y": 480,
         "wires": [
             [
-                "dec10993840a7d26"
+                "f6bf8e98c9052529"
             ]
         ]
     },
     {
-        "id": "1fb21399a1c1b7a0",
+        "id": "415a88d4b5925ded",
         "type": "inject",
-        "z": "d6d24cd5e6d1be6f",
+        "z": "60ab055898a3ccf8",
         "name": "CALIBRATE Gyro",
         "props": [
             {
@@ -1982,14 +1982,14 @@
         "y": 440,
         "wires": [
             [
-                "dec10993840a7d26"
+                "f6bf8e98c9052529"
             ]
         ]
     },
     {
-        "id": "9d9b11ef896892a6",
+        "id": "323e2990c411a66c",
         "type": "link in",
-        "z": "d6d24cd5e6d1be6f",
+        "z": "60ab055898a3ccf8",
         "name": "Start Mow Out",
         "links": [
             "24d574630c021b07"
@@ -1998,14 +1998,14 @@
         "y": 200,
         "wires": [
             [
-                "8287995aea480820"
+                "202b25cd8d411291"
             ]
         ]
     },
     {
-        "id": "8287995aea480820",
+        "id": "202b25cd8d411291",
         "type": "function",
-        "z": "d6d24cd5e6d1be6f",
+        "z": "60ab055898a3ccf8",
         "name": "",
         "func": "msg.payload = { \n    \"Command\": \"STATE_CHANGE\",\n    \"Val1\": \"MOWING\", \n    \"Val2\": \"0\" \n}\nreturn msg;",
         "outputs": 1,
@@ -2017,7 +2017,42 @@
         "y": 200,
         "wires": [
             [
-                "dec10993840a7d26"
+                "f6bf8e98c9052529"
+            ]
+        ]
+    },
+    {
+        "id": "cb7cbd119487683a",
+        "type": "function",
+        "z": "60ab055898a3ccf8",
+        "name": "",
+        "func": "msg.payload = { \n    \"Command\": \"STATE_CHANGE\",\n    \"Val1\": \"TO_BASE\"\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 460,
+        "y": 320,
+        "wires": [
+            [
+                "f6bf8e98c9052529"
+            ]
+        ]
+    },
+    {
+        "id": "c6d017bfb1e1e411",
+        "type": "link in",
+        "z": "60ab055898a3ccf8",
+        "name": "Go Home Out",
+        "links": [
+            "f6ff86c94b908657"
+        ],
+        "x": 135,
+        "y": 320,
+        "wires": [
+            [
+                "cb7cbd119487683a"
             ]
         ]
     },
@@ -2030,7 +2065,6 @@
         "clientid": "",
         "usetls": false,
         "compatmode": false,
-        "protocolVersion": 4,
         "keepalive": "60",
         "cleansession": true,
         "birthTopic": "",
@@ -2050,6 +2084,7 @@
         "host": "127.0.0.1",
         "port": "3306",
         "db": "My_data",
-        "tz": "UTC"
+        "tz": "UTC",
+        "charset": ""
     }
 ]

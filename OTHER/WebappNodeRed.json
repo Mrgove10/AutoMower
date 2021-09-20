@@ -210,7 +210,6 @@
         "id": "ce89d2eb37f35801",
         "type": "inject",
         "z": "0cefd40a70793065",
-        "d": true,
         "name": "",
         "props": [
             {
@@ -259,13 +258,14 @@
         "type": "json",
         "z": "0cefd40a70793065",
         "name": "",
-        "property": "req.body",
+        "property": "payload",
         "action": "",
         "pretty": false,
         "x": 690,
         "y": 440,
         "wires": [
             [
+                "e8b91d8f3c0d857a",
                 "26d1bfb6a128d168"
             ]
         ]
@@ -283,8 +283,8 @@
         "targetType": "msg",
         "statusVal": "",
         "statusType": "auto",
-        "x": 860,
-        "y": 440,
+        "x": 910,
+        "y": 520,
         "wires": []
     },
     {
@@ -325,9 +325,9 @@
         "z": "0cefd40a70793065",
         "name": "Send Data To API In",
         "links": [
-            "599d90f9d1419bb2"
+            "cf513de1afd13a9b"
         ],
-        "x": 215,
+        "x": 315,
         "y": 560,
         "wires": [
             [
@@ -340,7 +340,6 @@
         "id": "56627974eeaeb387",
         "type": "inject",
         "z": "0cefd40a70793065",
-        "d": true,
         "name": "",
         "props": [
             {
@@ -369,14 +368,14 @@
         "id": "3ae2cee1e8efdf23",
         "type": "function",
         "z": "0cefd40a70793065",
-        "name": "",
+        "name": "Simulate Mower Data",
         "func": "function getRandomArbitrary(min, max) {\n    return Math.random() * (max - min) + min;\n}\n\nmsg.payload = {\n    \"State\": Math.floor(getRandomArbitrary(1, 7)),\n    \"Error\": \"0\",\n    \"BatVolt\": getRandomArbitrary(9,13),\n    \"ChargeCur\": \"0.00\",\n    \"BatSOC\": getRandomArbitrary(0, 100),\n    \"BatCharging\": \"0\",\n    \"DrvMotTemp\": getRandomArbitrary(12, 100),\n    \"DrvMotTempEr\": \"0\",\n    \"RMotCur\": \"18.00\",\n    \"RMotSpd\": \"0\",\n    \"LMotCur\": \"18.02\",\n    \"LMotSpd\": \"0\",\n    \"DrvMotFan\": \"0\",\n    \"CMotTemp\": getRandomArbitrary(12, 100),\n    \"CMotTempEr\": \"4\",\n    \"CMotCur\": \"0.21\",\n    \"CMotSpd\": \"0.00\",\n    \"CMotAlm\": \"0\",\n    \"CMotFan\": \"0\",\n    \"FSnrDist\": \"5\",\n    \"RSnrDist\": \"51\",\n    \"LSnrDist\": \"37\",\n    \"CompHead\": \"0.00\",\n    \"GPSHead\": \"0.0\",\n    \"GPSSat\": \"0\",\n    \"g_GPSHdop\": \"-999.99\",\n    \"GPSSpd\": \"-999.99\",\n    \"GPSAlt\": \"-999.99\",\n    \"GPSLat\": \"-999.99\",\n    \"GPSLon\": \"-999.99\",\n    \"Obstcl\": \"540\",\n    \"MowTim\": \"851\",\n    \"Mag\": \"34\",\n    \"SMag\": \"21\",\n    \"InOut\": \"1\",\n    \"Heap\": \"158960\",\n    \"CPUTemp\": getRandomArbitrary(23, 100),\n    \"RSSI\": getRandomArbitrary(20, 100)\n}\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 370,
+        "x": 410,
         "y": 700,
         "wires": [
             [
@@ -408,7 +407,7 @@
         "z": "0cefd40a70793065",
         "name": "Emergency Stop In",
         "links": [
-            "f7ac5760ed21a3b4"
+            "3d4540fe10d21731"
         ],
         "x": 295,
         "y": 360,
@@ -462,7 +461,7 @@
         "method": "post",
         "upload": false,
         "swaggerDoc": "",
-        "x": 580,
+        "x": 840,
         "y": 300,
         "wires": [
             [
@@ -477,9 +476,9 @@
         "z": "0cefd40a70793065",
         "name": "Stqrt mow in",
         "links": [
-            "9d9b11ef896892a6"
+            "323e2990c411a66c"
         ],
-        "x": 755,
+        "x": 995,
         "y": 360,
         "wires": []
     },
@@ -490,7 +489,7 @@
         "name": "",
         "statusCode": "200",
         "headers": {},
-        "x": 800,
+        "x": 1060,
         "y": 300,
         "wires": []
     },
@@ -503,6 +502,40 @@
         "client": "",
         "x": 600,
         "y": 560,
+        "wires": []
+    },
+    {
+        "id": "e8b91d8f3c0d857a",
+        "type": "function",
+        "z": "0cefd40a70793065",
+        "name": "Schedule",
+        "func": "const days = [\n    'Monday',\n    'Tuesday',\n    'Wednesday',\n    'Thursday',\n    'Friday',\n    'Saturday',\n    'Sunday'\n]\n\nconst d = new Date()\n\nfor (let dayNum = 0; dayNum < 7; dayNum++) {\n    if ( d.getDay() === dayNum) {\n        //gets the schedule for the current day\n        let schedules = msg.payload[days[dayNum]];\n        schedules.forEach(function(time) {\n            node.warn(time)\n            if (d.getHours() == time.start){\n                // start the mow\n                return [msg, null];\n            }\n            if (d.getHours() == time.end){\n                // end the mow\n                return [null, msg];\n            }\n        });\n        //return msg.payload[days[dayNum]]\n    }\n}\n",
+        "outputs": 2,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 860,
+        "y": 440,
+        "wires": [
+            [
+                "24d574630c021b07"
+            ],
+            [
+                "f6ff86c94b908657"
+            ]
+        ]
+    },
+    {
+        "id": "f6ff86c94b908657",
+        "type": "link out",
+        "z": "0cefd40a70793065",
+        "name": "Go Home In",
+        "links": [
+            "c6d017bfb1e1e411"
+        ],
+        "x": 1055,
+        "y": 440,
         "wires": []
     },
     {
