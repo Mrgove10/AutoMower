@@ -1,6 +1,7 @@
 #include <Arduino.h>
 #include "Environment_definitions.h"
 #include "MowerStates.h"
+#include "BaseStates.h"
 
 /************************* MQTT *********************************/
 
@@ -8,7 +9,7 @@
 
 #define MQTT_TELEMETRY_SEND_INTERVAL_SLOW 2 * 60 * 1000 // in ms
 #define MQTT_TELEMETRY_SEND_INTERVAL 20 * 1000 // in ms
-//#define MQTT_TELEMETRY_SEND_INTERVAL_FAST 10 * 1000 // in ms
+#define MQTT_TELEMETRY_SEND_INTERVAL_FAST 15 * 1000 // in ms
 #define MQTT_MAX_PAYLOAD 1024
 
 extern PubSubClient MQTTclient;
@@ -315,26 +316,19 @@ extern int g_CurrentErrorCode; // Current Error code
 
 #define DISPLAY_REFRESH_INTERVAL 2000                   // in ms
 #define DISPLAY_IDLE_REFRESH_INTERVAL 1000              // in ms
-#define DISPLAY_MOWING_REFRESH_INTERVAL 500             // in ms
+#define DISPLAY_SENDING_REFRESH_INTERVAL 1000             // in ms
 #define DISPLAY_ERROR_REFRESH_INTERVAL 5000             // in ms
-#define DISPLAY_TEST_REFRESH_INTERVAL 5000              // in ms
-#define DISPLAY_TO_BASE_REFRESH_INTERVAL 500            // in ms
-#define DISPLAY_DOCKED_REFRESH_INTERVAL 1000            // in ms
-#define DISPLAY_LEAVING_BASE_REFRESH_INTERVAL 1000      // in ms
+#define DISPLAY_SLEEPING_REFRESH_INTERVAL 1000            // in ms
 
-#define STATES_COUNT 7      // number of states in States enum (messy but did not find how to easly derive automatically number of elements from enum)
+#define STATES_COUNT 4      // number of states in States enum (messy but did not find how to easly derive automatically number of elements from enum)
 
 extern String g_menuString[STATES_COUNT];  // contains the text to display @ bottom of screen to act as a menu
 extern String g_StatesString[STATES_COUNT]; // contains the text description of a state
 
 /************************* Base operation statistics *********************************/
 
-extern unsigned long g_totalMowingTime; // Total time spent mowing, in minutes (Saved to EEPROM)
-extern long g_totalObstacleDectections; // Total number of obstacle detections   (Save to EEPROM)
-
-extern unsigned long g_partialMowingTime; // Partial time spent mowing, in minutes (Saved to EEPROM)
-extern unsigned long g_operationTime;     // Total time spent in operation (not docked) (Saved to EEPROM)
-extern unsigned long g_chargingTime;      // Total time spent charging
+extern unsigned long g_totalBaseOnTime; // Total time spent with perimeter On, in minutes (Saved to EEPROM)
+extern unsigned long g_totalBaseRainTime; // Total time spent with Rainning On, in minutes (Saved to EEPROM)
 
 /************************* Test sequence variables *********************************/
 
@@ -346,8 +340,10 @@ extern unsigned long g_chargingTime;      // Total time spent charging
 #define UNKNOWN_FLOAT -999.99F
 #define UNKNOWN_INT -999
 
-extern MowerState g_CurrentState;
-extern MowerState g_PreviousState;
+extern BaseState g_BaseCurrentState;
+extern BaseState g_BasePreviousState;
+
+extern MowerState g_MowerCurrentState;
 
 #define BASE_DATA_DISPLAY_INTERVAL 2000 // in ms
 

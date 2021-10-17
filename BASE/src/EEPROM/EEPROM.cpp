@@ -78,14 +78,20 @@ void EEPROMSetup(void)
 
     g_EEPROMValid = true;
 
-    // Stored calibrations
+    // Stored States
+    g_BaseCurrentState = g_EEPROMLoad.Load.Data.BaseCurrentState;
 
     // Stored parameters
     g_PerimeterPowerLevel = g_EEPROMLoad.Load.Data.PerimeterPowerLevel;
 
     // Stored Statistics
+    g_totalBaseOnTime = g_EEPROMLoad.Load.Data.totalBaseOnTime;
+    g_totalBaseRainTime = g_EEPROMLoad.Load.Data.totalBaseRainTime;
 
-    DebugPrintln("EEPROM value for g_PerimeterPowerLevel: " + String(g_PerimeterPowerLevel,0), DBG_INFO);
+    DebugPrintln("EEPROM value for g_BaseCurrentState: " + String((int) g_BaseCurrentState, 0), DBG_INFO);
+    DebugPrintln("EEPROM value for g_PerimeterPowerLevel: " + String(g_PerimeterPowerLevel, 0), DBG_INFO);
+    DebugPrintln("EEPROM value for g_totalBaseOnTime: " + String(g_totalBaseOnTime, 0), DBG_INFO);
+    DebugPrintln("EEPROM value for g_totalBaseRainTime: " + String(g_totalBaseRainTime, 0), DBG_INFO);
   }
 }
 
@@ -151,12 +157,15 @@ void EEPROMSave(boolean immediatly)
     g_EEPROMLoad.Load.Data.LastEepromSaveTime.minute = myTime.minute();
     g_EEPROMLoad.Load.Data.LastEepromSaveTime.second = myTime.second();
 
-    // Stored calibrations
-    g_EEPROMLoad.Load.Data.Spare1 = g_EEPROMLoad.Load.Data.Spare1 + 1;
+    // Stored States
+    g_EEPROMLoad.Load.Data.BaseCurrentState = g_BaseCurrentState;
 
     // Stored parameters
     g_EEPROMLoad.Load.Data.PerimeterPowerLevel = g_PerimeterPowerLevel;
+
     // Stored Statistics
+    g_EEPROMLoad.Load.Data.totalBaseOnTime = g_totalBaseOnTime;
+    g_EEPROMLoad.Load.Data.totalBaseRainTime = g_totalBaseRainTime;
 
     EEPROMWrite();
   }
@@ -175,14 +184,15 @@ void EEPROMInitialise(void)
   g_EEPROMLoad.Load.Data.LastEepromSaveTime.minute = myTime.minute();
   g_EEPROMLoad.Load.Data.LastEepromSaveTime.second = myTime.second();
 
-  // Stored Values 
-  g_EEPROMLoad.Load.Data.Spare1 = 0;
+  // Stored States
+  g_EEPROMLoad.Load.Data.BaseCurrentState = BaseState::sleeping;
 
   // Stored parameters
-
   g_EEPROMLoad.Load.Data.PerimeterPowerLevel = 100;       // in %
 
   // Stored Statistics
+  g_EEPROMLoad.Load.Data.totalBaseOnTime = 0;
+  g_EEPROMLoad.Load.Data.totalBaseRainTime = 0;
 
   for (int i = 0; i < EEPROM_SPARE_SIZE - 1; i++)
   {

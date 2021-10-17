@@ -7,10 +7,10 @@
 #define PIN_MCP_SPARE_A5 5
 #define PIN_MCP_SPARE_A6 6
 #define PIN_MCP_SPARE_A7 7
-#define PIN_MCP_SPARE_B0 8
-#define PIN_MCP_SPARE_B1 9
-#define PIN_MCP_SPARE_B2 10
-#define PIN_MCP_SPARE_B3 11
+#define PIN_MCP_KEYPAD_1 8
+#define PIN_MCP_KEYPAD_2 9
+#define PIN_MCP_KEYPAD_3 10
+#define PIN_MCP_KEYPAD_4 11
 #define PIN_MCP_FAN_1 12
 #define PIN_MCP_SPARE_B5 13
 #define PIN_MCP_SPARE_B6 14

@@ -133,7 +133,7 @@ void OTAHandle(void)
     MQTTReconnect();
     MQTTSubscribe();
     delay(1000);
-    LogPrintln("OTA upload request timeout", TAG_OTA, DBG_WARNING);
+    LogPrintln("Base OTA upload request timeout", TAG_OTA, DBG_WARNING);
     SerialAndTelnet.handle();
 
     g_otaFlag = false;
@@ -144,8 +144,8 @@ void OTAHandle(void)
     PerimeterSendLoopTaskResume();
 //    AnaReadLoopTaskResume();
 
-    // Set mower back to Idle state
-    g_CurrentState = MowerState::idle;
+    // Set Base back to Idle state
+    g_BaseCurrentState = BaseState::idle;
 
     SerialAndTelnet.handle();
   }

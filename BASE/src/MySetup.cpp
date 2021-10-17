@@ -11,7 +11,7 @@
 #include "EEPROM/EEPROM.h"
 #include "Display/Display.h"
 #include "IOExtender/IOExtender.h"
-//#include "Keypad/Keypad.h"
+#include "Keypad/Keypad.h"
 #include "Temperature/Temperature.h"
 #include "Fan/Fan.h"
 //#include "AnaReadTsk/AnaReadTsk.h"
@@ -46,11 +46,7 @@ void MySetup(void)
 
   IOExtendSetup();
 
-//  MotorCurrentSensorSetup(); // Done by Analog Read task
-
-//  BatteryChargeRelaySetup();
-
-//  KeypadSetup();
+  KeypadSetup();
 
   // Delay to ensure all serial.prints have finished before Telnet intialisation
   delay(500);
@@ -113,7 +109,7 @@ void MySetup(void)
   PerimeterSendLoopTaskCreate();
 
   // Set default trace level
-  g_debugLevel = DBG_DEBUG;
+  g_debugLevel = DBG_VERBOSE;
 
   SerialAndTelnet.handle();
 

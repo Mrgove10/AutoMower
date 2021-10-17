@@ -133,14 +133,14 @@ void MQTTCallback(char *topic, byte *message, unsigned int length)
 
     if (Command == "OTA")
     {
-      LogPrintln("Request for OTA update", TAG_OTA, DBG_INFO);
+      LogPrintln("Request for Base OTA update", TAG_OTA, DBG_INFO);
       g_otaFlag = true;
       OTAHandle();
     }
 
     else if (Command == "RESTART")
     {
-      LogPrintln("Request for AutoMower RESTART", TAG_RESET, DBG_INFO);
+      LogPrintln("Request for Base RESTART", TAG_RESET, DBG_INFO);
       FanStop(FAN_1_RED);
 //      CutMotorStop();
       EEPROMSave(true);
@@ -153,7 +153,7 @@ void MQTTCallback(char *topic, byte *message, unsigned int length)
 
     else if (Command == "TEST")
     {
-      LogPrintln("Request for AutoMower Test", TAG_CHECK, DBG_INFO);
+      LogPrintln("Request for Base Test", TAG_CHECK, DBG_INFO);
       StartupChecks(true);
     }
 
@@ -190,56 +190,43 @@ void MQTTCallback(char *topic, byte *message, unsigned int length)
 
     else if (Command == "STATE_CHANGE")
     {
-      DebugPrintln("State Change to " + Val1Str + " requested", DBG_INFO, true);
+      DebugPrintln("Base state Change to " + Val1Str + " requested", DBG_INFO, true);
 
       if (Val1Str == "ACKNOWLEDGE")
       {
-        DebugPrintln("Mower Acknowledgement requested (Remote)", DBG_ERROR, true);
-        g_CurrentState = MowerState::idle;
+        DebugPrintln("Base Acknowledgement requested (Remote)", DBG_ERROR, true);
+        g_BaseCurrentState = BaseState::idle;
         g_CurrentErrorCode = ERROR_NO_ERROR;
       }
       else if (Val1Str == "IDLE")
       {
-        g_CurrentState = MowerState::idle;
+        g_BaseCurrentState = BaseState::idle;
       }
-      else if (Val1Str == "DOCKED")
+      else if (Val1Str == "SENDING")
       {
-        g_CurrentState = MowerState::docked;
-      }
-      else if (Val1Str == "MOWING")
-      {
-        if (g_CurrentState == MowerState::error)
+        if (g_BaseCurrentState == BaseState::error)
         {
-          DebugPrintln("Mower Acknowledgement required first !", DBG_ERROR, true);
+          DebugPrintln("Base Acknowledgement required first !", DBG_ERROR, true);
         }
         else
         {
-          g_CurrentState = MowerState::mowing;
-//          g_mowingMode = Val2;
+          g_BaseCurrentState = BaseState::sending;
         }
       }
-      else if (Val1Str == "TO_BASE")
+      else if (Val1Str == "SLEEPING")
       {
-        if (g_CurrentState == MowerState::error)
+        if (g_BaseCurrentState == BaseState::error)
         {
-          DebugPrintln("Mower Acknowledgement required first !", DBG_ERROR, true);
+          DebugPrintln("Base Acknowledgement required first !", DBG_ERROR, true);
         }
         else
         {
-          g_CurrentState = MowerState::going_to_base;
+          g_BaseCurrentState = BaseState::sleeping;
         }
-      }
-      else if (Val1Str == "FROM_BASE")
-      {
-        g_CurrentState = MowerState::leaving_base;
       }
       else if (Val1Str == "ERROR") // only for testing purposes
       {
-        g_CurrentState = MowerState::error;
-      }
-      else if (Val1Str == "TEST")
-      {
-        g_CurrentState = MowerState::test;
+        g_BaseCurrentState = BaseState::error;
       }
     }
 
@@ -253,7 +240,6 @@ void MQTTCallback(char *topic, byte *message, unsigned int length)
 // Test ONLY functions
 //
 //-------------------------------------------------------------------------
-
 
 
 //-------------------------------------------------------------------------
@@ -358,7 +344,7 @@ void MQTTSendTelemetry(const bool now)
     JSONDataPayload.clear();
 
     // Status Data
-    JSONDataPayload.add("State", String ((int) g_CurrentState));
+    JSONDataPayload.add("State", String ((int) g_BaseCurrentState));
     JSONDataPayload.add("Error", String (g_CurrentErrorCode));
     JSONDataPayload.add("SuppVolt", String(float(g_PwrSupplyVoltage / 1000.0f), 3));
 
@@ -376,7 +362,7 @@ void MQTTSendTelemetry(const bool now)
     
     // // Mowing Statistics data
     // JSONDataPayload.add("Obstcl", String(g_totalObstacleDectections));
-    // JSONDataPayload.add("MowTim", String(int(g_totalMowingTime/60000)));
+    JSONDataPayload.add("OnTime", String(int(g_totalBaseOnTime/60000)));
 
 
     // ESP System data

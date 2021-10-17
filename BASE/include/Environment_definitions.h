@@ -18,14 +18,12 @@
 
 // -------------------- Tags diplayed in Grafana ------------------------
 #define TAG_RESET "RESET"
-#define TAG_MOWING "MOWING"
+#define TAG_BASE "BASE"
 #define TAG_OTA "OTA"
 #define TAG_CHECK "CHECK"
 #define TAG_ERROR "ERROR"
 #define TAG_VALUE "VALUE"
 #define TAG_STATES "STATES"
-#define TAG_SEARCH "WIRESEARCH"
-#define TAG_TO_BASE "BACK2BASE"
 #define TAG_PARAM "PARAMETER"
 
 // -------------------- Serial communications ------------------------

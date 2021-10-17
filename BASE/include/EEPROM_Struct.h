@@ -23,7 +23,9 @@ typedef struct
 {
     DateTimeStruct LastEepromSaveTime;
     float PerimeterPowerLevel;
-    int16_t Spare1;
+    BaseState BaseCurrentState;
+    unsigned long totalBaseOnTime;
+    unsigned long totalBaseRainTime;
 } DataStruct;
 
 #define EEPROM_SPARE_SIZE EEPROM_SIZE - sizeof(DataStruct) - EEPROM_CRC_SIZE

@@ -200,32 +200,25 @@ int g_CurrentErrorCode = ERROR_NO_ERROR; // Current Error code
 /************************* Mower Menu definitions *********************************/
 
 // contains the text to display @ bottom of screen to act as a menu
-String g_menuString[STATES_COUNT] = {"Mow |Base|Test|.... ",   // Idle
-                                     "    |Mow |    |.... ",   // Docked
-                                     "Idle|Base|1...|2... ",   // Mowing
-                                     "Idle|    |    |.... ",   // Going_to_base
-                                     "Idle|    |    |.... ",   // Leaving_base
-                                     "    |Ack |Text|.... ",   //Error
-                                     "Tst |Mtn |Cut |.... "};  // Test
+String g_menuString[STATES_COUNT] = {"Send|Zzzz|Test|.... ",   // Idle
+                                     "Send|    |    |.... ",   // Sleeping
+                                     "    |Zzzz|... |     ",   // Sending
+                                     "    |Ack |Text|.... "};  //Error
 
 String g_StatesString[STATES_COUNT] = {"   IDLE   ",   // Idle
-                                       "  DOCKED  ",   // Docked
-                                       "  MOWING  ",   // Mowing
-                                       " TO BASE  ",   // Going_to_base
-                                       "FROM BASE ",   // Leaving_base
-                                       "  ERROR   ",   //Error
-                                       "   TEST   "};  // Test
+                                       " SLEEPING ",   // Sleeping
+                                       " SENDING  ",   // Mowing
+                                       "  ERROR   "};  //Error
 
 /************************* Base operation statistics *********************************/
 
-unsigned long g_totalMowingTime = 0; // Total time spent mowing, in minutes (Saved to EEPROM)
-long g_totalObstacleDectections = 0; // Total number of obstacle detections   (Saved to EEPROM)
-
-unsigned long g_partialMowingTime; // Partial time spent mowing, in minutes (Saved to EEPROM)
-unsigned long g_operationTime;     // Total time spent in operation (not docked) (Saved to EEPROM)
-unsigned long g_chargingTime;      // Total time spent charging
+unsigned long g_totalBaseOnTime = 0; // Total time spent with perimeter On, in minutes (Saved to EEPROM)
+unsigned long g_totalBaseRainTime = 0; // Total time spent with Rainning On, in minutes (Saved to EEPROM)
 
 /************************* Program variables *********************************/
+
+BaseState g_BaseCurrentState = BaseState::sleeping;
+BaseState g_BasePreviousState = BaseState::sleeping;
 
 MowerState g_CurrentState = MowerState::idle;
 MowerState g_PreviousState = MowerState::idle;
