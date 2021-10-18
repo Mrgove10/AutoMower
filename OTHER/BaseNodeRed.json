@@ -1,0 +1,766 @@
+[
+    {
+        "id": "5ed7cd5aedbc765a",
+        "type": "tab",
+        "label": "AutoMower Base",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "77bb3fbf9f4e4ea3",
+        "type": "inject",
+        "z": "5ed7cd5aedbc765a",
+        "name": "15 minutes",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "900",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 170,
+        "y": 920,
+        "wires": [
+            [
+                "62f977e92808905b"
+            ]
+        ]
+    },
+    {
+        "id": "947df5da5623910d",
+        "type": "mqtt in",
+        "z": "5ed7cd5aedbc765a",
+        "name": "",
+        "topic": "AutoMower/Base/Telemetry",
+        "qos": "2",
+        "datatype": "auto",
+        "broker": "571acea9.12d868",
+        "nl": false,
+        "rap": false,
+        "x": 190,
+        "y": 740,
+        "wires": [
+            [
+                "b0ba4786d63353c6",
+                "66a4e19c0b384aa5",
+                "9f294a3f94449a48"
+            ]
+        ]
+    },
+    {
+        "id": "b0ba4786d63353c6",
+        "type": "debug",
+        "z": "5ed7cd5aedbc765a",
+        "name": "Mower Base Telemetry data",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 480,
+        "y": 700,
+        "wires": []
+    },
+    {
+        "id": "66a4e19c0b384aa5",
+        "type": "json",
+        "z": "5ed7cd5aedbc765a",
+        "name": "",
+        "property": "payload",
+        "action": "",
+        "pretty": false,
+        "x": 400,
+        "y": 740,
+        "wires": [
+            [
+                "5ab0f55b255601af"
+            ]
+        ]
+    },
+    {
+        "id": "5ab0f55b255601af",
+        "type": "function",
+        "z": "5ed7cd5aedbc765a",
+        "name": "format data",
+        "func": "var d = new Date().toJSON().slice(5,19).replace('T', ' ')\n\nif (msg.payload.BaseTemp < -50.0) { msg.payload.BaseTemp = null;}\n\nvar tmp =[\n    msg.payload.State,\n    msg.payload.Error,\n    msg.payload.SuppVolt,\n    msg.payload.PerimCur,\n    msg.payload.PerimVolt,\n    msg.payload.PerimLevel,\n    msg.payload.PerimOn,\n    msg.payload.BaseTemp,\n    msg.payload.BaseTempErr,\n    msg.payload.BaseFan,\n    msg.payload.RainLvl,\n    msg.payload.IsRainning,\n    msg.payload.OnTime,\n    msg.payload.RSSI,\n    msg.payload.Heap,\n    msg.payload.Tasks,\n    msg.payload.CPUTemp,\n    msg.payload.MQTTErr\n]\n\nmsg.payload = tmp\n\nmsg.topic =\"INSERT INTO AutoMowerBase_telemetry ( `Time`, `State`, `ErrorNumber`, `SupplyVoltage`,`PerimeterCurrent`,`PerimeterVoltage`,`PerimeterPower`,`PerimeterOn`,`BaseTemperature`,`BaseTemperatureErr`,`BaseFan`,`RainLevel`,`IsRainning`,`TotalOnTime`,\" +\n\" `RSSI`, `Heap`, `Tasks`, `CPUTemperature`, `MQTTErrors`)\" +\n\"VALUES (TIMESTAMP(NOW()),?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);\"\n\nnode.status({fill:\"green\",shape:\"ring\",text:d});\n\nreturn msg ;\n\n\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 620,
+        "y": 740,
+        "wires": [
+            [
+                "ed9464503e158814"
+            ]
+        ]
+    },
+    {
+        "id": "ed9464503e158814",
+        "type": "mysql",
+        "z": "5ed7cd5aedbc765a",
+        "mydb": "169ed79e.a6e3e",
+        "name": "",
+        "x": 830,
+        "y": 740,
+        "wires": [
+            [
+                "7e3f5311b987d06a"
+            ]
+        ]
+    },
+    {
+        "id": "7e3f5311b987d06a",
+        "type": "debug",
+        "z": "5ed7cd5aedbc765a",
+        "name": "Write Base Telemetry data",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1050,
+        "y": 740,
+        "wires": []
+    },
+    {
+        "id": "9f294a3f94449a48",
+        "type": "function",
+        "z": "5ed7cd5aedbc765a",
+        "name": "Receive counter",
+        "func": "// initialise the counter to 0 if it doesn't exist already\nvar count = flow.get('BaseTelemetryCount')||0;\ncount += 1;\n// store the value back\nflow.set('BaseTelemetryCount',count);\nnode.status({fill:\"green\",shape:\"ring\",text:count});\n// make it part of the outgoing msg object\nmsg.count = count;\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 440,
+        "y": 780,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "e65ccc46337bc61e",
+        "type": "debug",
+        "z": "5ed7cd5aedbc765a",
+        "name": "Deleted Rows",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": true,
+        "complete": "payload.affectedRows",
+        "targetType": "msg",
+        "statusVal": "payload.affectedRows",
+        "statusType": "auto",
+        "x": 840,
+        "y": 920,
+        "wires": []
+    },
+    {
+        "id": "4867cc913ae93bfa",
+        "type": "mysql",
+        "z": "5ed7cd5aedbc765a",
+        "mydb": "169ed79e.a6e3e",
+        "name": "",
+        "x": 660,
+        "y": 920,
+        "wires": [
+            [
+                "e65ccc46337bc61e"
+            ]
+        ]
+    },
+    {
+        "id": "62f977e92808905b",
+        "type": "function",
+        "z": "5ed7cd5aedbc765a",
+        "name": "Purge Base Telemetry 100 days",
+        "func": "var d = new Date().toJSON().slice(5,19).replace('T', ' ')\n\nmsg.topic=\"DELETE LOW_PRIORITY from AutoMowerBase_telemetry WHERE Time < DATE_SUB(NOW(),INTERVAL '100 0' DAY_HOUR)\"\n\nnode.status({fill:\"green\",shape:\"ring\",text:d});\n\nreturn msg ;\n\n\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 430,
+        "y": 920,
+        "wires": [
+            [
+                "4867cc913ae93bfa"
+            ]
+        ]
+    },
+    {
+        "id": "268c337c13c098e1",
+        "type": "comment",
+        "z": "5ed7cd5aedbc765a",
+        "name": "State Changes",
+        "info": "",
+        "x": 430,
+        "y": 20,
+        "wires": []
+    },
+    {
+        "id": "33f670c0cc0d012a",
+        "type": "inject",
+        "z": "5ed7cd5aedbc765a",
+        "name": "ACKNOWLEDGE",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "{\"Command\":\"STATE_CHANGE\",\"Val1\":\"ACKNOWLEDGE\"}",
+        "payloadType": "json",
+        "x": 180,
+        "y": 40,
+        "wires": [
+            [
+                "2c8efa0f203e8969"
+            ]
+        ]
+    },
+    {
+        "id": "2c8efa0f203e8969",
+        "type": "mqtt out",
+        "z": "5ed7cd5aedbc765a",
+        "name": "",
+        "topic": "AutoMower/Base/Command",
+        "qos": "",
+        "retain": "false",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "571acea9.12d868",
+        "x": 460,
+        "y": 220,
+        "wires": []
+    },
+    {
+        "id": "43a77296297a6a73",
+        "type": "inject",
+        "z": "5ed7cd5aedbc765a",
+        "name": "ERROR",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "{\"Command\":\"STATE_CHANGE\",\"Val1\":\"ERROR\"}",
+        "payloadType": "json",
+        "x": 210,
+        "y": 200,
+        "wires": [
+            [
+                "2c8efa0f203e8969"
+            ]
+        ]
+    },
+    {
+        "id": "6040cac48800b7fd",
+        "type": "inject",
+        "z": "5ed7cd5aedbc765a",
+        "name": "OTA",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "{\"Command\":\"OTA\"}",
+        "payloadType": "json",
+        "x": 210,
+        "y": 240,
+        "wires": [
+            [
+                "2c8efa0f203e8969"
+            ]
+        ]
+    },
+    {
+        "id": "39db2803aec04725",
+        "type": "inject",
+        "z": "5ed7cd5aedbc765a",
+        "name": "RESTART",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "{\"Command\":\"RESTART\"}",
+        "payloadType": "json",
+        "x": 200,
+        "y": 280,
+        "wires": [
+            [
+                "2c8efa0f203e8969"
+            ]
+        ]
+    },
+    {
+        "id": "cc4f5fcae9f6eaf3",
+        "type": "inject",
+        "z": "5ed7cd5aedbc765a",
+        "name": "Startup TESTS",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "{\"Command\":\"TEST\"}",
+        "payloadType": "json",
+        "x": 190,
+        "y": 320,
+        "wires": [
+            [
+                "2c8efa0f203e8969"
+            ]
+        ]
+    },
+    {
+        "id": "6655306dd7bb3c12",
+        "type": "inject",
+        "z": "5ed7cd5aedbc765a",
+        "name": "PERIMETER_ON",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "{\"Command\":\"PERIMETER_ON\"}",
+        "payloadType": "json",
+        "x": 180,
+        "y": 380,
+        "wires": [
+            [
+                "2c8efa0f203e8969"
+            ]
+        ]
+    },
+    {
+        "id": "7e649180be1eebb3",
+        "type": "inject",
+        "z": "5ed7cd5aedbc765a",
+        "name": "PERIMETER_OFF",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "{\"Command\":\"PERIMETER_OFF\"}",
+        "payloadType": "json",
+        "x": 180,
+        "y": 420,
+        "wires": [
+            [
+                "2c8efa0f203e8969"
+            ]
+        ]
+    },
+    {
+        "id": "b9cf770ddf02769a",
+        "type": "mqtt out",
+        "z": "5ed7cd5aedbc765a",
+        "name": "",
+        "topic": "AutoMower/Base/Command",
+        "qos": "",
+        "retain": "false",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "571acea9.12d868",
+        "x": 1420,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "f4165ec075200871",
+        "type": "inject",
+        "z": "5ed7cd5aedbc765a",
+        "name": "PerimeterPowerLevel",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "{\"Command\":\"PARAMETER\",\"Val1\":\"PerimeterPowerLevel\",\"Val2\":\"100\"}",
+        "payloadType": "json",
+        "x": 810,
+        "y": 60,
+        "wires": [
+            [
+                "b9cf770ddf02769a",
+                "095a8be3c0dad924"
+            ]
+        ]
+    },
+    {
+        "id": "e90bb214e121dfd2",
+        "type": "comment",
+        "z": "5ed7cd5aedbc765a",
+        "name": "Parameter values",
+        "info": "",
+        "x": 960,
+        "y": 20,
+        "wires": []
+    },
+    {
+        "id": "9e0354af64185d03",
+        "type": "debug",
+        "z": "5ed7cd5aedbc765a",
+        "name": "",
+        "active": true,
+        "tosidebar": false,
+        "console": false,
+        "tostatus": true,
+        "complete": "payload.Val2",
+        "targetType": "msg",
+        "statusVal": "payload",
+        "statusType": "auto",
+        "x": 1170,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "095a8be3c0dad924",
+        "type": "json",
+        "z": "5ed7cd5aedbc765a",
+        "name": "",
+        "property": "payload",
+        "action": "obj",
+        "pretty": false,
+        "x": 1010,
+        "y": 60,
+        "wires": [
+            [
+                "9e0354af64185d03"
+            ]
+        ]
+    },
+    {
+        "id": "b82bcbefb26bae9b",
+        "type": "mqtt out",
+        "z": "5ed7cd5aedbc765a",
+        "name": "",
+        "topic": "AutoMower/Base/Command",
+        "qos": "",
+        "retain": "false",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "571acea9.12d868",
+        "x": 1040,
+        "y": 220,
+        "wires": []
+    },
+    {
+        "id": "4bd568ca7f9bc021",
+        "type": "inject",
+        "z": "5ed7cd5aedbc765a",
+        "name": "DBG_VERBOSE",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "{\"Command\":\"DEBUG\",\"Val1\":\"VERBOSE\"}",
+        "payloadType": "json",
+        "x": 800,
+        "y": 180,
+        "wires": [
+            [
+                "b82bcbefb26bae9b"
+            ]
+        ]
+    },
+    {
+        "id": "0e71f45ca48a6908",
+        "type": "inject",
+        "z": "5ed7cd5aedbc765a",
+        "name": "DBG_DEBUG",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "{\"Command\":\"DEBUG\",\"Val1\":\"DEBUG\"}",
+        "payloadType": "json",
+        "x": 810,
+        "y": 220,
+        "wires": [
+            [
+                "b82bcbefb26bae9b"
+            ]
+        ]
+    },
+    {
+        "id": "e2946712f0b720d6",
+        "type": "inject",
+        "z": "5ed7cd5aedbc765a",
+        "name": "DBG_INFO",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "{\"Command\":\"DEBUG\",\"Val1\":\"INFO\"}",
+        "payloadType": "json",
+        "x": 820,
+        "y": 260,
+        "wires": [
+            [
+                "b82bcbefb26bae9b"
+            ]
+        ]
+    },
+    {
+        "id": "6f60d022a76822cb",
+        "type": "inject",
+        "z": "5ed7cd5aedbc765a",
+        "name": "IDLE",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "{\"Command\":\"STATE_CHANGE\",\"Val1\":\"IDLE\"}",
+        "payloadType": "json",
+        "x": 210,
+        "y": 80,
+        "wires": [
+            [
+                "2c8efa0f203e8969"
+            ]
+        ]
+    },
+    {
+        "id": "95f07e76edf9bb22",
+        "type": "inject",
+        "z": "5ed7cd5aedbc765a",
+        "name": "SLEEPING",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "{\"Command\":\"STATE_CHANGE\",\"Val1\":\"SLEEPING\"}",
+        "payloadType": "json",
+        "x": 200,
+        "y": 120,
+        "wires": [
+            [
+                "2c8efa0f203e8969"
+            ]
+        ]
+    },
+    {
+        "id": "4c508988199342a9",
+        "type": "inject",
+        "z": "5ed7cd5aedbc765a",
+        "name": "SENDING",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "{\"Command\":\"STATE_CHANGE\",\"Val1\":\"SENDING\"}",
+        "payloadType": "json",
+        "x": 200,
+        "y": 160,
+        "wires": [
+            [
+                "2c8efa0f203e8969"
+            ]
+        ]
+    },
+    {
+        "id": "ea6a9faf72d58f87",
+        "type": "mqtt in",
+        "z": "5ed7cd5aedbc765a",
+        "name": "",
+        "topic": "AutoMower/Base/Perimeter",
+        "qos": "2",
+        "datatype": "auto",
+        "broker": "571acea9.12d868",
+        "nl": false,
+        "rap": false,
+        "x": 190,
+        "y": 540,
+        "wires": [
+            [
+                "84309654031fccd0"
+            ]
+        ]
+    },
+    {
+        "id": "9a4e4814c2f42bcc",
+        "type": "mqtt in",
+        "z": "5ed7cd5aedbc765a",
+        "name": "",
+        "topic": "AutoMower/Base/Rain",
+        "qos": "2",
+        "datatype": "auto",
+        "broker": "571acea9.12d868",
+        "nl": false,
+        "rap": false,
+        "x": 200,
+        "y": 600,
+        "wires": [
+            [
+                "5523dc33fd489096"
+            ]
+        ]
+    },
+    {
+        "id": "5523dc33fd489096",
+        "type": "debug",
+        "z": "5ed7cd5aedbc765a",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": true,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "payload",
+        "statusType": "auto",
+        "x": 430,
+        "y": 600,
+        "wires": []
+    },
+    {
+        "id": "84309654031fccd0",
+        "type": "debug",
+        "z": "5ed7cd5aedbc765a",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": true,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "payload",
+        "statusType": "auto",
+        "x": 430,
+        "y": 540,
+        "wires": []
+    },
+    {
+        "id": "571acea9.12d868",
+        "type": "mqtt-broker",
+        "name": "Patrick server",
+        "broker": "192.168.1.3",
+        "port": "1883",
+        "clientid": "",
+        "usetls": false,
+        "compatmode": false,
+        "protocolVersion": 4,
+        "keepalive": "60",
+        "cleansession": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": "",
+        "closeTopic": "",
+        "closeQos": "0",
+        "closePayload": "",
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": ""
+    },
+    {
+        "id": "169ed79e.a6e3e",
+        "type": "MySQLdatabase",
+        "name": "My_data",
+        "host": "127.0.0.1",
+        "port": "3306",
+        "db": "My_data",
+        "tz": "UTC"
+    }
+]

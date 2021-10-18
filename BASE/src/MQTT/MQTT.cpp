@@ -362,15 +362,14 @@ void MQTTSendTelemetry(const bool now)
     JSONDataPayload.add("IsRainning", String(g_IsRainning));
     
     // // Mowing Statistics data
-    // JSONDataPayload.add("Obstcl", String(g_totalObstacleDectections));
     JSONDataPayload.add("OnTime", String(int(g_totalBaseOnTime/60000)));
-
 
     // ESP System data
     JSONDataPayload.add("Heap", String(esp_get_free_heap_size()));
     JSONDataPayload.add("Tasks", String(uxTaskGetNumberOfTasks()));
     JSONDataPayload.add("CPUTemp", String(temperatureRead(), 1));
     JSONDataPayload.add("RSSI", String(WiFi.RSSI()));
+    JSONDataPayload.add("MQTTErr", String(g_MQTTErrorCount));
 
     JSONDataPayload.toString(JSONDataPayloadStr, false);
     JSONDataPayloadStr.toCharArray(MQTTpayload, JSONDataPayloadStr.length() + 1);
@@ -384,6 +383,11 @@ void MQTTSendTelemetry(const bool now)
       if (publ == 1)
       {
         g_TempErrorCount[TEMPERATURE_1_RED] = 0;
+        g_MQTTErrorCount = 0;
+      }
+      else
+      {
+        g_MQTTErrorCount = g_MQTTErrorCount + 1;
       }
     }
     else
