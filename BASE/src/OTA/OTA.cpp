@@ -98,12 +98,14 @@ void OTAHandle(void)
 
     setInterval(0); // no NTP update to avoid any interruption during upload
 
+    // Stop perimeter sending
+    PerimeterSignalStop();
+
     DebugPrintln("Waiting for OTA upload ", DBG_INFO, true);
     SerialAndTelnet.handle();
     MQTTDisconnect();
 
     // Suspend RTOS tasks
-
     PerimeterSendLoopTaskSuspend();
 //    AnaReadLoopTaskSuspend();
 

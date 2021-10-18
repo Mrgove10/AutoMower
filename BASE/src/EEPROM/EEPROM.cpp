@@ -79,7 +79,14 @@ void EEPROMSetup(void)
     g_EEPROMValid = true;
 
     // Stored States
-    g_BaseCurrentState = g_EEPROMLoad.Load.Data.BaseCurrentState;
+    if (g_EEPROMLoad.Load.Data.BaseCurrentState == BaseState::error)
+    {
+      g_BaseCurrentState = BaseState::idle;
+    }
+    else
+    {
+      g_BaseCurrentState = g_EEPROMLoad.Load.Data.BaseCurrentState;
+    }
 
     // Stored parameters
     g_PerimeterPowerLevel = g_EEPROMLoad.Load.Data.PerimeterPowerLevel;

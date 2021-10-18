@@ -29,4 +29,25 @@ void BaseSending(const bool StateChange, const BaseState PreviousState);
  */
 void BaseInError(const bool StateChange, const BaseState PreviousState);
 
+/**
+ * Base temperature monitoring : Base is set in error mode and sending stopped if temperature above max threshold
+ * @param Theshold temperature above which base station is stopped
+ * @return boolean indicating if temperature is too high (true) or not (false)
+ */
+bool BaseTemperatureTooHighCheck(const float Threshold);
+
+/**
+ * Base Perimeter current monitoring : Base is set in error mode and sending stopped if perimeter current too low
+ * @param Threshold current (in mA) under which base station is stopped
+ * @return boolean indicating if current is too low (true) or not (false)
+ */
+bool PerimeterCurrentTooLowCheck(const float Threshold);
+
+/**
+ * Base Perimeter current monitoring : Base is set in error mode and sending stopped if perimeter current too high
+ * @param Threshold current (in mA) over which base station is stopped
+ * @return boolean indicating if current is too high (true) or not (false)
+ */
+bool PerimeterCurrentTooHighCheck(const float Threshold);
+
 #endif

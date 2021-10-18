@@ -3,6 +3,8 @@
 #include "pin_definitions.h"
 #include "myGlobals_definition.h"
 #include "PerimeterSendTsk/PerimeterSendTsk.h"
+#include "PerimeterLoad/PerimeterLoad.h"
+#include "MQTT/MQTT.h"
 #include "Utils/Utils.h"
 
 /**
@@ -229,4 +231,30 @@ void PerimeterSendLoopTaskResume(void)
 {
   vTaskResume(g_PerimeterSendTaskHandle);
   DebugPrintln("Perimeter signal send Task resumed", DBG_VERBOSE, true);
+}
+
+/**
+ * Perimeter signal stop
+ */
+void PerimeterSignalStop(void)
+{
+  DebugPrintln("Perimeter signal stopped", DBG_VERBOSE, true);
+
+  g_enableSender = false;
+  PerimeterSignalStatusSend(true);
+  delay(200);
+  PerimeterLoadCurrentRead(true, true);
+}
+
+/**
+ * Perimeter signal start
+ */
+void PerimeterSignalStart(void)
+{
+  DebugPrintln("Perimeter signal start", DBG_VERBOSE, true);
+
+  g_enableSender = true;
+  PerimeterSignalStatusSend(true);
+  delay(200);
+  PerimeterLoadCurrentRead(true, true);
 }

@@ -57,9 +57,10 @@ bool PerimeterLoadCurrentSensorCheck(void)
  * Function to test and read Battery Charge current
  * 
  * * @param Now true to force an immediate read
+ * * @param Reset true to force an average value reset
  * * @return true if charge current could be read
  */
-bool PerimeterLoadCurrentRead(const bool Now)
+bool PerimeterLoadCurrentRead(const bool Now, const bool Reset)
 {
   static unsigned long LastPerimeterCurrentRead = 0;
   static float smoothedCurrent = UNKNOWN_FLOAT;
@@ -89,7 +90,7 @@ bool PerimeterLoadCurrentRead(const bool Now)
       }
 
     // Reset average on first value and on leaving base
-      if (smoothedCurrent == UNKNOWN_FLOAT || !g_enableSender)
+      if (smoothedCurrent == UNKNOWN_FLOAT || Reset)
       {
         smoothedCurrent = abs(current_mA);
       }

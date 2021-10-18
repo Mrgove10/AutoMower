@@ -10,6 +10,8 @@
 #define MQTT_TELEMETRY_SEND_INTERVAL_SLOW 2 * 60 * 1000 // in ms
 #define MQTT_TELEMETRY_SEND_INTERVAL 20 * 1000 // in ms
 #define MQTT_TELEMETRY_SEND_INTERVAL_FAST 15 * 1000 // in ms
+#define MQTT_PERIMETER_STATUS_SEND_INTERVAL 10 * 1000 // in ms
+#define MQTT_RAIN_STATUS_SEND_INTERVAL 20 * 1000 // in ms
 #define MQTT_MAX_PAYLOAD 1024
 
 extern PubSubClient MQTTclient;
@@ -189,7 +191,7 @@ extern SSD1306Wire oled;
 #define OLED_PIXEL_PER_LINE 16  // to reproduce LCD "form factor" on OLED display : 64/4
 #define OLED_PIXEL_PER_COLUMN 7 // to reproduce LCD "form factor" on OLED display : 128/20 => 6.4 rounded up to 7
 #define OLED_BRIGHTNESS_NORMAL 255
-#define OLED_BRIGHTNESS_LOW 2
+#define OLED_BRIGHTNESS_LOW 1
 #endif
 
 #define DISPLAY_COLUMS 20
@@ -238,6 +240,7 @@ extern DeviceAddress temp_2_BlueSensor;
 #define TEMPERATURE_COUNT 1 // Number of temperature sensors
 #define TEMPERATURE_1_RED 0
 #define TEMPERATURE_READ_INTERVAL 5000 // in ms
+#define BASE_TEMPERATURE_TOO_HIGH_THRESHOLD 40.0f // in celcius
 
 extern int g_TempErrorCount[TEMPERATURE_COUNT];
 extern float g_Temperature[TEMPERATURE_COUNT];
@@ -249,6 +252,9 @@ extern float g_Temperature[TEMPERATURE_COUNT];
 #define PERIMETER_CURRENT_READ_INTERVAL 2000               // in ms
 #define PERIMETER_CHECK_INTERVAL 15000                    // in ms
 #define PERIMETER_CURRENT_CURRENT_MIN 1                    // in mA, used to filter out very low sensor readings
+
+#define BASE_PERIMETER_CURRENT_TOO_LOW_THRESHOLD 300 // in mA, at 100% Powerlevel
+#define BASE_PERIMETER_CURRENT_TOO_HIGH_THRESHOLD 800 // in mA,
 
 extern Adafruit_INA219 PerimeterCurrentSensor;
 
@@ -296,17 +302,16 @@ extern bool g_FanOn[FAN_COUNT];
 #define ERROR_NO_ERROR 0
 
 //General Error conditions
-#define ERROR_BATTERY_CRITICAL 001
-#define ERROR_VERTICAL_TILT_ACTIVATED 002
-#define ERROR_HORIZONTAL_TILT_ACTIVATED 003
-#define ERROR_NO_PERIMETER_SIGNAL 004
+#define ERROR_PERIMETER_CURRENT_TOO_LOW 001
+#define ERROR_PERIMETER_CURRENT_TOO_HIGH 002
+#define ERROR_TEMPERATURE_TOO_HIGH 003
+#define ERROR_NO_MOWER_DATA 004
 
 //States-related Error conditions
 
 #define ERROR_UNDEFINED 999
 
 extern int g_CurrentErrorCode; // Current Error code
-#define MOWER_ERROR_TUNE_PLAY_INTERVAL 10000    // in ms
 
 /************************* Mower Menu definitions *********************************/
 

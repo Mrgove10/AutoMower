@@ -48,4 +48,14 @@ void PerimeterSendLoopTaskSuspend(void);
  */
 void PerimeterSendLoopTaskResume(void);
 
+/**
+ * Perimeter signal stop
+ */
+void PerimeterSignalStop(void);
+
+/**
+ * Perimeter signal start
+ */
+void PerimeterSignalStart(void);
+
 #endif

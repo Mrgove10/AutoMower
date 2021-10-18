@@ -24,7 +24,7 @@ void loop()
 {
   static BaseState StateOnCall = BaseState::idle;
 
-  static unsigned long LastDisplay = 0;
+  // static unsigned long LastDisplay = 0;
   static unsigned long LastTaskRefreshed = 0;
 
   // Common routine mower tasks
@@ -117,11 +117,12 @@ void loop()
     break;
   }
 
-  // Display Mower Data
-
-//  DisplayMowerData();
-
   // Routine system operating tasks
+
+  //--------------------------------
+  // Update Fan
+  //--------------------------------
+  FanCheck(FAN_1_RED);  // Read temperature and activate or stop fan
 
   EEPROMSave(false); // Update EEPROM
 

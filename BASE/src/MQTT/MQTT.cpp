@@ -6,6 +6,7 @@
 #include "EEPROM/EEPROM.h"
 #include "Fan/Fan.h"
 #include "Temperature/Temperature.h"
+#include "PerimeterSendTsk/PerimeterSendTsk.h"
 #include "StartupChecks.h"
 #include "Display/Display.h"
 
@@ -178,14 +179,14 @@ void MQTTCallback(char *topic, byte *message, unsigned int length)
 
     else if (Command == "PERIMETER_ON")
     {
-      LogPrintln("Request for Perimeter On", TAG_CHECK, DBG_INFO);
-      g_enableSender = true;
+      LogPrintln("MQTT Request for Perimeter On", TAG_CHECK, DBG_INFO);
+      PerimeterSignalStart();
     }
 
     else if (Command == "PERIMETER_OFF")
     {
-      LogPrintln("Request for Perimeter Off", TAG_CHECK, DBG_INFO);
-      g_enableSender = false;
+      LogPrintln("MQTT Request for Perimeter Off", TAG_CHECK, DBG_INFO);
+      PerimeterSignalStop();
     }
 
     else if (Command == "STATE_CHANGE")
@@ -392,3 +393,69 @@ void MQTTSendTelemetry(const bool now)
     LastTelemetryDataSent = millis();
   }
 }
+
+
+/**
+ * Send Perimeter signal status on MQTT channel
+ * @param now boolean indicating the sending is to be performed immediatly
+ */
+void PerimeterSignalStatusSend(const bool now = false)
+{
+  String JSONNotePayloadStr;
+  char MQTTpayload[MQTT_MAX_PAYLOAD];
+  static unsigned long LastStatusDataSent = 0;
+
+  if ((millis() - LastStatusDataSent > MQTT_PERIMETER_STATUS_SEND_INTERVAL) || now)
+  {
+
+    JSONNotePayload.clear();
+
+    JSONNotePayload.add("PerimeterStatus", int(g_enableSender));
+    JSONNotePayload.toString(JSONNotePayloadStr, false);
+    JSONNotePayloadStr.toCharArray(MQTTpayload, JSONNotePayloadStr.length() + 1);
+
+    bool result = MQTTclient.publish(MQTT_PERIMETER_STATUS_CHANNEL, MQTTpayload);
+    if (result != 1)
+    {
+      g_MQTTErrorCount = g_MQTTErrorCount + 1;
+    }
+
+    MQTTclient.loop();
+
+    DebugPrintln("Sending to :[" + String(MQTT_PERIMETER_STATUS_CHANNEL) + "] " + String(MQTTpayload) + " => " + String(result), DBG_VERBOSE, true);
+    LastStatusDataSent = millis();
+  }
+}
+
+/**
+ * Send rain status on MQTT channel
+ * @param now boolean indicating the sending is to be performed immediatly
+ */
+void BaseRainStatusSend(const bool now = false)
+{
+  String JSONNotePayloadStr;
+  char MQTTpayload[MQTT_MAX_PAYLOAD];
+  static unsigned long LastStatusDataSent = 0;
+
+  if ((millis() - LastStatusDataSent > MQTT_RAIN_STATUS_SEND_INTERVAL) || now)
+  {
+
+    JSONNotePayload.clear();
+
+    JSONNotePayload.add("RainStatus", int(g_IsRainning));
+    JSONNotePayload.toString(JSONNotePayloadStr, false);
+    JSONNotePayloadStr.toCharArray(MQTTpayload, JSONNotePayloadStr.length() + 1);
+
+    bool result = MQTTclient.publish(MQTT_RAIN_STATUS_CHANNEL, MQTTpayload);
+    if (result != 1)
+    {
+      g_MQTTErrorCount = g_MQTTErrorCount + 1;
+    }
+
+    MQTTclient.loop();
+
+    DebugPrintln("Sending to :[" + String(MQTT_RAIN_STATUS_CHANNEL) + "] " + String(MQTTpayload) + " => " + String(result), DBG_VERBOSE, true);
+    LastStatusDataSent = millis();
+  }
+}
+

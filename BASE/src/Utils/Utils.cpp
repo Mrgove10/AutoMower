@@ -162,14 +162,14 @@ String ErrorString(const int errorCode)
       return String(F("No Error"));
 
       //General Error conditions
-    case ERROR_BATTERY_CRITICAL:
-      return String(F("Battery level below CRITICAL threshold"));
-    case ERROR_VERTICAL_TILT_ACTIVATED:
-      return String(F("Vertical tilt sensor triggered"));
-    case ERROR_HORIZONTAL_TILT_ACTIVATED:
-      return String(F("Horizontal tilt sensor triggered"));
-    case ERROR_NO_PERIMETER_SIGNAL:
-      return String(F("Perimeter wire signal lost or stopped"));
+    case ERROR_PERIMETER_CURRENT_TOO_LOW:
+      return String(F("Perimeter current LOW: No signal (cut wire or other)"));
+    case ERROR_PERIMETER_CURRENT_TOO_HIGH:
+      return String(F("Perimeter current HIGH: abnormal"));
+    case ERROR_TEMPERATURE_TOO_HIGH:
+      return String(F("Base temperature too HIGH: No sginal"));
+    case ERROR_NO_MOWER_DATA:
+      return String(F("Base received no mower communications"));
 
       //States-related Error conditions
 
@@ -191,10 +191,13 @@ String ErrorString(const int errorCode)
 bool ParameterChangeValue(const String parameterCode, const float parameterValue)
 {
   bool found = true;
+  float checkedValue = parameterValue;
 
   if (parameterCode == "PerimeterPowerLevel")
   {
-    g_PerimeterPowerLevel = parameterValue;
+    checkedValue = min(100.0f, checkedValue);
+    checkedValue = max(0.0f, checkedValue);
+    g_PerimeterPowerLevel = checkedValue;
   }
   else if (parameterCode == "Dummy")
   {
@@ -207,7 +210,7 @@ bool ParameterChangeValue(const String parameterCode, const float parameterValue
 
   if (found)
   {
-    LogPrintln("Parameter " + parameterCode + " updated to " + String(parameterValue, 3), TAG_PARAM, DBG_INFO);
+    LogPrintln("Parameter " + parameterCode + " updated to " + String(checkedValue, 3), TAG_PARAM, DBG_INFO);
     EEPROMSave(true);
   }
   else

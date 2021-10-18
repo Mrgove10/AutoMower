@@ -18,8 +18,9 @@ bool PerimeterLoadCurrentSensorCheck(void);
  * Function to test and read perimeter load current
  * 
  * * @param Now true to force an immediate read
+ * * @param Reset true to force an average value reset
  * * @return true if charge current could be read
  */
-bool PerimeterLoadCurrentRead(const bool Now = false);
+bool PerimeterLoadCurrentRead(const bool Now = false, const bool Reset = false);
 
 #endif

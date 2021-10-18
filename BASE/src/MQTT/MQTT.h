@@ -10,4 +10,16 @@ void MQTTReconnect();
 void MQTTDisconnect();
 void MQTTSendTelemetry(const bool now = false);
 
+/**
+ * Send Perimeter signal status on MQTT channel
+ * @param now boolean indicating the sending is to be performed immediatly
+ */
+void PerimeterSignalStatusSend(const bool now = false);
+
+/**
+ * Send rain status on MQTT channel
+ * @param now boolean indicating the sending is to be performed immediatly
+ */
+void BaseRainStatusSend(const bool now = false);
+
 #endif

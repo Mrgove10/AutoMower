@@ -454,8 +454,8 @@ void headerDisplay(String title, bool now)
   // Screen Header is structured as follows :
   // 0-4 space left for displaying communication animation
   // 6-13 Title
-  // 15 Sending indication 
-  // 16-19 Temperature
+  // 14 Sending indication 
+  // 15-19 Temperature
 
   String SendingChar = "*";
   static unsigned long lastUpdate = 0;
@@ -472,10 +472,10 @@ void headerDisplay(String title, bool now)
     {
         SendingChar = " ";
     }
-    DisplayPrint(15,0,SendingChar,true);
+    DisplayPrint(14,0,SendingChar,true);
 
     // Display Temperature
-    DisplayPrint(16,0,String(g_Temperature[TEMPERATURE_1_RED],1),true);
+    DisplayPrint(15,0,String(g_Temperature[TEMPERATURE_1_RED],1),true);
     lastUpdate = millis();
   }
 }
