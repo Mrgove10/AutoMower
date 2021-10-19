@@ -350,3 +350,28 @@ bool PerimeterCurrentTooHighCheck(const float Threshold)
     return false;
   }
 }
+
+/**
+ * Mower status received monitoring : Base is set in error mode if no data is received before timeout and base is set into Sleeping mode if mower is in Docked Mode
+ * @param Timeout in ms duing which mower data is expected
+ * @return boolean indicating if timeout has been reached (true) or not (false)
+ */
+bool MowerStatusCheck(const unsigned long Timeout)
+{
+  if (millis() - g_LastMowerTelemetryReceived > Timeout && g_CurrentErrorCode != ERROR_NO_MOWER_DATA)
+  {
+    DebugPrintln("No mower data received for " + String(Timeout/1000) + " seconds : Perimeter Signal stop ", DBG_ERROR, true);
+    PerimeterSignalStop();
+    g_BaseCurrentState = BaseState::error;
+    g_CurrentErrorCode = ERROR_NO_MOWER_DATA;
+    return true;
+  }
+  // If mower is docked and base is not sleeping, set base to sleeping mode
+  if (g_MowerCurrentState == MowerState::docked && g_BaseCurrentState != BaseState::sleeping && millis() - g_LastMowerTelemetryReceived < Timeout)
+  {
+    DebugPrintln ("Mower State is docked, switching base to sleeping", DBG_INFO, true);
+    g_BaseCurrentState = BaseState::sleeping;
+    g_CurrentErrorCode = ERROR_NO_ERROR;
+  }
+  return false;
+}

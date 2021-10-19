@@ -44,6 +44,8 @@ void PerimeterCodeSend(void)
   }
   else
   {
+    digitalWrite(PIN_ESP_SENDER_PERIMETER_IN1, LOW);
+    digitalWrite(PIN_ESP_SENDER_PERIMETER_IN2, LOW);
     ledcWrite(PERIMETER_SEND_PWM_CHANNEL, 0);
     // digitalWrite(PIN_ESP_SENDER_PERIMETER_PWM, LOW);
   }

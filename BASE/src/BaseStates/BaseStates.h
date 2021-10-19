@@ -50,4 +50,11 @@ bool PerimeterCurrentTooLowCheck(const float Threshold);
  */
 bool PerimeterCurrentTooHighCheck(const float Threshold);
 
+/**
+ * Mower status received monitoring : Base is set in error mode if no data is received before timeout and base is set into Sleeping mode if mower is in Docked Mode
+ * @param Timeout in ms duing which mower data is expected
+ * @return boolean indicating if timeout has been reached (true) or not (false)
+ */
+bool MowerStatusCheck(const unsigned long Timeout);
+
 #endif

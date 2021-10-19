@@ -15,6 +15,8 @@ PubSubClient MQTTclient(espClient);
 int g_MQTTErrorCount = 0;
 unsigned long g_MQTTSendInterval = MQTT_TELEMETRY_SEND_INTERVAL;
 
+unsigned long g_LastMowerTelemetryReceived = 0;
+
 /************************* JSON *********************************/
 
 FirebaseJson JSONDataPayload;
@@ -220,8 +222,8 @@ unsigned long g_totalBaseRainTime = 0; // Total time spent with Rainning On, in 
 BaseState g_BaseCurrentState = BaseState::sleeping;
 BaseState g_BasePreviousState = BaseState::sleeping;
 
-MowerState g_CurrentState = MowerState::idle;
-MowerState g_PreviousState = MowerState::idle;
+MowerState g_MowerCurrentState = MowerState::idle;
+float g_MowerChargeCurrent = 0;
 
 /************************* Program debugging *********************************/
 

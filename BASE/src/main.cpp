@@ -132,6 +132,8 @@ void loop()
 
   MQTTclient.loop(); // Update MQTT
 
+  MowerStatusCheck(MQTT_MOWER_TELEMETRY_TIMEOUT);  // Check Mower Data is received
+
   SerialAndTelnet.handle(); // Refresh Telnet Session
 
   events(); // eztime refresh

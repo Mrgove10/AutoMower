@@ -15,12 +15,17 @@ void MQTTSubscribe()
   bool SubStatus;
   SubStatus = MQTTclient.subscribe(MQTT_COMMAND_CHANNEL);
   DebugPrintln(String("SubscribeStatus ") + MQTT_COMMAND_CHANNEL + String("=") + String(SubStatus));
+  SubStatus = MQTTclient.subscribe(MQTT_MOWER_TELEMETRY_CHANNEL);
+  DebugPrintln(String("SubscribeStatus ") + MQTT_MOWER_TELEMETRY_CHANNEL + String("=") + String(SubStatus));
 };
 
 void MQTTUnSubscribe()
 {
-  boolean SubStatus = MQTTclient.unsubscribe(MQTT_COMMAND_CHANNEL);
+  bool SubStatus;
+  SubStatus = MQTTclient.unsubscribe(MQTT_COMMAND_CHANNEL);
   DebugPrintln(String("UnSubscribeStatus ") + MQTT_COMMAND_CHANNEL + String("=") + String(SubStatus));
+  SubStatus = MQTTclient.unsubscribe(MQTT_MOWER_TELEMETRY_CHANNEL);
+  DebugPrintln(String("UnSubscribeStatus ") + MQTT_MOWER_TELEMETRY_CHANNEL + String("=") + String(SubStatus));
 };
 
 FirebaseJson JSONNotePayload;
@@ -84,6 +89,12 @@ void MQTTCallback(char *topic, byte *message, unsigned int length)
     messageTemp += (char)message[i];
   }
   DebugPrintln("");
+
+//-------------------------------------------------------------------------
+//
+// MQTT_COMMAND_CHANNEL
+//
+//-------------------------------------------------------------------------
 
   if (String(topic) == String(MQTT_COMMAND_CHANNEL))
   {
@@ -255,6 +266,66 @@ void MQTTCallback(char *topic, byte *message, unsigned int length)
     }
   }
 
+//-------------------------------------------------------------------------
+//
+// MQTT_MOWER_TELEMETRY_CHANNEL
+//
+//-------------------------------------------------------------------------
+
+  else if (String(topic) == String(MQTT_MOWER_TELEMETRY_CHANNEL))
+  {
+    FirebaseJson JSONDataPayload;
+    FirebaseJsonData JSONData;
+
+    JSONDataPayload.setJsonData(messageTemp);
+    g_LastMowerTelemetryReceived = millis();
+
+    // Extract Mower State value from JSON structure
+    JSONDataPayload.get(JSONData, "State");
+    if (JSONData.success)
+    {
+      String State = JSONData.stringValue;
+      DebugPrintln ("Received Mower State: " + State, DBG_DEBUG, true);
+      switch (State.toInt())
+      {
+        case int(MowerState::idle):
+          g_MowerCurrentState = MowerState::idle;
+          break;
+        case int(MowerState::docked):
+          g_MowerCurrentState = MowerState::docked;
+          break;
+        case int(MowerState::mowing):
+          g_MowerCurrentState = MowerState::mowing;
+          break;
+        case int(MowerState::going_to_base):
+          g_MowerCurrentState = MowerState::going_to_base;
+          break;
+        case int(MowerState::leaving_base):
+          g_MowerCurrentState = MowerState::leaving_base;
+          break;
+        case int(MowerState::error):
+          g_MowerCurrentState = MowerState::error;
+          break;
+        case int(MowerState::test):
+          g_MowerCurrentState = MowerState::test;
+          break;
+        default:
+          DebugPrintln ("Mower State not recognised: [" + String(State.toInt()) + "]", DBG_ERROR, true);
+          break; 
+      }
+      DebugPrintln ("Saved Mower State: " + String((int) g_MowerCurrentState), DBG_VERBOSE, true);
+    }
+
+    // Extract Battery Charge current value from JSON structure
+    JSONDataPayload.get(JSONData, "ChargeCur");
+    if (JSONData.success)
+    {
+      String ChargeCurrent = JSONData.stringValue;
+      g_MowerChargeCurrent = ChargeCurrent.toFloat();
+      DebugPrintln ("Saved Mower Charge current: " + String(g_MowerChargeCurrent, 2), DBG_VERBOSE, true);
+    }
+  }
+
   /* other channel */
 
   /*
@@ -378,7 +449,7 @@ void MQTTSendTelemetry(const bool now)
 
     if (JSONDataPayloadStr.length() < MQTT_MAX_PAYLOAD)
     {
-      publ = MQTTclient.publish(MQTT_TELEMETRY_CHANNEL, MQTTpayload);
+      publ = MQTTclient.publish(MQTT_BASE_TELEMETRY_CHANNEL, MQTTpayload);
       LastTelemetryDataSent = millis();
       if (publ == 1)
       {

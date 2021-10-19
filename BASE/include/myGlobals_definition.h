@@ -10,13 +10,15 @@
 #define MQTT_TELEMETRY_SEND_INTERVAL_SLOW 2 * 60 * 1000 // in ms
 #define MQTT_TELEMETRY_SEND_INTERVAL 20 * 1000 // in ms
 #define MQTT_TELEMETRY_SEND_INTERVAL_FAST 15 * 1000 // in ms
-#define MQTT_PERIMETER_STATUS_SEND_INTERVAL 10 * 1000 // in ms
-#define MQTT_RAIN_STATUS_SEND_INTERVAL 20 * 1000 // in ms
+#define MQTT_PERIMETER_STATUS_SEND_INTERVAL 15 * 1000 // in ms
+#define MQTT_RAIN_STATUS_SEND_INTERVAL 30 * 1000 // in ms
 #define MQTT_MAX_PAYLOAD 1024
+#define MQTT_MOWER_TELEMETRY_TIMEOUT 3 * 60 * 1000 // in ms
 
 extern PubSubClient MQTTclient;
 extern int g_MQTTErrorCount;
 extern unsigned long g_MQTTSendInterval;
+extern unsigned long g_LastMowerTelemetryReceived;
 
 /************************* JSON *********************************/
 
@@ -349,6 +351,7 @@ extern BaseState g_BaseCurrentState;
 extern BaseState g_BasePreviousState;
 
 extern MowerState g_MowerCurrentState;
+extern float g_MowerChargeCurrent;
 
 #define BASE_DATA_DISPLAY_INTERVAL 2000 // in ms
 
