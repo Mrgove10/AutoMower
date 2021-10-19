@@ -14,6 +14,7 @@
 extern PubSubClient MQTTclient;
 extern int g_MQTTErrorCount;
 extern unsigned long g_MQTTSendInterval;
+extern unsigned long g_LastBaseStatusReceived;
 
 /************************* JSON *********************************/
 
@@ -375,7 +376,7 @@ extern float g_Temperature[TEMPERATURE_COUNT];
 #define BATTERY_CHARGE_READ_INTERVAL 5000               // in ms
 #define BATTERY_CHECK_INTERVAL 15000                    // in ms
 #define BATTERY_CHARGE_CURRENT_MIN 1                    // in mA, used to filter out very low sensor readings
-#define BATTERY_CHARGE_CURRENT_TO_STOP_CHARGE 350       // in mA, used to stop charging when charging current is low
+#define BATTERY_CHARGE_CURRENT_TO_STOP_CHARGE 300       // in mA, used to stop charging when charging current is low
 #define BATTERY_CHARGE_CURRENT_CHARGING_THRESHOLD 30    // in mA, used to determine if battery is charging
 
 extern Adafruit_INA219 BatteryChargeSensor;

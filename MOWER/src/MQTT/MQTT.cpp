@@ -17,14 +17,27 @@
 void MQTTSubscribe()
 {
   bool SubStatus;
-  SubStatus = MQTTclient.subscribe(MQTT_COMMAND_CHANNEL);
-  DebugPrintln(String("SubscribeStatus ") + MQTT_COMMAND_CHANNEL + String("=") + String(SubStatus));
+  SubStatus = MQTTclient.subscribe(MQTT_MOWER_COMMAND_CHANNEL);
+  DebugPrintln(String("SubscribeStatus ") + MQTT_MOWER_COMMAND_CHANNEL + String("=") + String(SubStatus));
+  
+  SubStatus = MQTTclient.subscribe(MQTT_BASE_PERIMETER_STATUS_CHANNEL);
+  DebugPrintln(String("SubscribeStatus ") + MQTT_BASE_PERIMETER_STATUS_CHANNEL + String("=") + String(SubStatus));
+
+  SubStatus = MQTTclient.subscribe(MQTT_BASE_RAIN_STATUS_CHANNEL);
+  DebugPrintln(String("SubscribeStatus ") + MQTT_BASE_RAIN_STATUS_CHANNEL + String("=") + String(SubStatus));
 };
 
 void MQTTUnSubscribe()
 {
-  boolean SubStatus = MQTTclient.unsubscribe(MQTT_COMMAND_CHANNEL);
-  DebugPrintln(String("UnSubscribeStatus ") + MQTT_COMMAND_CHANNEL + String("=") + String(SubStatus));
+  boolean SubStatus;
+  SubStatus = MQTTclient.unsubscribe(MQTT_MOWER_COMMAND_CHANNEL);
+  DebugPrintln(String("UnSubscribeStatus ") + MQTT_MOWER_COMMAND_CHANNEL + String("=") + String(SubStatus));
+
+  SubStatus = MQTTclient.unsubscribe(MQTT_BASE_PERIMETER_STATUS_CHANNEL);
+  DebugPrintln(String("UnSubscribeStatus ") + MQTT_BASE_PERIMETER_STATUS_CHANNEL + String("=") + String(SubStatus));
+
+  SubStatus = MQTTclient.unsubscribe(MQTT_BASE_RAIN_STATUS_CHANNEL);
+  DebugPrintln(String("UnSubscribeStatus ") + MQTT_BASE_RAIN_STATUS_CHANNEL + String("=") + String(SubStatus));
 };
 
 FirebaseJson JSONNotePayload;
@@ -89,7 +102,13 @@ void MQTTCallback(char *topic, byte *message, unsigned int length)
   }
   DebugPrintln("");
 
-  if (String(topic) == String(MQTT_COMMAND_CHANNEL))
+//-------------------------------------------------------------------------
+//
+// MQTT_MOWER_COMMAND_CHANNEL
+//
+//-------------------------------------------------------------------------
+
+  if (String(topic) == String(MQTT_MOWER_COMMAND_CHANNEL))
   {
     FirebaseJson JSONDataPayload;
     FirebaseJsonData JSONData;
@@ -355,6 +374,57 @@ void MQTTCallback(char *topic, byte *message, unsigned int length)
     }
   }
 
+//-------------------------------------------------------------------------
+//
+// MQTT_BASE_PERIMETER_STATUS_CHANNEL
+//
+//-------------------------------------------------------------------------
+
+ else if (String(topic) == String(MQTT_BASE_PERIMETER_STATUS_CHANNEL))
+  {
+    FirebaseJson JSONDataPayload;
+    FirebaseJsonData JSONData;
+
+    JSONDataPayload.setJsonData(messageTemp);
+    g_LastBaseStatusReceived = millis();
+
+    // Extract Mower State value from JSON structure
+    JSONDataPayload.get(JSONData, "PerimeterStatus");
+    if (JSONData.success)
+    {
+      String State = JSONData.stringValue;
+      DebugPrintln ("Received Base Perimeter State: " + State, DBG_DEBUG, true);
+      g_PerimeterSignalStopped = (State.toInt() == 0);
+      DebugPrintln ("Saved perimeter State: " + String(g_PerimeterSignalStopped), DBG_VERBOSE, true);
+    }
+  }
+
+//-------------------------------------------------------------------------
+//
+// MQTT_BASE_RAIN_STATUS_CHANNEL
+//
+//-------------------------------------------------------------------------
+
+ else if (String(topic) == String(MQTT_BASE_RAIN_STATUS_CHANNEL))
+  {
+    FirebaseJson JSONDataPayload;
+    FirebaseJsonData JSONData;
+
+    JSONDataPayload.setJsonData(messageTemp);
+    g_LastBaseStatusReceived = millis();
+
+    // Extract Mower State value from JSON structure
+    JSONDataPayload.get(JSONData, "RainStatus");
+    if (JSONData.success)
+    {
+      String State = JSONData.stringValue;
+      DebugPrintln ("Received Base Rain State: " + State, DBG_DEBUG, true);
+      // TO DO
+      // g_PerimeterSignalStopped = (State.toInt() == 0);
+      // DebugPrintln ("Saved Rain State: " + String(g_PerimeterSignalStopped), DBG_VERBOSE, true);
+    }
+  }
+
   /* other channel */
 
   /*
@@ -505,6 +575,7 @@ void MQTTSendTelemetry(const bool now)
     JSONDataPayload.add("Heap", String(esp_get_free_heap_size()));
     JSONDataPayload.add("CPUTemp", String(temperatureRead(), 1));
     JSONDataPayload.add("RSSI", String(WiFi.RSSI()));
+    JSONDataPayload.add("MQTTErr", String(g_MQTTErrorCount));
 
     JSONDataPayload.toString(JSONDataPayloadStr, false);
     JSONDataPayloadStr.toCharArray(MQTTpayload, JSONDataPayloadStr.length() + 1);
@@ -520,6 +591,11 @@ void MQTTSendTelemetry(const bool now)
         g_TempErrorCount[TEMPERATURE_1_RED] = 0;
         g_TempErrorCount[TEMPERATURE_2_BLUE] = 0;
       }
+      else
+      {
+        g_MQTTErrorCount = g_MQTTErrorCount + 1;
+      }
+
     }
     else
     {
@@ -527,4 +603,58 @@ void MQTTSendTelemetry(const bool now)
     }
     LastTelemetryDataSent = millis();
   }
+}
+
+/**
+* Send Base station a command to start sleeping on MQTT channel
+ */
+void BaseSleepingStartSend(void)
+{
+  String JSONNotePayloadStr;
+  char MQTTpayload[MQTT_MAX_PAYLOAD];
+
+  JSONNotePayload.clear();
+
+  JSONNotePayload.add("Command", "STATE_CHANGE");
+  JSONNotePayload.add("Val1", "SLEEPING");
+
+  JSONNotePayload.toString(JSONNotePayloadStr, false);
+  JSONNotePayloadStr.toCharArray(MQTTpayload, JSONNotePayloadStr.length() + 1);
+
+  bool result = MQTTclient.publish(MQTT_BASE_COMMAND_CHANNEL, MQTTpayload);
+  if (result != 1)
+  {
+    g_MQTTErrorCount = g_MQTTErrorCount + 1;
+  }
+
+  MQTTclient.loop();
+
+  DebugPrintln("Sending to :[" + String(MQTT_BASE_COMMAND_CHANNEL) + "] " + String(MQTTpayload) + " => " + String(result), DBG_VERBOSE, true);
+}
+
+/**
+ * Send Base station a command to start sending perimeter signal on MQTT channel
+ */
+void BaseSendingStartSend(void)
+{
+  String JSONNotePayloadStr;
+  char MQTTpayload[MQTT_MAX_PAYLOAD];
+
+  JSONNotePayload.clear();
+
+  JSONNotePayload.add("Command", "STATE_CHANGE");
+  JSONNotePayload.add("Val1", "SENDING");
+
+  JSONNotePayload.toString(JSONNotePayloadStr, false);
+  JSONNotePayloadStr.toCharArray(MQTTpayload, JSONNotePayloadStr.length() + 1);
+
+  bool result = MQTTclient.publish(MQTT_BASE_COMMAND_CHANNEL, MQTTpayload);
+  if (result != 1)
+  {
+    g_MQTTErrorCount = g_MQTTErrorCount + 1;
+  }
+
+  MQTTclient.loop();
+
+  DebugPrintln("Sending to :[" + String(MQTT_BASE_COMMAND_CHANNEL) + "] " + String(MQTTpayload) + " => " + String(result), DBG_VERBOSE, true);
 }

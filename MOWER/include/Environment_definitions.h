@@ -2,9 +2,13 @@
     This file contains the decalration of all global variables or Macros
 */
 // -------------------- MQTT ------------------------
-#define MQTT_COMMAND_CHANNEL "AutoMower/Command"
+#define MQTT_MOWER_COMMAND_CHANNEL "AutoMower/Command"
+#define MQTT_BASE_COMMAND_CHANNEL "AutoMower/Base/Command"
 #define MQTT_LOG_CHANNEL "AutoMower/Log"
 #define MQTT_TELEMETRY_CHANNEL "AutoMower/Telemetry"
+#define MQTT_BASE_PERIMETER_STATUS_CHANNEL "AutoMower/Base/Perimeter"
+#define MQTT_BASE_RAIN_STATUS_CHANNEL "AutoMower/Base/Rain"
+
 #define MQTT_SERVER "192.168.1.3"
 #define MQTT_PORT 1883
 

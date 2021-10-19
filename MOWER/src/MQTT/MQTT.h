@@ -10,4 +10,14 @@ void MQTTReconnect();
 void MQTTDisconnect();
 void MQTTSendTelemetry(const bool now = false);
 
+/**
+ * Send Base station a command to start sleeping on MQTT channel
+ */
+void BaseSleepingStartSend(void);
+
+/**
+ * Send Base station a command to start sending perimeter signal on MQTT channel
+ */
+void BaseSendingStartSend(void);
+
 #endif

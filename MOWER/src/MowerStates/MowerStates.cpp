@@ -106,6 +106,9 @@ void MowerDocked(const bool StateChange, const MowerState PreviousState)
     // Suspend Sonar readings
     g_SonarReadEnabled = false;
 
+    // Trigger base to swith to sleeping mode
+    BaseSleepingStartSend();
+
     // Change Telemetry frequency
     g_MQTTSendInterval = MQTT_TELEMETRY_SEND_INTERVAL_SLOW;
 
@@ -157,6 +160,9 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
 
     // Change display with refresh
     mowingDisplay(true);
+
+    // Trigger base to swith to sending mode
+    BaseSendingStartSend();
 
     // Sound starting beep to notify environment
     playTune(g_longBeep, sizeof(g_longBeep) / sizeof(noteStruct), 3);
@@ -547,7 +553,9 @@ void MowerGoingToBase(const bool StateChange, const MowerState PreviousState)
     // Change display with refresh
     toBaseDisplay(true);
 
-    //change Telemetry frequency
+    // Trigger base to swith to sending mode
+    BaseSendingStartSend();
+
     // Change Telemetry frequency
     g_MQTTSendInterval = MQTT_TELEMETRY_SEND_INTERVAL_FAST;
 
@@ -661,6 +669,9 @@ void MowerLeavingBase(const bool StateChange, const MowerState PreviousState)
 
     // Change display with refresh
     LeavingBaseDisplay(true);
+
+    // Trigger base to swith to sending mode
+    BaseSendingStartSend();
 
     // Sound starting beep to notify environment
     playTune(g_longBeep, sizeof(g_longBeep) / sizeof(noteStruct), 3);
