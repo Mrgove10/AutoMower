@@ -136,10 +136,10 @@ void MotionMotorStop(const int Motor)
 {
   IOExtendProtectedWrite(g_MotionMotorIn1Pin[Motor], LOW);
   IOExtendProtectedWrite(g_MotionMotorIn2Pin[Motor], LOW);
+  g_WheelPerimeterTrackingCorrection[Motor] = 0;
   MotionMotorSetSpeed(Motor, 0);
   g_MotionMotorOn[Motor] = false;
   g_MotionMotorDirection[Motor] = MOTION_MOTOR_STOPPED;
-  g_WheelPerimeterTrackingCorrection[Motor] = 0;
   DebugPrintln("Motion Motor " + g_MotionMotorStr[Motor] + " Stopped", DBG_VERBOSE, true);
 }
 

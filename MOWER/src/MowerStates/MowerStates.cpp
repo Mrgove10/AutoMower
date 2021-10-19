@@ -97,7 +97,11 @@ void MowerDocked(const bool StateChange, const MowerState PreviousState)
     LogPrintln("Mower Docked", TAG_STATES, DBG_INFO);
 
     // Cancel any outstanding wheel speed corrections
-    MotionMotorsTrackingAdjustSpeed(0, 0);
+    g_WheelPerimeterTrackingCorrection[MOTION_MOTOR_LEFT] = 0;
+    MotionMotorSetSpeed(MOTION_MOTOR_LEFT, 0); // function will apply correction and set new speed
+    g_WheelPerimeterTrackingCorrection[MOTION_MOTOR_RIGHT] = 0;
+    MotionMotorSetSpeed(MOTION_MOTOR_RIGHT, 0); // function will apply correction and set new speed
+//    MotionMotorsTrackingAdjustSpeed(0, 0);
 
     //change Telemetry frequency
     g_MQTTSendInterval = MQTT_TELEMETRY_SEND_INTERVAL_SLOW;
