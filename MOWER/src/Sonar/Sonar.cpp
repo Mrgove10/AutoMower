@@ -202,13 +202,18 @@ bool SonarReadLoopTaskMonitor(void)
   {
     LastTaskCheck = millis();
 
+    if (g_SonarReadEnabled && g_SonarTskLoopCnt == LastLoopcnt)
+    {
+      LogPrintln("Sonar Task not running on g_SonarTskLoopCnt (g_SonarReadEnabled = " + String (g_SonarReadEnabled) + ")", TAG_MOWING, DBG_ERROR);
+      DisplayTaskStatus(SONAR_READ_TASK_NAME);
+      return false;
+    }
     if (g_SonarReadEnabled && 
-        g_SonarTskLoopCnt == LastLoopcnt &&
         g_SonarDistance[SONAR_FRONT] == LastDistance[SONAR_FRONT] &&
         g_SonarDistance[SONAR_LEFT] == LastDistance[SONAR_LEFT] &&
         g_SonarDistance[SONAR_RIGHT] == LastDistance[SONAR_RIGHT])
     {
-      DebugPrintln("Sonar Task not running (g_SonarReadEnabled = " + String (g_SonarReadEnabled) + ")", DBG_ERROR, true);
+      LogPrintln("Sonar Task not running on sonar distance (g_SonarReadEnabled = " + String (g_SonarReadEnabled) + ")", TAG_MOWING, DBG_ERROR);
       DisplayTaskStatus(SONAR_READ_TASK_NAME);
       return false;
     }
