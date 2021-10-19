@@ -170,6 +170,8 @@ String ErrorString(const int errorCode)
       return String(F("Horizontal tilt sensor triggered"));
     case ERROR_NO_PERIMETER_SIGNAL:
       return String(F("Perimeter wire signal lost or stopped"));
+    case ERROR_SONAR_NOT_UPDATING:
+      return String(F("Sonar values or task not updating"));
 
       //States-related Error conditions
     case ERROR_MOWING_NO_START_BUMPER_ACTIVE:

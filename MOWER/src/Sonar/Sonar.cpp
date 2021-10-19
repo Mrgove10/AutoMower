@@ -112,6 +112,8 @@ void SonarReadLoopTask(void *dummyParameter)
 
       SonarSensorSetup(); // Setup Sensors
 
+      g_SonarTskLoopCnt = 0;
+
       SetupDone = true;
       DebugPrintln("Sonar read Task setup complete", DBG_VERBOSE, true);
     }
@@ -126,6 +128,7 @@ void SonarReadLoopTask(void *dummyParameter)
       {
         SonarRead(sonar, true); // Read sonar value with no wait
       }
+      g_SonarTskLoopCnt = g_SonarTskLoopCnt + 1;
       delay(SONAR_READ_TASK_LOOP_TIME);
     }
     else
@@ -184,3 +187,43 @@ void SonarReadLoopTaskResume(void)
   vTaskResume(g_SonarReadTaskHandle);
   DebugPrintln("Sonar read Task resumed", DBG_VERBOSE, true);
 }
+
+/**
+ * Sonar Read task monitoring function to check if task is running
+ * @return boolean indicating if task appears not to be running (false) or is running (true)
+ */
+bool SonarReadLoopTaskMonitor(void)
+{
+  static int LastLoopcnt = 0;
+  static int LastDistance[SONAR_COUNT] = {0, 0, 0};
+  static unsigned long LastTaskCheck = 0;
+
+  if (millis() - LastTaskCheck > SONAR_READ_TASK_MONITORING_INTERVAL)
+  {
+    LastTaskCheck = millis();
+
+    if (g_SonarReadEnabled && 
+        g_SonarTskLoopCnt == LastLoopcnt &&
+        g_SonarDistance[SONAR_FRONT] == LastDistance[SONAR_FRONT] &&
+        g_SonarDistance[SONAR_LEFT] == LastDistance[SONAR_LEFT] &&
+        g_SonarDistance[SONAR_RIGHT] == LastDistance[SONAR_RIGHT])
+    {
+      DebugPrintln("Sonar Task not running (g_SonarReadEnabled = " + String (g_SonarReadEnabled) + ")", DBG_ERROR, true);
+      DisplayTaskStatus(SONAR_READ_TASK_NAME);
+      return false;
+    }
+    else
+    {
+      LastLoopcnt = g_SonarTskLoopCnt;
+      LastDistance[SONAR_FRONT] = g_SonarDistance[SONAR_FRONT];
+      LastDistance[SONAR_LEFT] = g_SonarDistance[SONAR_LEFT];
+      LastDistance[SONAR_RIGHT] = g_SonarDistance[SONAR_RIGHT];
+      return true;
+    }
+  }
+  else
+  {
+    return true;
+  }
+}
+

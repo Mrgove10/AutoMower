@@ -430,10 +430,13 @@ extern float g_MotorCurrent[MOTOR_CURRENT_COUNT];
 #define SONAR_READ_TASK_WAIT_ON_IDLE 500 // in ms
 #define SONAR_READ_TASK_LOOP_TIME 150    // in ms
 
+#define SONAR_READ_TASK_MONITORING_INTERVAL 5000    // in ms
+
 #define SONAR_READ_ACTIVATION_DELAY SONAR_READ_TASK_WAIT_ON_IDLE + SONAR_READ_TASK_LOOP_TIME * 2
 extern TaskHandle_t g_SonarReadTaskHandle; // Sonar Read task RTOS task handle
 
 extern bool g_SonarReadEnabled; // Global variable to suspend sonar sensor reading
+extern int g_SonarTskLoopCnt; // Global variable to count number of task read loops
 
 /************************* HC-SR04 Sonar sensor variables *********************************/
 
@@ -711,6 +714,7 @@ extern bool g_CutMotorAlarm;
 #define ERROR_VERTICAL_TILT_ACTIVATED 002
 #define ERROR_HORIZONTAL_TILT_ACTIVATED 003
 #define ERROR_NO_PERIMETER_SIGNAL 004
+#define ERROR_SONAR_NOT_UPDATING 005
 
 //States-related Error conditions
 #define ERROR_MOWING_NO_START_BUMPER_ACTIVE 100

@@ -287,6 +287,7 @@ int g_BatteryStatus = BATTERY_VOLTAGE_OK;
 TaskHandle_t g_SonarReadTaskHandle; // Sonar Read task RTOS task handle
 
 bool g_SonarReadEnabled = false; // Global variable to suspend sonar sensor reading
+int g_SonarTskLoopCnt = 0; // Global variable to count number of task read loops
 
 /************************* HC-SR04 Sonar sensor variables *********************************/
 #include <Wire.h>

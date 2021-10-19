@@ -39,7 +39,7 @@ void MowerIdle(const bool StateChange, const MowerState PreviousState)
     // Change display with refresh
     idleDisplay(true);
 
-    //change Telemetry frequency
+    // Change Telemetry frequency
     g_MQTTSendInterval = MQTT_TELEMETRY_SEND_INTERVAL;
 
     // Force a Telemetry send
@@ -103,13 +103,16 @@ void MowerDocked(const bool StateChange, const MowerState PreviousState)
     MotionMotorSetSpeed(MOTION_MOTOR_RIGHT, 0); // function will apply correction and set new speed
 //    MotionMotorsTrackingAdjustSpeed(0, 0);
 
-    //change Telemetry frequency
+    // Suspend Sonar readings
+    g_SonarReadEnabled = false;
+
+    // Change Telemetry frequency
     g_MQTTSendInterval = MQTT_TELEMETRY_SEND_INTERVAL_SLOW;
 
     // Force a Telemetry send
     MQTTSendTelemetry(true);
 
-  // Change display with refresh
+    // Change display with refresh
     dockedDisplay(true);
   }
 
@@ -257,6 +260,7 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
   //--------------------------------
 
   // Ongoing Mowing routine is as follows:
+  //    Check for Sonar Task good operation,
   //    Check for tilt,
   //    Check for lost or stopped perimeter signal,
   //    Check for battery level,
@@ -266,6 +270,17 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
   //    Stop when conditions met (TO DO)
 
   g_MowingLoopCnt = g_MowingLoopCnt + 1;
+
+  //--------------------------------
+  // Check for Sonar Task good operation
+  //--------------------------------
+  if (!SonarReadLoopTaskMonitor())
+  {
+    g_totalMowingTime = g_totalMowingTime + (millis() - mowingStartTime);   // in minutes
+    g_CurrentState = MowerState::error;
+    g_CurrentErrorCode = ERROR_SONAR_NOT_UPDATING;
+    return;
+  }
 
   //--------------------------------
   // Check tilt sensors and take immediate action
@@ -533,6 +548,7 @@ void MowerGoingToBase(const bool StateChange, const MowerState PreviousState)
     toBaseDisplay(true);
 
     //change Telemetry frequency
+    // Change Telemetry frequency
     g_MQTTSendInterval = MQTT_TELEMETRY_SEND_INTERVAL_FAST;
 
     // Reset mower error code (not needed after error acknowledgement implemented)

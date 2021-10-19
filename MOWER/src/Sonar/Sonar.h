@@ -45,4 +45,10 @@ void SonarReadLoopTaskSuspend(void);
  */
 void SonarReadLoopTaskResume(void);
 
+/**
+ * Sonar Read task monitoring function to check if task is running
+ * @return boolean indicating if task appears not to be running (false) or is running (true)
+ */
+bool SonarReadLoopTaskMonitor(void);
+
 #endif
