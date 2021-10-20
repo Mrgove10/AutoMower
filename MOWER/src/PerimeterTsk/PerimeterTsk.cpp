@@ -480,9 +480,27 @@ void PerimeterProcessingLoopTask(void *dummyParameter)
     byte evt;
     static int count = 0;
 
+#ifdef PERIMETER_TASK_PERFORMANCE_MONITORING
+    static unsigned long totalmicros = 0;
+    static unsigned long maxmicros = 0;
+    static unsigned long minmicros = 1000000;
+    static unsigned long waittotalmicros = 0;
+    static unsigned long waitmaxmicros = 0;
+    static unsigned long waitminmicros = 1000000;
+    static unsigned long waitstartmicros = micros();
+#endif
+
     // Wait on queue event
-    while (xQueueReceive(g_PerimeterTimerQueue, &evt, portMAX_DELAY) == pdPASS)
+    // while (xQueueReceive(g_PerimeterTimerQueue, &evt, portMAX_DELAY) == pdPASS)
+    if (xQueueReceive(g_PerimeterTimerQueue, &evt, portTICK_PERIOD_MS * 10) == pdTRUE)
     {
+
+#ifdef PERIMETER_TASK_PERFORMANCE_MONITORING
+        waitmaxmicros = max(waitmaxmicros, micros() - waitstartmicros);
+        waitminmicros = min(waitminmicros, micros() - waitstartmicros);
+        waittotalmicros = waittotalmicros + micros() - waitstartmicros;
+#endif
+
       // To monitor correct operation of the reading task, the number of unread events in the queue is monitored (should be zero)
       unsigned int inPerimterQueue = uxQueueMessagesWaiting(g_PerimeterTimerQueue);
       // Decided not to protect with a semaphore the access to monotoring shared variables as they are non critical variable and this avoids unecessary system overload
@@ -491,6 +509,7 @@ void PerimeterProcessingLoopTask(void *dummyParameter)
 
       if (evt == PERIMETER_TASK_PROCESSING_TRIGGER) // Perimeter data processing
       {
+        unsigned long startmicros = micros();
         // Get values from fast aquisition Task and Calculate Min/Max/Avg
         GetPerimeterRawValues(I2S_DMA_BUFFER_LENGTH);
 
@@ -553,11 +572,22 @@ void PerimeterProcessingLoopTask(void *dummyParameter)
         // Display Perimeter task and filter summary information
         count = count + 1;
         // if (count == 100 || abs(g_PerimeterMagnitude) > 600 )
+
+#ifdef PERIMETER_TASK_PERFORMANCE_MONITORING
+        maxmicros = max(maxmicros, micros() - startmicros);
+        minmicros = min(minmicros, micros() - startmicros);
+        totalmicros = totalmicros + micros() - startmicros;
+#endif
+
         if (count == 100)
         {
-          DebugPrintln("Perim: inQ:" + String(g_inPerimeterQueue) +
+          DebugPrintln("Perim:inQ:" + String((float) g_inPerimeterQueue / count,2) +
                            " QMax:" + String(g_inPerimeterQueueMax) +
                            " Qfull:" + String(g_PerimeterQueuefull) +
+#ifdef PERIMETER_TASK_PERFORMANCE_MONITORING
+                           " Wait:" + String((float) (waittotalmicros / 1000.0) / count, 2) + " [" + String(waitminmicros / 1000.0, 2) + "," + String(waitmaxmicros / 1000.0, 2) + "]ms" +
+                           " Exe:" + String((float) (totalmicros / 1000.0) / count, 2) + " [" + String(minmicros / 1000.0, 2) + "," + String(maxmicros / 1000.0, 2) + "]ms" +
+#endif
                            " |RawAvg " + String(g_PerimeterRawAvg) + " [" + String(g_PerimeterRawMin) + "," + String(g_PerimeterRawMax) + "]" +
                            " |FiltMag:" + String(g_PerimeterMagnitude) +
                            " |AvgMag:" + String(g_PerimeterMagnitudeAvg) +
@@ -575,6 +605,15 @@ void PerimeterProcessingLoopTask(void *dummyParameter)
           g_PerimeterRawAvg = 0;
           g_PerimeterRawMin = INT16_MAX;
           g_PerimeterRawMax = 0;
+#ifdef PERIMETER_TASK_PERFORMANCE_MONITORING
+          totalmicros = 0;
+          maxmicros = 0;
+          minmicros = 10000;
+          waittotalmicros = 0;
+          waitmaxmicros = 0;
+          waitminmicros = 1000000;
+#endif
+
 // plot Match filter results
 #ifdef SERIAL_PLOTTER
           int Ptr = g_rawWritePtrCopy;
@@ -612,6 +651,10 @@ void PerimeterProcessingLoopTask(void *dummyParameter)
       {
         PerimeterRawValuesCalibration(PERIMETER_RAW_SAMPLES);
       }
+#ifdef PERIMETER_TASK_PERFORMANCE_MONITORING
+      waitstartmicros = micros();
+#endif
+
     }
   }
 }

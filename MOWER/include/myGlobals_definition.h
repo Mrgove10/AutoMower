@@ -141,7 +141,7 @@ extern unsigned int g_inQueue;            // Accumulated I2S notification queue 
 #define TIMER_PRESCALER 80                // timer counts every microseconds
 #define PERIMETER_TIMER_PERIOD 100 * 1000 // in microseconds
 #define PERIMETER_TIMER_NUMBER 0          // Timer used
-#define PERIMETER_QUEUE_LEN 5             // Queue length. Not one to enable some latency to processing task
+#define PERIMETER_QUEUE_LEN 2             // Queue length. Not 1 to enable some latency to processing task
 
 #define PERIMETER_TASK_ESP_CORE 1          // Core assigned to task
 #define PERIMETER_TASK_PRIORITY 1          // Priority assigned to task
@@ -806,7 +806,6 @@ extern int g_MowingLoopCnt; // number of loops since mowing started
 // #define STOP_RESTART_TO_CAPTURE_CRASH_DUMP true
 
 // Perimeter wire signal debugging
-
 // Folowing line needs to be commented out for function to be active
 
 #define MQTT_GRAPH_DEBUG true
@@ -828,3 +827,7 @@ extern bool g_MQTTGraphRawDebug; // to start/stop the transmission of MQTT raw d
 extern bool g_MQTTPIDGraphDebug; // to start/stop the transmission of MQTT debug data
 #define MQTT_PID_DEBUG_CHANNEL "Automower/PIDDebug"
 #endif
+
+// Perimeter wire signal task performance monitoring
+// Folowing line needs to be commented out for function to be active
+#define PERIMETER_TASK_PERFORMANCE_MONITORING true       // to enable task performance monitorinh
