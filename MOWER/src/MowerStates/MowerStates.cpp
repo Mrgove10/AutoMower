@@ -15,6 +15,7 @@
 #include "Battery/Battery.h"
 #include "Utils/Utils.h"
 #include "Buzzer/Buzzer.h"
+#include "GyroAccel/GyroAccel.h"
 #include "Display/Display.h"
 #include "MQTT/MQTT.h"
 
@@ -675,6 +676,9 @@ void MowerLeavingBase(const bool StateChange, const MowerState PreviousState)
 
     // Sound starting beep to notify environment
     playTune(g_longBeep, sizeof(g_longBeep) / sizeof(noteStruct), 3);
+
+    // Calibrate Gyroscope
+    GyroErrorCalibration(GYRO_CALIBRATION_SAMPLES);
 
     // Cancel any outstanding wheel speed corrections
     MotionMotorsTrackingAdjustSpeed(0, 0);
