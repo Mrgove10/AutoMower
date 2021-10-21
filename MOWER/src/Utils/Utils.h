@@ -2,6 +2,7 @@
 #define utils_h
 
 #include <Arduino.h>
+
 String char_reset_reason(byte reason);
 
 // Debug Levels
@@ -86,5 +87,9 @@ void DisplayTaskStatus(const String task = "*");
  * @param state state of task to display readable status
  */
 String taskStateStr(const eTaskState state);
+
+
+bool MyIdleHook_0( void );
+bool MyIdleHook_1( void );
 
 #endif

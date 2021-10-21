@@ -176,7 +176,7 @@ void SonarReadLoopTaskCreate(void)
 void SonarReadLoopTaskSuspend(void)
 {
   vTaskSuspend(g_SonarReadTaskHandle);
-  Serial.println("Sonar read Task suspended");
+  DebugPrintln("Sonar read Task suspended", DBG_INFO, true);
 }
 
 /**
@@ -185,7 +185,7 @@ void SonarReadLoopTaskSuspend(void)
 void SonarReadLoopTaskResume(void)
 {
   vTaskResume(g_SonarReadTaskHandle);
-  DebugPrintln("Sonar read Task resumed", DBG_VERBOSE, true);
+  DebugPrintln("Sonar read Task resumed", DBG_INFO, true);
 }
 
 /**

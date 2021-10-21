@@ -196,7 +196,7 @@ void FastAnaReadLoopTaskCreate(void)
 void FastAnaReadLoopTaskSuspend(void)
 {
   vTaskSuspend(g_FastAnaReadTaskHandle);
-  DebugPrintln("Fast analog aquisition Task suspended", DBG_VERBOSE, true);
+  DebugPrintln("Fast analog aquisition Task suspended", DBG_INFO, true);
 }
 
 /**
@@ -205,7 +205,7 @@ void FastAnaReadLoopTaskSuspend(void)
 void FastAnaReadLoopTaskResume(void)
 {
   vTaskResume(g_FastAnaReadTaskHandle);
-  DebugPrintln("Fast analog aquisition Task resumed", DBG_VERBOSE, true);
+  DebugPrintln("Fast analog aquisition Task resumed", DBG_INFO, true);
 }
 
 /**

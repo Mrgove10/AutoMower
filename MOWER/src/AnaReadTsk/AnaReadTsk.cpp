@@ -98,6 +98,8 @@ int ProtectedAnalogRead(int pin)
 void AnaReadLoopTask(void *dummyParameter)
 {
   static bool SetupDone = false;
+  static int loopCount = 0;
+  static unsigned long startime = millis();
 
   for (;;)
   {
@@ -117,7 +119,7 @@ void AnaReadLoopTask(void *dummyParameter)
       SetupDone = true;
       DebugPrintln("Analog read Task setup complete", DBG_VERBOSE, true);
     }
-
+    
     //------------------------------------------------------------------
     // Task Loop (done on each loop if read is not suspended)
     //------------------------------------------------------------------
@@ -144,6 +146,13 @@ void AnaReadLoopTask(void *dummyParameter)
     // Read Compass data
     CompassRead(false); // The read interval check is performed by the function
 
+    loopCount ++;
+    if (loopCount > 100)
+    {
+      DebugPrintln("Analog read Task loop time: " + String(millis() - startime) + " ms", DBG_INFO, true);
+      loopCount = 0;
+      startime = millis();
+    }
     // Wait for the next loop
     delay(ANA_READ_TASK_LOOP_WAIT);
   }
@@ -183,7 +192,8 @@ void AnaReadLoopTaskCreate(void)
 void AnaReadLoopTaskSuspend(void)
 {
   vTaskSuspend(g_AnaReadTaskHandle);
-  Serial.println("Analog read Task suspended");
+  DebugPrintln("Analog read Task suspended", DBG_INFO, true);
+
 }
 
 /**
@@ -192,5 +202,5 @@ void AnaReadLoopTaskSuspend(void)
 void AnaReadLoopTaskResume(void)
 {
   vTaskResume(g_AnaReadTaskHandle);
-  DebugPrintln("Analog read Task resumed", DBG_VERBOSE, true);
+  DebugPrintln("Analog read Task resumed", DBG_INFO, true);
 }

@@ -294,7 +294,8 @@ void DisplayTaskStatus(const String task)
   if (task != "*")
   {
     taskcount = 1;
-    
+    taskName[0] = task;
+
     if (task == FAST_ANA_READ_TASK_NAME)
     {
       xHandle[0] = g_FastAnaReadTaskHandle;
@@ -357,3 +358,18 @@ String taskStateStr(const eTaskState state)
   }
 }
 
+bool MyIdleHook_0( void )
+{
+/* This hook function does nothing but increment a counter. */
+ g_IdleCycleCount[0] ++;
+ g_TotalIdleCycleCount[0] ++;
+ return true;
+}
+
+bool MyIdleHook_1( void )
+{
+/* This hook function does nothing but increment a counter. */
+ g_IdleCycleCount[1]++;
+ g_TotalIdleCycleCount[1] ++;
+ return true;
+}

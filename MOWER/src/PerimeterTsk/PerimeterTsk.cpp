@@ -55,11 +55,28 @@ void PerimeterTimerInit(void)
 ICACHE_RAM_ATTR void PerimeterTimerISR(void)
 {
   BaseType_t xHigherPriorityTaskWoken = pdFALSE; // We have not woken a task at the start of the ISR.
+#ifdef PERIMETER_QUEUE_TRIGGER
   BaseType_t QueueReturn;
+#endif
   byte Message = PERIMETER_TASK_PROCESSING_TRIGGER; // for perimeter data processing
+ 
+#ifdef PERIMETER_SEMAPHORE_TRIGGER
+  // Tigger Perimeter processing task by freeing the semaphore
+  xSemaphoreGive(g_PerimeterProcTimerSemaphore);
+#endif
+
+#define PERIMETER_NOTIFICATION_TRIGGER true
+#ifdef PERIMETER_NOTIFICATION_TRIGGER
+  // Tigger Perimeter processing task by notification mechanism
+  xTaskNotifyFromISR(g_PerimeterProcTaskHandle, Message, eSetValueWithOverwrite, &xHigherPriorityTaskWoken);
+#endif
+
+#ifdef PERIMETER_QUEUE_TRIGGER
 
   // Tigger Perimeter processing task by sending an event in the queue
   QueueReturn = xQueueSendToBackFromISR(g_PerimeterTimerQueue, &Message, &xHigherPriorityTaskWoken);
+  // QueueReturn = xQueueSendToFrontFromISR(g_PerimeterTimerQueue, &Message, &xHigherPriorityTaskWoken);
+  // QueueReturn = xQueueOverwriteFromISR(g_PerimeterTimerQueue, &Message, &xHigherPriorityTaskWoken);
 
   // To monitor normal task behaviour, we check that the queue is not full, indicating that the processing task is not runing or is running too slowly
   if (QueueReturn != pdPASS)
@@ -73,6 +90,8 @@ ICACHE_RAM_ATTR void PerimeterTimerISR(void)
   {
     portYIELD_FROM_ISR();
   }
+#endif
+  g_PerimeterQueuewrites = g_PerimeterQueuewrites + 1;
 }
 
 /**
@@ -463,6 +482,10 @@ void PerimeterProcessingLoopTask(void *dummyParameter)
     {
       DebugPrintln("Perimeter data processing Task Started on core " + String(xPortGetCoreID()), DBG_VERBOSE, true);
 
+#ifdef PERIMETER_SEMAPHORE_TRIGGER
+      g_PerimeterProcTimerSemaphore = xSemaphoreCreateMutex();
+#endif
+
       PerimeterQueueInit();       // Create queue used by timer based ISR
       PerimeterTimerInit();       // Create and start Timer based ISR
       PerimeterProcessingSetup(); // Initialise task value and results
@@ -488,14 +511,35 @@ void PerimeterProcessingLoopTask(void *dummyParameter)
     static unsigned long waitmaxmicros = 0;
     static unsigned long waitminmicros = 1000000;
     static unsigned long waitstartmicros = micros();
+    static unsigned long startdisplay;
+    static unsigned long displaytime = 0;
+    static unsigned long LastTickcount = 0;
+
 #endif
 
+#ifdef PERIMETER_SEMAPHORE_TRIGGER
+    // Wait on semaphone event
+    xSemaphoreTake(g_PerimeterProcTimerSemaphore, portMAX_DELAY);
+#endif
+
+#ifdef PERIMETER_NOTIFICATION_TRIGGER
+    // Tigger Perimeter processing task by notification mechanism
+//    ulTaskNotifyTake(pdTRUE, portMAX_DELAY );  /* Reset the notification value to 0 on exit and Block indefinitely. */
+    ulTaskNotifyTake(pdTRUE, pdMS_TO_TICKS(150) );  /* Reset the notification value to 0 on exit and Block for 150 ms max */
+
+    evt = PERIMETER_TASK_PROCESSING_TRIGGER;  // temporary
+#endif
+
+#ifdef PERIMETER_QUEUE_TRIGGER
     // Wait on queue event
     // while (xQueueReceive(g_PerimeterTimerQueue, &evt, portMAX_DELAY) == pdPASS)
-    if (xQueueReceive(g_PerimeterTimerQueue, &evt, portTICK_PERIOD_MS * 10) == pdTRUE)
+    // if (xQueueReceive(g_PerimeterTimerQueue, &evt, portTICK_PERIOD_MS * 10) == pdTRUE)
+    if (xQueueReceive(g_PerimeterTimerQueue, &evt, portMAX_DELAY) == pdTRUE)
     {
+#endif
 
 #ifdef PERIMETER_TASK_PERFORMANCE_MONITORING
+        unsigned long startmicros = micros();
         waitmaxmicros = max(waitmaxmicros, micros() - waitstartmicros);
         waitminmicros = min(waitminmicros, micros() - waitstartmicros);
         waittotalmicros = waittotalmicros + micros() - waitstartmicros;
@@ -509,7 +553,6 @@ void PerimeterProcessingLoopTask(void *dummyParameter)
 
       if (evt == PERIMETER_TASK_PROCESSING_TRIGGER) // Perimeter data processing
       {
-        unsigned long startmicros = micros();
         // Get values from fast aquisition Task and Calculate Min/Max/Avg
         GetPerimeterRawValues(I2S_DMA_BUFFER_LENGTH);
 
@@ -581,12 +624,18 @@ void PerimeterProcessingLoopTask(void *dummyParameter)
 
         if (count == 100)
         {
+#ifdef PERIMETER_TASK_PERFORMANCE_MONITORING
+          startdisplay = millis();
+#endif
+
           DebugPrintln("Perim:inQ:" + String((float) g_inPerimeterQueue / count,2) +
+                           " Qwrt:" + String(g_PerimeterQueuewrites) +
                            " QMax:" + String(g_inPerimeterQueueMax) +
                            " Qfull:" + String(g_PerimeterQueuefull) +
 #ifdef PERIMETER_TASK_PERFORMANCE_MONITORING
-                           " Wait:" + String((float) (waittotalmicros / 1000.0) / count, 2) + " [" + String(waitminmicros / 1000.0, 2) + "," + String(waitmaxmicros / 1000.0, 2) + "]ms" +
+                           " Wait:" + String((float) (waittotalmicros / 1000.0) / count, 2) + " [" + String(waitminmicros / 1000.0, 3) + "," + String(waitmaxmicros / 1000.0, 3) + "]ms" +
                            " Exe:" + String((float) (totalmicros / 1000.0) / count, 2) + " [" + String(minmicros / 1000.0, 2) + "," + String(maxmicros / 1000.0, 2) + "]ms" +
+                           " Disp:" + String(displaytime) + "ms" +
 #endif
                            " |RawAvg " + String(g_PerimeterRawAvg) + " [" + String(g_PerimeterRawMin) + "," + String(g_PerimeterRawMax) + "]" +
                            " |FiltMag:" + String(g_PerimeterMagnitude) +
@@ -598,20 +647,33 @@ void PerimeterProcessingLoopTask(void *dummyParameter)
                            " Sigcount:" + String(g_signalCounter) +
                            " in?:" + String(g_isInsidePerimeter),
                        DBG_DEBUG, true);
+
           count = 0;
           g_PerimeterQueuefull = 0;
+          g_PerimeterQueuewrites = 0;
           g_inPerimeterQueueMax = 0;
           g_inPerimeterQueue = 0;
           g_PerimeterRawAvg = 0;
           g_PerimeterRawMin = INT16_MAX;
           g_PerimeterRawMax = 0;
 #ifdef PERIMETER_TASK_PERFORMANCE_MONITORING
+          displaytime = millis() - startdisplay;
           totalmicros = 0;
           maxmicros = 0;
           minmicros = 10000;
           waittotalmicros = 0;
           waitmaxmicros = 0;
           waitminmicros = 1000000;
+          unsigned long duration = millis() - LastTickcount;
+          LastTickcount = millis();
+
+          DebugPrintln("g_IdleCycleCount/ms CPU0=" + String(float(g_IdleCycleCount[0]) / float(duration), 3) +
+                       " CPU1=" + String(float(g_IdleCycleCount[1]) / float(duration), 3) + 
+                       " over " + String (duration) + "ms", DBG_INFO, true);
+          LastTickcount = millis();
+          g_IdleCycleCount[0] = 0;
+          g_IdleCycleCount[1] = 0;
+
 #endif
 
 // plot Match filter results
@@ -654,8 +716,10 @@ void PerimeterProcessingLoopTask(void *dummyParameter)
 #ifdef PERIMETER_TASK_PERFORMANCE_MONITORING
       waitstartmicros = micros();
 #endif
-
+#ifdef PERIMETER_QUEUE_TRIGGER
     }
+#endif
+
   }
 }
 
@@ -693,7 +757,8 @@ void PerimeterProcessingLoopTaskCreate(void)
 void PerimeterProcessingLoopTaskSuspend(void)
 {
   vTaskSuspend(g_PerimeterProcTaskHandle);
-  Serial.println("Perimeter data processing Task suspended");
+  DebugPrintln("Perimeter data processing Task suspended", DBG_INFO, true);
+
 }
 
 /**
@@ -702,5 +767,5 @@ void PerimeterProcessingLoopTaskSuspend(void)
 void PerimeterProcessingLoopTaskResume(void)
 {
   vTaskResume(g_PerimeterProcTaskHandle);
-  DebugPrintln("Perimeter data processing Task resumed", DBG_VERBOSE, true);
+  DebugPrintln("Perimeter data processing Task resumed", DBG_INFO, true);
 }

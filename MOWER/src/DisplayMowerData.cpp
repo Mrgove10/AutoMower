@@ -61,7 +61,7 @@ void DisplayMowerData()
 
   if ((millis() - LastRefreshed > MOWER_DATA_DISPLAY_INTERVAL*5))
   {
-    DebugPrint("T1:" + String(g_Temperature[TEMPERATURE_1_RED], 1) +        // " | Err1: " + String(Temp1ErrorCount) +
+    DebugPrintln("T1:" + String(g_Temperature[TEMPERATURE_1_RED], 1) +        // " | Err1: " + String(Temp1ErrorCount) +
                    " |T2:" + String(g_Temperature[TEMPERATURE_2_BLUE], 1) + //" | Err2: " + String(Temp2ErrorCount) +
                    " |Charge:" + String(g_BatteryChargeCurrent, 0) +
                    " |MR:" + String(g_MotorCurrent[MOTOR_CURRENT_RIGHT], 1) +
@@ -80,6 +80,8 @@ void DisplayMowerData()
     g_inQueueMax = 0;
     g_inQueue = 0;
     g_MowingLoopCnt = 0;
+
+    DisplayTaskStatus(PERIMETER_TASK_NAME);
 
     //    DisplayClear();
     // DisplayPrint(0, 0, "T1: " + String(g_Temperature[TEMPERATURE_1_RED], 1) + " T2: " + String(g_Temperature[TEMPERATURE_2_BLUE], 1), true);

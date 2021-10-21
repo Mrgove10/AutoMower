@@ -101,7 +101,10 @@ QueueHandle_t g_PerimeterTimerQueue; // Queue red by Perimeter processing task
 
 TaskHandle_t g_PerimeterProcTaskHandle; // Perimeter processing task RTOS task handle
 
-unsigned int g_PerimeterQueuefull = 0;  // Assumulated count of full Perimeter queue events
+SemaphoreHandle_t g_PerimeterProcTimerSemaphore;
+
+unsigned int g_PerimeterQueuefull = 0;  // Accumulated count of full Perimeter queue events
+unsigned int g_PerimeterQueuewrites = 0;  // Accumulated count of Perimeter queue events write
 unsigned int g_inPerimeterQueueMax = 0; // Max Perimeter queue waiting events (should be 0)
 unsigned int g_inPerimeterQueue = 0;    // Accumulated Perimeter queue waiting events (should be 0)
 
@@ -456,3 +459,6 @@ bool g_MQTTGraphRawDebug = false;
 #ifdef MQTT_PID_GRAPH_DEBUG
 bool g_MQTTPIDGraphDebug = false;
 #endif
+
+uint32_t g_IdleCycleCount[2] = {0, 0};
+uint32_t g_TotalIdleCycleCount[2] = {0, 0};

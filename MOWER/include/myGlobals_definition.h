@@ -1,6 +1,7 @@
 #include <Arduino.h>
 #include "Environment_definitions.h"
 #include "states.h"
+#include <esp_freertos_hooks.h>
 
 /************************* MQTT *********************************/
 
@@ -141,7 +142,7 @@ extern unsigned int g_inQueue;            // Accumulated I2S notification queue 
 #define TIMER_PRESCALER 80                // timer counts every microseconds
 #define PERIMETER_TIMER_PERIOD 100 * 1000 // in microseconds
 #define PERIMETER_TIMER_NUMBER 0          // Timer used
-#define PERIMETER_QUEUE_LEN 2             // Queue length. Not 1 to enable some latency to processing task
+#define PERIMETER_QUEUE_LEN 10             // Queue length. Not 1 to enable some latency to processing task
 
 #define PERIMETER_TASK_ESP_CORE 1          // Core assigned to task
 #define PERIMETER_TASK_PRIORITY 1          // Priority assigned to task
@@ -164,7 +165,10 @@ extern QueueHandle_t g_PerimeterTimerQueue; // Queue red by Perimeter processing
 
 extern TaskHandle_t g_PerimeterProcTaskHandle; // Perimeter processing task RTOS task handle
 
-extern unsigned int g_PerimeterQueuefull;  // Assumulated count of full Perimeter queue events
+extern SemaphoreHandle_t g_PerimeterProcTimerSemaphore;
+
+extern unsigned int g_PerimeterQueuefull;  // Accumulated count of full Perimeter queue events
+extern unsigned int g_PerimeterQueuewrites;  // Accumulated count of Perimeter queue events write
 extern unsigned int g_inPerimeterQueueMax; // Max Perimeter queue waiting events (should be 0)
 extern unsigned int g_inPerimeterQueue;    // Accumulated Perimeter queue waiting events (should be 0)
 
@@ -831,3 +835,7 @@ extern bool g_MQTTPIDGraphDebug; // to start/stop the transmission of MQTT debug
 // Perimeter wire signal task performance monitoring
 // Folowing line needs to be commented out for function to be active
 #define PERIMETER_TASK_PERFORMANCE_MONITORING true       // to enable task performance monitorinh
+
+
+extern uint32_t g_IdleCycleCount[2];
+extern uint32_t g_TotalIdleCycleCount[2];
