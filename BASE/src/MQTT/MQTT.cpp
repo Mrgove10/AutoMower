@@ -209,6 +209,7 @@ void MQTTCallback(char *topic, byte *message, unsigned int length)
         DebugPrintln("Base Acknowledgement requested (Remote)", DBG_ERROR, true);
         g_BaseCurrentState = BaseState::idle;
         g_CurrentErrorCode = ERROR_NO_ERROR;
+        g_LastMowerTelemetryReceived = millis();
       }
       else if (Val1Str == "IDLE")
       {

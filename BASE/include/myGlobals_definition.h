@@ -9,7 +9,7 @@
 
 #include <PubSubClient.h>
 
-#define MQTT_TELEMETRY_SEND_INTERVAL_SLOW 2 * 60 * 1000 // in ms
+#define MQTT_TELEMETRY_SEND_INTERVAL_SLOW 5 * 60 * 1000 // in ms
 #define MQTT_TELEMETRY_SEND_INTERVAL 20 * 1000 // in ms
 #define MQTT_TELEMETRY_SEND_INTERVAL_FAST 15 * 1000 // in ms
 #define MQTT_PERIMETER_STATUS_SEND_INTERVAL 45 * 1000 // in ms
@@ -195,7 +195,7 @@ extern SSD1306Wire oled;
 #define OLED_PIXEL_PER_LINE 16  // to reproduce LCD "form factor" on OLED display : 64/4
 #define OLED_PIXEL_PER_COLUMN 7 // to reproduce LCD "form factor" on OLED display : 128/20 => 6.4 rounded up to 7
 #define OLED_BRIGHTNESS_NORMAL 255
-#define OLED_BRIGHTNESS_LOW 1
+#define OLED_BRIGHTNESS_LOW 0
 #endif
 
 #define DISPLAY_COLUMS 20
@@ -317,7 +317,7 @@ extern bool g_FanOn[FAN_COUNT];
 
 extern int g_CurrentErrorCode; // Current Error code
 
-/************************* Mower Menu definitions *********************************/
+/************************* Base Menu definitions *********************************/
 
 #define MENU_IDLE_TXT "Idle"
 #define MENU_DETAILS_TXT "Dtls"
@@ -327,7 +327,7 @@ extern int g_CurrentErrorCode; // Current Error code
 #define DISPLAY_IDLE_REFRESH_INTERVAL 1000              // in ms
 #define DISPLAY_SENDING_REFRESH_INTERVAL 1000             // in ms
 #define DISPLAY_ERROR_REFRESH_INTERVAL 5000             // in ms
-#define DISPLAY_SLEEPING_REFRESH_INTERVAL 1000            // in ms
+#define DISPLAY_SLEEPING_REFRESH_INTERVAL 20 * 60 * 1000            // in ms
 
 #define STATES_COUNT 4      // number of states in States enum (messy but did not find how to easly derive automatically number of elements from enum)
 

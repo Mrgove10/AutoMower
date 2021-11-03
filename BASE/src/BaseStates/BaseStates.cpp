@@ -284,6 +284,12 @@ void BaseInError(const bool StateChange, const BaseState PreviousState)
 
     FanCheck(FAN_1_RED);  // Read temperature and activate or stop fan
 
+  // Update Voltage and current
+
+    PwrSupplyVoltageRead();
+
+    PerimeterLoadCurrentRead();
+
     // wait for user action (keypad action)
   }
 }
@@ -358,7 +364,9 @@ bool PerimeterCurrentTooHighCheck(const float Threshold)
  */
 bool MowerStatusCheck(const unsigned long Timeout)
 {
-  if (millis() - g_LastMowerTelemetryReceived > Timeout && g_CurrentErrorCode != ERROR_NO_MOWER_DATA)
+  if (millis() - g_LastMowerTelemetryReceived > Timeout && 
+      g_CurrentErrorCode != ERROR_NO_MOWER_DATA && 
+      g_BaseCurrentState != BaseState::sleeping)
   {
     DebugPrintln("No mower data received for " + String(Timeout/1000) + " seconds : Perimeter Signal stop ", DBG_ERROR, true);
     PerimeterSignalStop();
