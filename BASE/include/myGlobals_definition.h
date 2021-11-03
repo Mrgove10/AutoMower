@@ -2,6 +2,8 @@
 #include "Environment_definitions.h"
 #include "MowerStates.h"
 #include "BaseStates.h"
+#include <esp_freertos_hooks.h>
+
 
 /************************* MQTT *********************************/
 
@@ -363,3 +365,5 @@ extern float g_MowerChargeCurrent;
 // Folowing line needs to be commented out for function to be active
 
 // #define STOP_RESTART_TO_CAPTURE_CRASH_DUMP true
+
+extern uint32_t g_TotalIdleCycleCount[2];

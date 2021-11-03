@@ -441,6 +441,8 @@ void MQTTSendTelemetry(const bool now)
     JSONDataPayload.add("CPUTemp", String(temperatureRead(), 1));
     JSONDataPayload.add("RSSI", String(WiFi.RSSI()));
     JSONDataPayload.add("MQTTErr", String(g_MQTTErrorCount));
+    JSONDataPayload.add("CPU0IdleCnt", String(float(g_TotalIdleCycleCount[0]) / float(millis() - LastTelemetryDataSent), 3));
+    JSONDataPayload.add("CPU1IdleCnt", String(float(g_TotalIdleCycleCount[1]) / float(millis() - LastTelemetryDataSent), 3));
 
     JSONDataPayload.toString(JSONDataPayloadStr, false);
     JSONDataPayloadStr.toCharArray(MQTTpayload, JSONDataPayloadStr.length() + 1);
@@ -455,6 +457,8 @@ void MQTTSendTelemetry(const bool now)
       {
         g_TempErrorCount[TEMPERATURE_1_RED] = 0;
         g_MQTTErrorCount = 0;
+        g_TotalIdleCycleCount[0] = 0;
+        g_TotalIdleCycleCount[1] = 0;
       }
       else
       {

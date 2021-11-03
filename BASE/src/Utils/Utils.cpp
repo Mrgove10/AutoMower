@@ -292,3 +292,17 @@ String taskStateStr(const eTaskState state)
   }
 }
 
+bool MyIdleHook_0( void )
+{
+/* This hook function does nothing but increment a counter. */
+ g_TotalIdleCycleCount[0] ++;
+ return true;
+}
+
+bool MyIdleHook_1( void )
+{
+/* This hook function does nothing but increment a counter. */
+ g_TotalIdleCycleCount[1] ++;
+ return true;
+}
+

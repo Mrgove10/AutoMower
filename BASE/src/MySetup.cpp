@@ -28,6 +28,16 @@ void MySetup(void)
   delay(100);
   Serial.println();
 
+    if (esp_register_freertos_idle_hook_for_cpu(&MyIdleHook_0, (UBaseType_t) 0) != ESP_OK)
+  {
+    DebugPrintln(" Idle Hook 0 not created ! ");
+  }
+
+  if (esp_register_freertos_idle_hook_for_cpu(&MyIdleHook_1, (UBaseType_t) 1) != ESP_OK)
+  {
+    DebugPrintln(" Idle Hook 1 not created ! ");
+  }
+
 #ifdef STOP_RESTART_TO_CAPTURE_CRASH_DUMP
 // For testing ONLY, if reset is not a power-on, delay indefinately to be able to "catch" reset cause.
 // NOT TO BE USED IN NORMAL OPERATION AS MOWER WILL NOT RESET OUTPUTS AND MOTORS WILL KEEP RUNNING UNTILL 

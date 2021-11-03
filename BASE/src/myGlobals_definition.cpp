@@ -227,3 +227,4 @@ float g_MowerChargeCurrent = 0;
 
 /************************* Program debugging *********************************/
 
+uint32_t g_TotalIdleCycleCount[2] = {0, 0};

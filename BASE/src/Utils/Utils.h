@@ -87,4 +87,7 @@ void DisplayTaskStatus(const String task = "*");
  */
 String taskStateStr(const eTaskState state);
 
+bool MyIdleHook_0( void );
+bool MyIdleHook_1( void );
+
 #endif
