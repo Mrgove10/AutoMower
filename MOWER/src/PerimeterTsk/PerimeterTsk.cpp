@@ -543,6 +543,13 @@ void PerimeterProcessingLoopTask(void *dummyParameter)
         waitmaxmicros = max(waitmaxmicros, micros() - waitstartmicros);
         waitminmicros = min(waitminmicros, micros() - waitstartmicros);
         waittotalmicros = waittotalmicros + micros() - waitstartmicros;
+        if ((micros() - waitstartmicros) > 500*1000) // higher than 500 ms
+        {
+          g_PrimProcTskLongLoopCnt = g_PrimProcTskLongLoopCnt + 1;
+          DebugPrintln("\t\t\t\t\t Long wait: Count:" + String(count), DBG_INFO, true);
+
+        }
+
 #endif
 
       // To monitor correct operation of the reading task, the number of unread events in the queue is monitored (should be zero)
@@ -636,6 +643,7 @@ void PerimeterProcessingLoopTask(void *dummyParameter)
                            " Wait:" + String((float) (waittotalmicros / 1000.0) / count, 2) + " [" + String(waitminmicros / 1000.0, 3) + "," + String(waitmaxmicros / 1000.0, 3) + "]ms" +
                            " Exe:" + String((float) (totalmicros / 1000.0) / count, 2) + " [" + String(minmicros / 1000.0, 2) + "," + String(maxmicros / 1000.0, 2) + "]ms" +
                            " Disp:" + String(displaytime) + "ms" +
+                           " Long:" + String(g_PrimProcTskLongLoopCnt) +
 #endif
                            " |RawAvg " + String(g_PerimeterRawAvg) + " [" + String(g_PerimeterRawMin) + "," + String(g_PerimeterRawMax) + "]" +
                            " |FiltMag:" + String(g_PerimeterMagnitude) +

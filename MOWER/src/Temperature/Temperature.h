@@ -2,7 +2,6 @@
 #define temperature_h
 
 #include "pin_definitions.h"
-#define TEMPERATURE_PRECISION 9
 
 /**
  * Temperature sensor setup function

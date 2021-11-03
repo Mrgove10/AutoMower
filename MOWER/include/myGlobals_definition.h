@@ -365,10 +365,12 @@ extern DallasTemperature TemperatureSensors;
 extern DeviceAddress temp_1_RedSensor;
 extern DeviceAddress temp_2_BlueSensor;
 
+#define TEMPERATURE_PRECISION 11    // in bits
+
 #define TEMPERATURE_COUNT 2 // Number of temperature sensors
 #define TEMPERATURE_1_RED 0
 #define TEMPERATURE_2_BLUE 1
-#define TEMPERATURE_READ_INTERVAL 5000 // in ms
+#define TEMPERATURE_READ_INTERVAL 10000 // in ms
 
 extern int g_TempErrorCount[TEMPERATURE_COUNT];
 extern float g_Temperature[TEMPERATURE_COUNT];
@@ -839,3 +841,4 @@ extern bool g_MQTTPIDGraphDebug; // to start/stop the transmission of MQTT debug
 
 extern uint32_t g_IdleCycleCount[2];
 extern uint32_t g_TotalIdleCycleCount[2];
+extern int g_PrimProcTskLongLoopCnt;

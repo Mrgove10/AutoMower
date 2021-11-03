@@ -295,7 +295,7 @@ void BatteryChargeCheck(const bool Now)
     }
 
     // Check if battery voltage level is below charging threshold
-    if (g_BatteryVoltage < BATTERY_VOLTAGE_TO_START_CHARGE)
+    if (g_BatteryVoltage < BATTERY_VOLTAGE_TO_START_CHARGE && !g_BatteryRelayIsClosed)
     {
       DebugPrintln("Battery needs charge (" + String(g_BatteryVoltage) + " mV)" , DBG_INFO, true);
       // Close relay to enable charge

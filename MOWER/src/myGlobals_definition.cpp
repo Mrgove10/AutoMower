@@ -462,3 +462,4 @@ bool g_MQTTPIDGraphDebug = false;
 
 uint32_t g_IdleCycleCount[2] = {0, 0};
 uint32_t g_TotalIdleCycleCount[2] = {0, 0};
+int g_PrimProcTskLongLoopCnt = 0;

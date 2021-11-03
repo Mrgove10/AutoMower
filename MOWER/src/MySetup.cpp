@@ -135,6 +135,8 @@ void MySetup(void)
 
   FanSetup();
 
+  SerialAndTelnet.handle();
+
   MotionMotorSetup();
 
   CutMotorSetup();

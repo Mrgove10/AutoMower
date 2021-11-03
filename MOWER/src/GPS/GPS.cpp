@@ -64,7 +64,10 @@ void GPSRead(const bool Now)
       g_GPSLongitude = GPS.location.lng();
       g_GPSHeading = GPS.course.value();
 
-      DebugPrintln("Sat: " + String(g_GPSSatellitesFix) + " HDop: " + String(g_GPSHdop, 2) + " Head: " + String(g_GPSHeading), DBG_VERBOSE, true);
+      if (g_GPSSatellitesFix > 0)
+      {
+        DebugPrintln("Sat: " + String(g_GPSSatellitesFix) + " HDop: " + String(g_GPSHdop, 2) + " Head: " + String(g_GPSHeading), DBG_VERBOSE, true);
+      }
     }
     LastGPSRead = millis();
   }

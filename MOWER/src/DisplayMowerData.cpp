@@ -81,7 +81,7 @@ void DisplayMowerData()
     g_inQueue = 0;
     g_MowingLoopCnt = 0;
 
-    DisplayTaskStatus(PERIMETER_TASK_NAME);
+    // DisplayTaskStatus(PERIMETER_TASK_NAME);
 
     //    DisplayClear();
     // DisplayPrint(0, 0, "T1: " + String(g_Temperature[TEMPERATURE_1_RED], 1) + " T2: " + String(g_Temperature[TEMPERATURE_2_BLUE], 1), true);

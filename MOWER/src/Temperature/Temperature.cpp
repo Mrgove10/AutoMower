@@ -54,7 +54,8 @@ void TemperatureSensorSetup(void)
   DebugPrintln(String(nbTempSensors, DEC) + " sensors found");
 */
 
-  TemperatureSensors.setResolution(TEMPERATURE_PRECISION);
+  TemperatureSensors.setResolution(temp_1_RedSensor, TEMPERATURE_PRECISION);
+  TemperatureSensors.setResolution(temp_2_BlueSensor, TEMPERATURE_PRECISION);
 
   DebugPrintln("Device 1-Red Resolution: " + String(TemperatureSensors.getResolution(temp_1_RedSensor), DEC), DBG_VERBOSE, true);
   DebugPrintln("Device 2-Blue Resolution: " + String(TemperatureSensors.getResolution(temp_2_BlueSensor), DEC), DBG_VERBOSE, true);
@@ -70,7 +71,7 @@ void TemperatureSensorSetup(void)
   }
 
   TemperatureSensors.requestTemperatures();
-  delay(1000);
+  delay(500);
 }
 
 /**
@@ -161,29 +162,39 @@ float TemperatureRead(int sensor, const bool Now)
   if ((millis() - LastTemperatureRead[sensor] > TEMPERATURE_READ_INTERVAL) || Now)
   {
     float tempC = UNKNOWN_FLOAT;
+    unsigned long StartTime = millis();
+
+    TemperatureSensors.requestTemperatures();
 
     if (sensor == TEMPERATURE_1_RED)
     {
+      // TemperatureSensors.requestTemperaturesByAddress(temp_1_RedSensor);
       if (!TemperatureSensors.isConnected(temp_1_RedSensor))
       {
+        DebugPrintln("TemperatureRead reconnection on Sensor " + String(sensor), DBG_VERBOSE, true);
         TemperatureSensors.begin();
+        TemperatureSensors.requestTemperatures();
         g_TempErrorCount[sensor] = g_TempErrorCount[sensor] + 1;
       }
-      TemperatureSensors.requestTemperaturesByAddress(temp_1_RedSensor);
+      // TemperatureSensors.requestTemperaturesByAddress(temp_1_RedSensor);
       tempC = TemperatureSensors.getTempC(temp_1_RedSensor);
     }
+
     if (sensor == TEMPERATURE_2_BLUE)
     {
+      // TemperatureSensors.requestTemperaturesByAddress(temp_2_BlueSensor);
       if (!TemperatureSensors.isConnected(temp_2_BlueSensor))
       {
+        DebugPrintln("TemperatureRead reconnection on Sensor " + String(sensor), DBG_VERBOSE, true);
         TemperatureSensors.begin();
+        TemperatureSensors.requestTemperatures();
         g_TempErrorCount[sensor] = g_TempErrorCount[sensor] + 1;
       }
-      TemperatureSensors.requestTemperaturesByAddress(temp_2_BlueSensor);
+      // TemperatureSensors.requestTemperaturesByAddress(temp_2_BlueSensor);
       tempC = TemperatureSensors.getTempC(temp_2_BlueSensor);
     }
 
-    DebugPrintln("TemperatureRead Sensor " + String(sensor + 1) + ", value " + String(tempC, 2), DBG_VERBOSE, true);
+    DebugPrintln("TemperatureRead Sensor " + String(sensor) + ", value " + String(tempC, 3) + " duration:" + String(millis() - StartTime) + " ms", DBG_VERBOSE, true);
 
     LastTemperatureRead[sensor] = millis();
 
@@ -194,6 +205,7 @@ float TemperatureRead(int sensor, const bool Now)
     }
     else
     {
+      DebugPrintln("TemperatureRead ERROR on Sensor " + String(sensor) + ", value " + String(tempC, 2), DBG_VERBOSE, true);
       g_TempErrorCount[sensor] = g_TempErrorCount[sensor] + 1;
       g_Temperature[sensor] = UNKNOWN_FLOAT;
       return UNKNOWN_FLOAT;
