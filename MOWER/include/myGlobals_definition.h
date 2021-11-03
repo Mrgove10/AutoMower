@@ -155,8 +155,8 @@ extern unsigned int g_inQueue;            // Accumulated I2S notification queue 
 #define PERIMETER_USE_DIFFERENTIAL_SIGNAL true
 #define PERIMETER_SWAP_COIL_POLARITY false
 // #define PERIMETER_IN_OUT_DETECTION_THRESHOLD 1000
-#define PERIMETER_IN_OUT_DETECTION_THRESHOLD 600
-#define PERIMETER_APPROACHING_THRESHOLD 500
+#define PERIMETER_IN_OUT_DETECTION_THRESHOLD 1200
+#define PERIMETER_APPROACHING_THRESHOLD 1000
 // #define PERIMETER_APPROACHING_THRESHOLD PERIMETER_IN_OUT_DETECTION_THRESHOLD/ 2
 
 extern hw_timer_t *g_PerimeterTimerhandle; // Perimeter processing task timer based trigger ISR handle
