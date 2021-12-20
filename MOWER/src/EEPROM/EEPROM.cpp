@@ -105,13 +105,13 @@ void EEPROMSetup(void)
     g_totalMowingTime = g_EEPROMLoad.Load.Data.totalMowingTime;
     g_partialMowingTime = g_EEPROMLoad.Load.Data.partialMowingTime;
     g_operationTime = g_EEPROMLoad.Load.Data.operationTime;
-    g_chargingTime = g_EEPROMLoad.Load.Data.chargingTime;
+    g_totalChargingTime = g_EEPROMLoad.Load.Data.chargingTime;
 
     DebugPrintln("EEPROM value for g_totalObstacleDectections: " + String(g_totalObstacleDectections), DBG_INFO);
     DebugPrintln("EEPROM value for g_totalMowingTime: " + String(g_totalMowingTime), DBG_INFO);
     DebugPrintln("EEPROM value for g_partialMowingTime: " + String(g_partialMowingTime), DBG_INFO);
     DebugPrintln("EEPROM value for g_operationTime: " + String(g_operationTime), DBG_INFO);
-    DebugPrintln("EEPROM value for g_chargingTime: " + String(g_chargingTime), DBG_INFO);
+    DebugPrintln("EEPROM value for g_totalChargingTime: " + String(g_totalChargingTime), DBG_INFO);
   }
 }
 
@@ -198,7 +198,7 @@ void EEPROMSave(boolean immediatly)
     g_EEPROMLoad.Load.Data.totalMowingTime = g_totalMowingTime;
     g_EEPROMLoad.Load.Data.partialMowingTime = g_partialMowingTime;
     g_EEPROMLoad.Load.Data.operationTime = g_operationTime;
-    g_EEPROMLoad.Load.Data.chargingTime = g_chargingTime;
+    g_EEPROMLoad.Load.Data.chargingTime = g_totalChargingTime;
 
     EEPROMWrite();
   }

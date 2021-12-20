@@ -278,6 +278,14 @@ void MQTTCallback(char *topic, byte *message, unsigned int length)
       }
     }
 
+    else if (Command == "RESET_CHARGE_DURATION")
+    {
+      g_totalChargingTime = 0;
+      g_BatteryChargingStartTime = millis();
+      EEPROMSave(true); // Update EEPROM
+      LogPrintln("Charge duration counter reset", TAG_VALUE, DBG_INFO);
+    }
+
     else if (Command == "PARAMETER")
     {
       ParameterChangeValue(Val1Str, Val2); // Value changed and saved in EEPROM
@@ -561,6 +569,7 @@ void MQTTSendTelemetry(const bool now)
     // Mowing Statistics data
     JSONDataPayload.add("Obstcl", String(g_totalObstacleDectections));
     JSONDataPayload.add("MowTim", String(int(g_totalMowingTime/60000)));
+    JSONDataPayload.add("ChargTim", String(int(g_totalChargingTime/60000)));
 
     // Perimeter data
     JSONDataPayload.add("Mag", String(g_PerimeterMagnitude));

@@ -391,6 +391,7 @@ extern float g_BatteryChargeCurrent;
 extern float g_BatterySOC;              // Indicates the battery state of charge in %
 extern bool g_BatteryRelayIsClosed;     // Indicates whether the battery relay is closed (true) or not (false)
 extern bool g_BatteryIsCharging;        // Indicates whether the battery is charging (true) or not (false)
+extern unsigned long g_BatteryChargingStartTime; // Memorises when battery charging started (for chrging duration calculation)
 
 /************************* Voltage variables *********************************/
 
@@ -780,7 +781,7 @@ extern long g_totalObstacleDectections; // Total number of obstacle detections  
 
 extern unsigned long g_partialMowingTime; // Partial time spent mowing, in minutes (Saved to EEPROM)
 extern unsigned long g_operationTime;     // Total time spent in operation (not docked) (Saved to EEPROM)
-extern unsigned long g_chargingTime;      // Total time spent charging
+extern unsigned long g_totalChargingTime;      // Total time spent charging
 
 /************************* Test sequence variables *********************************/
 

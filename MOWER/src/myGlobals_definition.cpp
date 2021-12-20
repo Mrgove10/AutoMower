@@ -271,6 +271,7 @@ Adafruit_INA219 BatteryChargeSensor = Adafruit_INA219(BATTERY_INA219_I2C_ADDRESS
 float g_BatterySOC = 0;  // Indicates the battery state of charge in %
 bool g_BatteryRelayIsClosed;  // Indicates whether the battery relay is closed (true) or not (false)
 bool g_BatteryIsCharging = false;  // indicates whether the battery is charging or not
+unsigned long g_BatteryChargingStartTime = 0; // Memorises when battery charging started (for chrging duration calculation)
 
 /************************* INA219 I2C Curent sensor variables *********************************/
 
@@ -437,7 +438,7 @@ long g_totalObstacleDectections = 0; // Total number of obstacle detections   (S
 
 unsigned long g_partialMowingTime; // Partial time spent mowing, in minutes (Saved to EEPROM)
 unsigned long g_operationTime;     // Total time spent in operation (not docked) (Saved to EEPROM)
-unsigned long g_chargingTime;      // Total time spent charging
+unsigned long g_totalChargingTime;      // Total time spent charging
 
 /************************* Program variables *********************************/
 

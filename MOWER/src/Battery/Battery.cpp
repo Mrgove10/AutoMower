@@ -3,6 +3,7 @@
 #include "myGlobals_definition.h"
 #include "Environment_definitions.h"
 #include "Battery/Battery.h"
+#include "EEPROM/EEPROM.h"
 #include "Utils/Utils.h"
 #include "Display/Display.h"
 #include "IOExtender/IOExtender.h"
@@ -292,6 +293,11 @@ void BatteryChargeCheck(const bool Now)
       // Open relay to stop charge
       BatteryChargeRelayOpen();
       DebugPrintln("Battery Full, charge stopped (" + String(g_BatteryChargeCurrent) + " mA, " + String(g_BatteryVoltage) + " mV)" , DBG_INFO, true);
+
+      // Update charging time
+      g_totalChargingTime = g_totalChargingTime + (millis() - g_BatteryChargingStartTime);   // in minutes
+      EEPROMSave(true); // Update EEPROM
+
     }
 
     // Check if battery voltage level is below charging threshold
@@ -300,12 +306,19 @@ void BatteryChargeCheck(const bool Now)
       DebugPrintln("Battery needs charge (" + String(g_BatteryVoltage) + " mV)" , DBG_INFO, true);
       // Close relay to enable charge
       BatteryChargeRelayClose();
+
+      // Memorise start of charging time
+      g_BatteryChargingStartTime = millis();
     }
 
     // Determine charging status
     if (g_BatteryRelayIsClosed && g_BatteryChargeCurrent > BATTERY_CHARGE_CURRENT_CHARGING_THRESHOLD)
     {
         g_BatteryIsCharging = true;
+
+        // Update charging time
+        g_totalChargingTime = g_totalChargingTime + (millis() - g_BatteryChargingStartTime);   // in minutes
+        g_BatteryChargingStartTime = millis();
     }
     else
     {
