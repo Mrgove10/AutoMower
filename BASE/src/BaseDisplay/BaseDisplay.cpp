@@ -408,7 +408,7 @@ void sleepingDisplay(bool refresh)
         Line = "Bat: " + String(g_MowerBatterySOC,0) + " %";
       }
 
-      if (g_MowerChargeCurrent > 0)
+      if (g_MowerChargeCurrent > 1)
       {
         Line = Line + " | " + String(g_MowerChargeCurrent,0) + " mA";
       }
