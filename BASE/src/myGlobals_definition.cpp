@@ -202,10 +202,10 @@ int g_CurrentErrorCode = ERROR_NO_ERROR; // Current Error code
 /************************* Mower Menu definitions *********************************/
 
 // contains the text to display @ bottom of screen to act as a menu
-String g_menuString[STATES_COUNT] = {"Send|Zzzz|Test|.... ",   // Idle
-                                     "Send|    |    |.... ",   // Sleeping
-                                     "    |Zzzz|... |     ",   // Sending
-                                     "    |Ack |Text|.... "};  //Error
+String g_menuString[STATES_COUNT] = {"Send |Zzzz |Test | .... ",   // Idle
+                                     "Send |     |     | .... ",   // Sleeping
+                                     "     |Zzzz | ... |     ",   // Sending
+                                     "     |Ack  |Text | .... "};  //Error
 
 String g_StatesString[STATES_COUNT] = {"   IDLE   ",   // Idle
                                        " SLEEPING ",   // Sleeping
@@ -224,6 +224,7 @@ BaseState g_BasePreviousState = BaseState::sleeping;
 
 MowerState g_MowerCurrentState = MowerState::idle;
 float g_MowerChargeCurrent = 0;
+float g_MowerBatterySOC = UNKNOWN_FLOAT;
 
 /************************* Program debugging *********************************/
 

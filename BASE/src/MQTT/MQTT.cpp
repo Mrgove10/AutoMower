@@ -323,8 +323,22 @@ void MQTTCallback(char *topic, byte *message, unsigned int length)
     {
       String ChargeCurrent = JSONData.stringValue;
       g_MowerChargeCurrent = ChargeCurrent.toFloat();
-      DebugPrintln ("Saved Mower Charge current: " + String(g_MowerChargeCurrent, 2), DBG_VERBOSE, true);
+      DebugPrintln ("Saved Mower Charge current: " + String(g_MowerChargeCurrent, 2) + " mA", DBG_VERBOSE, true);
     }
+
+    // Extract Battery SOC value from JSON structure
+    JSONDataPayload.get(JSONData, "BatSOC");
+    if (JSONData.success)
+    {
+      String BatterySOC = JSONData.stringValue;
+      g_MowerBatterySOC = BatterySOC.toInt();
+      DebugPrintln ("Saved Mower Battery SOC: " + String(g_MowerBatterySOC) + " %", DBG_VERBOSE, true);
+    }
+    else
+    {
+      g_MowerBatterySOC = UNKNOWN_INT;
+    }
+
   }
 
   /* other channel */

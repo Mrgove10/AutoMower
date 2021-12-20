@@ -361,13 +361,13 @@ void sleepingDisplay(bool refresh)
     menuDisplay(int(g_BaseCurrentState));
   }
 
-  if (g_FanOn[FAN_1_RED] || g_Temperature[TEMPERATURE_1_RED] > FAN_1_STOP_THRESHOLD) 
+  if (g_FanOn[FAN_1_RED] || g_MowerChargeCurrent > 0) 
   {
     refreshInterval = DISPLAY_SLEEPING_REFRESH_INTERVAL;
   }
   else 
   {
-    refreshInterval = DISPLAY_SLEEPING_REFRESH_INTERVAL * 300;
+    refreshInterval = DISPLAY_SLEEPING_REFRESH_INTERVAL * 20;
   }
 
   if (millis() - lastRefresh > refreshInterval || refresh || internalRefresh)
@@ -401,8 +401,23 @@ void sleepingDisplay(bool refresh)
       // Display State and other state related informations
       headerDisplay("", true);
       DisplayPrint(5,1,g_StatesString[int(g_BaseCurrentState)]);
-      // DisplayPrint(0,2,"Charging:" + String(g_BatteryChargeCurrent,0) + " mA   ",true);
+      String Line;
+
+      if (g_MowerBatterySOC != UNKNOWN_FLOAT)
+      {
+        Line = "Bat: " + String(g_MowerBatterySOC,0) + " %";
+      }
+
+      if (g_MowerChargeCurrent > 0)
+      {
+        Line = Line + " | " + String(g_MowerChargeCurrent,0) + " mA";
+      }
+
+      Line = Line + "                 ";   // add spaces to errase end of line
+
+      DisplayPrint(0,2,Line.substring(0,20),true);
     }
+
     lastRefresh = millis();
     internalRefresh = false;
   }
@@ -457,23 +472,51 @@ void headerDisplay(String title, bool now)
   // 14 Sending indication 
   // 15-19 Temperature
 
-  String SendingChar = "*";
+  const String SendingChar = "~";
+  String SendTxt = "   ";
+  const String FanChar[2] = {"+", "x"};
   static unsigned long lastUpdate = 0;
+  static int FanIdx = 0;
+  static int SendIdx = 0;
 
   if (millis() - lastUpdate > DISPLAY_REFRESH_INTERVAL || now)
   {
     title.trim();   // Remove unnecessary spaces
 
+    // Display charging animation
+    if (g_enableSender)
+    {
+      for (int i=0; i < SendIdx; i++)
+      {
+        SendTxt = SendTxt + SendingChar;
+      }
+      SendIdx = SendIdx + 1;
+      if (SendIdx == 3)
+      {
+        SendIdx = 0;
+      }
+    }
+
+    DisplayPrint(0,0,SendTxt,true);
+
     // Display title
     DisplayPrint(6,0,title.substring(0,8),true);
 
-    // Display charging indicator
-    if (!g_enableSender)
+    // Display fan indicator
+    if (g_FanOn[FAN_1_RED])
     {
-        SendingChar = " ";
+      DisplayPrint(13,0,FanChar[FanIdx],true);
+      FanIdx = FanIdx + 1;
+      if (FanIdx == 2)
+      {
+        FanIdx = 0;
+      }
     }
-    DisplayPrint(14,0,SendingChar,true);
-
+    else
+    {
+      DisplayPrint(13,0," ",true);
+    }
+    
     // Display Temperature
     DisplayPrint(15,0,String(g_Temperature[TEMPERATURE_1_RED],1),true);
     lastUpdate = millis();

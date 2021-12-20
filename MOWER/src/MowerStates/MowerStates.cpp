@@ -111,13 +111,19 @@ void MowerDocked(const bool StateChange, const MowerState PreviousState)
     BaseSleepingStartSend();
 
     // Change Telemetry frequency
-    g_MQTTSendInterval = MQTT_TELEMETRY_SEND_INTERVAL_SLOW;
+    g_MQTTSendInterval = MQTT_TELEMETRY_SEND_INTERVAL;
 
     // Force a Telemetry send
     MQTTSendTelemetry(true);
 
     // Change display with refresh
     dockedDisplay(true);
+  }
+
+  // Change Telemetry frequency
+  if (g_BatteryChargeCurrent == 0)
+  {
+    g_MQTTSendInterval = MQTT_TELEMETRY_SEND_INTERVAL_SLOW;
   }
 
   // Update display 

@@ -327,7 +327,7 @@ extern int g_CurrentErrorCode; // Current Error code
 #define DISPLAY_IDLE_REFRESH_INTERVAL 1000              // in ms
 #define DISPLAY_SENDING_REFRESH_INTERVAL 1000             // in ms
 #define DISPLAY_ERROR_REFRESH_INTERVAL 5000             // in ms
-#define DISPLAY_SLEEPING_REFRESH_INTERVAL 20 * 60 * 1000            // in ms
+#define DISPLAY_SLEEPING_REFRESH_INTERVAL 60 * 1000            // in ms
 
 #define STATES_COUNT 4      // number of states in States enum (messy but did not find how to easly derive automatically number of elements from enum)
 
@@ -354,6 +354,7 @@ extern BaseState g_BasePreviousState;
 
 extern MowerState g_MowerCurrentState;
 extern float g_MowerChargeCurrent;
+extern float g_MowerBatterySOC;
 
 #define BASE_DATA_DISPLAY_INTERVAL 2000 // in ms
 
