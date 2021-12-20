@@ -491,10 +491,14 @@ void headerDisplay(String title, bool now)
         SendTxt = SendTxt + SendingChar;
       }
       SendIdx = SendIdx + 1;
-      if (SendIdx == 3)
+      if (SendIdx == 4)
       {
         SendIdx = 0;
       }
+    }
+    else
+    {
+      SendTxt = "    ";
     }
 
     DisplayPrint(0,0,SendTxt,true);
