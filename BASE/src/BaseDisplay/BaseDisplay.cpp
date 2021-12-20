@@ -427,6 +427,7 @@ void sleepingDisplay(bool refresh)
   if (!inSubmenu && g_KeyPressed[KEYPAD_KEY_1])
   {
     g_BaseCurrentState = BaseState::sending;
+    delay(400);  // to ensure key is released 
   }
   if (!inSubmenu && g_KeyPressed[KEYPAD_KEY_2])
   {
