@@ -126,8 +126,11 @@ void MowerDocked(const bool StateChange, const MowerState PreviousState)
     g_MQTTSendInterval = MQTT_TELEMETRY_SEND_INTERVAL_SLOW;
   }
 
-  // Update display 
+  // Update display
     dockedDisplay();
+
+  // Update charging start time
+    g_BatteryChargingStartTime = millis();
 }
 
 //---------------------------------------------------------------------------------------------------------------------------
