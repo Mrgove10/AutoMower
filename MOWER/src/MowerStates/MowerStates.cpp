@@ -118,19 +118,19 @@ void MowerDocked(const bool StateChange, const MowerState PreviousState)
 
     // Change display with refresh
     dockedDisplay(true);
+
+    // Update charging start time
+    g_BatteryChargingStartTime = millis();
   }
 
   // Change Telemetry frequency
-  if (g_BatteryChargeCurrent == 0)
+  if (g_BatteryChargeCurrent < 1)
   {
-    g_MQTTSendInterval = MQTT_TELEMETRY_SEND_INTERVAL_SLOW;
+    g_MQTTSendInterval = 2 * MQTT_TELEMETRY_SEND_INTERVAL_SLOW;
   }
 
   // Update display
     dockedDisplay();
-
-  // Update charging start time
-    g_BatteryChargingStartTime = millis();
 }
 
 //---------------------------------------------------------------------------------------------------------------------------
