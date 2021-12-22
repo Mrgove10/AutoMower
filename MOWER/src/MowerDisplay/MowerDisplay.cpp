@@ -503,7 +503,14 @@ void dockedDisplay(bool refresh)
       // Display State and other state related informations
       headerDisplay("", true);
       DisplayPrint(5,1,g_StatesString[int(g_CurrentState)]);
-      DisplayPrint(0,2,"Charging:" + String(g_BatteryChargeCurrent,0) + " mA   ",true);
+      if (g_BatteryRelayIsClosed)
+      {
+        DisplayPrint(0,2,"Charging at " + String(g_BatteryChargeCurrent,0) + " mA   ",true);
+      }
+      else
+      {
+        DisplayPrint(0,2,"Charging complete   ",true);
+      }
     }
     lastRefresh = millis();
     internalRefresh = false;

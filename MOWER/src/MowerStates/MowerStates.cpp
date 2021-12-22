@@ -128,6 +128,10 @@ void MowerDocked(const bool StateChange, const MowerState PreviousState)
   {
     g_MQTTSendInterval = 2 * MQTT_TELEMETRY_SEND_INTERVAL_SLOW;
   }
+  else
+  {
+    g_MQTTSendInterval = MQTT_TELEMETRY_SEND_INTERVAL_SLOW;
+  }
 
   // Update display
     dockedDisplay();
