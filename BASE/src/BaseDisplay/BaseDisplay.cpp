@@ -260,7 +260,7 @@ void sendingDisplay(bool refresh)
       case 3:
           DisplayClear();
           headerDisplay(g_StatesString[int(g_BaseCurrentState)], true);
-          DisplayPrint(0, 1, "Pwr" + String(g_PwrSupplyVoltage / 1000.0f , 2) + "V", true);
+          DisplayPrint(0, 1, "Pwr Supl" + String(g_PwrSupplyVoltage / 1000.0f , 2) + "V", true);
 
           if (isRaining())
           {
@@ -510,7 +510,7 @@ void headerDisplay(String title, bool now)
     // Display fan indicator
     if (g_FanOn[FAN_1_RED])
     {
-      DisplayPrint(13,0,FanChar[FanIdx],true);
+      DisplayPrint(14,0,FanChar[FanIdx],true);
       FanIdx = FanIdx + 1;
       if (FanIdx == 2)
       {
@@ -519,7 +519,7 @@ void headerDisplay(String title, bool now)
     }
     else
     {
-      DisplayPrint(13,0," ",true);
+      DisplayPrint(14,0," ",true);
     }
     
     // Display Temperature
