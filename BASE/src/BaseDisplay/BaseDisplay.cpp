@@ -476,13 +476,31 @@ void headerDisplay(String title, bool now)
   const String SendingChar = "~";
   String SendTxt = "   ";
   const String FanChar[2] = {"+", "x"};
+  const String RainChar[5] = {"|", "¦", ":", ".", " "};
+
   static unsigned long lastUpdate = 0;
   static int FanIdx = 0;
+  static int RainIdx = 0;
   static int SendIdx = 0;
 
   if (millis() - lastUpdate > DISPLAY_REFRESH_INTERVAL || now)
   {
     title.trim();   // Remove unnecessary spaces
+
+    // Display Rain indicator
+    if (g_IsRainning)
+    {
+      DisplayPrint(0,0,RainChar[RainIdx],true);
+      RainIdx = RainIdx + 1;
+      if (RainIdx == 5)
+      {
+        RainIdx = 0;
+      }
+    }
+    else
+    {
+      DisplayPrint(0,0," ",true);
+    }
 
     // Display charging animation
     if (g_enableSender)
@@ -502,7 +520,7 @@ void headerDisplay(String title, bool now)
       SendTxt = "    ";
     }
 
-    DisplayPrint(0,0,SendTxt,true);
+    DisplayPrint(2,0,SendTxt,true);
 
     // Display title
     DisplayPrint(6,0,title.substring(0,8),true);
