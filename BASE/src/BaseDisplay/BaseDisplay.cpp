@@ -389,7 +389,7 @@ void sleepingDisplay(bool refresh)
           DisplayClear();
           headerDisplay(g_StatesString[int(g_BaseCurrentState)], true);
           // Display total rain duration
-          DisplayPrint(0,2, "Rain Dur.:" + String((float) g_totalBaseRainDuration / 60.0f, 1) + " h", true);
+          DisplayPrint(0,2, "Rain Dur.: " + String(float(g_totalBaseRainDuration) / (60.0f * 60.0f * 1000.0f), 1) + " h", true);
           menuDisplay(-1);
           break;
       default:
