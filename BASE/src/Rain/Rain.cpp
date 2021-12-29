@@ -68,11 +68,25 @@ bool isRaining(const bool Now)
       smoothValue = 0.80 * smoothValue + 0.20 * ((float)raw / 100.0f);
     }
     g_RainLevel = smoothValue;
-    DebugPrintln("Raining check value: " + String(smoothValue), DBG_VERBOSE, true);
     LastRainRead  = millis();
+
+    if (smoothValue > RAIN_SENSOR_RAINING_THRESHOLD){
+      if (g_RainStartTime != 0)
+      {
+        g_totalBaseRainDuration = g_totalBaseRainDuration + millis() - g_RainStartTime;
+      }
+      g_RainStartTime = millis();
+    }
+    else 
+    {
+      g_RainStartTime = 0;
+    }
+
+    DebugPrintln("Raining check value: " + String(smoothValue) + " Total duration: " + String(g_totalBaseRainDuration/60000.0f) + " min", DBG_VERBOSE, true);
+
   }
-  
+
   g_IsRainning = smoothValue > RAIN_SENSOR_RAINING_THRESHOLD;
 
-  return g_IsRainning ;
+  return g_IsRainning;
 }

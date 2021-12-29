@@ -337,7 +337,7 @@ extern String g_StatesString[STATES_COUNT]; // contains the text description of 
 /************************* Base operation statistics *********************************/
 
 extern unsigned long g_totalBaseOnTime; // Total time spent with perimeter On, in minutes (Saved to EEPROM)
-extern unsigned long g_totalBaseRainTime; // Total time spent with Rainning On, in minutes (Saved to EEPROM)
+extern unsigned long g_totalBaseRainDuration; // Total time spent with Rainning On, in minutes (Saved to EEPROM)
 
 /************************* Test sequence variables *********************************/
 
@@ -355,6 +355,8 @@ extern BaseState g_BasePreviousState;
 extern MowerState g_MowerCurrentState;
 extern float g_MowerChargeCurrent;
 extern float g_MowerBatterySOC;
+
+extern unsigned long g_RainStartTime;
 
 #define BASE_DATA_DISPLAY_INTERVAL 2000 // in ms
 

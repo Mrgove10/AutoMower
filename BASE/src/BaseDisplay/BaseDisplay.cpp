@@ -388,8 +388,8 @@ void sleepingDisplay(bool refresh)
       case 4:
           DisplayClear();
           headerDisplay(g_StatesString[int(g_BaseCurrentState)], true);
-          // Display temperatures
-          // DisplayPrint(0,2, "Mot:" + String(g_Temperature[TEMPERATURE_2_BLUE], 1) + " Cut: " + String(g_Temperature[TEMPERATURE_1_RED], 1), true);
+          // Display total rain duration
+          DisplayPrint(0,2, "Rain Dur.:" + String((float) g_totalBaseRainDuration / 60.0f, 1) + " h", true);
           menuDisplay(-1);
           break;
       default:

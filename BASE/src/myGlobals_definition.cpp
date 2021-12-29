@@ -215,7 +215,7 @@ String g_StatesString[STATES_COUNT] = {"   IDLE   ",   // Idle
 /************************* Base operation statistics *********************************/
 
 unsigned long g_totalBaseOnTime = 0; // Total time spent with perimeter On, in minutes (Saved to EEPROM)
-unsigned long g_totalBaseRainTime = 0; // Total time spent with Rainning On, in minutes (Saved to EEPROM)
+unsigned long g_totalBaseRainDuration = 0; // Total time spent with Rainning On, in minutes (Saved to EEPROM)
 
 /************************* Program variables *********************************/
 
@@ -225,6 +225,8 @@ BaseState g_BasePreviousState = BaseState::sleeping;
 MowerState g_MowerCurrentState = MowerState::idle;
 float g_MowerChargeCurrent = 0;
 float g_MowerBatterySOC = UNKNOWN_FLOAT;
+
+unsigned long g_RainStartTime = 0;
 
 /************************* Program debugging *********************************/
 

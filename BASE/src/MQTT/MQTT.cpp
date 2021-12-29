@@ -243,6 +243,14 @@ void MQTTCallback(char *topic, byte *message, unsigned int length)
       }
     }
 
+    else if (Command == "RESET_RAIN_DURATION")
+    {
+      g_totalBaseRainDuration = 0;
+      g_RainStartTime = 0;
+      EEPROMSave(true); // Update EEPROM
+      LogPrintln("Rain duration counter reset", TAG_VALUE, DBG_INFO);
+    }
+
     else if (Command == "PARAMETER")
     {
       ParameterChangeValue(Val1Str, Val2); // Value changed and saved in EEPROM
@@ -447,8 +455,9 @@ void MQTTSendTelemetry(const bool now)
     JSONDataPayload.add("RainLvl", String(g_RainLevel, 2));
     JSONDataPayload.add("IsRainning", String(g_IsRainning));
     
-    // // Mowing Statistics data
+    // Base Statistics data
     JSONDataPayload.add("OnTime", String(int(g_totalBaseOnTime/60000)));
+    JSONDataPayload.add("RainDuration", String(int(g_totalBaseRainDuration/60000)));
 
     // ESP System data
     JSONDataPayload.add("Heap", String(esp_get_free_heap_size()));

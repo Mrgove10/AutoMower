@@ -25,7 +25,7 @@ typedef struct
     float PerimeterPowerLevel;
     BaseState BaseCurrentState;
     unsigned long totalBaseOnTime;
-    unsigned long totalBaseRainTime;
+    unsigned long totalBaseRainDuration;
 } DataStruct;
 
 #define EEPROM_SPARE_SIZE EEPROM_SIZE - sizeof(DataStruct) - EEPROM_CRC_SIZE

@@ -93,12 +93,12 @@ void EEPROMSetup(void)
 
     // Stored Statistics
     g_totalBaseOnTime = g_EEPROMLoad.Load.Data.totalBaseOnTime;
-    g_totalBaseRainTime = g_EEPROMLoad.Load.Data.totalBaseRainTime;
+    g_totalBaseRainDuration = g_EEPROMLoad.Load.Data.totalBaseRainDuration;
 
     DebugPrintln("EEPROM value for g_BaseCurrentState: " + String((int) g_BaseCurrentState, 0), DBG_INFO);
     DebugPrintln("EEPROM value for g_PerimeterPowerLevel: " + String(g_PerimeterPowerLevel, 0), DBG_INFO);
     DebugPrintln("EEPROM value for g_totalBaseOnTime: " + String(g_totalBaseOnTime, 0), DBG_INFO);
-    DebugPrintln("EEPROM value for g_totalBaseRainTime: " + String(g_totalBaseRainTime, 0), DBG_INFO);
+    DebugPrintln("EEPROM value for g_totalBaseRainDuration: " + String(g_totalBaseRainDuration, 0), DBG_INFO);
   }
 }
 
@@ -172,7 +172,7 @@ void EEPROMSave(boolean immediatly)
 
     // Stored Statistics
     g_EEPROMLoad.Load.Data.totalBaseOnTime = g_totalBaseOnTime;
-    g_EEPROMLoad.Load.Data.totalBaseRainTime = g_totalBaseRainTime;
+    g_EEPROMLoad.Load.Data.totalBaseRainDuration = g_totalBaseRainDuration;
 
     EEPROMWrite();
   }
@@ -199,7 +199,7 @@ void EEPROMInitialise(void)
 
   // Stored Statistics
   g_EEPROMLoad.Load.Data.totalBaseOnTime = 0;
-  g_EEPROMLoad.Load.Data.totalBaseRainTime = 0;
+  g_EEPROMLoad.Load.Data.totalBaseRainDuration = 0;
 
   for (int i = 0; i < EEPROM_SPARE_SIZE - 1; i++)
   {
