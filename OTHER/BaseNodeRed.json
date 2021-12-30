@@ -42,6 +42,7 @@
         "broker": "571acea9.12d868",
         "nl": false,
         "rap": false,
+        "inputs": 0,
         "x": 190,
         "y": 740,
         "wires": [
@@ -90,7 +91,7 @@
         "type": "function",
         "z": "5ed7cd5aedbc765a",
         "name": "format data",
-        "func": "var d = new Date().toJSON().slice(5,19).replace('T', ' ')\n\nif (msg.payload.BaseTemp < -50.0) { msg.payload.BaseTemp = null;}\n\nvar tmp =[\n    msg.payload.State,\n    msg.payload.Error,\n    msg.payload.SuppVolt,\n    msg.payload.PerimCur,\n    msg.payload.PerimVolt,\n    msg.payload.PerimLevel,\n    msg.payload.PerimOn,\n    msg.payload.BaseTemp,\n    msg.payload.BaseTempErr,\n    msg.payload.BaseFan,\n    msg.payload.RainLvl,\n    msg.payload.IsRainning,\n    msg.payload.OnTime,\n    msg.payload.RSSI,\n    msg.payload.Heap,\n    msg.payload.Tasks,\n    msg.payload.CPUTemp,\n    msg.payload.MQTTErr\n]\n\nmsg.payload = tmp\n\nmsg.topic =\"INSERT INTO AutoMowerBase_telemetry ( `Time`, `State`, `ErrorNumber`, `SupplyVoltage`,`PerimeterCurrent`,`PerimeterVoltage`,`PerimeterPower`,`PerimeterOn`,`BaseTemperature`,`BaseTemperatureErr`,`BaseFan`,`RainLevel`,`IsRainning`,`TotalOnTime`,\" +\n\" `RSSI`, `Heap`, `Tasks`, `CPUTemperature`, `MQTTErrors`)\" +\n\"VALUES (TIMESTAMP(NOW()),?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);\"\n\nnode.status({fill:\"green\",shape:\"ring\",text:d});\n\nreturn msg ;\n\n\n",
+        "func": "var d = new Date().toJSON().slice(5,19).replace('T', ' ')\n\nif (msg.payload.BaseTemp < -50.0) { msg.payload.BaseTemp = null;}\n\nvar tmp =[\n    msg.payload.State,\n    msg.payload.Error,\n    msg.payload.SuppVolt,\n    msg.payload.PerimCur,\n    msg.payload.PerimVolt,\n    msg.payload.PerimLevel,\n    msg.payload.PerimOn,\n    msg.payload.BaseTemp,\n    msg.payload.BaseTempErr,\n    msg.payload.BaseFan,\n    msg.payload.RainLvl,\n    msg.payload.IsRainning,\n    msg.payload.OnTime,\n    msg.payload.RainDuration,\n    msg.payload.RSSI,\n    msg.payload.Heap,\n    msg.payload.Tasks,\n    msg.payload.CPUTemp,\n    msg.payload.MQTTErr, \n    msg.payload.CPU0IdleCnt,\n    msg.payload.CPU1IdleCnt\n]\n\nmsg.payload = tmp\n\nmsg.topic =\"INSERT INTO AutoMowerBase_telemetry ( `Time`, `State`, `ErrorNumber`, `SupplyVoltage`,`PerimeterCurrent`,`PerimeterVoltage`,`PerimeterPower`,`PerimeterOn`,`BaseTemperature`,`BaseTemperatureErr`,`BaseFan`,`RainLevel`,`IsRainning`,`TotalOnTime`,`TotalRainDuration`,\" +\n\" `RSSI`, `Heap`, `Tasks`, `CPUTemperature`, `MQTTErrors`, `CPU0IdleCnt`, `CPU1IdleCnt`)\" +\n\"VALUES (TIMESTAMP(NOW()),?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);\"\n\nnode.status({fill:\"green\",shape:\"ring\",text:d});\n\nreturn msg ;\n\n\n",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -372,8 +373,8 @@
         "topic": "",
         "payload": "{\"Command\":\"PERIMETER_ON\"}",
         "payloadType": "json",
-        "x": 180,
-        "y": 380,
+        "x": 170,
+        "y": 420,
         "wires": [
             [
                 "2c8efa0f203e8969"
@@ -397,8 +398,8 @@
         "topic": "",
         "payload": "{\"Command\":\"PERIMETER_OFF\"}",
         "payloadType": "json",
-        "x": 180,
-        "y": 420,
+        "x": 170,
+        "y": 460,
         "wires": [
             [
                 "2c8efa0f203e8969"
@@ -671,6 +672,7 @@
         "broker": "571acea9.12d868",
         "nl": false,
         "rap": false,
+        "inputs": 0,
         "x": 190,
         "y": 540,
         "wires": [
@@ -690,6 +692,7 @@
         "broker": "571acea9.12d868",
         "nl": false,
         "rap": false,
+        "inputs": 0,
         "x": 200,
         "y": 600,
         "wires": [
@@ -731,6 +734,129 @@
         "x": 430,
         "y": 540,
         "wires": []
+    },
+    {
+        "id": "279197251397f55c",
+        "type": "mqtt out",
+        "z": "5ed7cd5aedbc765a",
+        "name": "",
+        "topic": "AutoMower/Base/Perimeter",
+        "qos": "",
+        "retain": "false",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "571acea9.12d868",
+        "x": 1040,
+        "y": 460,
+        "wires": []
+    },
+    {
+        "id": "8ad389ced661c79d",
+        "type": "inject",
+        "z": "5ed7cd5aedbc765a",
+        "d": true,
+        "name": "Test faulty perimeter",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "{\"PerimeterStatus\":\"0\"}",
+        "payloadType": "json",
+        "x": 810,
+        "y": 460,
+        "wires": [
+            [
+                "279197251397f55c"
+            ]
+        ]
+    },
+    {
+        "id": "9fe1f2390d9f4f65",
+        "type": "comment",
+        "z": "5ed7cd5aedbc765a",
+        "name": "Tests",
+        "info": "",
+        "x": 890,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "9d8fad18dedf9f9c",
+        "type": "mqtt out",
+        "z": "5ed7cd5aedbc765a",
+        "name": "",
+        "topic": "AutoMower/Base/Rain",
+        "qos": "",
+        "retain": "false",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "571acea9.12d868",
+        "x": 1020,
+        "y": 520,
+        "wires": []
+    },
+    {
+        "id": "4479c695630dc39e",
+        "type": "inject",
+        "z": "5ed7cd5aedbc765a",
+        "d": true,
+        "name": "Rainning",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "{\"RainStatus\":\"1\"}",
+        "payloadType": "json",
+        "x": 780,
+        "y": 520,
+        "wires": [
+            [
+                "9d8fad18dedf9f9c"
+            ]
+        ]
+    },
+    {
+        "id": "ea141ed355354883",
+        "type": "inject",
+        "z": "5ed7cd5aedbc765a",
+        "name": "RESET_RAIN_DURATION",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "{\"Command\":\"RESET_RAIN_DURATION\"}",
+        "payloadType": "json",
+        "x": 160,
+        "y": 360,
+        "wires": [
+            [
+                "2c8efa0f203e8969"
+            ]
+        ]
     },
     {
         "id": "571acea9.12d868",

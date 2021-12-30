@@ -4,7 +4,8 @@
         "type": "tab",
         "label": "AutoMower",
         "disabled": false,
-        "info": ""
+        "info": "",
+        "env": []
     },
     {
         "id": "7002edc85e6333b3",
@@ -15,6 +16,7 @@
         "qos": "2",
         "datatype": "auto",
         "broker": "571acea9.12d868",
+        "inputs": 0,
         "x": 140,
         "y": 1500,
         "wires": [
@@ -123,8 +125,8 @@
         "topic": "",
         "payload": "{\"Command\":\"OTA\"}",
         "payloadType": "json",
-        "x": 330,
-        "y": 580,
+        "x": 340,
+        "y": 640,
         "wires": [
             [
                 "f6bf8e98c9052529"
@@ -233,6 +235,7 @@
         "qos": "2",
         "datatype": "auto",
         "broker": "571acea9.12d868",
+        "inputs": 0,
         "x": 140,
         "y": 1280,
         "wires": [
@@ -273,26 +276,7 @@
         "y": 1280,
         "wires": [
             [
-                "30765684c2f7090e"
-            ]
-        ]
-    },
-    {
-        "id": "30765684c2f7090e",
-        "type": "function",
-        "z": "60ab055898a3ccf8",
-        "name": "format data",
-        "func": "var d = new Date().toJSON().slice(5,19).replace('T', ' ')\n\nif (msg.payload.DrvMotTemp < -50.0) { msg.payload.DrvMotTemp = null;}\nif (msg.payload.CMotTemp < -50.0) { msg.payload.CMotTemp = null;}\nif (msg.payload.GPSHead < -999.0) { msg.payload.GPSHead = null;}\nif (msg.payload.GPSHdop < -999.0) { msg.payload.GPSHdop = null;}\nif (msg.payload.GPSSpd < -999.0) { msg.payload.GPSSpd = null;}\nif (msg.payload.GPSAlt < -999.0) { msg.payload.GPSAlt = null;}\nif (msg.payload.GPSLat < -999.0) { msg.payload.GPSLat = 45.369;}\nif (msg.payload.GPSLon < -999.0) { msg.payload.GPSLon = 5.611;}\nif (msg.payload.Pitch == \"nan\") { msg.payload.Pitch = null;}\nif (msg.payload.Roll == \"nan\") { msg.payload.Roll = null;}\n\nvar tmp =[\n    msg.payload.State,\n    msg.payload.Error,\n    msg.payload.BatVolt,\n    msg.payload.ChargeCur,\n    msg.payload.BatSOC,\n    msg.payload.BatCharging,\n    msg.payload.DrvMotTemp,\n    msg.payload.DrvMotTempEr,\n    msg.payload.DrvMotFan,\n    msg.payload.RMotCur,\n    msg.payload.RMotSpd,\n    msg.payload.LMotCur,\n    msg.payload.LMotSpd,\n    msg.payload.CMotTemp,\n    msg.payload.CMotTempEr,\n    msg.payload.CMotFan,\n    msg.payload.CMotCur,\n    msg.payload.CMotSpd,\n    msg.payload.CMotAlm,\n    msg.payload.FSnrDist,\n    msg.payload.RSnrDist,\n    msg.payload.LSnrDist,\n    msg.payload.CompHead,\n    msg.payload.GPSHead/100,\n    msg.payload.GPSSat,\n    msg.payload.GPSHdop,\n    msg.payload.GPSSpd,\n    msg.payload.GPSAlt,\n    msg.payload.GPSLat,\n    msg.payload.GPSLon,\n    msg.payload.Mag,\n    msg.payload.SMag,\n    msg.payload.InOut,\n    msg.payload.Pitch,\n    msg.payload.Roll,\n    msg.payload.Obstcl,\n    msg.payload.MowTim,\n    msg.payload.RSSI,\n    msg.payload.Heap,\n    msg.payload.CPUTemp\n]\n\nmsg.payload = tmp\n\nmsg.topic =\"INSERT INTO AutoMower_telemetry ( `Time`, `State`, `ErrorNumber`, `BatteryVoltage`,`BatteryChargeCurrent`,`BatterySOC`,`BatteryCharging`,`DriveMotorTemperature`,`DriveMotorTemperatureErr`,`DriveMotorFan`,`RightMotorCurrent`,`RightMotorSpeed`,`LeftMotorCurrent`,`LeftMotorSpeed`,`CutMotorTemperature`,`CutMotorTemperatureErr`,`CutMotorFan`,`CutMotorCurrent`,`CutMotorSpeed`,`CutMotorAlarm`,\" +\n\" `FrontSonarDistance`,`RightSonarDistance`,`LeftSonarDistance`, `CompassHeading`,`GPSHeading`, `GPSSatellitesFix`, `GPSHdop`, `GPSSpeed`, `GPSAltitude`, `GPSLatitude`, `GPSLongitude`, `Magnitude`, `SmoothMagnitude`, `Inside`, `Pitch`, `Roll`, `TotalObstacles`, `TotalMowingTime`, `RSSI`, `Heap`, `CPUTemperature`)\" +\n\"VALUES (TIMESTAMP(NOW()),?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);\"\n\nnode.status({fill:\"green\",shape:\"ring\",text:d});\n\nreturn msg ;\n\n\n",
-        "outputs": 1,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 580,
-        "y": 1280,
-        "wires": [
-            [
-                "167bd68ee04bb97d"
+                "0495aa48517055c6"
             ]
         ]
     },
@@ -940,8 +924,8 @@
         "topic": "",
         "payload": "{\"Command\":\"STATE_CHANGE\",\"Val1\":\"ERROR\"}",
         "payloadType": "json",
-        "x": 330,
-        "y": 520,
+        "x": 340,
+        "y": 580,
         "wires": [
             [
                 "f6bf8e98c9052529"
@@ -1831,8 +1815,8 @@
         "topic": "",
         "payload": "{\"Command\":\"RESTART\"}",
         "payloadType": "json",
-        "x": 320,
-        "y": 620,
+        "x": 330,
+        "y": 680,
         "wires": [
             [
                 "f6bf8e98c9052529"
@@ -2057,6 +2041,50 @@
         ]
     },
     {
+        "id": "0495aa48517055c6",
+        "type": "function",
+        "z": "60ab055898a3ccf8",
+        "name": "format data",
+        "func": "var d = new Date().toJSON().slice(5,19).replace('T', ' ')\n\nif (msg.payload.DrvMotTemp < -50.0) { msg.payload.DrvMotTemp = null;}\nif (msg.payload.CMotTemp < -50.0) { msg.payload.CMotTemp = null;}\nif (msg.payload.FSnrDist < 0) { msg.payload.FSnrDist = null; }\nif (msg.payload.RSnrDist < 0) { msg.payload.RSnrDist = null; }\nif (msg.payload.LSnrDist < 0) { msg.payload.LSnrDist = null; }\nif (msg.payload.GPSHead < -999.0) { msg.payload.GPSHead = null;}\nif (msg.payload.GPSHdop < -999.0) { msg.payload.GPSHdop = null;}\nif (msg.payload.GPSSpd < -999.0) { msg.payload.GPSSpd = null;}\nif (msg.payload.GPSAlt < -999.0) { msg.payload.GPSAlt = null;}\nif (msg.payload.GPSLat < -999.0) { msg.payload.GPSLat = 45.369;}\nif (msg.payload.GPSLon < -999.0) { msg.payload.GPSLon = 5.611;}\nif (msg.payload.Pitch == \"nan\") { msg.payload.Pitch = null;}\nif (msg.payload.Roll == \"nan\") { msg.payload.Roll = null;}\n\nvar tmp =[\n    msg.payload.State,\n    msg.payload.Error,\n    msg.payload.BatVolt,\n    msg.payload.ChargeCur,\n    msg.payload.BatSOC,\n    msg.payload.BatCharging,\n    msg.payload.DrvMotTemp,\n    msg.payload.DrvMotTempEr,\n    msg.payload.DrvMotFan,\n    msg.payload.RMotCur,\n    msg.payload.RMotSpd,\n    msg.payload.LMotCur,\n    msg.payload.LMotSpd,\n    msg.payload.CMotTemp,\n    msg.payload.CMotTempEr,\n    msg.payload.CMotFan,\n    msg.payload.CMotCur,\n    msg.payload.CMotSpd,\n    msg.payload.CMotAlm,\n    msg.payload.FSnrDist,\n    msg.payload.RSnrDist,\n    msg.payload.LSnrDist,\n    msg.payload.CompHead,\n    msg.payload.GPSHead/100,\n    msg.payload.GPSSat,\n    msg.payload.GPSHdop,\n    msg.payload.GPSSpd,\n    msg.payload.GPSAlt,\n    msg.payload.GPSLat,\n    msg.payload.GPSLon,\n    msg.payload.Mag,\n    msg.payload.SMag,\n    msg.payload.InOut,\n    msg.payload.Pitch,\n    msg.payload.Roll,\n    msg.payload.Obstcl,\n    msg.payload.MowTim,\n    msg.payload.RSSI,\n    msg.payload.Heap,\n    msg.payload.CPUTemp,\n    msg.payload.MQTTErr,\n    msg.payload.CPU0IdleCnt,\n    msg.payload.CPU1IdleCnt,\n    msg.payload.LongLoopCnt,\n    msg.payload.ChargTim\n]\n\nmsg.payload = tmp\n\nmsg.topic =\"INSERT INTO AutoMower_telemetry ( `Time`, `State`, `ErrorNumber`, `BatteryVoltage`,`BatteryChargeCurrent`,`BatterySOC`,`BatteryCharging`,`DriveMotorTemperature`,`DriveMotorTemperatureErr`,`DriveMotorFan`,`RightMotorCurrent`,`RightMotorSpeed`,`LeftMotorCurrent`,`LeftMotorSpeed`,`CutMotorTemperature`,`CutMotorTemperatureErr`,`CutMotorFan`,`CutMotorCurrent`,`CutMotorSpeed`,`CutMotorAlarm`,\" +\n\" `FrontSonarDistance`,`RightSonarDistance`,`LeftSonarDistance`, `CompassHeading`,`GPSHeading`, `GPSSatellitesFix`, `GPSHdop`, `GPSSpeed`, `GPSAltitude`, `GPSLatitude`, `GPSLongitude`, `Magnitude`, `SmoothMagnitude`, `Inside`, `Pitch`, `Roll`, `TotalObstacles`, `TotalMowingTime`, `RSSI`, `Heap`, `CPUTemperature`, `MQTTErrors`, `CPU0IdleCnt`, `CPU1IdleCnt`, `LongLoopCnt`, `TotalChargingTime`)\" +\n\"VALUES (TIMESTAMP(NOW()),?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);\"\n\nnode.status({fill:\"green\",shape:\"ring\",text:d});\n\nreturn msg ;\n\n\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 590,
+        "y": 1280,
+        "wires": [
+            [
+                "167bd68ee04bb97d"
+            ]
+        ]
+    },
+    {
+        "id": "a06832e8ebaf46c4",
+        "type": "inject",
+        "z": "60ab055898a3ccf8",
+        "name": "Reset Charge Duration",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "{\"Command\":\"RESET_CHARGE_DURATION\"}",
+        "payloadType": "str",
+        "x": 290,
+        "y": 520,
+        "wires": [
+            [
+                "f6bf8e98c9052529"
+            ]
+        ]
+    },
+    {
         "id": "571acea9.12d868",
         "type": "mqtt-broker",
         "name": "Patrick server",
@@ -2065,6 +2093,7 @@
         "clientid": "",
         "usetls": false,
         "compatmode": false,
+        "protocolVersion": 4,
         "keepalive": "60",
         "cleansession": true,
         "birthTopic": "",
@@ -2084,7 +2113,6 @@
         "host": "127.0.0.1",
         "port": "3306",
         "db": "My_data",
-        "tz": "UTC",
-        "charset": ""
+        "tz": "UTC"
     }
 ]
