@@ -260,7 +260,7 @@ void sendingDisplay(bool refresh)
       case 3:
           DisplayClear();
           headerDisplay(g_StatesString[int(g_BaseCurrentState)], true);
-          DisplayPrint(0, 1, "Pwr Supl" + String(g_PwrSupplyVoltage / 1000.0f , 2) + "V", true);
+          DisplayPrint(0, 1, "Pwr Supl " + String(g_PwrSupplyVoltage / 1000.0f , 2) + " V", true);
 
           if (isRaining())
           {
@@ -270,7 +270,7 @@ void sendingDisplay(bool refresh)
           {
             RainStr = RainStr + "No";
           }
-          DisplayPrint(0, 2, RainStr + " (" + String(g_RainLevel, 2) + ")", true);
+          DisplayPrint(0, 2, RainStr + " (" + String(g_RainLevel, 1) + ") Dur.: " + String(float(g_totalBaseRainDuration) / (60.0f * 60.0f * 1000.0f), 1) + " h", true);
           menuDisplay(-1);
           break;
       case 4:
@@ -286,14 +286,14 @@ void sendingDisplay(bool refresh)
       headerDisplay("", true);
       // Display IN/OUT Perimeter wire
       DisplayPrint(5,1,g_StatesString[int(g_BaseCurrentState)]);
-      if (g_enableSender)
-      {
-        DisplayPrint(0,2,"ON",true);
-      }
-      else
-      {
-        DisplayPrint(0,2,"OFF",true);
-      }
+      // if (g_enableSender)
+      // {
+      //   DisplayPrint(0,2,"ON",true);
+      // }
+      // else
+      // {
+      //   DisplayPrint(0,2,"OFF",true);
+      // }
 
       DisplayPrint(5,2,"Cur:" + String(g_PerimeterCurrent) + " mA   ",true);
     }
@@ -389,7 +389,7 @@ void sleepingDisplay(bool refresh)
           DisplayClear();
           headerDisplay(g_StatesString[int(g_BaseCurrentState)], true);
           // Display total rain duration
-          DisplayPrint(0,2, "Rain Dur.: " + String(float(g_totalBaseRainDuration) / (60.0f * 60.0f * 1000.0f), 1) + " h", true);
+          DisplayPrint(0,2, "Rain Lvl " + String(g_RainLevel, 1) + " Dur.: " + String(float(g_totalBaseRainDuration) / (60.0f * 60.0f * 1000.0f), 1) + " h", true);
           menuDisplay(-1);
           break;
       default:
@@ -474,7 +474,7 @@ void headerDisplay(String title, bool now)
   // 15-19 Temperature
 
   const String SendingChar = "~";
-  String SendTxt = "   ";
+  String SendTxt = "";
   const String FanChar[2] = {"+", "x"};
   const String RainChar[5] = {"|", "¦", ":", ".", " "};
 
@@ -502,7 +502,7 @@ void headerDisplay(String title, bool now)
       DisplayPrint(0,0," ",true);
     }
 
-    // Display charging animation
+    // Display sending animation
     if (g_enableSender)
     {
       for (int i=0; i < SendIdx; i++)
@@ -520,7 +520,7 @@ void headerDisplay(String title, bool now)
       SendTxt = "    ";
     }
 
-    DisplayPrint(2,0,SendTxt,true);
+    DisplayPrint(1,0,SendTxt,true);
 
     // Display title
     DisplayPrint(6,0,title.substring(0,8),true);
