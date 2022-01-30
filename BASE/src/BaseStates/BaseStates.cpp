@@ -364,16 +364,25 @@ bool PerimeterCurrentTooHighCheck(const float Threshold)
  */
 bool MowerStatusCheck(const unsigned long Timeout)
 {
-  if (millis() - g_LastMowerTelemetryReceived > Timeout && 
-      g_CurrentErrorCode != ERROR_NO_MOWER_DATA && 
-      g_BaseCurrentState != BaseState::sleeping)
+
+  // If no mower data is received for too long, reset stored Battery SOC and Charge current
+  if (millis() - g_LastMowerTelemetryReceived > Timeout) 
   {
-    DebugPrintln("No mower data received for " + String(Timeout/1000) + " seconds : Perimeter Signal stop ", DBG_ERROR, true);
-    PerimeterSignalStop();
-    g_BaseCurrentState = BaseState::error;
-    g_CurrentErrorCode = ERROR_NO_MOWER_DATA;
-    return true;
+    g_MowerChargeCurrent = UNKNOWN_FLOAT;
+    g_MowerBatterySOC = UNKNOWN_FLOAT;
+
+    // If base is not sleeping, set base to error mode
+    if (g_CurrentErrorCode != ERROR_NO_MOWER_DATA && 
+        g_BaseCurrentState != BaseState::sleeping)
+    {
+      DebugPrintln("No mower data received for " + String(Timeout/1000) + " seconds : Perimeter Signal stop ", DBG_ERROR, true);
+      PerimeterSignalStop();
+      g_BaseCurrentState = BaseState::error;
+      g_CurrentErrorCode = ERROR_NO_MOWER_DATA;
+      return true;
+    }
   }
+
   // If mower is docked and base is not sleeping, set base to sleeping mode
   if (g_MowerCurrentState == MowerState::docked && g_BaseCurrentState != BaseState::sleeping && millis() - g_LastMowerTelemetryReceived < Timeout)
   {
