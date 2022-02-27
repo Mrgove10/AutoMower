@@ -1,5 +1,6 @@
 #include <Arduino.h>
 #include <Adafruit_HMC5883_U.h>
+#include "i2c_definitions.h"
 #include "pin_definitions.h"
 #include "myGlobals_definition.h"
 #include "Environment_definitions.h"
@@ -36,69 +37,69 @@ void CompassSensorSetup()
  */
 void CompassRead(const bool Now)
 {
-#ifdef COMPASS_PRESENT
-
-  static unsigned long LastCompassRead = 0;
-
-  if ((millis() - LastCompassRead > COMPASS_READ_INTERVAL) || Now)
+  if (g_CompassPresent) 
   {
-    sensors_event_t event;
+    static unsigned long LastCompassRead = 0;
+
+    if ((millis() - LastCompassRead > COMPASS_READ_INTERVAL) || Now)
+    {
+      sensors_event_t event;
+      
+      // Ensure exlusive access to I2C
+      xSemaphoreTake(g_I2CSemaphore, portMAX_DELAY);
     
-    // Ensure exlusive access to I2C
-    xSemaphoreTake(g_I2CSemaphore, portMAX_DELAY);
-   
-    //    Serial.println("Before getEvent");
-    bool status = Compass.getEvent(&event);
-    //    Serial.println("getEvent Satus:" + String(status));
+      //    Serial.println("Before getEvent");
+      bool status = Compass.getEvent(&event);
+      //    Serial.println("getEvent Satus:" + String(status));
 
-    // Free access to I2C for other tasks
-    xSemaphoreGive(g_I2CSemaphore);
+      // Free access to I2C for other tasks
+      xSemaphoreGive(g_I2CSemaphore);
 
-    // Hold the module so that Z is pointing 'up' and you can measure the heading with x&y
-    // Calculate heading when the magnetometer is level, then correct for signs of axis.
-    float heading = atan2(event.magnetic.y, event.magnetic.x);
-    float headingCorr = atan2(event.magnetic.y + COMPASS_Y_HEADING_CORRECTION, event.magnetic.x + COMPASS_X_HEADING_CORRECTION);
+      // Hold the module so that Z is pointing 'up' and you can measure the heading with x&y
+      // Calculate heading when the magnetometer is level, then correct for signs of axis.
+      float heading = atan2(event.magnetic.y, event.magnetic.x);
+      float headingCorr = atan2(event.magnetic.y + COMPASS_Y_HEADING_CORRECTION, event.magnetic.x + COMPASS_X_HEADING_CORRECTION);
 
-    // Once you have your heading, you must then add your 'Declination Angle', which is the 'Error' of the magnetic field in your location.
-    // Find yours here: http://www.magnetic-declination.com/
-    // Mine is: -13* 2' W, which is ~13 Degrees, or (which we need) 0.22 radians
-    // If you cannot find your Declination, comment out these two lines, your compass will be slightly off.
-    heading += COMPASS_DECLINATION_ANGLE;
-    headingCorr += COMPASS_DECLINATION_ANGLE;
+      // Once you have your heading, you must then add your 'Declination Angle', which is the 'Error' of the magnetic field in your location.
+      // Find yours here: http://www.magnetic-declination.com/
+      // Mine is: -13* 2' W, which is ~13 Degrees, or (which we need) 0.22 radians
+      // If you cannot find your Declination, comment out these two lines, your compass will be slightly off.
+      heading += COMPASS_DECLINATION_ANGLE;
+      headingCorr += COMPASS_DECLINATION_ANGLE;
 
-    // Correct for when signs are reversed.
-    if (heading < 0)
-      heading += 2 * PI;
-    if (headingCorr < 0)
-      headingCorr += 2 * PI;
+      // Correct for when signs are reversed.
+      if (heading < 0)
+        heading += 2 * PI;
+      if (headingCorr < 0)
+        headingCorr += 2 * PI;
 
-    // Check for wrap due to addition of declination.
-    if (heading > 2 * PI)
-      heading -= 2 * PI;
-    if (headingCorr > 2 * PI)
-      headingCorr -= 2 * PI;
+      // Check for wrap due to addition of declination.
+      if (heading > 2 * PI)
+        heading -= 2 * PI;
+      if (headingCorr > 2 * PI)
+        headingCorr -= 2 * PI;
 
-    // Convert radians to degrees for readability.
-    float headingDegrees = heading * 180 / M_PI;
-    float headingDegreesCorr = headingCorr * 180 / M_PI;
+      // Convert radians to degrees for readability.
+      float headingDegrees = heading * 180 / M_PI;
+      float headingDegreesCorr = headingCorr * 180 / M_PI;
 
-    g_CompassHeading = headingDegrees;
-    g_CompassHeadingCorrected = headingDegreesCorr;
-    g_CompassXField = event.magnetic.x;
-    g_CompassYField = event.magnetic.y;
+      g_CompassHeading = headingDegrees;
+      g_CompassHeadingCorrected = headingDegreesCorr;
+      g_CompassXField = event.magnetic.x;
+      g_CompassYField = event.magnetic.y;
 
-    DebugPrintln("Compass readings: X:" + String(g_CompassXField, COMPASS_PRECISION) +
-                     "(uT) Y:" + String(g_CompassYField, COMPASS_PRECISION) +
-                     "(uT) Z:" + String(event.magnetic.z, COMPASS_PRECISION) + "(uT)",
-                 DBG_VERBOSE, true);
+      DebugPrintln("Compass readings: X:" + String(g_CompassXField, COMPASS_PRECISION) +
+                      "(uT) Y:" + String(g_CompassYField, COMPASS_PRECISION) +
+                      "(uT) Z:" + String(event.magnetic.z, COMPASS_PRECISION) + "(uT)",
+                  DBG_VERBOSE, true);
 
-    DebugPrintln("Compass Heading:" + String(g_CompassHeading, COMPASS_PRECISION) +
-                     " Corrected: " + String(g_CompassHeadingCorrected, COMPASS_PRECISION),
-                 DBG_DEBUG, true);
+      DebugPrintln("Compass Heading:" + String(g_CompassHeading, COMPASS_PRECISION) +
+                      " Corrected: " + String(g_CompassHeadingCorrected, COMPASS_PRECISION),
+                  DBG_DEBUG, true);
 
-    LastCompassRead = millis();
+      LastCompassRead = millis();
+    }
   }
-#endif
 }
 
 /**
@@ -107,16 +108,20 @@ void CompassRead(const bool Now)
  */
 bool CompassSensorCheck(void)
 {
-  CompassRead(true);
-  sensor_t sensor;
-#ifdef COMPASS_PRESENT
-  Compass.getSensor(&sensor);
-#endif
+  // Check if Compass is accessible on I2C bus
+  Wire.beginTransmission(COMPASS_HMC5883L_I2C_ADDRESS);
+  Wire.write(HMC5883_REGISTER_MAG_OUT_X_H_M);
+  uint8_t I2CError = Wire.endTransmission();
+
+  g_CompassPresent = (I2CError == I2C_ERROR_OK);
+
   DisplayClear();
   DisplayPrint(0, 0, F("Compass sensor Test"));
 
-  if (sensor.sensor_id == COMPASS_ID)
+  if (g_CompassPresent)
   {
+    CompassRead(true);
+
     DebugPrintln("Compass Sensor ok", DBG_INFO, true);
     DisplayPrint(2, 2, "Sensor Ok");
     DisplayPrint(2, 3, "Heading: " + String(g_CompassHeading, 1));

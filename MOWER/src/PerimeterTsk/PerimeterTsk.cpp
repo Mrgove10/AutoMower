@@ -766,7 +766,6 @@ void PerimeterProcessingLoopTaskSuspend(void)
 {
   vTaskSuspend(g_PerimeterProcTaskHandle);
   DebugPrintln("Perimeter data processing Task suspended", DBG_INFO, true);
-
 }
 
 /**

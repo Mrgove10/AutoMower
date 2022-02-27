@@ -14,9 +14,9 @@ void GyroAccelSetup();
 
 /**
  * GY-521 MPU6050 gyroscope and Acceleration raw values read function
- *
+* @return true if read successfull, false if sensor not found
  */
-void GyroAccelDataRead(void);
+bool GyroAccelDataRead(void);
 
 /**
  * GY-521 MPU6050 Pitch and Roll calculation function

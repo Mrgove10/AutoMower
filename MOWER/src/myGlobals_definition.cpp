@@ -184,12 +184,16 @@ Adafruit_MCP23017 IOExtend;
 
 Adafruit_HMC5883_Unified Compass = Adafruit_HMC5883_Unified(COMPASS_ID);
 
+bool g_CompassPresent = false;
+
 float g_CompassHeading = 0;
 float g_CompassHeadingCorrected = 0;
 float g_CompassXField = 0;
 float g_CompassYField = 0;
 
 /************************* I2C GY-521 MPU6050 Gyroscope / Accelerometer Sensor variables *********************************/
+
+bool g_GyroPresent = false;
 
 float g_AccelRawX = 0;
 float g_AccelRawY = 0;

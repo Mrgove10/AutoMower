@@ -286,12 +286,13 @@ extern Adafruit_MCP23017 IOExtend;
 
 extern Adafruit_HMC5883_Unified Compass;
 
-// #define COMPASS_PRESENT true
 #define COMPASS_ID 12345
 #define COMPASS_PRECISION 1
 #define COMPASS_X_HEADING_CORRECTION -3.5f
 #define COMPASS_Y_HEADING_CORRECTION -6.5f
 #define COMPASS_READ_INTERVAL 4000
+
+extern bool g_CompassPresent;
 
 extern float g_CompassHeading;          // in Degrees
 extern float g_CompassHeadingCorrected; // in Degrees
@@ -305,6 +306,8 @@ extern float g_CompassYField;
 
 // #define ACCEL_PITCH_CALIBRATION -0.015
 // #define ACCEL_ROLL_CALIBRATION -0.005
+
+extern bool g_GyroPresent;
 
 extern float g_AccelRawX;
 extern float g_AccelRawY;

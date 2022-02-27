@@ -39,6 +39,7 @@ bool StartupChecks(const bool allTests)
     allChecks = false;
   };
   DebugPrintln(" ");
+  SerialAndTelnet.handle();
 
   if (!TiltSensorCheck(TILT_HORIZONTAL))
   {
@@ -50,6 +51,7 @@ bool StartupChecks(const bool allTests)
   };
 
   DebugPrintln(" ");
+  SerialAndTelnet.handle();
 
   if (!BumperSensorCheck(BUMPER_LEFT))
   {
@@ -61,6 +63,7 @@ bool StartupChecks(const bool allTests)
   };
 
   DebugPrintln(" ");
+  SerialAndTelnet.handle();
 
   if (!RainSensorCheck())
   {
@@ -68,6 +71,7 @@ bool StartupChecks(const bool allTests)
   };
 
   DebugPrintln(" ");
+  SerialAndTelnet.handle();
 
   if (!TemperatureSensorCheck(TEMPERATURE_1_RED))
   {
@@ -79,6 +83,7 @@ bool StartupChecks(const bool allTests)
   };
 
   DebugPrintln(" ");
+  SerialAndTelnet.handle();
 
   if (!SonarSensorCheck(SONAR_FRONT))
   {
@@ -94,6 +99,7 @@ bool StartupChecks(const bool allTests)
   };
 
   DebugPrintln(" ");
+  SerialAndTelnet.handle();
 
   if (!BatteryCurrentSensorCheck())
   {
@@ -112,6 +118,8 @@ bool StartupChecks(const bool allTests)
     allChecks = false;
   };
 
+  SerialAndTelnet.handle();
+
   if (allTests)
   {
     DebugPrintln(" ");
@@ -119,6 +127,7 @@ bool StartupChecks(const bool allTests)
     FanTest(FAN_2_BLUE);
   }
   DebugPrintln(" ");
+  SerialAndTelnet.handle();
 
   if (!CompassSensorCheck())
   {
@@ -126,6 +135,7 @@ bool StartupChecks(const bool allTests)
   };
 
   DebugPrintln(" ");
+  SerialAndTelnet.handle();
 
   if (!GyroAccelCheck())
   {
@@ -133,6 +143,7 @@ bool StartupChecks(const bool allTests)
   };
 
   DebugPrintln(" ");
+  SerialAndTelnet.handle();
 
   if (!GPSCheck())
   {
@@ -140,6 +151,7 @@ bool StartupChecks(const bool allTests)
   };
 
   DebugPrintln(" ");
+  SerialAndTelnet.handle();
 
   //  MotionMotorTest(MOTION_MOTOR_RIGHT); //TEMPORAIRE
   //  DebugPrintln(" ");
