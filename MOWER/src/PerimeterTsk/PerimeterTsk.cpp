@@ -654,7 +654,7 @@ void PerimeterProcessingLoopTask(void *dummyParameter)
                            " FiltQual:" + String(g_PerimeterFilterQuality, 2) +
                            " Sigcount:" + String(g_signalCounter) +
                            " in?:" + String(g_isInsidePerimeter),
-                       DBG_DEBUG, true);
+                       DBG_VERBOSE, true);
 
           count = 0;
           g_PerimeterQueuefull = 0;

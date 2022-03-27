@@ -149,7 +149,7 @@ void AnaReadLoopTask(void *dummyParameter)
     loopCount ++;
     if (loopCount > 100)
     {
-      DebugPrintln("Analog read Task loop time: " + String(millis() - startime) + " ms", DBG_INFO, true);
+      DebugPrintln("Analog read Task loop time: " + String(millis() - startime) + " ms", DBG_VERBOSE, true);
       loopCount = 0;
       startime = millis();
     }

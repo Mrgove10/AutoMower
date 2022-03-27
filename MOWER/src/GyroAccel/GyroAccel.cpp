@@ -343,7 +343,8 @@ void PitchRollCalc(const bool Now, const bool reset)
     {
       pitchAngle = 0;
       rollAngle = 0;
-      DebugPrintln("Pitch & Roll reset - Sensor not found!", DBG_VERBOSE, true);
+      // DebugPrintln("Pitch & Roll reset - Sensor not found!", DBG_VERBOSE, true);
+      LastPitchRollCalc = millis();
     }
   }
 }
