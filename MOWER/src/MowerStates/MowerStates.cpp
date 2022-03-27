@@ -371,10 +371,12 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
 
   if (g_BatteryVoltage < BATTERY_VOLTAGE_RETURN_TO_BASE_THRESHOLD)
   {
-    DebugPrintln("Battery low: returning to base (" + String(g_BatteryVoltage) + " mv)", DBG_INFO, true);
+    LogPrintln("Battery low: returning to base (" + String(g_BatteryVoltage) + " mv)", TAG_MOWING, DBG_INFO);
+
     MowerStop();
     CutMotorStop();
     g_totalMowingTime = g_totalMowingTime + (millis() - mowingStartTime);   // in minutes
+    g_partialMowingTime = g_partialMowingTime + (millis() - mowingStartTime);   // in minutes
     g_CurrentState = MowerState::going_to_base;
     return;
   }
@@ -1233,7 +1235,7 @@ bool MowerFollowWire(bool *reset, const int heading, const bool clockwise)
   // Obstacle Collision detection depending on direction
   //--------------------------------
 
-  // TO DO decide if this can remain depengin on docking strategy
+  // TO DO decide if this can remain depending on docking strategy
 
   int colisionDetected = OBSTACLE_DETECTED_NONE;
 
@@ -1262,7 +1264,7 @@ bool MowerFollowWire(bool *reset, const int heading, const bool clockwise)
                                                                      false); // no action (for the moment ???????????????)
   }
 
-  // For the moment, to keep things simple, we will conider that there should be no object on the wire path (time will tell is this is a reasonable assumption).
+  // For the moment, to keep things simple, we will consider that there should be no object on the wire path (time will tell if this is a reasonable assumption).
   // To achieve this, we simply set the FOLLOW_WIRE_MAX_CONSECUTVE_OBSTACLES definition to 0.
   // So if an obstacle is detected, we declare an error and stop the wire following function.
 
