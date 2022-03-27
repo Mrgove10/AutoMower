@@ -158,8 +158,19 @@ void MQTTCallback(char *topic, byte *message, unsigned int length)
     if (Command == "OTA")
     {
       LogPrintln("Request for OTA update", TAG_OTA, DBG_INFO);
+      FanStop(FAN_1_RED);
+      FanStop(FAN_2_BLUE);
+      MowerStop();
+      CutMotorStop();
+
       g_otaFlag = true;
-      OTAHandle();
+
+      EEPROMSave(true);
+      SerialAndTelnet.handle(); // Refresh Telnet Session
+      delay(500);
+      WiFi.disconnect();
+      delay(500);
+      ESP.restart();
     }
 
     else if (Command == "RESTART")

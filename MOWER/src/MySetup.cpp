@@ -126,6 +126,11 @@ void MySetup(void)
 
   SerialAndTelnet.handle();
 
+  if (g_otaFlag)
+  {
+    OTAHandle();
+  }
+
   // Send reboot event to logger
   LogPrintln(Resetreason, TAG_RESET, DBG_WARNING);
 

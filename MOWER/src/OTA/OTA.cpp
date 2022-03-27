@@ -85,10 +85,14 @@ void OTAHandle(void)
   if (g_otaFlag)
   {
     unsigned long otaStart = 0;
+
+    g_otaFlag = false;
+
 //    g_OTAelapsed = 0;
 //    otaStart = millis();
 
     ArduinoOTA.begin();
+    ArduinoOTA.setTimeout(60000);
 
     IPAddress ip = WiFi.localIP();
 
@@ -112,10 +116,10 @@ void OTAHandle(void)
     MQTTDisconnect();
 
     // Suspend RTOS tasks
-    FastAnaReadLoopTaskSuspend();
-    PerimeterProcessingLoopTaskSuspend();
-    SonarReadLoopTaskSuspend();
-    AnaReadLoopTaskSuspend();
+    // FastAnaReadLoopTaskSuspend();
+    // PerimeterProcessingLoopTaskSuspend();
+    // SonarReadLoopTaskSuspend();
+    // AnaReadLoopTaskSuspend();
 
     //Save to EEPROM
     EEPROMSave(true);
@@ -126,18 +130,24 @@ void OTAHandle(void)
     
     while (millis() - otaStart < OTA_TIMEOUT)
     {
-      ArduinoOTA.handle();
 //      g_OTAelapsed = millis() - otaStart;
       int timeLeft = int ((OTA_TIMEOUT-(millis()-otaStart))/1000UL);
       DisplayPrint(14, 1, String(timeLeft) + "s  ");
       DebugPrintln("Untill OTA timeout:" + String(timeLeft), DBG_DEBUG, true);
       SerialAndTelnet.handle();
+      ArduinoOTA.handle();
       delay(500);
     }
     DebugPrintln("Upload timeout", DBG_ERROR, true);
     DisplayPrint(2, 2, F("   Timeout !    "));
     delay(TEST_SEQ_STEP_WAIT + TEST_SEQ_STEP_ERROR_WAIT);
     DisplayClear();
+
+    ArduinoOTA.end();
+
+    SerialAndTelnet.handle();
+
+    ESP.restart();
 
     MQTTInit(false);
     MQTTReconnect();

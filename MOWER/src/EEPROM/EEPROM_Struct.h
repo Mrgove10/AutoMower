@@ -41,6 +41,8 @@ typedef struct
     float GyroErrorZ;
     float AccelErrorX;
     float AccelErrorY;
+
+    bool OTARequested;
 } DataStruct;
 
 #define EEPROM_SPARE_SIZE EEPROM_SIZE - sizeof(DataStruct) - EEPROM_CRC_SIZE
