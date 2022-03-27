@@ -130,6 +130,41 @@ Set mower to clockwise spiral mowing:
 }
 ```
 
+#### Reset charge duration
+
+**Description** : This command triggers the reset of the charing duration counter
+
+**Command** : `RESET_CHARGE_DURATION`
+
+**Val1** : No Val2 value expected for this command (any value sent will be ignored)
+
+**Val2** : No Val2 value expected for this command (any value sent will be ignored)
+
+**Message Example** :
+
+```json
+{
+  "Command":"RESET_CHARGE_DURATION"
+}
+```
+#### Reset partial mowing time
+
+**Description** : This command triggers the reset of the partial mowing time counter
+
+**Command** : `RESET_PARTIAL_MOWING`
+
+**Val1** : No Val2 value expected for this command (any value sent will be ignored)
+
+**Val2** : No Val2 value expected for this command (any value sent will be ignored)
+
+**Message Example** :
+
+```json
+{
+  "Command":"RESET_PARTIAL_MOWING"
+}
+```
+
 #### Over The Air program update (OTA)
 
 **Description** : This command places the mower in a condition ready to receive an OTA upate. This stops the mower (motor stops), suspsends the MQTT communications and suspends mower RTOS tasks. At end of successful OTA, the mower program resets. If OTA is not performed within a preconfigure duration (¬ 3 minutes), normal mower functions resume and the mower is placed in `IDLE` state.

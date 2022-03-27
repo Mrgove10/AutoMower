@@ -297,6 +297,7 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
   if (!SonarReadLoopTaskMonitor())
   {
     g_totalMowingTime = g_totalMowingTime + (millis() - mowingStartTime);   // in minutes
+    g_partialMowingTime = g_partialMowingTime + (millis() - mowingStartTime);   // in minutes
     g_CurrentState = MowerState::error;
     g_CurrentErrorCode = ERROR_SONAR_NOT_UPDATING;
     return;
@@ -321,6 +322,7 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
     CutMotorStop();
     DebugPrintln("Perimeter signal Lost (" + String(g_PerimeterSmoothMagnitude) + ") or stopped", DBG_ERROR, true);
     g_totalMowingTime = g_totalMowingTime + (millis() - mowingStartTime);   // in minutes
+    g_partialMowingTime = g_partialMowingTime + (millis() - mowingStartTime);   // in minutes
     g_CurrentState = MowerState::error;
     g_CurrentErrorCode = ERROR_NO_PERIMETER_SIGNAL;
     return;
@@ -343,6 +345,7 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
     CutMotorStop();
     DebugPrintln("Mower outside Perimeter for too long (" + String(outsideCount) + ")", DBG_ERROR, true);
     g_totalMowingTime = g_totalMowingTime + (millis() - mowingStartTime);   // in minutes
+    g_partialMowingTime = g_partialMowingTime + (millis() - mowingStartTime);   // in minutes
     g_CurrentState = MowerState::error;
     g_CurrentErrorCode = ERROR_MOWING_OUTSIDE_TOO_LONG;
     return;
@@ -383,6 +386,7 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
   //   MowerStop();
   //   CutMotorStop();
   //   g_totalMowingTime = g_totalMowingTime + (millis() - mowingStartTime);   // in minutes
+    // g_partialMowingTime = g_partialMowingTime + (millis() - mowingStartTime);   // in minutes
   //   g_CurrentState = MowerState::going_to_base;
   //   return;
   // }
@@ -465,6 +469,7 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
     if (g_successiveObstacleDectections > MOWER_MOWING_MAX_CONSECUTVE_OBSTACLES)
     {
       g_totalMowingTime = g_totalMowingTime + (millis() - mowingStartTime);   // in minutes
+      g_partialMowingTime = g_partialMowingTime + (millis() - mowingStartTime);   // in minutes
       g_CurrentState = MowerState::error;
       g_CurrentErrorCode = ERROR_MOWING_CONSECUTIVE_OBSTACLES;
       return;
