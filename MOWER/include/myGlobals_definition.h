@@ -656,6 +656,22 @@ extern int g_mowingMode;
 #define LEAVING_BASE_REVERSE_DURATION 10 * 1000       // in ms
 //#define LEAVING_BASE_FORWARD_SPEED 100                 // in %
 
+#define MAXMOWERZONES 5     // Maximum number of zones
+#define MAXZONESTEPS 6      // Maximum number of steps per zone
+
+typedef struct
+{
+  int action;
+  int param1;
+  int param2;
+} ZoneStepStruct;
+
+extern ZoneStepStruct g_mowZoneSteps[MAXMOWERZONES][MAXZONESTEPS];       // Array containing list of steps per zone
+
+extern int g_TargetNowingZone;    // Target mowing zone after leaving base 
+extern unsigned long g_ZoneStepDuration;    // Duration (in ms) until end of step to go to zone
+extern int g_ZoneMowDuration; // Zone mowing duration (in minutes) 
+
 // Obstacle detection causes
 #define OBSTACLE_DETECTED_NONE 0
 #define OBSTACLE_DETECTED_BUMPER 1
@@ -726,6 +742,7 @@ extern bool g_CutMotorAlarm;
 #define ERROR_HORIZONTAL_TILT_ACTIVATED 003
 #define ERROR_NO_PERIMETER_SIGNAL 004
 #define ERROR_SONAR_NOT_UPDATING 005
+#define ERROR_UNDEFINED_STEP_ACTION 006
 
 //States-related Error conditions
 #define ERROR_MOWING_NO_START_BUMPER_ACTIVE 100

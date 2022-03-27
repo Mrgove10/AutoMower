@@ -520,15 +520,18 @@ void dockedDisplay(bool refresh)
   KeypadRead();
   if (!inSubmenu && g_KeyPressed[KEYPAD_KEY_1])
   {
-    // Do nothing
+    g_CurrentState = MowerState::leaving_base;
+    g_TargetNowingZone = 2;
   }
   if (!inSubmenu && g_KeyPressed[KEYPAD_KEY_2])
   {
     g_CurrentState = MowerState::leaving_base;
+    g_TargetNowingZone = 3;
   }
   if (!inSubmenu && g_KeyPressed[KEYPAD_KEY_3])
   {
-    // Do nothing
+    g_CurrentState = MowerState::leaving_base;
+    g_TargetNowingZone = 4;
   }
   if (!inSubmenu && g_KeyPressed[KEYPAD_KEY_4])
   {
@@ -607,7 +610,7 @@ void LeavingBaseDisplay(bool refresh)
       {
         DisplayPrint(0,2,"O",true);
       }
-//      DisplayPrint(2,2,"CL:" + String(g_WheelPerimeterTrackingCorrection[MOTOR_CURRENT_LEFT]) + " CR:" + String(g_WheelPerimeterTrackingCorrection[MOTOR_CURRENT_RIGHT]),true);
+      DisplayPrint(4,2,"To zone:" + String(g_TargetNowingZone),true);
     }
     lastRefresh = millis();
     internalRefresh = false;

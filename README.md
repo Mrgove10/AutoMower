@@ -81,10 +81,13 @@ In this state the mower is doing nthing and wait for the next command.
 
 **Val2** : 
 
-- For `MOWING` state, possible values for Val1 are:
+- For `MOWING` state, possible values for Val2 are:
   - `0` for Random mowing.
   - `1` for spiral mowing clockwise 
   - `2` for spiral mowing counter clockwise
+
+- For `FROM_BASE` state, Val2 contains as a positive integer value the mowing zone number to go to.
+
 - No Val2 value expected for other states (any value sent will be ignored)
 
 **Message Example** :

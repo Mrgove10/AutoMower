@@ -387,6 +387,12 @@ unsigned long g_spiralStepTimeIncrement[MOWER_MOWING_SPIRAL_MAX_STEP] = {
 
 int g_mowingMode = MOWER_MOWING_MODE_RANDOM;  // Random by default
 
+ZoneStepStruct g_mowZoneSteps[MAXMOWERZONES][MAXZONESTEPS];       // Array containing list of steps per zone
+
+int g_TargetNowingZone = 0;    // Target mowing zone after leaving base 
+unsigned long g_ZoneStepDuration = 0;    // Duration (in ms) until end of step to go to zone
+int g_ZoneMowDuration; // Zone mowing duration (in minutes) 
+
 // Move count variables
 int g_successiveObstacleDectections = 0; // successive obstacle detections (to trigger appropriate reaction)
 
@@ -420,7 +426,7 @@ int g_CurrentErrorCode = ERROR_NO_ERROR; // Current Error code
 
 // contains the text to display @ bottom of screen to act as a menu
 String g_menuString[STATES_COUNT] = {"Mow |Base|Test|.... ",   // Idle
-                                     "    |Mow |    |.... ",   // Docked
+                                     "Mow2|Mow3|Mow4|.... ",   // Docked
                                      "Idle|Base|1...|2... ",   // Mowing
                                      "Idle|    |    |.... ",   // Going_to_base
                                      "Idle|    |    |.... ",   // Leaving_base

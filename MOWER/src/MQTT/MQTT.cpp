@@ -256,7 +256,16 @@ void MQTTCallback(char *topic, byte *message, unsigned int length)
       }
       else if (Val1Str == "FROM_BASE")
       {
-        g_CurrentState = MowerState::leaving_base;
+        if (Val2 >= MAXMOWERZONES)
+        {
+          DebugPrintln("Mower zone not defined !", DBG_ERROR, true);
+        }
+        else
+        {
+          g_CurrentState = MowerState::leaving_base;
+          g_TargetNowingZone = int(Val2);
+        }
+
       }
       else if (Val1Str == "ERROR") // only for testing purposes
       {

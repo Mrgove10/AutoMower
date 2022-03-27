@@ -5,6 +5,7 @@
 #include "MowerMoves/MowerMoves.h"
 #include "MotionMotor/MotionMotor.h"
 #include "MowerStates/MowerStates.h"
+#include "MowerZones/MowerZones.h"
 #include "MowerDisplay/MowerDisplay.h"
 #include "CutMotor/CutMotor.h"
 #include "Sonar/Sonar.h"
@@ -151,6 +152,7 @@ void MowerDocked(const bool StateChange, const MowerState PreviousState)
 void MowerMowing(const bool StateChange, const MowerState PreviousState)
 {
   static unsigned long mowingStartTime = 0;
+  static unsigned long zoneMowingStartTime = 0;
   static unsigned long lastCutDirectionChange = 0;
   static int bladeDirection = CUT_MOTOR_FORWARD;
   static int outsideCount = 0;
@@ -218,6 +220,7 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
 
     //Initialise Mowing start time
     mowingStartTime = millis();
+    zoneMowingStartTime = millis();
 
     // Determine random cutting motor rotation direction
     if (millis() % 2 == 0) 
@@ -534,7 +537,23 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
     MowerArc(MOTION_MOTOR_FORWARD, leftSpeed, rightSpeed);
   }
 
+  //--------------------------------
+  // Zone Mowing duration is reached
+  //--------------------------------
+
+  if (millis() - zoneMowingStartTime > g_ZoneMowDuration * 60)
+  {
+    DebugPrintln("Zone " + String(g_TargetNowingZone) + ": mowing duration reached (" + String(g_ZoneMowDuration/1000) + ") : returning to base", DBG_INFO, true);
+    MowerStop();
+    CutMotorStop();
+    g_totalMowingTime = g_totalMowingTime + (millis() - mowingStartTime);   // in minutes
+    g_partialMowingTime = g_partialMowingTime + (millis() - mowingStartTime);   // in minutes
+    g_CurrentState = MowerState::going_to_base;
+    return;
+  }
+
   g_totalMowingTime = g_totalMowingTime + (millis() - mowingStartTime);   // in minutes
+  g_partialMowingTime = g_partialMowingTime + (millis() - mowingStartTime);   // in minutes
   mowingStartTime = millis();
 
   // Update display
@@ -591,7 +610,8 @@ void MowerGoingToBase(const bool StateChange, const MowerState PreviousState)
     // Sound starting beep to notify environment
     if (PreviousState == MowerState::idle)
     {
-      // TO DO Beep
+      // Sound starting beep to notify environment
+      playTune(g_longBeep, sizeof(g_longBeep) / sizeof(noteStruct), 3);
     }
 
     // just in case, stop cut motor
@@ -682,12 +702,31 @@ void MowerGoingToBase(const bool StateChange, const MowerState PreviousState)
  */
 void MowerLeavingBase(const bool StateChange, const MowerState PreviousState)
 {
+  static int stepNum = 0;    // Zone action step number
+  static unsigned long stepStartTime = 0;
+
   if (StateChange)
   {
-    LogPrintln("Mower leaving Base", TAG_STATES, DBG_INFO);
+    LogPrintln("Mower leaving Base to zone " + String(g_TargetNowingZone), TAG_STATES, DBG_INFO);
+
+    // Initialise variables
+    stepNum = 0;
+    stepStartTime = millis();
+
+    // Change Telemetry frequency
+    g_MQTTSendInterval = MQTT_TELEMETRY_SEND_INTERVAL_FAST;
+
+    // Force a Telemetry send
+    MQTTSendTelemetry(true);
 
     // Change display with refresh
     LeavingBaseDisplay(true);
+
+    // Open Battery charge relay to reduce energy consumption of keeping relay closed
+    BatteryChargeRelayOpen();
+
+    // Reset battery charge current to 0
+    g_BatteryChargeCurrent = 0;
 
     // Trigger base to swith to sending mode
     BaseSendingStartSend();
@@ -696,36 +735,68 @@ void MowerLeavingBase(const bool StateChange, const MowerState PreviousState)
     playTune(g_longBeep, sizeof(g_longBeep) / sizeof(noteStruct), 3);
 
     // Calibrate Gyroscope
-    GyroErrorCalibration(GYRO_CALIBRATION_SAMPLES);
+    if(PreviousState == MowerState::docked)
+    {
+      GyroErrorCalibration(GYRO_CALIBRATION_SAMPLES);
+    }
 
     // Cancel any outstanding wheel speed corrections
     MotionMotorsTrackingAdjustSpeed(0, 0);
 
-    // Open Battery charge relay to reduce energy consumption of keeping relay closed
-    BatteryChargeRelayOpen();
-
-    // Reset battery charge current to 0
-    g_BatteryChargeCurrent = 0;
-    
-    // Change Telemetry frequency
-    g_MQTTSendInterval = MQTT_TELEMETRY_SEND_INTERVAL_FAST;
-
-    // Force a Telemetry send
-    MQTTSendTelemetry(true);
-
+    // Activate Sonar reading
+    g_SonarReadEnabled = true;          // activate Sonar readings
+    delay(SONAR_READ_ACTIVATION_DELAY); //wait for task to take 1st readings
+   
     // Refresh display
     LeavingBaseDisplay(true);
   }
 
-  // Reverse out of base
-  int exitAngle = random(-180, -270);
+  //--------------------------------
+  // Check tilt sensors and take immediate action
+  //--------------------------------
 
-  MowerReserseAndTurn(exitAngle, LEAVING_BASE_REVERSE_DURATION, true); // reverse and turn random angle
+  if (CheckTiltReadAndAct())
+  {
+    return;
+  }
+
+  if (g_mowZoneSteps[g_TargetNowingZone][stepNum].action == ACT_FORWARD)
+  {
+    
+  }
+
+  // Perform next step action
+  ZoneStepAction(g_mowZoneSteps[g_TargetNowingZone][stepNum].action, g_mowZoneSteps[g_TargetNowingZone][stepNum].param1, g_mowZoneSteps[g_TargetNowingZone][stepNum].param2);
+
+  // Check if step is completed
+  if (millis() - stepStartTime > g_ZoneStepDuration * 1000)
+  {
+    if (g_mowZoneSteps[g_TargetNowingZone][stepNum].action == ACT_FORWARD)
+    {
+      MowerStop();
+    }
+    stepNum = stepNum + 1;
+    DebugPrintln("Change to ZoneStepAction step # " + String(stepNum), DBG_DEBUG, true);
+    if (stepNum >= MAXZONESTEPS && g_CurrentState == MowerState::leaving_base)    // end of steps reached
+    {
+      g_CurrentState = MowerState::idle;        // Protection in case last step is not an ACT_END or ACT_STARTMOWING
+    }
+  }
 
   LeavingBaseDisplay();
 
-  // for the moment, mow from the spot
-  g_CurrentState = MowerState::mowing;
+
+/* initial Leaving Base code   - TO BE DELETED
+  // // Reverse out of base
+  // int exitAngle = random(-180, -270);
+
+  // MowerReserseAndTurn(exitAngle, LEAVING_BASE_REVERSE_DURATION, true); // reverse and turn random angle
+
+  // LeavingBaseDisplay();
+
+  // // for the moment, mow from the spot
+  // g_CurrentState = MowerState::mowing;
+*/
 }
 
 //---------------------------------------------------------------------------------------------------------------------------
@@ -1115,6 +1186,7 @@ bool MowerFollowWire(bool *reset, const int heading, const bool clockwise)
     // Move forward
     MowerForward(BACK_TO_BASE_SPEED);
 
+    g_successiveObstacleDectections = 0;
     outsideCount = 0;
   }
 

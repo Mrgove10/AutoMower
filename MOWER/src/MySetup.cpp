@@ -22,6 +22,7 @@
 #include "GPS/GPS.h"
 #include "MotionMotor/MotionMotor.h"
 #include "MowerMoves/MowerMoves.h"
+#include "MowerZones/MowerZones.h"
 #include "CutMotor/CutMotor.h"
 #include "FastAnaReadTsk/FastAnaReadTsk.h"
 #include "AnaReadTsk/AnaReadTsk.h"
@@ -161,6 +162,9 @@ void MySetup(void)
   FastAnaReadLoopTaskCreate();
   AnaReadLoopTaskCreate();
   PerimeterProcessingLoopTaskCreate();
+
+  // Initialise Zone steps definition
+  mowZoneStepsInit();
 
   // Set default trace level
   g_debugLevel = DBG_DEBUG;

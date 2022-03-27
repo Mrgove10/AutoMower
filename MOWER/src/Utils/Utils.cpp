@@ -172,7 +172,9 @@ String ErrorString(const int errorCode)
       return String(F("Perimeter wire signal lost or stopped"));
     case ERROR_SONAR_NOT_UPDATING:
       return String(F("Sonar values or task not updating"));
-
+    case ERROR_UNDEFINED_STEP_ACTION:
+      return String(F("Undefined zone step action"));
+    
       //States-related Error conditions
     case ERROR_MOWING_NO_START_BUMPER_ACTIVE:
       return String(F("Mowing cannot start: bumper activated"));
