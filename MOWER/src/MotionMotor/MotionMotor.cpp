@@ -81,15 +81,35 @@ void MotionMotorSetSpeed(const int Motor, const int Speed, const bool Relative)
 {
   static int previousSpeed[MOTION_MOTOR_COUNT] = {0, 0};
   int adjustedSpeed;
+  int rollCompensation = 0;
+
+  // Determine roll compensation factor
+
+  if (g_MotionMotorRollCompensation && g_GyroPresent) 
+  {
+    // A positive roll means that the mower will tend to go towards the right: this is compensated by slowing down the left motor
+    if (g_rollAngle > MOTION_MOTOR_ROLL_COMPENSATION_THRESHOLD && Motor == MOTION_MOTOR_LEFT)
+    {
+      rollCompensation = - min(int(g_rollAngle * MOTION_MOTOR_ROLL_COMPENSATION_FACTOR), MOTION_MOTOR_ROLL_COMPENSATION_MAXIMUM);
+      DebugPrintln("\t\t\t\t\tMotion Motor " + g_MotionMotorStr[Motor] + " roll compensation :" + String(rollCompensation) + "%", DBG_DEBUG, true);
+    }
+
+    // A negative roll means that the mower will tend to go towards the left: this is compensated by slowing down the right motor
+    if (g_rollAngle < - MOTION_MOTOR_ROLL_COMPENSATION_THRESHOLD && Motor == MOTION_MOTOR_RIGHT)
+    {
+      rollCompensation = max(int(g_rollAngle * MOTION_MOTOR_ROLL_COMPENSATION_FACTOR), - MOTION_MOTOR_ROLL_COMPENSATION_MAXIMUM);
+      DebugPrintln("\t\t\t\t\tMotion Motor " + g_MotionMotorStr[Motor] + " roll compensation :" + String(rollCompensation) + "%", DBG_DEBUG, true);
+    }
+  }
 
   // Establish new requested speed
   if (Relative)
   {
-    adjustedSpeed = g_MotionMotorSpeed[Motor] + Speed + int(g_WheelPerimeterTrackingCorrection[Motor]);
+    adjustedSpeed = g_MotionMotorSpeed[Motor] + Speed + int(g_WheelPerimeterTrackingCorrection[Motor]) + rollCompensation;
   }
   else
   {
-    adjustedSpeed = Speed + int(g_WheelPerimeterTrackingCorrection[Motor]);
+    adjustedSpeed = Speed + int(g_WheelPerimeterTrackingCorrection[Motor]) + rollCompensation;
   }
 
   // Check new requested speed for range and convert into PWM points

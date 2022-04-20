@@ -369,6 +369,8 @@ String g_MotionMotorStr[MOTION_MOTOR_COUNT] = {"Right", "Left"};
 
 float g_WheelPerimeterTrackingCorrection[MOTION_MOTOR_COUNT] = {0, 0}; // from perimeter tracking PID control
 
+bool g_MotionMotorRollCompensation = false;       // Boolean to activate roll compensation by acting on motion motor speeds
+
 /************************* Mower Moves variables *********************************/
 
 // Mowing

@@ -111,6 +111,9 @@ void MowerDocked(const bool StateChange, const MowerState PreviousState)
     // Suspend Sonar readings
     g_SonarReadEnabled = false;
 
+    // Suspend Motion Motor roll compensation 
+    g_MotionMotorRollCompensation = false;
+    
     // Trigger base to swith to sleeping mode
     BaseSleepingStartSend();
 
@@ -252,6 +255,8 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
         rightSpeed = MOWER_MOWING_TRAVEL_SPEED;
         leftSpeed = MOWER_MOWING_TRAVEL_SPEED;
         isSpiral = false;
+        // Ativate Motion Motor roll compensation 
+        g_MotionMotorRollCompensation = true;
         break;
       case MOWER_MOWING_MODE_SPIRAL_CLOCKWISE:
         rightSpeed = MOTION_MOTOR_MIN_SPEED;
@@ -260,6 +265,8 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
         stepDuration = MOWER_MOWING_SPIRAL_START_CIRCLE_DURATION * MOWER_MOWING_SPIRAL_CIRCLES_PER_STEP;
         spiralStep = 0;
         lastSpiralSpeedAdjustment = millis();
+        // Suspend Motion Motor roll compensation 
+        g_MotionMotorRollCompensation = false;
         break;
       case MOWER_MOWING_MODE_SPIRAL_COUNTER_CLOCKWISE:
         rightSpeed = MOWER_MOWING_TRAVEL_SPEED;
@@ -268,6 +275,8 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
         stepDuration = MOWER_MOWING_SPIRAL_START_CIRCLE_DURATION * MOWER_MOWING_SPIRAL_CIRCLES_PER_STEP;
         spiralStep = 0;
         lastSpiralSpeedAdjustment = millis();
+        // Suspend Motion Motor roll compensation 
+        g_MotionMotorRollCompensation = false;
         break;
       default:
         break;
@@ -528,6 +537,10 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
     if (spiralStep == MOWER_MOWING_SPIRAL_MAX_STEP) 
     { 
       isSpiral = false;
+
+      // Ativate Motion Motor roll compensation 
+      g_MotionMotorRollCompensation = true;
+
       g_mowingMode = MOWER_MOWING_MODE_RANDOM;
       rightSpeed = MOWER_MOWING_SPIRAL_MAX_SPEED;
       leftSpeed = MOWER_MOWING_SPIRAL_MAX_SPEED;
@@ -608,6 +621,9 @@ void MowerGoingToBase(const bool StateChange, const MowerState PreviousState)
     // Cancel any outstanding wheel speed corrections
     MotionMotorsTrackingAdjustSpeed(0, 0);
 
+    // Ativate Motion Motor roll compensation 
+    g_MotionMotorRollCompensation = true;
+
     // Activate Sonar reading
     g_SonarReadEnabled = true;          // activate Sonar readings
     delay(SONAR_READ_ACTIVATION_DELAY); //wait for task to take 1st readings
@@ -664,6 +680,8 @@ void MowerGoingToBase(const bool StateChange, const MowerState PreviousState)
       FindWire = false;
       FollowWire = true;
       PIDReset = true;
+      // Suspend Motion Motor roll compensation 
+      g_MotionMotorRollCompensation = false;
     }
   }
 

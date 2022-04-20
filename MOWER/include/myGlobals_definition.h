@@ -562,7 +562,9 @@ extern noteStruct g_longBeep[1];
 #define MOTION_MOTOR_PITCH_TURN_CORRECTION_ANGLE -10
 #define MOTION_MOTOR_PITCH_TURN_CORRECTION_FACTOR 1.5
 
-#define MOTION_MOTOR_OVERCURRENT_THRESHOLD 750 // in mA
+#define MOTION_MOTOR_ROLL_COMPENSATION_THRESHOLD 2  // in degrees
+#define MOTION_MOTOR_ROLL_COMPENSATION_FACTOR 0.5   // Proportional compensation coeficient : motor speed compensation (in %) = roll angle (in degrees) * MOTION_MOTOR_ROLL_COMPENSATION_FACTOR
+#define MOTION_MOTOR_ROLL_COMPENSATION_MAXIMUM 10   // Maximum roll motor compensation speed (in %)
 #define MOTION_MOTOR_OVERCURRENT_DURATION 2000 // in ms
 
 #define MOTION_MOTOR_POINTS 4096  // depending on MOTION_MOTOR_PWM_RESOLUTION
@@ -578,6 +580,8 @@ extern int g_MotionMotorSpeed[MOTION_MOTOR_COUNT];
 extern String g_MotionMotorStr[MOTION_MOTOR_COUNT];
 
 extern float g_WheelPerimeterTrackingCorrection[MOTION_MOTOR_COUNT]; // from perimeter tracking PID control
+
+extern bool g_MotionMotorRollCompensation;    // Boolean to activate roll compensation by acting on motion motor speeds
 
 /************************* Mower Moves variables *********************************/
 
