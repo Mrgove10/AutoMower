@@ -565,7 +565,12 @@ extern noteStruct g_longBeep[1];
 #define MOTION_MOTOR_ROLL_COMPENSATION_THRESHOLD 2  // in degrees
 #define MOTION_MOTOR_ROLL_COMPENSATION_FACTOR 0.5   // Proportional compensation coeficient : motor speed compensation (in %) = roll angle (in degrees) * MOTION_MOTOR_ROLL_COMPENSATION_FACTOR
 #define MOTION_MOTOR_ROLL_COMPENSATION_MAXIMUM 10   // Maximum roll motor compensation speed (in %)
+
+#define MOTION_MOTOR_OVERCURRENT_THRESHOLD 800 // in mA
 #define MOTION_MOTOR_OVERCURRENT_DURATION 2000 // in ms
+
+#define MOTION_MOTOR_OVERCURRENT_PITCH_CORRECTION_FACTOR 2  // Pitch angle is multiplied by this factor to obtain motor protection correction
+#define MOTION_MOTOR_OVERCURRENT_PITCH_CORRECTION_MAXIMUM MOTION_MOTOR_OVERCURRENT_THRESHOLD*15/100   // 15% of base overcurrent protection
 
 #define MOTION_MOTOR_POINTS 4096  // depending on MOTION_MOTOR_PWM_RESOLUTION
 #define MOTION_MOTOR_MIN_SPEED 35 // in %

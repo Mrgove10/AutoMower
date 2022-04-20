@@ -1586,6 +1586,8 @@ int CheckObstacleAndAct(const bool Bumper, const int Front, const int Left, cons
   int firstSideAngle = 0; // Angle to turn for first direction
   int secondSideAngle = 0; // Angle to turn for second direction
 
+  static float avgMotionMotorCurrent[MOTION_MOTOR_COUNT] = {0, 0};
+
   static unsigned long lastMotionMotorOverCurrent = 0;
 
   // Determine random order for sides to check
@@ -1804,14 +1806,25 @@ int CheckObstacleAndAct(const bool Bumper, const int Front, const int Left, cons
   //--------------------------------
   // Motion motor overcurrent detection
   //--------------------------------
+  // Overcurrent protection is modulated depending on pitch value: if positive pitch (going up), the overcurrent treshold is increased proportionally
   // Reaction to motion motor overcurrent collision is as follows:
   //    Stop motion and cutting,
   //    if possible to turn left, reverse and turn left by a "small" angle (~ less than 90 degrees)
   //    if not possible, if possible to turn right, reverse and turn right by a "small" angle (~ less than 90 degrees)
   //    if not possible, reverse further and turn to be ready to go in "opposite direction"
 
-  if (g_MotorCurrent[MOTOR_CURRENT_LEFT] > MotorOverCurrent || 
-      g_MotorCurrent[MOTOR_CURRENT_RIGHT] > MotorOverCurrent)
+  int MotorOverCurrentCorrection = 0;
+
+  if (g_GyroPresent && g_pitchAngle > 0)
+  {
+    MotorOverCurrentCorrection = min(int(g_pitchAngle * MOTION_MOTOR_OVERCURRENT_PITCH_CORRECTION_FACTOR), MOTION_MOTOR_OVERCURRENT_PITCH_CORRECTION_MAXIMUM);
+  }
+
+
+  // Overcurrent detection on instaneous values
+  // 
+  if (MotorOverCurrent != 0 && (g_MotorCurrent[MOTOR_CURRENT_LEFT] > MotorOverCurrent + MotorOverCurrentCorrection || 
+      g_MotorCurrent[MOTOR_CURRENT_RIGHT] > MotorOverCurrent + MotorOverCurrentCorrection))
   {
     // Check if first time
     if (lastMotionMotorOverCurrent == 0)
@@ -1824,7 +1837,7 @@ int CheckObstacleAndAct(const bool Bumper, const int Front, const int Left, cons
       {
         lastMotionMotorOverCurrent = 0;
 
-        LogPrintln("Motion Motor Overcurent detected (L:" + String(g_MotorCurrent[MOTOR_CURRENT_LEFT],0) + ", R:" + String(g_MotorCurrent[MOTOR_CURRENT_RIGHT],0) + " mA)", TAG_MOWING, DBG_DEBUG);
+        LogPrintln("Motion Motor Overcurent detected (Max:" + String(MotorOverCurrent + MotorOverCurrentCorrection) + " L:" + String(g_MotorCurrent[MOTOR_CURRENT_LEFT],0) + ", R:" + String(g_MotorCurrent[MOTOR_CURRENT_RIGHT],0) + " mA)", TAG_MOWING, DBG_DEBUG);
         if (ActionMode)
         {
           // Stop motion and stop cutting motor
@@ -1862,6 +1875,50 @@ int CheckObstacleAndAct(const bool Bumper, const int Front, const int Left, cons
         lastMotionMotorOverCurrent = 0;
       }
     }
+  }
+
+  // Overcurrent detection on average values
+  // 
+
+  // Calculate Average Motion Motor current values
+  avgMotionMotorCurrent[MOTOR_CURRENT_LEFT] = avgMotionMotorCurrent[MOTOR_CURRENT_LEFT] * 0.95f + g_MotorCurrent[MOTOR_CURRENT_LEFT] * 0.05f;
+  avgMotionMotorCurrent[MOTOR_CURRENT_RIGHT] = avgMotionMotorCurrent[MOTOR_CURRENT_RIGHT] * 0.95f + g_MotorCurrent[MOTOR_CURRENT_RIGHT] * 0.05f;
+
+  if (MotorOverCurrent != 0 && (avgMotionMotorCurrent[MOTOR_CURRENT_LEFT] > float(MotorOverCurrent + MotorOverCurrentCorrection) * 1.0f || 
+      avgMotionMotorCurrent[MOTOR_CURRENT_RIGHT] > float(MotorOverCurrent + MotorOverCurrentCorrection) * 1.0f))
+  {
+    LogPrintln("Motion Motor Overcurent detected on Average (Max:" + String(MotorOverCurrent + MotorOverCurrentCorrection) + " L:" + String(avgMotionMotorCurrent[MOTOR_CURRENT_LEFT],0) + ", R:" + String(avgMotionMotorCurrent[MOTOR_CURRENT_RIGHT],0) + " mA)", TAG_MOWING, DBG_DEBUG);
+    if (ActionMode)
+    {
+      // Stop motion and stop cutting motor
+      MowerStop();
+      CutMotorStop();
+
+      if (g_SonarDistance[firstSide] > SONAR_MIN_DISTANCE_FOR_TURN) // check if it's clear on first side
+      {
+        DebugPrintln("Turning " + SideStr[firstSide] , DBG_VERBOSE, true);
+        MowerReserseAndTurn(firstSideAngle, MOWER_MOVES_REVERSE_FOR_TURN_DURATION, true); // reverse and turn random angle
+      }
+      else
+      {
+        if (g_SonarDistance[secondSide] > SONAR_MIN_DISTANCE_FOR_TURN) // check if it's clear on second side
+        {
+          DebugPrintln("Reversing and turning " + SideStr[secondSide], DBG_VERBOSE, true);
+          MowerReserseAndTurn(secondSideAngle, MOWER_MOVES_REVERSE_FOR_TURN_DURATION, true); // reverse and turn random angle
+        }
+        else
+        {
+          DebugPrintln("Reversing and going back", DBG_VERBOSE, true);
+          MowerReserseAndTurn(random(135, 225), MOWER_MOVES_REVERSE_FOR_TURN_DURATION * 2, true); // reverse and turn right 135 degrees....and hope for the best !
+        }
+      }
+    }
+
+    // count as an obstable detection
+    g_totalObstacleDectections = g_totalObstacleDectections + 1;
+    g_successiveObstacleDectections = g_successiveObstacleDectections + 1;
+
+    return OBSTACLE_DETECTED_OVERCURRENT;
   }
 
   // reset successive detections counter (we only get to here if no obstacle has been detected)
