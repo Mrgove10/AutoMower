@@ -260,12 +260,15 @@ void MQTTCallback(char *topic, byte *message, unsigned int length)
         {
           DebugPrintln("Mower zone not defined !", DBG_ERROR, true);
         }
+        else if (g_CurrentState != MowerState::docked)
+        {
+          DebugPrintln("Mower needs to be at base first !", DBG_ERROR, true);
+        }
         else
         {
           g_CurrentState = MowerState::leaving_base;
           g_TargetNowingZone = int(Val2);
         }
-
       }
       else if (Val1Str == "ERROR") // only for testing purposes
       {
@@ -286,7 +289,14 @@ void MQTTCallback(char *topic, byte *message, unsigned int length)
       }
       else if (Val1Str == "GYRO")
       {
-        GyroErrorCalibration(GYRO_CALIBRATION_SAMPLES);
+        if (g_CurrentState == MowerState::idle || g_CurrentState == MowerState::docked)
+        {
+          GyroErrorCalibration(GYRO_CALIBRATION_SAMPLES);
+        }
+        else
+        {
+          DebugPrintln("Gyro calibration can only be done in Idle or docked states", DBG_ERROR, true);
+        }
       }
       // else if (Val1Str == "ACCEL")
       // {
@@ -342,19 +352,40 @@ void MQTTCallback(char *topic, byte *message, unsigned int length)
 
     else if (Command == "TEST_FORWARD")
     {
-      MowerForward(int(Val1));
-      delay(int(Val2 * 1000));
-      MowerStop();
+      if (g_CurrentState != MowerState::idle)
+      {
+        DebugPrintln("Mower must be in idle mode for manual moves !", DBG_ERROR, true);
+      }
+      else
+      {
+        MowerForward(int(Val1));
+        delay(int(Val2 * 1000));
+        MowerStop();
+      }
     }
 
     else if (Command == "TEST_REVERSE")
     {
-      MowerReverse(int(Val1), int(Val2 * 1000));
+      if (g_CurrentState != MowerState::idle)
+      {
+        DebugPrintln("Mower must be in idle mode for manual moves !", DBG_ERROR, true);
+      }
+      else
+      {
+        MowerReverse(int(Val1), int(Val2 * 1000));
+      }
     }
 
     else if (Command == "TEST_TURN")
     {
-      MowerTurn(int(Val1), bool(Val2));
+      if (g_CurrentState != MowerState::idle)
+      {
+        DebugPrintln("Mower must be in idle mode for manual moves !", DBG_ERROR, true);
+      }
+      else
+      {
+        MowerTurn(int(Val1), bool(Val2));
+      }
     }
 
     else if (Command == "TEST_ARC_FORWARD")
