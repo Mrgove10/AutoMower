@@ -325,7 +325,6 @@ extern float g_GyroErrorZ;       // Gyro error Z (Saved in EEPROM)
 extern float g_AccelErrorX;      // Accel error X (Saved in EEPROM)
 extern float g_AccelErrorY;      // Accel error Y (Saved in EEPROM)
 
-
 extern float g_pitchAngle;
 extern float g_rollAngle;
 

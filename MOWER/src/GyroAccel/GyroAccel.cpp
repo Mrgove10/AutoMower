@@ -298,6 +298,10 @@ void PitchRollCalc(const bool Now, const bool reset)
 
   static unsigned long LastPitchRollCalc = 0;
 
+  #ifdef MQTT_PITCH_ROLL_DEBUG
+  static unsigned long LastPitchRollSendTime = 0;
+  #endif
+
   if (reset)
   {
     pitchAngle = 0;
@@ -347,6 +351,34 @@ void PitchRollCalc(const bool Now, const bool reset)
       LastPitchRollCalc = millis();
     }
   }
+
+  #ifdef MQTT_PITCH_ROLL_DEBUG
+    //  send debug information through MQTT
+    if (g_MQTTPitcRollDebug && millis() - LastPitchRollSendTime > MQTT_PITCH_ROLL_DEBUG_CHANNEL_INTERVAL)
+    {
+      String JsonPayload = "";
+      FirebaseJson JSONDBGPayload;
+      String JSONDBGPayloadStr;
+      char MQTTpayload[MQTT_MAX_PAYLOAD];
+
+      JSONDBGPayload.clear();
+      JSONDBGPayload.add("P", g_pitchAngle);
+      JSONDBGPayload.add("R", g_rollAngle);
+      JSONDBGPayload.add("T", g_MPUTemperature);
+      JSONDBGPayload.toString(JSONDBGPayloadStr, false);
+      JSONDBGPayloadStr.toCharArray(MQTTpayload, JSONDBGPayloadStr.length() + 1);
+      bool result = MQTTclient.publish(MQTT_PITCH_ROLL_DEBUG_CHANNEL, MQTTpayload);
+      if (result != 1)
+      {
+        g_MQTTErrorCount = g_MQTTErrorCount + 1;
+      }
+  	  LastPitchRollSendTime = millis();
+
+      MQTTclient.loop();
+      //    DebugPrintln("Sending to :[" + String(MQTT_PITCH_ROLL_DEBUG_CHANNEL) + "] " + String(MQTTpayload) + " => " + String(result), DBG_VERBOSE, true);
+    }
+#endif
+
 }
 /**
  * GY-521 MPU6050 Gyro Angle value read function

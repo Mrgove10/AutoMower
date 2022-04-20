@@ -392,6 +392,17 @@ void MQTTCallback(char *topic, byte *message, unsigned int length)
     }
 #endif
 
+#ifdef MQTT_PITCH_ROLL_DEBUG
+    else if (Command == "START_MQTT_PITCH_ROLL_DEBUG")
+    {
+      g_MQTTPitcRollDebug = true;
+    }
+    else if (Command == "STOP_MQTT_PITCH_ROLL_DEBUG")
+    {
+      g_MQTTPitcRollDebug = false;
+    }
+#endif
+
     else if (Command == "TUNE_OFFSET")
     {
       g_PerimeterOffset = g_PerimeterOffset + int(Val1); // only for testing purposes
@@ -583,6 +594,7 @@ void MQTTSendTelemetry(const bool now)
 
     // Compass & Gyro data
     JSONDataPayload.add("CompHead", String(g_CompassHeading));
+    JSONDataPayload.add("MPUTemp", String(g_MPUTemperature));
 
     // GPS Data
     JSONDataPayload.add("GPSHead", String(g_GPSHeading, 1));
@@ -640,7 +652,6 @@ void MQTTSendTelemetry(const bool now)
       {
         g_MQTTErrorCount = g_MQTTErrorCount + 1;
       }
-
     }
     else
     {
