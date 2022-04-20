@@ -42,10 +42,10 @@ void ZoneStepAction(const int Action, const int Param1, const int Param2)
                                                           true))
         {
           // Check if number of consecutive obstacle detection is above threshold and put mower in Error mode
-          if (g_successiveObstacleDectections > PERIMETER_SEARCH_MAX_CONSECUTVE_OBSTACLES)
+          if (g_successiveObstacleDectections > MOWER_MOWING_MAX_CONSECUTVE_OBSTACLES)
           {
             g_CurrentState = MowerState::error;
-            g_CurrentErrorCode = ERROR_WIRE_SEARCH_CONSECUTIVE_OBSTACLES;
+            g_CurrentErrorCode = ERROR_MOWING_CONSECUTIVE_OBSTACLES;
             return;
           }
           else
@@ -184,7 +184,7 @@ void mowZoneStepsInit(void)
     g_mowZoneSteps[MOW_ZONE_2][0].action = ACT_REVERSE;     g_mowZoneSteps[MOW_ZONE_2][0].param1 = 10;   g_mowZoneSteps[MOW_ZONE_2][0].param2 = LEAVING_BASE_REVERSE_SPEED;
     g_mowZoneSteps[MOW_ZONE_2][1].action = ACT_SPOTTURN;    g_mowZoneSteps[MOW_ZONE_2][1].param1 = 45;   g_mowZoneSteps[MOW_ZONE_2][1].param2 = ACT_CW;
     g_mowZoneSteps[MOW_ZONE_2][2].action = ACT_FINDWIRE;    g_mowZoneSteps[MOW_ZONE_2][2].param1 = 120;  g_mowZoneSteps[MOW_ZONE_2][2].param2 = ACT_CW;
-    g_mowZoneSteps[MOW_ZONE_2][3].action = ACT_FOLLOWWIRE;  g_mowZoneSteps[MOW_ZONE_2][3].param1 = 45;   g_mowZoneSteps[MOW_ZONE_2][3].param2 = ACT_CW;
+    g_mowZoneSteps[MOW_ZONE_2][3].action = ACT_FOLLOWWIRE;  g_mowZoneSteps[MOW_ZONE_2][3].param1 = 80;   g_mowZoneSteps[MOW_ZONE_2][3].param2 = ACT_CW;
     g_mowZoneSteps[MOW_ZONE_2][4].action = ACT_SPOTTURN;    g_mowZoneSteps[MOW_ZONE_2][4].param1 = 45;   g_mowZoneSteps[MOW_ZONE_2][4].param2 = ACT_CW;
     g_mowZoneSteps[MOW_ZONE_2][5].action = ACT_STARTMOWING; g_mowZoneSteps[MOW_ZONE_2][5].param1 = MOWER_MOWING_MODE_RANDOM;    g_mowZoneSteps[MOW_ZONE_2][5].param2 = 120;
 
@@ -198,9 +198,9 @@ void mowZoneStepsInit(void)
 
     // ZONE 4 step definition -- Back of House
     g_mowZoneSteps[MOW_ZONE_4][0].action = ACT_REVERSE;     g_mowZoneSteps[MOW_ZONE_4][0].param1 = 10;   g_mowZoneSteps[MOW_ZONE_4][0].param2 = LEAVING_BASE_REVERSE_SPEED;
-    g_mowZoneSteps[MOW_ZONE_4][1].action = ACT_SPOTTURN;    g_mowZoneSteps[MOW_ZONE_4][1].param1 = 15;   g_mowZoneSteps[MOW_ZONE_4][1].param2 = ACT_CCW;
+    g_mowZoneSteps[MOW_ZONE_4][1].action = ACT_SPOTTURN;    g_mowZoneSteps[MOW_ZONE_4][1].param1 = 25;   g_mowZoneSteps[MOW_ZONE_4][1].param2 = ACT_CCW;
     g_mowZoneSteps[MOW_ZONE_4][2].action = ACT_FINDWIRE;    g_mowZoneSteps[MOW_ZONE_4][2].param1 = 120;  g_mowZoneSteps[MOW_ZONE_4][2].param2 = ACT_CCW;
-    g_mowZoneSteps[MOW_ZONE_4][3].action = ACT_FOLLOWWIRE;  g_mowZoneSteps[MOW_ZONE_4][3].param1 = 100;   g_mowZoneSteps[MOW_ZONE_4][3].param2 = ACT_CCW;
+    g_mowZoneSteps[MOW_ZONE_4][3].action = ACT_FOLLOWWIRE;  g_mowZoneSteps[MOW_ZONE_4][3].param1 = 200;  g_mowZoneSteps[MOW_ZONE_4][3].param2 = ACT_CCW;
     g_mowZoneSteps[MOW_ZONE_4][4].action = ACT_SPOTTURN;    g_mowZoneSteps[MOW_ZONE_4][4].param1 = 45;   g_mowZoneSteps[MOW_ZONE_4][4].param2 = ACT_CCW;
     g_mowZoneSteps[MOW_ZONE_4][5].action = ACT_STARTMOWING; g_mowZoneSteps[MOW_ZONE_4][5].param1 = MOWER_MOWING_MODE_RANDOM;    g_mowZoneSteps[MOW_ZONE_4][5].param2 = 120;
 }

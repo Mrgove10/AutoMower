@@ -395,7 +395,7 @@ ZoneStepStruct g_mowZoneSteps[MAXMOWERZONES][MAXZONESTEPS];       // Array conta
 
 int g_TargetNowingZone = 0;    // Target mowing zone after leaving base 
 unsigned long g_ZoneStepDuration = 0;    // Duration (in ms) until end of step to go to zone
-int g_ZoneMowDuration; // Zone mowing duration (in minutes) 
+int g_ZoneMowDuration = MOWER_MOWING_MOWING_SESSION_DURATION * 1000; // Zone mowing duration (in minutes) 
 
 // Move count variables
 int g_successiveObstacleDectections = 0; // successive obstacle detections (to trigger appropriate reaction)

@@ -611,6 +611,7 @@ extern bool g_MotionMotorRollCompensation;    // Boolean to activate roll compen
 #define PERIMETER_MIN_MAGNITUDE_FOR_OUT_DETECTION 200 // to prevent spurious out of perimeter detections
 
 // Mowing
+#define MOWER_MOWING_MOWING_SESSION_DURATION 120   // in seconds, default duration of mowing session
 #define MOWER_MOWING_TRAVEL_SPEED 100
 #define MOWER_MOWING_MAX_CONSECUTVE_OBSTACLES 5
 #define MOWER_MOWING_MAX_CONSECUTVE_OUTSIDE 30

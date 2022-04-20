@@ -241,6 +241,7 @@ void MQTTCallback(char *topic, byte *message, unsigned int length)
         {
           g_CurrentState = MowerState::mowing;
           g_mowingMode = Val2;
+          g_ZoneMowDuration = MOWER_MOWING_MOWING_SESSION_DURATION * 1000;
         }
       }
       else if (Val1Str == "TO_BASE")

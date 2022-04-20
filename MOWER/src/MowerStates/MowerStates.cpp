@@ -792,22 +792,18 @@ void MowerLeavingBase(const bool StateChange, const MowerState PreviousState)
     return;
   }
 
-  if (g_mowZoneSteps[g_TargetNowingZone][stepNum].action == ACT_FORWARD)
-  {
-    
-  }
-
   // Perform next step action
   ZoneStepAction(g_mowZoneSteps[g_TargetNowingZone][stepNum].action, g_mowZoneSteps[g_TargetNowingZone][stepNum].param1, g_mowZoneSteps[g_TargetNowingZone][stepNum].param2);
 
   // Check if step is completed
-  if (millis() - stepStartTime > g_ZoneStepDuration * 1000)
+  if (millis() - stepStartTime > g_ZoneStepDuration)
   {
     if (g_mowZoneSteps[g_TargetNowingZone][stepNum].action == ACT_FORWARD)
     {
       MowerStop();
     }
     stepNum = stepNum + 1;
+    stepStartTime = millis();
     DebugPrintln("Change to ZoneStepAction step # " + String(stepNum), DBG_DEBUG, true);
     if (stepNum >= MAXZONESTEPS && g_CurrentState == MowerState::leaving_base)    // end of steps reached
     {
