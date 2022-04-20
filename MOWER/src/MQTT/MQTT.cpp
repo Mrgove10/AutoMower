@@ -582,6 +582,7 @@ void MQTTInit(const bool Display)
 void MQTTSendTelemetry(const bool now)
 {
   static unsigned long LastTelemetryDataSent = 0;
+  static unsigned int LastSonarLoopCountSent = 0;
   char MQTTpayload[MQTT_MAX_PAYLOAD];
 
   if ((millis() - LastTelemetryDataSent > g_MQTTSendInterval) || now)
