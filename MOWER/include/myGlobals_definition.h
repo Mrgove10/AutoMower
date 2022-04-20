@@ -755,6 +755,8 @@ extern bool g_CutMotorAlarm;
 #define ERROR_NO_PERIMETER_SIGNAL 004
 #define ERROR_SONAR_NOT_UPDATING 005
 #define ERROR_UNDEFINED_STEP_ACTION 006
+#define ERROR_PITCH_TO_HIGH 7
+#define ERROR_ROLL_TO_HIGH 8
 
 //States-related Error conditions
 #define ERROR_MOWING_NO_START_BUMPER_ACTIVE 100
@@ -875,3 +877,14 @@ extern bool g_MQTTPIDGraphDebug; // to start/stop the transmission of MQTT debug
 extern uint32_t g_IdleCycleCount[2];
 extern uint32_t g_TotalIdleCycleCount[2];
 extern int g_PrimProcTskLongLoopCnt;
+
+// Debug function to send pitch & roll detailled information through MQTT
+// Uncomment following line to activate sending
+
+#define MQTT_PITCH_ROLL_DEBUG true
+
+#ifdef MQTT_PITCH_ROLL_DEBUG
+extern bool g_MQTTPitcRollDebug;
+#define MQTT_PITCH_ROLL_DEBUG_CHANNEL "AutoMower/P_RTest"
+#define MQTT_PITCH_ROLL_DEBUG_CHANNEL_INTERVAL 1000  // in ms
+#endif

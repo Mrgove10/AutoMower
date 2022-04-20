@@ -292,7 +292,8 @@ void BatteryChargeCheck(const bool Now)
     {
       // Open relay to stop charge
       BatteryChargeRelayOpen();
-      DebugPrintln("Battery Full, charge stopped (" + String(g_BatteryChargeCurrent) + " mA, " + String(g_BatteryVoltage) + " mV)" , DBG_INFO, true);
+      LogPrintln("Battery Full, charge stopped (" + String(g_BatteryChargeCurrent) + " mA, " + String(g_BatteryVoltage) + " mV)", TAG_STATES, DBG_INFO);
+      // DebugPrintln("Battery Full, charge stopped (" + String(g_BatteryChargeCurrent) + " mA, " + String(g_BatteryVoltage) + " mV)" , DBG_INFO, true);
 
       // Update charging time
       g_totalChargingTime = g_totalChargingTime + (millis() - g_BatteryChargingStartTime);   // in minutes
@@ -303,7 +304,8 @@ void BatteryChargeCheck(const bool Now)
     // Check if battery voltage level is below charging threshold
     if (g_BatteryVoltage < BATTERY_VOLTAGE_TO_START_CHARGE && !g_BatteryRelayIsClosed)
     {
-      DebugPrintln("Battery needs charge (" + String(g_BatteryVoltage) + " mV)" , DBG_INFO, true);
+      LogPrintln("Battery needs charge (" + String(g_BatteryVoltage) + " mV)", TAG_STATES, DBG_INFO);
+      // DebugPrintln("Battery needs charge (" + String(g_BatteryVoltage) + " mV)" , DBG_INFO, true);
       // Close relay to enable charge
       BatteryChargeRelayClose();
 

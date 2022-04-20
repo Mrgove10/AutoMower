@@ -97,6 +97,8 @@ void MowerIdle(const bool StateChange, const MowerState PreviousState)
  */
 void MowerDocked(const bool StateChange, const MowerState PreviousState)
 {
+  static unsigned long dockedStartTime = 0;
+  
   if (StateChange)
   {
     LogPrintln("Mower Docked", TAG_STATES, DBG_INFO);
@@ -107,6 +109,9 @@ void MowerDocked(const bool StateChange, const MowerState PreviousState)
     g_WheelPerimeterTrackingCorrection[MOTION_MOTOR_RIGHT] = 0;
     MotionMotorSetSpeed(MOTION_MOTOR_RIGHT, 0); // function will apply correction and set new speed
 //    MotionMotorsTrackingAdjustSpeed(0, 0);
+
+    // Memorise start of docking time
+    dockedStartTime = millis();
 
     // Suspend Sonar readings
     g_SonarReadEnabled = false;
@@ -130,14 +135,18 @@ void MowerDocked(const bool StateChange, const MowerState PreviousState)
     g_BatteryChargingStartTime = millis();
   }
 
-  // Change Telemetry frequency
-  if (g_BatteryChargeCurrent < 1)
+  // Change Telemetry frequency : Wait a few minutes before reducing frequency
+  
+  if (millis() - dockedStartTime > 10 * MQTT_TELEMETRY_SEND_INTERVAL)
   {
-    g_MQTTSendInterval = 2 * MQTT_TELEMETRY_SEND_INTERVAL_SLOW;
-  }
-  else
-  {
-    g_MQTTSendInterval = MQTT_TELEMETRY_SEND_INTERVAL_SLOW;
+    if (g_BatteryChargeCurrent < 100)
+    {
+      g_MQTTSendInterval = 3 * MQTT_TELEMETRY_SEND_INTERVAL_SLOW;
+    }
+    else
+    {
+      g_MQTTSendInterval = MQTT_TELEMETRY_SEND_INTERVAL_SLOW;
+    }
   }
 
   // Update display
@@ -423,7 +432,7 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
       bladeDirection = CUT_MOTOR_FORWARD;
     }
 
-    DebugPrintln("Changing cut motor rotation direction to " + String(bladeDirection), DBG_INFO, true);
+    LogPrintln("Changing cut motor rotation direction to " + String(bladeDirection), TAG_MOWING, DBG_INFO);
     DisplayPrint(0,2, F("Cut direct. change"));
 
     // Stop blades and mower

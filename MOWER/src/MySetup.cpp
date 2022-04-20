@@ -129,6 +129,7 @@ void MySetup(void)
 
   if (g_otaFlag)
   {
+    LogPrintln("Waiting for OTA update", TAG_RESET, DBG_INFO);
     OTAHandle();
   }
 

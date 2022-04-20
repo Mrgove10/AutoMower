@@ -637,9 +637,18 @@ void MQTTSendTelemetry(const bool now)
     JSONDataPayload.add("GPSSat", String(g_GPSSatellitesFix));
     JSONDataPayload.add("GPSHdop", String(g_GPSHdop, 2));
     JSONDataPayload.add("GPSSpd", String(g_GPSSpeed, 2));
-    JSONDataPayload.add("GPSAlt", String(g_GPSAltitude, 2));
-    JSONDataPayload.add("GPSLat", String(g_GPSLatitude, 9));
-    JSONDataPayload.add("GPSLon", String(g_GPSLongitude, 9));
+    if (g_GPSLatitude != 0 && g_GPSLongitude != 0) 
+    {
+      JSONDataPayload.add("GPSLat", String(g_GPSLatitude, 9));
+      JSONDataPayload.add("GPSLon", String(g_GPSLongitude, 9));
+      JSONDataPayload.add("GPSAlt", String(g_GPSAltitude, 2));
+    }
+    else 
+    {
+      JSONDataPayload.add("GPSLat", String(UNKNOWN_FLOAT, 9));
+      JSONDataPayload.add("GPSLon", String(UNKNOWN_FLOAT, 9));
+      JSONDataPayload.add("GPSAlt", String(UNKNOWN_FLOAT, 2));
+    }
 
     // Mowing Statistics data
     JSONDataPayload.add("Obstcl", String(g_totalObstacleDectections));
