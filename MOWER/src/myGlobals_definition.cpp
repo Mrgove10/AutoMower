@@ -308,6 +308,8 @@ NewPing sonar[SONAR_COUNT] = {                                               // 
 String g_sensorStr[SONAR_COUNT] = {"Front", "Left", "Right"};
 
 int g_SonarDistance[SONAR_COUNT] = {0, 0, 0}; // in cm
+int g_MaxSonarDistanceCount[SONAR_COUNT] = {0, 0, 0}; // number of times sonar send max distance
+int g_LastSonarReadNum = 0; // Id of last sonar read
 
 /************************* Bumper variables *********************************/
 

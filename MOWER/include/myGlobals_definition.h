@@ -436,7 +436,7 @@ extern float g_MotorCurrent[MOTOR_CURRENT_COUNT];
 
 #define SONAR_READ_TASK_ESP_CORE 1          // Core assigned to task
 #define SONAR_READ_TASK_PRIORITY 1          // Priority assigned to task
-#define SONAR_READ_TASK_STACK_SIZE 3000     // Stack assigned to task (in bytes)
+#define SONAR_READ_TASK_STACK_SIZE 3500     // Stack assigned to task (in bytes)
 #define SONAR_READ_TASK_NAME "SonarReadTsk" // Task name
 
 #define SONAR_READ_TASK_WAIT_ON_IDLE 500 // in ms
@@ -456,9 +456,9 @@ extern int g_SonarTskLoopCnt; // Global variable to count number of task read lo
 #include <NewPing.h>
 
 #define SONAR_COUNT 3           // Number of sensors.
-#define SONAR_MAX_DISTANCE 200  // Maximum distance (in cm) to ping.
+#define SONAR_MAX_DISTANCE 150  // Maximum distance (in cm) to ping.
 #define SONAR_READ_INTERVAL 300 // in ms
-#define SONAR_READ_ITERATIONS 9
+#define SONAR_READ_ITERATIONS 5  // Started with 9
 
 #define SONAR_FRONT 0
 #define SONAR_LEFT 1
@@ -469,6 +469,8 @@ extern NewPing sonar[SONAR_COUNT];
 extern String g_sensorStr[SONAR_COUNT];
 
 extern int g_SonarDistance[SONAR_COUNT]; // in cm
+extern int g_MaxSonarDistanceCount[SONAR_COUNT]; // number of times sonar send max distance
+extern int g_LastSonarReadNum; // Id of last sonar read
 
 /************************* Bumper variables *********************************/
 

@@ -622,6 +622,11 @@ void MQTTSendTelemetry(const bool now)
     JSONDataPayload.add("FSnrDist", String(g_SonarDistance[SONAR_FRONT]));
     JSONDataPayload.add("RSnrDist", String(g_SonarDistance[SONAR_RIGHT]));
     JSONDataPayload.add("LSnrDist", String(g_SonarDistance[SONAR_LEFT]));
+    JSONDataPayload.add("FSnrErr", String(g_MaxSonarDistanceCount[SONAR_FRONT]));
+    JSONDataPayload.add("RSnrErr", String(g_MaxSonarDistanceCount[SONAR_RIGHT]));
+    JSONDataPayload.add("LSnrErr", String(g_MaxSonarDistanceCount[SONAR_LEFT]));
+    JSONDataPayload.add("SnrLoop", String(g_SonarTskLoopCnt-LastSonarLoopCountSent));
+    JSONDataPayload.add("LstSnr", String(g_LastSonarReadNum));
 
     // Compass & Gyro data
     JSONDataPayload.add("CompHead", String(g_CompassHeading));
@@ -672,6 +677,10 @@ void MQTTSendTelemetry(const bool now)
       LastTelemetryDataSent = millis();
       if (publ == 1)
       {
+        g_MaxSonarDistanceCount[SONAR_FRONT] = 0;
+        g_MaxSonarDistanceCount[SONAR_LEFT] = 0;
+        g_MaxSonarDistanceCount[SONAR_RIGHT] = 0;
+        LastSonarLoopCountSent = g_SonarTskLoopCnt;
         g_TempErrorCount[TEMPERATURE_1_RED] = 0;
         g_TempErrorCount[TEMPERATURE_2_BLUE] = 0;
         g_TotalIdleCycleCount[0] = 0;

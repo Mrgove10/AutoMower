@@ -80,9 +80,10 @@ int SonarRead(const int sensor, const bool Now)
     // DebugPrintln("Sonar " + g_sensorStr[sensor] + " value: " + String(Distance) + " cm", DBG_VERBOSE, true);
 
     LastSonarRead[sensor] = millis();
-    if (Distance == 0)
+    if (Distance == 0 || Distance >= SONAR_MAX_DISTANCE)
     {
-      g_SonarDistance[sensor] = SONAR_MAX_DISTANCE;
+      // g_SonarDistance[sensor] = SONAR_MAX_DISTANCE;
+      g_MaxSonarDistanceCount[sensor] = g_MaxSonarDistanceCount[sensor] + 1;
     }
     else
     {
@@ -126,7 +127,9 @@ void SonarReadLoopTask(void *dummyParameter)
     {
       for (int sonar = 0; sonar < SONAR_COUNT; sonar++)
       {
+        g_LastSonarReadNum = sonar;
         SonarRead(sonar, true); // Read sonar value with no wait
+        delay(5);
       }
       g_SonarTskLoopCnt = g_SonarTskLoopCnt + 1;
       delay(SONAR_READ_TASK_LOOP_TIME);
@@ -204,10 +207,11 @@ bool SonarReadLoopTaskMonitor(void)
 
     if (g_SonarReadEnabled && g_SonarTskLoopCnt == LastLoopcnt)
     {
-      LogPrintln("Sonar Task not running on g_SonarTskLoopCnt (g_SonarReadEnabled = " + String (g_SonarReadEnabled) + ")", TAG_MOWING, DBG_ERROR);
+      LogPrintln("Sonar Task not running on g_SonarTskLoopCnt (g_SonarReadEnabled=" + String (g_SonarReadEnabled) + " , g_SonarTskLoopCnt=" + String (g_SonarTskLoopCnt) + ")", TAG_MOWING, DBG_ERROR);
       DisplayTaskStatus(SONAR_READ_TASK_NAME);
       return false;
     }
+    
     if (g_SonarReadEnabled && 
         g_SonarDistance[SONAR_FRONT] == LastDistance[SONAR_FRONT] &&
         g_SonarDistance[SONAR_LEFT] == LastDistance[SONAR_LEFT] &&
@@ -231,4 +235,3 @@ bool SonarReadLoopTaskMonitor(void)
     return true;
   }
 }
-
