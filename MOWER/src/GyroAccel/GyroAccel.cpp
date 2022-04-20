@@ -337,8 +337,8 @@ void PitchRollCalc(const bool Now, const bool reset)
       }
 
       // To dampen the pitch and roll angles a complementary filter is used
-      g_pitchAngle = g_pitchAngle * 0.8 + pitchAngle * 0.2;
-      g_rollAngle = g_rollAngle * 0.8 + rollAngle * 0.2;
+      g_pitchAngle = g_pitchAngle * 0.9 + pitchAngle * 0.1;
+      g_rollAngle = g_rollAngle * 0.9 + rollAngle * 0.1;
       LastPitchRollCalc = millis();
 
       // DebugPrintln("Pitch: " + String(g_pitchAngle, 3) + ", Roll:" + String(g_rollAngle, 3), DBG_VERBOSE, true);
