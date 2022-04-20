@@ -301,7 +301,7 @@ extern float g_CompassYField;
 
 /************************* I2C GY-521 MPU6050 Gyroscope / Accelerometer Sensor variables *********************************/
 
-#define GYRO_ACCEL_ANGLE_CALC_INTERVAL 250
+#define GYRO_ACCEL_ANGLE_CALC_INTERVAL 150
 #define GYRO_CALIBRATION_SAMPLES 500       // number of samples used to perform calibration
 #define MAX_PITCH_ANGLE 45         // maximum pitch angle in deg
 #define MAX_ROLL_ANGLE 45         // maximum roll angle in deg
