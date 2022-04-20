@@ -174,6 +174,10 @@ String ErrorString(const int errorCode)
       return String(F("Sonar values or task not updating"));
     case ERROR_UNDEFINED_STEP_ACTION:
       return String(F("Undefined zone step action"));
+    case ERROR_PITCH_TO_HIGH:
+      return String(F("Pitch too high"));
+    case ERROR_ROLL_TO_HIGH:
+      return String(F("Roll too high"));
     
       //States-related Error conditions
     case ERROR_MOWING_NO_START_BUMPER_ACTIVE:

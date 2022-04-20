@@ -303,6 +303,8 @@ extern float g_CompassYField;
 
 #define GYRO_ACCEL_ANGLE_CALC_INTERVAL 250
 #define GYRO_CALIBRATION_SAMPLES 500       // number of samples used to perform calibration
+#define MAX_PITCH_ANGLE 45         // maximum pitch angle in deg
+#define MAX_ROLL_ANGLE 45         // maximum roll angle in deg
 
 // #define ACCEL_PITCH_CALIBRATION -0.015
 // #define ACCEL_ROLL_CALIBRATION -0.005
