@@ -572,9 +572,15 @@ extern noteStruct g_longBeep[1];
 #define MOTION_MOTOR_FORWARD 1
 #define MOTION_MOTOR_REVERSE -1
 
-#define MOTION_MOTOR_PITCH_TURN_CORRECTION_ANGLE -10
-#define MOTION_MOTOR_PITCH_TURN_CORRECTION_FACTOR 1.5
+// The following are used to compensate for pitch and roll when mower is revesing and turning when changing direction on obstacle detection
+#define PITCH_TURN_COMPENSATION_THRESHOLD -10 // in degrees
+#define PITCH_TURN_COMPENSATION_FACTOR 1.25f // multiplying factor
+#define PITCH_REVERSE_COMPENSATION_FACTOR 1.5f // multiplying factor
+#define ROLL_TURN_COMPENSATION_THRESHOLD 10 // in degrees
+#define ROLL_TURN_COMPENSATION_FACTOR 1.25f // multiplying factor
 
+// The following are used to compensate for roll when mower is moving forward to try to follow a straight line. Without compensation, mower
+// tends to "follow" the slope it's travelling on
 #define MOTION_MOTOR_ROLL_COMPENSATION_THRESHOLD 2  // in degrees
 #define MOTION_MOTOR_ROLL_COMPENSATION_FACTOR 0.5   // Proportional compensation coeficient : motor speed compensation (in %) = roll angle (in degrees) * MOTION_MOTOR_ROLL_COMPENSATION_FACTOR
 #define MOTION_MOTOR_ROLL_COMPENSATION_MAXIMUM 10   // Maximum roll motor compensation speed (in %)

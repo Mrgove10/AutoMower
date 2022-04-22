@@ -34,13 +34,33 @@ void MowerReverse(const int Speed, const int Duration);
 void MowerTurn(const int Angle, const bool OnSpot = false);
 
 /**
- * Mower reverse and turn function
+ * @brief Mower reverse and turn function.
+ * Based on the PitchComp and RollComp parameters, this function will adjust the angle and the reverse duration to compensate for
+ * the reduced efficiency of the reversing and turning actions, due to reduced speed (motor power and efficientcy) and slipping/spinning
+ * of tires when the terrain is at an angle.
+ * 
+ * If the roll angle is higher than the ROLL_TURN_COMPENSATION_THRESHOLD fixed value, the turning angle is increased by multiplying the
+ * angle (provided as a parameter by the calling function) by the ROLL_TURN_COMPENSATION_FACTOR fixed value.
+ * Note: this function does not check the relevance of the turning direction (positive or negative value) with the roll angle
+ * 
+ * If the negative pitch angle (mower facing downwards) is lower than the PITCH_REVERSE_COMPENSATION_THRESHOLD fixed value, the reversing
+ * duration is increased by multiplying the duration (provided as a parameter by the calling function) by the PITCH_REVERSE_COMPENSATION_FACTOR
+ * fixed value. The turning angle is increased by multiplying the angle (provided as a parameter by the calling function) by the 
+ * PITCH_TURN_COMPENSATION_FACTOR fixed value.
+ * 
+ * Note: when both a high roll (mower leaning to one side) and low pitch (mower facing downwards) are combined, the compensation factors are both
+ * applied.
+ * 
+ * No pitch (under)correction applied if the pitch angle is high (mower facing upwards).
+ * 
  * @param Angle to turn in degrees (positive is right turn, negative is left turn)
  * @param Duration of reverse (in ms)
- * @param OnSpot turn with action of both wheels
+ * @param OnSpot turn with action of both wheels, default is false
+ * @param PitchComp compensate for pitch angle (increased reversing duration and angle), default is false
+ * @param RollComp compensate for roll angle (increased angle), default is false
  * 
  */
-void MowerReserseAndTurn(const int Angle, const int Duration, const bool OnSpot = false);
+void MowerReserseAndTurn(const int Angle, const int Duration, const bool OnSpot = false, const bool PitchComp = false, const bool RollComp = false);
 
 /**
  * Mower checks selected obstacle types and reduces speed if conditions are met

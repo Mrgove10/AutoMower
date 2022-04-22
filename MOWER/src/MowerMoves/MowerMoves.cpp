@@ -105,23 +105,52 @@ void MowerTurn(const int Angle, const bool OnSpot)
  * Mower reverse and turn function
  * @param Angle to turn in degrees (positive is right turn, negative is left turn)
  * @param Duration of reverse (in ms)
- * @param OnSpot turn with action of both wheels
+ * @param OnSpot turn with action of both wheels, default is false
+ * @param PitchComp compensate for pitch angle (increased reversing duration and angle), default is false
+ * @param RollComp compensate for roll angle (increased angle), default is false
  * 
  */
-void MowerReserseAndTurn(const int Angle, const int Duration, const bool OnSpot)
+void MowerReserseAndTurn(const int Angle, const int Duration, const bool OnSpot, const bool PitchComp, const bool RollComp)
 {
   int correctedAngle = Angle;
   int correctedDuration = Duration;
 
-  // Check if mower facing downwards, increase turning angle and duration to compensate for tilt angle
-  if (g_pitchAngle < MOTION_MOTOR_PITCH_TURN_CORRECTION_ANGLE)
+  // Roll compensation on angle
+  if (RollComp && abs(g_TCrollAngle) > ROLL_TURN_COMPENSATION_THRESHOLD)
   {
-    DebugPrintln("Mower facing downwards (Pitch:" + String(g_pitchAngle) + ") : turn angle and duration corrected", DBG_DEBUG, true);
-    correctedAngle = correctedAngle - int(g_pitchAngle * MOTION_MOTOR_PITCH_TURN_CORRECTION_FACTOR);  // pitch angle is negative when going downwards
-    correctedDuration = correctedDuration - int(100 * g_pitchAngle * MOTION_MOTOR_PITCH_TURN_CORRECTION_FACTOR);  // pitch angle is negative when going downwards
+    int RollAngleCorrection = int(abs(g_TCrollAngle) * ROLL_TURN_COMPENSATION_FACTOR);
+    DebugPrintln("Mower at an angle (Roll:" + String(g_TCrollAngle) + ") : turn angle corrected by " + String(RollAngleCorrection) + " degrees", DBG_DEBUG, true);
+    if (Angle > 0)
+    {
+      correctedAngle = correctedAngle + RollAngleCorrection;
+    }
+    else
+    {
+      correctedAngle = correctedAngle - RollAngleCorrection;
+    }
   }
+
+  // Check if mower facing downwards, increase turning angle and duration to compensate for tilt angle
+  if (PitchComp && g_TCpitchAngle < PITCH_TURN_COMPENSATION_THRESHOLD)
+  {
+    int PitchAngleCorrection = int(abs(g_TCpitchAngle) * PITCH_TURN_COMPENSATION_FACTOR);
+    int PitchDurationCorrection = int(abs(g_TCpitchAngle) * PITCH_REVERSE_COMPENSATION_FACTOR);
+
+    DebugPrintln("Mower facing downwards (Pitch:" + String(g_TCpitchAngle) + ") : turn angle and duration corrected by " + String(PitchAngleCorrection) + " degrees and " + String(PitchDurationCorrection) + " seconds", DBG_DEBUG, true);
+    correctedDuration = correctedDuration + PitchDurationCorrection;
+    if (Angle > 0)
+    {
+      correctedAngle = correctedAngle + PitchAngleCorrection;
+    }
+    else
+    {
+      correctedAngle = correctedAngle - PitchAngleCorrection;
+    }
+  }
+
   MowerReverse(MOWER_MOVES_REVERSE, correctedDuration);
   MowerTurn(correctedAngle, OnSpot);
+
   // Wait before any movement is made - To limit mechanical stress
   delay(150);
 }

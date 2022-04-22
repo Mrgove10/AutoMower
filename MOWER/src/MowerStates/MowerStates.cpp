@@ -1611,22 +1611,48 @@ int CheckObstacleAndAct(const bool Bumper, const int Front, const int Left, cons
 
   static unsigned long lastMotionMotorOverCurrent = 0;
 
-  // Determine random order for sides to check
-  if (millis() % 2 == 0)
+  // When on flat terrain, the direction towards which the mower turns is random.
+  // When on a slope, the mower always tend to be "attracted" towards the bottom of the slope. To
+  // compensate for this "attraction" and ensure that the top of the slope also gets mowed, the turn
+  // direction is not made fully random and when the roll is higher that the ROLL_TURN_COMPENSATION_THRESHOLD
+  // fixed value, the turn direction is set to the opposite of the slope
+
+  if (abs(g_TCrollAngle) > ROLL_TURN_COMPENSATION_THRESHOLD)
   {
-    firstSide = SONAR_RIGHT;
-    firstSideAngle = random(45, 200);
-    secondSide = SONAR_LEFT;
-    secondSideAngle = random(-200, -45);
+    if (g_TCrollAngle > 0)    // mower leaning towards the right, so turn left
+    {
+      firstSide = SONAR_LEFT;
+      firstSideAngle = random(-200, -45);
+      secondSide = SONAR_RIGHT;
+      secondSideAngle = random(45, 200);
+    }
+    else                      // mower leaning towards the left, so turn right
+    {
+      firstSide = SONAR_RIGHT;
+      firstSideAngle = random(45, 200);
+      secondSide = SONAR_LEFT;
+      secondSideAngle = random(-200, -45);
+    }
   }
   else
   {
-    firstSide = SONAR_LEFT;
-    firstSideAngle = random(-200, -45);
-    secondSide = SONAR_RIGHT;
-    secondSideAngle = random(45, 200);
+    // Determine random order for sides to check and direction of turn
+    if (millis() % 2 == 0)
+    {
+      firstSide = SONAR_RIGHT;
+      firstSideAngle = random(45, 200);
+      secondSide = SONAR_LEFT;
+      secondSideAngle = random(-200, -45);
+    }
+    else
+    {
+      firstSide = SONAR_LEFT;
+      firstSideAngle = random(-200, -45);
+      secondSide = SONAR_RIGHT;
+      secondSideAngle = random(45, 200);
+    }
   }
-
+  
   //--------------------------------
   // Bumper Collision detection
   //--------------------------------
@@ -1692,19 +1718,19 @@ int CheckObstacleAndAct(const bool Bumper, const int Front, const int Left, cons
       if (g_SonarDistance[firstSide] > SONAR_MIN_DISTANCE_FOR_TURN) // check if it's clear on first side
       {
         DebugPrintln("Turning " + SideStr[firstSide] , DBG_VERBOSE, true);
-        MowerReserseAndTurn(firstSideAngle, MOWER_MOVES_REVERSE_FOR_TURN_DURATION, true); // reverse and turn random angle
+        MowerReserseAndTurn(firstSideAngle, MOWER_MOVES_REVERSE_FOR_TURN_DURATION, true, true, true); // reverse and turn random angle
       }
       else
       {
         if (g_SonarDistance[secondSide] > SONAR_MIN_DISTANCE_FOR_TURN) // check if it's clear on second side
         {
           DebugPrintln("Reversing and turning " + SideStr[secondSide], DBG_VERBOSE, true);
-          MowerReserseAndTurn(secondSideAngle, MOWER_MOVES_REVERSE_FOR_TURN_DURATION, true); // reverse and turn random angle
+          MowerReserseAndTurn(secondSideAngle, MOWER_MOVES_REVERSE_FOR_TURN_DURATION, true, true, true); // reverse and turn random angle
         }
         else
         {
           DebugPrintln("Reversing and going back", DBG_VERBOSE, true);
-          MowerReserseAndTurn(random(135, 225), MOWER_MOVES_REVERSE_FOR_TURN_DURATION * 2, true); // reverse and turn right 135 degrees....and hope for the best !
+          MowerReserseAndTurn(random(135, 225), MOWER_MOVES_REVERSE_FOR_TURN_DURATION * 2, true, true, true); // reverse and turn right 135 degrees....and hope for the best !
         }
       }
     }
