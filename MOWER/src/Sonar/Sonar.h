@@ -47,8 +47,11 @@ void SonarReadLoopTaskResume(void);
 
 /**
  * Sonar Read task monitoring function to check if task is running
+ *
+ * @param task boolean indicating if check is to be performed on task counter
+ * @param distance boolean indicating if check is to be performed on distance values
  * @return boolean indicating if task appears not to be running (false) or is running (true)
  */
-bool SonarReadLoopTaskMonitor(void);
+bool SonarReadLoopTaskMonitor(bool task = true, bool distance = true);
 
 #endif

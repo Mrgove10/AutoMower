@@ -73,6 +73,11 @@ void MowerIdle(const bool StateChange, const MowerState PreviousState)
     g_successiveObstacleDectections = 0;
   }
 
+  //--------------------------------
+  // Check for Sonar Task good operation
+  //--------------------------------
+  SonarReadLoopTaskMonitor();
+
   // Update display
   idleDisplay();
 
@@ -114,7 +119,7 @@ void MowerDocked(const bool StateChange, const MowerState PreviousState)
     dockedStartTime = millis();
 
     // Suspend Sonar readings
-    g_SonarReadEnabled = false;
+    g_SonarReadEnabled = true;
 
     // Suspend Motion Motor roll compensation 
     g_MotionMotorRollCompensation = false;
@@ -148,6 +153,17 @@ void MowerDocked(const bool StateChange, const MowerState PreviousState)
       g_MQTTSendInterval = MQTT_TELEMETRY_SEND_INTERVAL_SLOW;
     }
   }
+
+  //--------------------------------
+  // Check for Sonar Task good operation
+  //--------------------------------
+  SonarReadLoopTaskMonitor(true, false);
+  // if (!SonarReadLoopTaskMonitor())
+  // {
+  //   g_CurrentState = MowerState::error;
+  //   g_CurrentErrorCode = ERROR_SONAR_NOT_UPDATING;
+  //   return;
+  // }
 
   // Update display
     dockedDisplay();

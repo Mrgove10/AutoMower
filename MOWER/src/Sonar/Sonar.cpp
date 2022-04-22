@@ -90,6 +90,7 @@ int SonarRead(const int sensor, const bool Now)
       g_SonarDistance[sensor] = Distance;
     }
   }
+  g_SonarTskLoopCnt = g_SonarTskLoopCnt + 1;
   return g_SonarDistance[sensor];
 }
 
@@ -131,7 +132,6 @@ void SonarReadLoopTask(void *dummyParameter)
         SonarRead(sonar, true); // Read sonar value with no wait
         delay(5);
       }
-      g_SonarTskLoopCnt = g_SonarTskLoopCnt + 1;
       delay(SONAR_READ_TASK_LOOP_TIME);
     }
     else
@@ -193,11 +193,14 @@ void SonarReadLoopTaskResume(void)
 
 /**
  * Sonar Read task monitoring function to check if task is running
+ *
+ * @param task boolean indicating if check is to be performed on task counter
+ * @param distance boolean indicating if check is to be performed on distance values
  * @return boolean indicating if task appears not to be running (false) or is running (true)
  */
-bool SonarReadLoopTaskMonitor(void)
+bool SonarReadLoopTaskMonitor(bool task, bool distance)
 {
-  static int LastLoopcnt = 0;
+  static unsigned int LastLoopcnt = 0;
   static int LastDistance[SONAR_COUNT] = {0, 0, 0};
   static unsigned long LastTaskCheck = 0;
 
@@ -205,14 +208,15 @@ bool SonarReadLoopTaskMonitor(void)
   {
     LastTaskCheck = millis();
 
-    if (g_SonarReadEnabled && g_SonarTskLoopCnt == LastLoopcnt)
+    if (task && g_SonarReadEnabled && g_SonarTskLoopCnt == LastLoopcnt)
     {
       LogPrintln("Sonar Task not running on g_SonarTskLoopCnt (g_SonarReadEnabled=" + String (g_SonarReadEnabled) + " , g_SonarTskLoopCnt=" + String (g_SonarTskLoopCnt) + ")", TAG_MOWING, DBG_ERROR);
       DisplayTaskStatus(SONAR_READ_TASK_NAME);
       return false;
     }
     
-    if (g_SonarReadEnabled && 
+    if (distance && 
+        g_SonarReadEnabled && 
         g_SonarDistance[SONAR_FRONT] == LastDistance[SONAR_FRONT] &&
         g_SonarDistance[SONAR_LEFT] == LastDistance[SONAR_LEFT] &&
         g_SonarDistance[SONAR_RIGHT] == LastDistance[SONAR_RIGHT])

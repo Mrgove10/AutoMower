@@ -459,7 +459,7 @@ extern float g_MotorCurrent[MOTOR_CURRENT_COUNT];
 extern TaskHandle_t g_SonarReadTaskHandle; // Sonar Read task RTOS task handle
 
 extern bool g_SonarReadEnabled; // Global variable to suspend sonar sensor reading
-extern int g_SonarTskLoopCnt; // Global variable to count number of task read loops
+extern unsigned int g_SonarTskLoopCnt; // Global variable to count number of task read loops
 
 /************************* HC-SR04 Sonar sensor variables *********************************/
 
@@ -467,7 +467,7 @@ extern int g_SonarTskLoopCnt; // Global variable to count number of task read lo
 #include <NewPing.h>
 
 #define SONAR_COUNT 3           // Number of sensors.
-#define SONAR_MAX_DISTANCE 150  // Maximum distance (in cm) to ping.
+#define SONAR_MAX_DISTANCE 100  // Maximum distance (in cm) to ping.
 #define SONAR_READ_INTERVAL 300 // in ms
 #define SONAR_READ_ITERATIONS 5  // Started with 9
 

@@ -627,7 +627,7 @@ void MQTTSendTelemetry(const bool now)
     JSONDataPayload.add("FSnrErr", String(g_MaxSonarDistanceCount[SONAR_FRONT]));
     JSONDataPayload.add("RSnrErr", String(g_MaxSonarDistanceCount[SONAR_RIGHT]));
     JSONDataPayload.add("LSnrErr", String(g_MaxSonarDistanceCount[SONAR_LEFT]));
-    JSONDataPayload.add("SnrLoop", String(g_SonarTskLoopCnt-LastSonarLoopCountSent));
+    JSONDataPayload.add("SnrLoop", String(float(g_SonarTskLoopCnt-LastSonarLoopCountSent)/float(g_MQTTSendInterval)*1000.0f, 2)); // converted to loop counts per second
     JSONDataPayload.add("LstSnr", String(g_LastSonarReadNum));
 
     // Compass & Gyro data
