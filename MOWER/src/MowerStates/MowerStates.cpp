@@ -1820,9 +1820,9 @@ int CheckObstacleAndAct(const bool Bumper, const int Front, const int Left, cons
 
   int MotorOverCurrentCorrection = 0;
 
-  if (g_GyroPresent && g_pitchAngle > 0)
+  if (g_GyroPresent && g_TCpitchAngle > 0)
   {
-    MotorOverCurrentCorrection = min(int(g_pitchAngle * MOTION_MOTOR_OVERCURRENT_PITCH_CORRECTION_FACTOR), MOTION_MOTOR_OVERCURRENT_PITCH_CORRECTION_MAXIMUM);
+    MotorOverCurrentCorrection = min(int(g_TCpitchAngle * MOTION_MOTOR_OVERCURRENT_PITCH_CORRECTION_FACTOR), MOTION_MOTOR_OVERCURRENT_PITCH_CORRECTION_MAXIMUM);
   }
 
 

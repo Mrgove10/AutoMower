@@ -130,6 +130,7 @@ void GyroErrorCalibration(const int samples)
   float gyroRawZtotal = 0;
   float accelRawXtotal = 0;
   float accelRawYtotal = 0;
+  float MPUTemptotal = 0;
 
   // Reset calibration values as they are being used in data read function
   g_GyroErrorX = 0;
@@ -137,6 +138,7 @@ void GyroErrorCalibration(const int samples)
   g_GyroErrorZ = 0;
   g_AccelErrorX = 0;
   g_AccelErrorY = 0;
+  g_MPUCalibrationTemperature = 0;
 
   if (g_GyroPresent)                         // Check that device is present
   { 
@@ -185,6 +187,8 @@ void GyroErrorCalibration(const int samples)
       accelRawXtotal = accelRawXtotal + AccelRawX;
       accelRawYtotal = accelRawYtotal + AccelRawY;
       
+      MPUTemptotal = MPUTemptotal + float(MPUTemperatureRaw) / 340.0f + 36.53f;
+
       delay(10);
     }
 
@@ -194,12 +198,15 @@ void GyroErrorCalibration(const int samples)
 
     g_AccelErrorX = accelRawXtotal / samples;
     g_AccelErrorY = accelRawYtotal / samples;
+
+    g_MPUCalibrationTemperature = MPUTemptotal / samples;
     
     LogPrintln("Gyro calibration done (GX:" + String(g_GyroErrorX, 5) + 
               ", GY:" + String(g_GyroErrorY, 5) + 
               ", GZ:" + String(g_GyroErrorZ, 5) + 
               ", AX:" + String(g_AccelErrorX, 5) +
               ", AY:" + String(g_AccelErrorY, 5) + 
+              ", MPUTemp:" + String(g_MPUCalibrationTemperature, 2) + 
               ")", TAG_VALUE, DBG_INFO);
 
     // Reset total angle value
@@ -313,6 +320,10 @@ void PitchRollCalc(const bool Now, const bool reset)
     // Read latest sensor data
     if (GyroAccelDataRead()) 
     {
+      // Calculate temperature compensation factors
+      float pitchTemperatureCompensation = PITCH_TEMPERATURE_COMPENSATION_A * (g_MPUTemperature - g_MPUCalibrationTemperature) + PITCH_TEMPERATURE_COMPENSATION_B;
+      float rollTemperatureCompensation = ROLL_TEMPERATURE_COMPENSATION_A * (g_MPUTemperature - g_MPUCalibrationTemperature) + ROLL_TEMPERATURE_COMPENSATION_B;
+      
       // Calculate gyro angle values
       pitchAngle = pitchAngle + g_GyroRawX + g_GyroRawY * sin(g_GyroRawZ * DEG_TO_RAD);
       rollAngle =  rollAngle + g_GyroRawY - g_pitchAngle * sin(g_GyroRawZ * DEG_TO_RAD);
@@ -337,8 +348,12 @@ void PitchRollCalc(const bool Now, const bool reset)
       }
 
       // To dampen the pitch and roll angles a complementary filter is used
-      g_pitchAngle = g_pitchAngle * 0.9 + pitchAngle * 0.1;
-      g_rollAngle = g_rollAngle * 0.9 + rollAngle * 0.1;
+      g_pitchAngle = g_pitchAngle * 0.7 + pitchAngle * 0.3;
+      g_rollAngle = g_rollAngle * 0.7 + rollAngle * 0.3;
+
+      g_TCpitchAngle = g_pitchAngle - pitchTemperatureCompensation;
+      g_TCrollAngle = g_rollAngle - rollTemperatureCompensation;
+
       LastPitchRollCalc = millis();
 
       // DebugPrintln("Pitch: " + String(g_pitchAngle, 3) + ", Roll:" + String(g_rollAngle, 3), DBG_VERBOSE, true);
@@ -364,6 +379,8 @@ void PitchRollCalc(const bool Now, const bool reset)
       JSONDBGPayload.clear();
       JSONDBGPayload.add("P", g_pitchAngle);
       JSONDBGPayload.add("R", g_rollAngle);
+      JSONDBGPayload.add("CTP", g_TCpitchAngle);
+      JSONDBGPayload.add("CTR", g_TCrollAngle);
       JSONDBGPayload.add("T", g_MPUTemperature);
       JSONDBGPayload.toString(JSONDBGPayloadStr, false);
       JSONDBGPayloadStr.toCharArray(MQTTpayload, JSONDBGPayloadStr.length() + 1);
@@ -458,8 +475,8 @@ bool GyroAccelCheck(void)
 
   if (g_GyroPresent)
   {
-    DisplayPrint(2, 2, "Pitch:" + String(g_pitchAngle, 1));
-    DisplayPrint(2, 3, "Roll:" + String(g_rollAngle, 1));
+    DisplayPrint(2, 2, "Pitch:" + String(g_TCpitchAngle, 1));
+    DisplayPrint(2, 3, "Roll:" + String(g_TCrollAngle, 1));
   }
   else
   {

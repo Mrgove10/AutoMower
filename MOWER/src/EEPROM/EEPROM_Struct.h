@@ -41,6 +41,7 @@ typedef struct
     float GyroErrorZ;
     float AccelErrorX;
     float AccelErrorY;
+    float MPUCalibrationTemp;
 
     bool OTARequested;
 } DataStruct;

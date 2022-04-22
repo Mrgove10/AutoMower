@@ -85,12 +85,13 @@ void EEPROMSetup(void)
     g_GyroErrorZ = g_EEPROMLoad.Load.Data.GyroErrorZ;
     g_AccelErrorX = g_EEPROMLoad.Load.Data.AccelErrorX;
     g_AccelErrorY = g_EEPROMLoad.Load.Data.AccelErrorY;
-
+    g_MPUCalibrationTemperature = g_EEPROMLoad.Load.Data.MPUCalibrationTemp;
     DebugPrintln("EEPROM value for g_GyroErrorX: " + String(g_GyroErrorX, 5), DBG_INFO);
     DebugPrintln("EEPROM value for g_GyroErrorY: " + String(g_GyroErrorY, 5), DBG_INFO);
     DebugPrintln("EEPROM value for g_GyroErrorZ: " + String(g_GyroErrorZ, 5), DBG_INFO);
     DebugPrintln("EEPROM value for g_AccelErrorX: " + String(g_AccelErrorX, 5), DBG_INFO);
     DebugPrintln("EEPROM value for g_AccelErrorY: " + String(g_AccelErrorY, 5), DBG_INFO);
+    DebugPrintln("EEPROM value for g_MPUCalibrationTemperature: " + String(g_MPUCalibrationTemperature, 2), DBG_INFO);
 
     // Stored parameters
     g_ParamPerimeterTrackPIDKp = g_EEPROMLoad.Load.Data.ParamPerimeterTrackPIDKp;
@@ -188,6 +189,7 @@ void EEPROMSave(boolean immediatly)
     g_EEPROMLoad.Load.Data.GyroErrorZ = g_GyroErrorZ;
     g_EEPROMLoad.Load.Data.AccelErrorX = g_AccelErrorX;
     g_EEPROMLoad.Load.Data.AccelErrorY = g_AccelErrorY;
+    g_EEPROMLoad.Load.Data.MPUCalibrationTemp = g_MPUCalibrationTemperature;
 
     // Stored parameters
     g_EEPROMLoad.Load.Data.ParamPerimeterTrackPIDKp = g_ParamPerimeterTrackPIDKp;
@@ -231,6 +233,7 @@ void EEPROMInitialise(void)
   g_EEPROMLoad.Load.Data.GyroErrorZ = 0;
   g_EEPROMLoad.Load.Data.AccelErrorX = 0;
   g_EEPROMLoad.Load.Data.AccelErrorY = 0;
+  g_EEPROMLoad.Load.Data.MPUCalibrationTemp = 0;
 
   // Stored parameters
   g_EEPROMLoad.Load.Data.ParamPerimeterTrackPIDKp = 0;

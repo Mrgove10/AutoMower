@@ -210,9 +210,13 @@ float g_GyroErrorZ = 0;       // Gyro error Z (Stored in EEPROM)
 float g_AccelErrorX = 0;      // Accel error X (Saved in EEPROM)
 float g_AccelErrorY = 0;      // Accel error Y (Saved in EEPROM)
 
-float g_pitchAngle;
-float g_rollAngle;
+float g_MPUCalibrationTemperature; // MPU temperature @ calibration (Saved in EEPROM)
 
+float g_pitchAngle = 0;
+float g_rollAngle = 0;
+
+float g_TCpitchAngle = 0;
+float g_TCrollAngle = 0;
 
 // float g_AccelAngleErrorX = 0; // Accel error X
 // float g_AccelAngleErrorY = 0; // Accel error Y

@@ -88,16 +88,16 @@ void MotionMotorSetSpeed(const int Motor, const int Speed, const bool Relative)
   if (g_MotionMotorRollCompensation && g_GyroPresent) 
   {
     // A positive roll means that the mower will tend to go towards the right: this is compensated by slowing down the left motor
-    if (g_rollAngle > MOTION_MOTOR_ROLL_COMPENSATION_THRESHOLD && Motor == MOTION_MOTOR_LEFT)
+    if (g_TCrollAngle > MOTION_MOTOR_ROLL_COMPENSATION_THRESHOLD && Motor == MOTION_MOTOR_LEFT)
     {
-      rollCompensation = - min(int(g_rollAngle * MOTION_MOTOR_ROLL_COMPENSATION_FACTOR), MOTION_MOTOR_ROLL_COMPENSATION_MAXIMUM);
+      rollCompensation = - min(int(g_TCrollAngle * MOTION_MOTOR_ROLL_COMPENSATION_FACTOR), MOTION_MOTOR_ROLL_COMPENSATION_MAXIMUM);
       DebugPrintln("\t\t\t\t\tMotion Motor " + g_MotionMotorStr[Motor] + " roll compensation :" + String(rollCompensation) + "%", DBG_DEBUG, true);
     }
 
     // A negative roll means that the mower will tend to go towards the left: this is compensated by slowing down the right motor
-    if (g_rollAngle < - MOTION_MOTOR_ROLL_COMPENSATION_THRESHOLD && Motor == MOTION_MOTOR_RIGHT)
+    if (g_TCrollAngle < - MOTION_MOTOR_ROLL_COMPENSATION_THRESHOLD && Motor == MOTION_MOTOR_RIGHT)
     {
-      rollCompensation = max(int(g_rollAngle * MOTION_MOTOR_ROLL_COMPENSATION_FACTOR), - MOTION_MOTOR_ROLL_COMPENSATION_MAXIMUM);
+      rollCompensation = max(int(g_TCrollAngle * MOTION_MOTOR_ROLL_COMPENSATION_FACTOR), - MOTION_MOTOR_ROLL_COMPENSATION_MAXIMUM);
       DebugPrintln("\t\t\t\t\tMotion Motor " + g_MotionMotorStr[Motor] + " roll compensation :" + String(rollCompensation) + "%", DBG_DEBUG, true);
     }
   }

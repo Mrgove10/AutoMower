@@ -306,6 +306,12 @@ extern float g_CompassYField;
 #define MAX_PITCH_ANGLE 45         // maximum pitch angle in deg
 #define MAX_ROLL_ANGLE 45         // maximum roll angle in deg
 
+
+#define PITCH_TEMPERATURE_COMPENSATION_A 0.25f  // Pitch compensation factor is (MPU_temperature - MPU_Calibration_temp) * PITCH_TEMPERATURE_COMPENSATION_A + PITCH_TEMPERATURE_COMPENSATION_B
+#define PITCH_TEMPERATURE_COMPENSATION_B 0.1f   // Pitch compensation factor is (MPU_temperature - MPU_Calibration_temp) * PITCH_TEMPERATURE_COMPENSATION_A + PITCH_TEMPERATURE_COMPENSATION_B
+#define ROLL_TEMPERATURE_COMPENSATION_A -0.85f  // Roll compensation factor is (MPU_temperature - MPU_Calibration_temp) * ROLL_TEMPERATURE_COMPENSATION_A + ROLL_TEMPERATURE_COMPENSATION_B
+#define ROLL_TEMPERATURE_COMPENSATION_B 0.2f    // Roll compensation factor is (MPU_temperature - MPU_Calibration_temp) * ROLL_TEMPERATURE_COMPENSATION_A + ROLL_TEMPERATURE_COMPENSATION_B
+
 // #define ACCEL_PITCH_CALIBRATION -0.015
 // #define ACCEL_ROLL_CALIBRATION -0.005
 
@@ -325,8 +331,13 @@ extern float g_GyroErrorZ;       // Gyro error Z (Saved in EEPROM)
 extern float g_AccelErrorX;      // Accel error X (Saved in EEPROM)
 extern float g_AccelErrorY;      // Accel error Y (Saved in EEPROM)
 
+extern float g_MPUCalibrationTemperature; // MPU temperature @ calibration (Saved in EEPROM)
+
 extern float g_pitchAngle;
 extern float g_rollAngle;
+
+extern float g_TCpitchAngle;
+extern float g_TCrollAngle;
 
 // extern float g_AccelAngleErrorX; // Accel error X
 // extern float g_AccelAngleErrorY; // Accel error Y

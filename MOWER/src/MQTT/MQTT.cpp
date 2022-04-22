@@ -666,6 +666,8 @@ void MQTTSendTelemetry(const bool now)
     // Mower Angle data
     JSONDataPayload.add("Pitch", String(g_pitchAngle, 1));
     JSONDataPayload.add("Roll", String(g_rollAngle, 1));
+    JSONDataPayload.add("TCPitch", String(g_TCpitchAngle, 1));
+    JSONDataPayload.add("TCRoll", String(g_TCrollAngle, 1));
 
     // ESP System data
     JSONDataPayload.add("Heap", String(esp_get_free_heap_size()));

@@ -145,9 +145,9 @@ bool CheckTiltReadAndAct(void)
   }
 
     // Check maximum Pitch and react
-  if (g_GyroPresent && abs(g_pitchAngle) > MAX_PITCH_ANGLE)
+  if (g_GyroPresent && abs(g_TCpitchAngle) > MAX_PITCH_ANGLE)
   {
-    DebugPrintln("Pitch Angle too high (" + String(g_pitchAngle) + "°) !", DBG_ERROR, true);
+    DebugPrintln("Pitch Angle too high (" + String(g_TCpitchAngle) + "°) !", DBG_ERROR, true);
     g_CurrentState = MowerState::error;        // Place mower in error state
     g_CurrentErrorCode = ERROR_PITCH_TO_HIGH;  // Update error code
     MowerStop();
@@ -156,9 +156,9 @@ bool CheckTiltReadAndAct(void)
   }
 
     // Check maximum Roll and react
-  if (g_GyroPresent && abs(g_rollAngle) > MAX_ROLL_ANGLE)
+  if (g_GyroPresent && abs(g_TCrollAngle) > MAX_ROLL_ANGLE)
   {
-    DebugPrintln("Roll Angle too high (" + String(g_rollAngle) + "°) !", DBG_ERROR, true);
+    DebugPrintln("Roll Angle too high (" + String(g_TCrollAngle) + "°) !", DBG_ERROR, true);
     g_CurrentState = MowerState::error;        // Place mower in error state
     g_CurrentErrorCode = ERROR_ROLL_TO_HIGH;   // Update error code
     MowerStop();
