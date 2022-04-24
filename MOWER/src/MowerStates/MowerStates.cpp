@@ -629,6 +629,7 @@ void MowerGoingToBase(const bool StateChange, const MowerState PreviousState)
   static bool FindWire = false;
   static bool FollowWire = false;
   static int FindWirePhase = 0;
+  static bool BaseInSightLogged = false;
 
   //--------------------------------
   // Actions to take when entering the Return to Base state
@@ -673,6 +674,8 @@ void MowerGoingToBase(const bool StateChange, const MowerState PreviousState)
 
     // Close Battery charge relay to be able to detect arrival on base station
     BatteryChargeRelayClose();
+
+    BaseInSightLogged = false;
 
     // Ensure wire finding function is called on first call
     FindWire = true;
@@ -730,6 +733,20 @@ void MowerGoingToBase(const bool StateChange, const MowerState PreviousState)
     };
   }
 
+  // Check if base in sight and stop cut motor
+
+  if (g_SonarReadEnabled && 
+      g_SonarDistance[SONAR_FRONT] < 80 &&
+      g_SonarDistance[SONAR_LEFT] < 50 &&
+      g_SonarDistance[SONAR_RIGHT] < 50)
+  {
+    if (!BaseInSightLogged)
+    {
+      LogPrintln("Mower approaching base (L:" + String(g_SonarDistance[SONAR_LEFT]) + ", F:" + String(g_SonarDistance[SONAR_FRONT]) + ", R: " + String(g_SonarDistance[SONAR_RIGHT]) + ")", TAG_TO_BASE, DBG_INFO);
+      CutMotorStop(true);
+      BaseInSightLogged = true;
+    }
+  }
 
   // Update display
   toBaseDisplay();
