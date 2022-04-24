@@ -192,6 +192,15 @@ void SonarReadLoopTaskResume(void)
 }
 
 /**
+ * Sonar Read task delete
+ */
+void SonarReadLoopTaskDelete(void)
+{
+  vTaskDelete(g_SonarReadTaskHandle);
+  DebugPrintln("Sonar read Task deleted", DBG_INFO, true);
+}
+
+/**
  * Sonar Read task monitoring function to check if task is running
  *
  * @param task boolean indicating if check is to be performed on task counter
@@ -203,6 +212,7 @@ bool SonarReadLoopTaskMonitor(bool task, bool distance)
   static unsigned int LastLoopcnt = 0;
   static int LastDistance[SONAR_COUNT] = {0, 0, 0};
   static unsigned long LastTaskCheck = 0;
+  static bool lastcheckOk = true;
 
   if (millis() - LastTaskCheck > SONAR_READ_TASK_MONITORING_INTERVAL)
   {
@@ -210,8 +220,11 @@ bool SonarReadLoopTaskMonitor(bool task, bool distance)
 
     if (task && g_SonarReadEnabled && g_SonarTskLoopCnt == LastLoopcnt)
     {
-      LogPrintln("Sonar Task not running on g_SonarTskLoopCnt (g_SonarReadEnabled=" + String (g_SonarReadEnabled) + " , g_SonarTskLoopCnt=" + String (g_SonarTskLoopCnt) + ")", TAG_MOWING, DBG_ERROR);
-      DisplayTaskStatus(SONAR_READ_TASK_NAME);
+      if (lastcheckOk) {
+        LogPrintln("Sonar Task not running on g_SonarTskLoopCnt (Enabled=" + String (g_SonarReadEnabled) + ", TskLoopCnt=" + String (g_SonarTskLoopCnt) + ")", TAG_MOWING, DBG_ERROR);
+        DisplayTaskStatus(SONAR_READ_TASK_NAME);
+      }
+      lastcheckOk = false;
       return false;
     }
     
@@ -221,8 +234,12 @@ bool SonarReadLoopTaskMonitor(bool task, bool distance)
         g_SonarDistance[SONAR_LEFT] == LastDistance[SONAR_LEFT] &&
         g_SonarDistance[SONAR_RIGHT] == LastDistance[SONAR_RIGHT])
     {
-      LogPrintln("Sonar Task not running on sonar distance (g_SonarReadEnabled = " + String (g_SonarReadEnabled) + ")", TAG_MOWING, DBG_ERROR);
-      DisplayTaskStatus(SONAR_READ_TASK_NAME);
+      if (lastcheckOk) 
+      {
+        LogPrintln("Sonar Task not running on sonar distance (Enabled = " + String (g_SonarReadEnabled) + ")", TAG_MOWING, DBG_ERROR);
+        DisplayTaskStatus(SONAR_READ_TASK_NAME);
+      }
+      lastcheckOk = false;
       return false;
     }
     else
@@ -231,6 +248,7 @@ bool SonarReadLoopTaskMonitor(bool task, bool distance)
       LastDistance[SONAR_FRONT] = g_SonarDistance[SONAR_FRONT];
       LastDistance[SONAR_LEFT] = g_SonarDistance[SONAR_LEFT];
       LastDistance[SONAR_RIGHT] = g_SonarDistance[SONAR_RIGHT];
+      lastcheckOk = true;
       return true;
     }
   }

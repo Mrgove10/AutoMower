@@ -46,6 +46,11 @@ void SonarReadLoopTaskSuspend(void);
 void SonarReadLoopTaskResume(void);
 
 /**
+ * Sonar Read task delete
+ */
+void SonarReadLoopTaskDelete(void);
+
+/**
  * Sonar Read task monitoring function to check if task is running
  *
  * @param task boolean indicating if check is to be performed on task counter

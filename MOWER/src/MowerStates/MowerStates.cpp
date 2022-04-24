@@ -76,7 +76,7 @@ void MowerIdle(const bool StateChange, const MowerState PreviousState)
   //--------------------------------
   // Check for Sonar Task good operation
   //--------------------------------
-  SonarReadLoopTaskMonitor();
+  SonarReadLoopTaskMonitor(true, false);
 
   // Update display
   idleDisplay();
@@ -157,7 +157,15 @@ void MowerDocked(const bool StateChange, const MowerState PreviousState)
   //--------------------------------
   // Check for Sonar Task good operation
   //--------------------------------
-  SonarReadLoopTaskMonitor(true, false);
+  if (!SonarReadLoopTaskMonitor(true, false))
+  {
+    LogPrintln("Sonar Task stopped", TAG_MOWING, DBG_ERROR);
+    SonarReadLoopTaskDelete();
+    delay(250);
+    LogPrintln("Sonar Task Restarted", TAG_MOWING, DBG_ERROR);
+    SonarReadLoopTaskCreate();
+    g_SonarTskLoopCnt = 0;
+  }
   // if (!SonarReadLoopTaskMonitor())
   // {
   //   g_CurrentState = MowerState::error;
