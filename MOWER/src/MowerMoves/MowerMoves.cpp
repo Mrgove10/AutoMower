@@ -77,6 +77,9 @@ void MowerTurn(const int Angle, const bool OnSpot)
   float turnDuration = float(abs(LimitedAngle) / (MOWER_MOVES_TURN_ANGLE_RATIO));
   DebugPrintln("Mower turn of " + String(Angle) + " Deg => " + String(turnDuration, 0) + " ms", DBG_VERBOSE, true);
 
+  // Disable pitch and roll calculation
+  g_MotionMotorTurnInProgress = true;
+
   if (LimitedAngle < 0) // Left turn
   {
     MotionMotorStart(MOTION_MOTOR_RIGHT, MOTION_MOTOR_FORWARD, MOWER_MOVES_TURN_SPEED);
@@ -99,6 +102,9 @@ void MowerTurn(const int Angle, const bool OnSpot)
     MotionMotorStop(MOTION_MOTOR_LEFT);
     MotionMotorStop(MOTION_MOTOR_RIGHT);
   }
+  
+  // Enable pitch and roll calculation
+  g_MotionMotorTurnInProgress = false;
 }
 
 /**
@@ -137,7 +143,7 @@ void MowerReserseAndTurn(const int Angle, const int Duration, const bool OnSpot,
     int PitchDurationCorrection = int(abs(g_TCpitchAngle) * PITCH_REVERSE_COMPENSATION_FACTOR);
 
     DebugPrintln("Mower facing downwards (Pitch:" + String(g_TCpitchAngle) + ") : turn angle and duration corrected by " + String(PitchAngleCorrection) + " degrees and " + String(PitchDurationCorrection) + " seconds", DBG_DEBUG, true);
-    correctedDuration = correctedDuration + PitchDurationCorrection;
+    correctedDuration = correctedDuration + PitchDurationCorrection * 1000;
     if (Angle > 0)
     {
       correctedAngle = correctedAngle + PitchAngleCorrection;

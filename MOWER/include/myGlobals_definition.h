@@ -576,10 +576,10 @@ extern noteStruct g_longBeep[1];
 
 // The following are used to compensate for pitch and roll when mower is revesing and turning when changing direction on obstacle detection
 #define PITCH_TURN_COMPENSATION_THRESHOLD -10 // in degrees
-#define PITCH_TURN_COMPENSATION_FACTOR 1.25f // multiplying factor
-#define PITCH_REVERSE_COMPENSATION_FACTOR 1.5f // multiplying factor
+#define PITCH_TURN_COMPENSATION_FACTOR 1.5f // multiplying factor
+#define PITCH_REVERSE_COMPENSATION_FACTOR 0.25f // multiplying factor
 #define ROLL_TURN_COMPENSATION_THRESHOLD 10 // in degrees
-#define ROLL_TURN_COMPENSATION_FACTOR 1.25f // multiplying factor
+#define ROLL_TURN_COMPENSATION_FACTOR 1.5f // multiplying factor
 
 // The following are used to compensate for roll when mower is moving forward to try to follow a straight line. Without compensation, mower
 // tends to "follow" the slope it's travelling on
@@ -610,6 +610,8 @@ extern float g_WheelPerimeterTrackingCorrection[MOTION_MOTOR_COUNT]; // from per
 
 extern bool g_MotionMotorRollCompensation;    // Boolean to activate roll compensation by acting on motion motor speeds
 
+extern bool g_MotionMotorTurnInProgress;    // Boolean indicating that the mower is turning (to hold pitch and roll calculation)
+
 /************************* Mower Moves variables *********************************/
 
 #define MOWER_MOVES_SPEED_CRAWL 40  // in %
@@ -617,7 +619,7 @@ extern bool g_MotionMotorRollCompensation;    // Boolean to activate roll compen
 #define MOWER_MOVES_SPEED_NORMAL 80 // in %
 #define MOWER_MOVES_SPEED_MAX 100   // in %
 
-#define MOWER_MOVES_REVERSE 85 // in %
+#define MOWER_MOVES_REVERSE 90 // in %
 
 #define MOWER_MOVES_TURN_SPEED 80
 #define MOWER_MOVES_TURN_ANGLE_RATIO 360.0f / 6000.0f // in Angle degrees per ms
@@ -685,7 +687,7 @@ extern int g_mowingMode;
 #define FOLLOW_WIRE_MAX_CONSECUTVE_OBSTACLES 0 // Setting to 0 will stop the wire tracking function on first obstacle
 
 // Leaving Base base function
-#define LEAVING_BASE_REVERSE_SPEED 80                 // in %
+#define LEAVING_BASE_REVERSE_SPEED 85                 // in %
 #define LEAVING_BASE_REVERSE_DURATION 10 * 1000       // in ms
 //#define LEAVING_BASE_FORWARD_SPEED 100                 // in %
 

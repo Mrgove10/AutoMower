@@ -381,6 +381,8 @@ float g_WheelPerimeterTrackingCorrection[MOTION_MOTOR_COUNT] = {0, 0}; // from p
 
 bool g_MotionMotorRollCompensation = false;       // Boolean to activate roll compensation by acting on motion motor speeds
 
+bool g_MotionMotorTurnInProgress = false;    // Boolean indicating that the mower is turning (to hold pitch and roll calculation)
+
 /************************* Mower Moves variables *********************************/
 
 // Mowing

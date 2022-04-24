@@ -315,55 +315,62 @@ void PitchRollCalc(const bool Now, const bool reset)
     rollAngle = 0;
   }
   
-  if ((millis() - LastPitchRollCalc > GYRO_ACCEL_ANGLE_CALC_INTERVAL) || Now)
+  if (g_MotionMotorTurnInProgress)
   {
-    // Read latest sensor data
-    if (GyroAccelDataRead()) 
+    GyroAccelDataRead();    // read the data du clear the gyro data, but doe not calculate values
+  }
+  else
+  {
+    if ((millis() - LastPitchRollCalc > GYRO_ACCEL_ANGLE_CALC_INTERVAL) || Now)
     {
-      // Calculate temperature compensation factors
-      float pitchTemperatureCompensation = PITCH_TEMPERATURE_COMPENSATION_A * (g_MPUTemperature - g_MPUCalibrationTemperature) + PITCH_TEMPERATURE_COMPENSATION_B;
-      float rollTemperatureCompensation = ROLL_TEMPERATURE_COMPENSATION_A * (g_MPUTemperature - g_MPUCalibrationTemperature) + ROLL_TEMPERATURE_COMPENSATION_B;
-      
-      // Calculate gyro angle values
-      pitchAngle = pitchAngle + g_GyroRawX + g_GyroRawY * sin(g_GyroRawZ * DEG_TO_RAD);
-      rollAngle =  rollAngle + g_GyroRawY - g_pitchAngle * sin(g_GyroRawZ * DEG_TO_RAD);
-
-      // Accelerometer angle calculations
-      float accelTotalVector = sqrt((g_AccelRawX * g_AccelRawX) + (g_AccelRawY * g_AccelRawY) + (g_AccelRawZ * g_AccelRawZ));  //Calculate the total accelerometer vector
-      AccelPitchAngle = asin(g_AccelRawY / accelTotalVector) * RAD_TO_DEG;
-      AccelrollAngle = asin(g_AccelRawX / accelTotalVector) * -RAD_TO_DEG;
-
-      // If the Sensor is already started
-      if (initDone && !reset)
+      // Read latest sensor data
+      if (GyroAccelDataRead()) 
       {
-        pitchAngle = pitchAngle * 0.99 + AccelPitchAngle * 0.01;  //Correct the drift of the gyro pitch angle with the accelerometer pitch angle
-        rollAngle = rollAngle * 0.99 + AccelrollAngle * 0.01;     //Correct the drift of the gyro roll angle with the accelerometer roll angle
+        // Calculate temperature compensation factors
+        float pitchTemperatureCompensation = PITCH_TEMPERATURE_COMPENSATION_A * (g_MPUTemperature - g_MPUCalibrationTemperature) + PITCH_TEMPERATURE_COMPENSATION_B;
+        float rollTemperatureCompensation = ROLL_TEMPERATURE_COMPENSATION_A * (g_MPUTemperature - g_MPUCalibrationTemperature) + ROLL_TEMPERATURE_COMPENSATION_B;
+        
+        // Calculate gyro angle values
+        pitchAngle = pitchAngle + g_GyroRawX + g_GyroRawY * sin(g_GyroRawZ * DEG_TO_RAD);
+        rollAngle =  rollAngle + g_GyroRawY - g_pitchAngle * sin(g_GyroRawZ * DEG_TO_RAD);
+
+        // Accelerometer angle calculations
+        float accelTotalVector = sqrt((g_AccelRawX * g_AccelRawX) + (g_AccelRawY * g_AccelRawY) + (g_AccelRawZ * g_AccelRawZ));  //Calculate the total accelerometer vector
+        AccelPitchAngle = asin(g_AccelRawY / accelTotalVector) * RAD_TO_DEG;
+        AccelrollAngle = asin(g_AccelRawX / accelTotalVector) * -RAD_TO_DEG;
+
+        // If the Sensor is already started
+        if (initDone && !reset)
+        {
+          pitchAngle = pitchAngle * 0.99 + AccelPitchAngle * 0.01;  //Correct the drift of the gyro pitch angle with the accelerometer pitch angle
+          rollAngle = rollAngle * 0.99 + AccelrollAngle * 0.01;     //Correct the drift of the gyro roll angle with the accelerometer roll angle
+        }
+        // At first start
+        else
+        {
+          pitchAngle = AccelPitchAngle;   // Set the gyro pitch angle equal to the accelerometer pitch angle 
+          rollAngle = AccelrollAngle;     // Set the gyro roll angle equal to the accelerometer roll angle
+          initDone = true;
+        }
+
+        // To dampen the pitch and roll angles a complementary filter is used
+        g_pitchAngle = g_pitchAngle * 0.7 + pitchAngle * 0.3;
+        g_rollAngle = g_rollAngle * 0.7 + rollAngle * 0.3;
+
+        g_TCpitchAngle = g_pitchAngle - pitchTemperatureCompensation;
+        g_TCrollAngle = g_rollAngle - rollTemperatureCompensation;
+
+        LastPitchRollCalc = millis();
+
+        // DebugPrintln("Pitch: " + String(g_pitchAngle, 3) + ", Roll:" + String(g_rollAngle, 3), DBG_VERBOSE, true);
       }
-      // At first start
       else
       {
-        pitchAngle = AccelPitchAngle;   // Set the gyro pitch angle equal to the accelerometer pitch angle 
-        rollAngle = AccelrollAngle;     // Set the gyro roll angle equal to the accelerometer roll angle
-        initDone = true;
+        pitchAngle = 0;
+        rollAngle = 0;
+        // DebugPrintln("Pitch & Roll reset - Sensor not found!", DBG_VERBOSE, true);
+        LastPitchRollCalc = millis();
       }
-
-      // To dampen the pitch and roll angles a complementary filter is used
-      g_pitchAngle = g_pitchAngle * 0.7 + pitchAngle * 0.3;
-      g_rollAngle = g_rollAngle * 0.7 + rollAngle * 0.3;
-
-      g_TCpitchAngle = g_pitchAngle - pitchTemperatureCompensation;
-      g_TCrollAngle = g_rollAngle - rollTemperatureCompensation;
-
-      LastPitchRollCalc = millis();
-
-      // DebugPrintln("Pitch: " + String(g_pitchAngle, 3) + ", Roll:" + String(g_rollAngle, 3), DBG_VERBOSE, true);
-    }
-    else
-    {
-      pitchAngle = 0;
-      rollAngle = 0;
-      // DebugPrintln("Pitch & Roll reset - Sensor not found!", DBG_VERBOSE, true);
-      LastPitchRollCalc = millis();
     }
   }
 
