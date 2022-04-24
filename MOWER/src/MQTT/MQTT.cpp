@@ -497,9 +497,8 @@ void MQTTCallback(char *topic, byte *message, unsigned int length)
     {
       String State = JSONData.stringValue;
       DebugPrintln ("Received Base Rain State: " + State, DBG_DEBUG, true);
-      // TO DO
-      // g_PerimeterSignalStopped = (State.toInt() == 0);
-      // DebugPrintln ("Saved Rain State: " + String(g_PerimeterSignalStopped), DBG_VERBOSE, true);
+      g_isRainningAtBase = (State.toInt() == 1);
+      DebugPrintln ("Saved Rain State: " + String(g_isRainningAtBase), DBG_VERBOSE, true);
     }
   }
 

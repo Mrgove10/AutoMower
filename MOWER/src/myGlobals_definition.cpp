@@ -178,6 +178,10 @@ bool g_KeyPressed[KEYPAD_MAX_KEYS] = {false, false, false, false};
 
 Adafruit_MCP23017 IOExtend;
 
+/************************* Rain variables *********************************/
+
+bool g_isRainningAtBase = false;   // updated with base rain status received by MQTT
+
 /************************* I2C HMC5883L Compasss Sensor variables *********************************/
 
 #include <Adafruit_HMC5883_U.h>

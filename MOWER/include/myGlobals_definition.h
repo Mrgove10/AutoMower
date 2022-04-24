@@ -280,6 +280,8 @@ extern Adafruit_MCP23017 IOExtend;
 #define RAIN_SENSOR_RAINING_THRESHOLD 100 // this may have to be placed in a parameter
 #define RAIN_READ_INTERVAL 30000         // in ms
 
+extern bool g_isRainningAtBase;   // updated with base rain status received by MQTT
+
 /************************* I2C HMC5883L Compasss Sensor variables *********************************/
 
 #include <Adafruit_HMC5883_U.h>

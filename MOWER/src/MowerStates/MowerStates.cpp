@@ -422,16 +422,16 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
   // Is it raining ?
   //--------------------------------
 
-  // if (isRaining())
-  // {
-  //   DebugPrintln("Raining : returning to base", DBG_INFO, true);
-  //   MowerStop();
-  //   CutMotorStop();
-  //   g_totalMowingTime = g_totalMowingTime + (millis() - mowingStartTime);   // in minutes
-    // g_partialMowingTime = g_partialMowingTime + (millis() - mowingStartTime);   // in minutes
-  //   g_CurrentState = MowerState::going_to_base;
-  //   return;
-  // }
+   if (isRaining() || g_isRainningAtBase)
+  {
+    LogPrintln("Raining : returning to base", TAG_TO_BASE, DBG_INFO);
+    MowerStop();
+    CutMotorStop();
+    g_totalMowingTime = g_totalMowingTime + (millis() - mowingStartTime);   // in minutes
+    g_partialMowingTime = g_partialMowingTime + (millis() - mowingStartTime);   // in minutes
+    g_CurrentState = MowerState::going_to_base;
+    return;
+  }
 
   //--------------------------------
   // Is it time for a cut direction change?
