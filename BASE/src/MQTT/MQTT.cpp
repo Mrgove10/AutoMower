@@ -154,7 +154,8 @@ void MQTTCallback(char *topic, byte *message, unsigned int length)
     {
       LogPrintln("Request for Base RESTART", TAG_RESET, DBG_INFO);
       FanStop(FAN_1_RED);
-//      CutMotorStop();
+    // Stop perimeter sending
+      PerimeterSignalStop();
       EEPROMSave(true);
       SerialAndTelnet.handle(); // Refresh Telnet Session
       delay(500);
