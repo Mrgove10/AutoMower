@@ -341,14 +341,21 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
   //--------------------------------
   // Check for Sonar Task good operation
   //--------------------------------
-  if (!SonarReadLoopTaskMonitor())
+  if (!SonarReadLoopTaskMonitor(true, true))
   {
-    g_totalMowingTime = g_totalMowingTime + (millis() - mowingStartTime);   // in minutes
-    g_partialMowingTime = g_partialMowingTime + (millis() - mowingStartTime);   // in minutes
-    g_CurrentState = MowerState::error;
-    g_CurrentErrorCode = ERROR_SONAR_NOT_UPDATING;
-    return;
+    LogPrintln("Sonar Task Restarted", TAG_MOWING, DBG_ERROR);
+    SonarReadLoopTaskDelete();
+    delay(1000);
+    SonarReadLoopTaskCreate();
   }
+  // if (!SonarReadLoopTaskMonitor())
+  // {
+  //   g_totalMowingTime = g_totalMowingTime + (millis() - mowingStartTime);   // in minutes
+  //   g_partialMowingTime = g_partialMowingTime + (millis() - mowingStartTime);   // in minutes
+  //   g_CurrentState = MowerState::error;
+  //   g_CurrentErrorCode = ERROR_SONAR_NOT_UPDATING;
+  //   return;
+  // }
 
   //--------------------------------
   // Check tilt sensors and take immediate action
@@ -483,8 +490,7 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
   //--------------------------------
   // Environment sensing for approaching objects
   //--------------------------------
-  if (!MowerSlowDownApproachingObstables(10,
-  // if (!MowerSlowDownApproachingObstables(MOWER_MOWING_TRAVEL_SPEED - MOWER_MOVES_SPEED_SLOW,
+  if (!MowerSlowDownApproachingObstables(MOWER_MOWING_OBJECT_CLOSE_SPEED_REDUCTION,
                                          SONAR_MIN_DISTANCE_FOR_SLOWING,
                                          SONAR_MIN_DISTANCE_FOR_SLOWING,
                                          SONAR_MIN_DISTANCE_FOR_SLOWING,
@@ -691,7 +697,6 @@ void MowerGoingToBase(const bool StateChange, const MowerState PreviousState)
     // Ensure wire tracking PID is reset on first call
     FollowWire = false;
     PIDReset = true;
-    
   }
 
   // Overall procedure is as follows:
@@ -735,38 +740,38 @@ void MowerGoingToBase(const bool StateChange, const MowerState PreviousState)
   {
     if (!MowerFollowWire(&PIDReset, BACK_TO_BASE_HEADING, BACK_TO_BASE_CLOCKWISE))
     {
-      //      g_CurrentState = MowerState::idle;
       FollowWire = false;
-    };
-  }
-
-  // Check if base in sight and stop cut motor
-
-  if (g_SonarReadEnabled && 
-      g_SonarDistance[SONAR_FRONT] < 80 &&
-      g_SonarDistance[SONAR_LEFT] < 50 &&
-      g_SonarDistance[SONAR_RIGHT] < 50)
-  {
-    if (!BaseInSightLogged)
+    }
+    else
     {
-      LogPrintln("Mower approaching base (L:" + String(g_SonarDistance[SONAR_LEFT]) + ", F:" + String(g_SonarDistance[SONAR_FRONT]) + ", R: " + String(g_SonarDistance[SONAR_RIGHT]) + ")", TAG_TO_BASE, DBG_INFO);
-      CutMotorStop(true);
-      BaseInSightLogged = true;
+      // Check if base in sight and stop cut motor
+
+      if (g_SonarReadEnabled && 
+          g_SonarDistance[SONAR_FRONT] < 80 &&
+          g_SonarDistance[SONAR_LEFT] < 50 &&
+          g_SonarDistance[SONAR_RIGHT] < 50)
+      {
+        if (!BaseInSightLogged)
+        {
+          LogPrintln("Mower approaching base (L:" + String(g_SonarDistance[SONAR_LEFT]) + ", F:" + String(g_SonarDistance[SONAR_FRONT]) + ", R: " + String(g_SonarDistance[SONAR_RIGHT]) + ")", TAG_TO_BASE, DBG_INFO);
+          CutMotorStop(true);
+          BaseInSightLogged = true;
+        }
+      }
+    
+      // Check if base reached - Current is flowing
+      BatteryChargeCurrentRead(true);
+      if (g_BatteryChargeCurrent > MOWER_AT_BASE_CURRENT)
+      {
+        MowerStop();
+        LogPrintln("Mower arrived at base", TAG_TO_BASE, DBG_INFO);
+
+        g_CurrentState = MowerState::docked;
+      }
     }
   }
-
   // Update display
   toBaseDisplay();
-
-  // Check if base reached - Current is flowing
-  BatteryChargeCurrentRead(true);
-  if (g_BatteryChargeCurrent > MOWER_AT_BASE_CURRENT)
-  {
-    MowerStop();
-    LogPrintln("Mower arrived at base", TAG_TO_BASE, DBG_INFO);
-
-    g_CurrentState = MowerState::docked;
-  }
 }
 
 //---------------------------------------------------------------------------------------------------------------------------
@@ -796,6 +801,9 @@ void MowerLeavingBase(const bool StateChange, const MowerState PreviousState)
     // Change Telemetry frequency
     g_MQTTSendInterval = MQTT_TELEMETRY_SEND_INTERVAL_FAST;
 
+    // Trigger base to swith to sending mode
+    BaseSendingStartSend();
+
     // Force a Telemetry send
     MQTTSendTelemetry(true);
 
@@ -807,9 +815,6 @@ void MowerLeavingBase(const bool StateChange, const MowerState PreviousState)
 
     // Reset battery charge current to 0
     g_BatteryChargeCurrent = 0;
-
-    // Trigger base to swith to sending mode
-    BaseSendingStartSend();
 
     // Sound starting beep to notify environment
     playTune(g_longBeep, sizeof(g_longBeep) / sizeof(noteStruct), 3);
@@ -825,11 +830,11 @@ void MowerLeavingBase(const bool StateChange, const MowerState PreviousState)
 
     // Activate Sonar reading
     g_SonarReadEnabled = true;          // activate Sonar readings
-    delay(SONAR_READ_ACTIVATION_DELAY); //wait for task to take 1st readings
+    // delay(SONAR_READ_ACTIVATION_DELAY); //wait for task to take 1st readings
    
     // Check if mowing conditions are met
     // Wait for perimeter signal to start
-    delay(2000);
+    delay(3000);
     
     if (!CheckPreConditions(ERROR_MOWING_NO_START_TILT_ACTIVE,
                             ERROR_NO_ERROR, // no error here as 1st phase is a reverse motion
@@ -1046,8 +1051,7 @@ bool MowerFindWire(const bool reset, int *phase, const int heading, const bool c
     if (g_isInsidePerimeter && millis() - searchStartTime < PERIMETER_SEARCH_FORWARD_MAX_TIME_1)
     {
       // Environment sensing for approaching objects
-      // if (!MowerSlowDownApproachingObstables(PERIMETER_SEARCH_FORWARD_SPEED - MOWER_MOVES_SPEED_SLOW,
-      if (!MowerSlowDownApproachingObstables(10,
+      if (!MowerSlowDownApproachingObstables(MOWER_MOWING_OBJECT_CLOSE_SPEED_REDUCTION,
                                              SONAR_MIN_DISTANCE_FOR_SLOWING,
                                              SONAR_MIN_DISTANCE_FOR_SLOWING,
                                              SONAR_MIN_DISTANCE_FOR_SLOWING,
@@ -1279,7 +1283,7 @@ bool MowerFollowWire(bool *reset, const int heading, const bool clockwise)
   bool SlowedDown = false;
   if (clockwise)
   {
-    SlowedDown = MowerSlowDownApproachingObstables(2,
+    SlowedDown = MowerSlowDownApproachingObstables(PERIMETER_TRACKING_OBJECT_CLOSE_SPEED_REDUCTION,
                                                    SONAR_MIN_DISTANCE_FOR_SLOWING/2,
                                                    0, // no left detection
                                                    SONAR_MIN_DISTANCE_FOR_SLOWING/2,
@@ -1287,7 +1291,7 @@ bool MowerFollowWire(bool *reset, const int heading, const bool clockwise)
   }
   else
   {
-    SlowedDown = MowerSlowDownApproachingObstables(2,
+    SlowedDown = MowerSlowDownApproachingObstables(PERIMETER_TRACKING_OBJECT_CLOSE_SPEED_REDUCTION,
                                                    SONAR_MIN_DISTANCE_FOR_SLOWING/2,
                                                    SONAR_MIN_DISTANCE_FOR_SLOWING/2,
                                                    0,  // no right detection

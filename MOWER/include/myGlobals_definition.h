@@ -634,6 +634,7 @@ extern bool g_MotionMotorTurnInProgress;    // Boolean indicating that the mower
 // Mowing
 #define MOWER_MOWING_MOWING_SESSION_DURATION 120   // in seconds, default duration of mowing session
 #define MOWER_MOWING_TRAVEL_SPEED 100
+#define MOWER_MOWING_OBJECT_CLOSE_SPEED_REDUCTION 7 // % points of speed redusction when objects are close
 #define MOWER_MOWING_MAX_CONSECUTVE_OBSTACLES 5
 #define MOWER_MOWING_MAX_CONSECUTVE_OUTSIDE 30
 #define MOWER_MOWING_CUT_DIRECTION_CHANGE_INTERVAL 20 * 60 * 1000  // in ms, how often the mower stops to change cut motor rotation direction
@@ -676,6 +677,7 @@ extern int g_mowingMode;
 #define PERIMETER_SEARCH_TURN_MAX_ITERATIONS 180 / PERIMETER_SEARCH_ANGLE_INCREMENT // in loop counts. It should not be necessary to turn more than 150 deg depending on wire approach angle
 #define PERIMETER_SEARCH_MAX_CONSECUTVE_OBSTACLES 3
 #define PERIMETER_TRACKING_MAX_CONSECUTVE_OUTSIDE 200
+#define PERIMETER_TRACKING_OBJECT_CLOSE_SPEED_REDUCTION 2 // % points of speed redusction when objects are close
 
 #define MOWER_AT_BASE_CURRENT 25    // in mA
 
