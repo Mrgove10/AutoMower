@@ -159,12 +159,11 @@ void MowerDocked(const bool StateChange, const MowerState PreviousState)
   //--------------------------------
   if (!SonarReadLoopTaskMonitor(true, false))
   {
-    LogPrintln("Sonar Task stopped", TAG_MOWING, DBG_ERROR);
+    LogPrintln("Sonar Task Stopped", TAG_MOWING, DBG_ERROR);
     SonarReadLoopTaskDelete();
-    delay(250);
+    delay(1000);
     LogPrintln("Sonar Task Restarted", TAG_MOWING, DBG_ERROR);
     SonarReadLoopTaskCreate();
-    g_SonarTskLoopCnt = 0;
   }
   // if (!SonarReadLoopTaskMonitor())
   // {
@@ -335,7 +334,7 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
   //    Check for rain,
   //    Check enviroment to slow down for approaching obstacles,
   //    Check for obstacle detection and react (trigger error if too many),
-  //    Stop when conditions met (TO DO)
+  //    Stop when zone mowing time completed
 
   g_MowingLoopCnt = g_MowingLoopCnt + 1;
 
@@ -484,7 +483,7 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
   //--------------------------------
   // Environment sensing for approaching objects
   //--------------------------------
-  if (!MowerSlowDownApproachingObstables(15,
+  if (!MowerSlowDownApproachingObstables(10,
   // if (!MowerSlowDownApproachingObstables(MOWER_MOWING_TRAVEL_SPEED - MOWER_MOVES_SPEED_SLOW,
                                          SONAR_MIN_DISTANCE_FOR_SLOWING,
                                          SONAR_MIN_DISTANCE_FOR_SLOWING,
@@ -685,6 +684,7 @@ void MowerGoingToBase(const bool StateChange, const MowerState PreviousState)
     // Ensure wire tracking PID is reset on first call
     FollowWire = false;
     PIDReset = true;
+    
   }
 
   // Overall procedure is as follows:
@@ -692,7 +692,7 @@ void MowerGoingToBase(const bool StateChange, const MowerState PreviousState)
   // Execute wire find procedure (does not runs as a loop and has it's own pre-condition and obstacle detection checks),
   // Execute follow wire procedure (does not runs as a loop and has it's own pre-condition and obstacle detection checks),
   // Decide on actions if obstacles are detected,
-  // Stop when conditions met (TO DO)
+  // Stop when mower reaches base and charging starts.
 
   //--------------------------------
   // Check tilt sensors and take immediate action
@@ -820,6 +820,18 @@ void MowerLeavingBase(const bool StateChange, const MowerState PreviousState)
     g_SonarReadEnabled = true;          // activate Sonar readings
     delay(SONAR_READ_ACTIVATION_DELAY); //wait for task to take 1st readings
    
+    // Check if mowing conditions are met
+    // Wait for perimeter signal to start
+    delay(2000);
+    
+    if (!CheckPreConditions(ERROR_MOWING_NO_START_TILT_ACTIVE,
+                            ERROR_NO_ERROR, // no error here as 1st phase is a reverse motion
+                            ERROR_NO_ERROR, // no error here as 1st phase is a reverse motion
+                            ERROR_NO_ERROR, // no error here as 1st phase is a reverse motion
+                            ERROR_NO_ERROR, // no error here as 1st phase is a reverse motion
+                            ERROR_MOWING_NO_START_NO_PERIMETER_SIGNAL,
+                            true))
+
     // Refresh display
     LeavingBaseDisplay(true);
   }
@@ -853,19 +865,6 @@ void MowerLeavingBase(const bool StateChange, const MowerState PreviousState)
   }
 
   LeavingBaseDisplay();
-
-
-/* initial Leaving Base code   - TO BE DELETED
-  // // Reverse out of base
-  // int exitAngle = random(-180, -270);
-
-  // MowerReserseAndTurn(exitAngle, LEAVING_BASE_REVERSE_DURATION, true); // reverse and turn random angle
-
-  // LeavingBaseDisplay();
-
-  // // for the moment, mow from the spot
-  // g_CurrentState = MowerState::mowing;
-*/
 }
 
 //---------------------------------------------------------------------------------------------------------------------------
@@ -1593,9 +1592,7 @@ bool CheckPreConditions(const int Tilt, const int Bumper, const int Front, const
 
   // Perimeter active
 
-  // TO DO
-
-  if (Perimeter != ERROR_NO_ERROR && (false)) // TO DO
+  if (Perimeter != ERROR_NO_ERROR && (g_PerimeterSignalLost || g_PerimeterSignalStopped))
   {
     if (ErrorMode)
     {

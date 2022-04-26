@@ -130,7 +130,6 @@ void SonarReadLoopTask(void *dummyParameter)
       {
         g_LastSonarReadNum = sonar;
         SonarRead(sonar, true); // Read sonar value with no wait
-        delay(5);
       }
       delay(SONAR_READ_TASK_LOOP_TIME);
     }

@@ -305,9 +305,8 @@ extern float g_CompassYField;
 
 #define GYRO_ACCEL_ANGLE_CALC_INTERVAL 150
 #define GYRO_CALIBRATION_SAMPLES 500       // number of samples used to perform calibration
-#define MAX_PITCH_ANGLE 45         // maximum pitch angle in deg
-#define MAX_ROLL_ANGLE 45         // maximum roll angle in deg
-
+#define MAX_PITCH_ANGLE 35         // maximum pitch angle in deg
+#define MAX_ROLL_ANGLE 35         // maximum roll angle in deg
 
 #define PITCH_TEMPERATURE_COMPENSATION_A 0.25f  // Pitch compensation factor is (MPU_temperature - MPU_Calibration_temp) * PITCH_TEMPERATURE_COMPENSATION_A + PITCH_TEMPERATURE_COMPENSATION_B
 #define PITCH_TEMPERATURE_COMPENSATION_B 0.1f   // Pitch compensation factor is (MPU_temperature - MPU_Calibration_temp) * PITCH_TEMPERATURE_COMPENSATION_A + PITCH_TEMPERATURE_COMPENSATION_B
