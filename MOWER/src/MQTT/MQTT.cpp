@@ -359,7 +359,7 @@ void MQTTCallback(char *topic, byte *message, unsigned int length)
       }
       else
       {
-        MowerForward(int(Val1));
+        MowerForward(int(Val1), true);
         delay(int(Val2 * 1000));
         MowerStop();
       }
@@ -373,7 +373,7 @@ void MQTTCallback(char *topic, byte *message, unsigned int length)
       }
       else
       {
-        MowerReverse(int(Val1), int(Val2 * 1000));
+        MowerReverse(int(Val1), int(Val2 * 1000), true);
       }
     }
 

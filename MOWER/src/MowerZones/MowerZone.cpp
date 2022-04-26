@@ -26,7 +26,7 @@ void ZoneStepAction(const int Action, const int Param1, const int Param2)
     switch (Action)
     {
       case ACT_REVERSE:
-        MowerReverse(Param2, Param1 * 1000);
+        MowerReverse(Param2, Param1 * 1000, true);
         g_ZoneStepDuration = 0;
         break;
 
@@ -50,7 +50,7 @@ void ZoneStepAction(const int Action, const int Param1, const int Param2)
           }
           else
           {
-            MowerForward(Param2);
+            MowerForward(Param2, true);
           }
         }
         g_ZoneStepDuration = Param1 * 1000;

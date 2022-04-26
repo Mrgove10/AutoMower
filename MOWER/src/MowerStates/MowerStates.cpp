@@ -543,7 +543,7 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
           // Give time for cut motor to start
           delay(MOWER_MOWING_CUT_START_WAIT);
         }
-        MowerForward(MOWER_MOWING_TRAVEL_SPEED);
+        MowerForward(MOWER_MOWING_TRAVEL_SPEED, true);
       }
     }
   }
@@ -584,7 +584,14 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
     lastSpiralSpeedAdjustment = millis();
 
     // Update motor speeds
-    MowerArc(MOTION_MOTOR_FORWARD, leftSpeed, rightSpeed);
+    if (isSpiral)
+    {
+      MowerArc(MOTION_MOTOR_FORWARD, leftSpeed, rightSpeed);
+    }
+    else
+    {
+      MowerForward(MOWER_MOWING_SPIRAL_MAX_SPEED, true);    // To allow for soft mode
+    }
   }
 
   //--------------------------------
@@ -987,7 +994,7 @@ bool MowerFindWire(const bool reset, int *phase, const int heading, const bool c
     if (!g_isInsidePerimeter && millis() - searchStartTime < PERIMETER_SEARCH_REVERSE_MAX_TIME)
     {
       // Reverse Mower
-      MowerReverse(PERIMETER_SEARCH_REVERSE_SPEED, PERIMETER_SEARCH_REVERSE_TIME);
+      MowerReverse(PERIMETER_SEARCH_REVERSE_SPEED, PERIMETER_SEARCH_REVERSE_TIME, true);
       return false; // continue search
     }
 
@@ -998,7 +1005,7 @@ bool MowerFindWire(const bool reset, int *phase, const int heading, const bool c
       *phase = PERIMETER_SEARCH_PHASE_2;
       DebugPrintln("Phase 2 - Forward to find wire", DBG_DEBUG, true);
       searchStartTime = millis();
-      MowerForward(PERIMETER_SEARCH_FORWARD_SPEED);
+      MowerForward(PERIMETER_SEARCH_FORWARD_SPEED, true);
       return false; // continue search
     }
 
@@ -1046,7 +1053,7 @@ bool MowerFindWire(const bool reset, int *phase, const int heading, const bool c
                                              SONAR_MIN_DISTANCE_FOR_SLOWING,
                                              PERIMETER_APPROACHING_THRESHOLD))
       {
-        MowerForward(PERIMETER_SEARCH_FORWARD_SPEED);
+        MowerForward(PERIMETER_SEARCH_FORWARD_SPEED, true);
         return false; // continue search
       }
 
@@ -1070,7 +1077,7 @@ bool MowerFindWire(const bool reset, int *phase, const int heading, const bool c
         {
           // Start searching again
           // TO DO - HEADING to base!!!!!
-          MowerForward(PERIMETER_SEARCH_FORWARD_SPEED);
+          MowerForward(PERIMETER_SEARCH_FORWARD_SPEED, true);
         }
       }
 
@@ -1252,7 +1259,7 @@ bool MowerFollowWire(bool *reset, const int heading, const bool clockwise)
     MotionMotorsTrackingAdjustSpeed(0, 0);
 
     // Move forward
-    MowerForward(BACK_TO_BASE_SPEED);
+    MowerForward(BACK_TO_BASE_SPEED, true);
 
     g_successiveObstacleDectections = 0;
     outsideCount = 0;

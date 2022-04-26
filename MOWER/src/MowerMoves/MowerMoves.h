@@ -9,8 +9,9 @@ void MowerStop();
 /**
  * Mower forward move
  * @param Speed to travel
+ * @param Soft boolean to trigger a soft start (default is false)
  */
-void MowerForward(const int Speed);
+void MowerForward(const int Speed, const bool Soft = false);
 
 /**
  * Sets/changes Mower speed
@@ -22,8 +23,9 @@ void MowerSpeed(const int Speed);
  * Mower reverse move
  * @param Speed to reverse
  * @param Duration of reverse (in ms)
+ * @param Soft boolean to trigger a soft start (default is false)
  */
-void MowerReverse(const int Speed, const int Duration);
+void MowerReverse(const int Speed, const int Duration, const bool Soft = false);
 
 /**
  * Mower turn function
