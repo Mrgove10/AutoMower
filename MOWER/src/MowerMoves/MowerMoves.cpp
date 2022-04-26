@@ -380,6 +380,10 @@ void MowerArc(const int direction, const int leftSpeed, const int rightSpeed)
       DebugPrintln("Mower Reverse @ " + String(leftSpeed) + "%", DBG_VERBOSE, true);
     }
   }
+
+  // Disable pitch and roll calculation is turning in progress
+  g_MotionMotorTurnInProgress = (leftSpeed != rightSpeed);
+
   MotionMotorStart(MOTION_MOTOR_RIGHT, direction, rightSpeed);
   MotionMotorStart(MOTION_MOTOR_LEFT, direction, leftSpeed);
 }
