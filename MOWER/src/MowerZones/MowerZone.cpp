@@ -171,7 +171,7 @@ void mowZoneStepsInit(void)
 
     // ZONE 0 step definition -- In front of docking station
     g_mowZoneSteps[MOW_ZONE_0][0].action = ACT_REVERSE;     g_mowZoneSteps[MOW_ZONE_0][0].param1 = 10;   g_mowZoneSteps[MOW_ZONE_0][0].param2 = LEAVING_BASE_REVERSE_SPEED;
-    g_mowZoneSteps[MOW_ZONE_0][1].action = ACT_SPOTTURN;    g_mowZoneSteps[MOW_ZONE_0][1].param1 = 200;  g_mowZoneSteps[MOW_ZONE_0][1].param2 = ACT_CW;
+    g_mowZoneSteps[MOW_ZONE_0][1].action = ACT_SPOTTURN;    g_mowZoneSteps[MOW_ZONE_0][1].param1 = 45;   g_mowZoneSteps[MOW_ZONE_0][1].param2 = ACT_CW;
     g_mowZoneSteps[MOW_ZONE_0][2].action = ACT_END;         g_mowZoneSteps[MOW_ZONE_0][2].param1 = 0;    g_mowZoneSteps[MOW_ZONE_0][2].param2 = 0;
 
     // ZONE 1 step definition -- In front of SPA
@@ -184,7 +184,7 @@ void mowZoneStepsInit(void)
     g_mowZoneSteps[MOW_ZONE_2][0].action = ACT_REVERSE;     g_mowZoneSteps[MOW_ZONE_2][0].param1 = 10;   g_mowZoneSteps[MOW_ZONE_2][0].param2 = LEAVING_BASE_REVERSE_SPEED;
     g_mowZoneSteps[MOW_ZONE_2][1].action = ACT_SPOTTURN;    g_mowZoneSteps[MOW_ZONE_2][1].param1 = 45;   g_mowZoneSteps[MOW_ZONE_2][1].param2 = ACT_CW;
     g_mowZoneSteps[MOW_ZONE_2][2].action = ACT_FINDWIRE;    g_mowZoneSteps[MOW_ZONE_2][2].param1 = 120;  g_mowZoneSteps[MOW_ZONE_2][2].param2 = ACT_CW;
-    g_mowZoneSteps[MOW_ZONE_2][3].action = ACT_FOLLOWWIRE;  g_mowZoneSteps[MOW_ZONE_2][3].param1 = 80;   g_mowZoneSteps[MOW_ZONE_2][3].param2 = ACT_CW;
+    g_mowZoneSteps[MOW_ZONE_2][3].action = ACT_FOLLOWWIRE;  g_mowZoneSteps[MOW_ZONE_2][3].param1 = 60;   g_mowZoneSteps[MOW_ZONE_2][3].param2 = ACT_CW;
     g_mowZoneSteps[MOW_ZONE_2][4].action = ACT_SPOTTURN;    g_mowZoneSteps[MOW_ZONE_2][4].param1 = 45;   g_mowZoneSteps[MOW_ZONE_2][4].param2 = ACT_CW;
     g_mowZoneSteps[MOW_ZONE_2][5].action = ACT_STARTMOWING; g_mowZoneSteps[MOW_ZONE_2][5].param1 = MOWER_MOWING_MODE_RANDOM;    g_mowZoneSteps[MOW_ZONE_2][5].param2 = 120;
 
