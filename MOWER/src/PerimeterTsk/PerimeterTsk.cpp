@@ -547,7 +547,6 @@ void PerimeterProcessingLoopTask(void *dummyParameter)
         {
           g_PrimProcTskLongLoopCnt = g_PrimProcTskLongLoopCnt + 1;
           DebugPrintln("\t\t\t\t\t Long wait: Count:" + String(count), DBG_INFO, true);
-
         }
 
 #endif

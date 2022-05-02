@@ -808,6 +808,8 @@ extern bool g_CutMotorAlarm;
 #define ERROR_FOLLOW_WIRE_CONSECUTIVE_OBSTACLES 214
 #define ERROR_FOLLOW_WIRE_OUTSIDE_TOO_LONG 215
 
+#define ERROR_LEAVING_NO_START_NO_PERIMETER_SIGNAL 303
+
 #define ERROR_UNDEFINED 999
 
 extern int g_CurrentErrorCode; // Current Error code

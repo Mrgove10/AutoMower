@@ -793,30 +793,34 @@ void MowerLeavingBase(const bool StateChange, const MowerState PreviousState)
 
   if (StateChange)
   {
+    // Restore normal CPU frequency
+    // setCPUFreq(ESP_NORMAL_FREQUENCY);
+    // WiFi.setSleep(WIFI_PS_NONE);
+
     LogPrintln("Mower leaving Base to zone " + String(g_TargetNowingZone), TAG_STATES, DBG_INFO);
 
     // Initialise variables
     stepNum = 0;
     stepStartTime = millis();
 
+    // Reset battery charge current to 0
+    g_BatteryChargeCurrent = 0;
+
     // Change Telemetry frequency
     g_MQTTSendInterval = MQTT_TELEMETRY_SEND_INTERVAL_FAST;
 
-    // Trigger base to swith to sending mode
-    BaseSendingStartSend();
-
     // Force a Telemetry send
     MQTTSendTelemetry(true);
+
+    // Trigger base to swith to sending mode
+    BaseSendingStartSend();
 
     // Change display with refresh
     LeavingBaseDisplay(true);
 
     // Open Battery charge relay to reduce energy consumption of keeping relay closed
     BatteryChargeRelayOpen();
-
-    // Reset battery charge current to 0
-    g_BatteryChargeCurrent = 0;
-
+    
     // Sound starting beep to notify environment
     playTune(g_longBeep, sizeof(g_longBeep) / sizeof(noteStruct), 3);
 
@@ -833,17 +837,27 @@ void MowerLeavingBase(const bool StateChange, const MowerState PreviousState)
     g_SonarReadEnabled = true;          // activate Sonar readings
     // delay(SONAR_READ_ACTIVATION_DELAY); //wait for task to take 1st readings
    
-    // Check if mowing conditions are met
     // Wait for perimeter signal to start
-    delay(3000);
-    
+    delay(1500);
+
+    MQTTclient.loop(); // Update MQTT to receive Base confirmation of signal sending
+
+    delay(1500);
+
+    // Check if mowing conditions are met
+
+    DebugPrintln("Checking leaving base pre-conditions", DBG_VERBOSE, true);
+
     if (!CheckPreConditions(ERROR_MOWING_NO_START_TILT_ACTIVE,
                             ERROR_NO_ERROR, // no error here as 1st phase is a reverse motion
                             ERROR_NO_ERROR, // no error here as 1st phase is a reverse motion
                             ERROR_NO_ERROR, // no error here as 1st phase is a reverse motion
                             ERROR_NO_ERROR, // no error here as 1st phase is a reverse motion
-                            ERROR_MOWING_NO_START_NO_PERIMETER_SIGNAL,
+                            ERROR_LEAVING_NO_START_NO_PERIMETER_SIGNAL,
                             true))
+    {
+      return;
+    }
 
     // Refresh display
     LeavingBaseDisplay(true);
@@ -1603,6 +1617,8 @@ bool CheckPreConditions(const int Tilt, const int Bumper, const int Front, const
   }
 
   // Perimeter active
+
+  DebugPrintln("Perimeter Active check (g_PerimeterSignalLost=" + String(g_PerimeterSignalLost) + ", g_PerimeterSignalStopped=" + String(g_PerimeterSignalStopped) + ")", DBG_VERBOSE, true);
 
   if (Perimeter != ERROR_NO_ERROR && (g_PerimeterSignalLost || g_PerimeterSignalStopped))
   {

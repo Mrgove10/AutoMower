@@ -775,5 +775,5 @@ void BaseSendingStartSend(void)
 
   MQTTclient.loop();
 
-  DebugPrintln("Sending to :[" + String(MQTT_BASE_COMMAND_CHANNEL) + "] " + String(MQTTpayload) + " => " + String(result), DBG_VERBOSE, true);
+  DebugPrintln("Sending to :[" + String(MQTT_BASE_COMMAND_CHANNEL) + "] " + String(MQTTpayload) + " => " + String(result), DBG_DEBUG, true);
 }
