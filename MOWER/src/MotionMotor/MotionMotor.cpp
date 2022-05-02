@@ -50,24 +50,26 @@ void MotionMotorStart(const int Motor, const int Direction, const int Speed)
 
   if (Direction == MOTION_MOTOR_FORWARD)
   {
+    DebugPrintln("Motion Motors " + g_MotionMotorStr[Motor] + " start Forward @ " + String(Speed) + "%", DBG_VERBOSE, true);
+
     IOExtendProtectedWrite(g_MotionMotorIn1Pin[Motor], LOW);
     IOExtendProtectedWrite(g_MotionMotorIn2Pin[Motor], HIGH);
 
     MotionMotorSetSpeed(Motor, Speed);
     g_MotionMotorOn[Motor] = true;
     g_MotionMotorDirection[Motor] = MOTION_MOTOR_FORWARD;
-    DebugPrintln("Motion Motor " + g_MotionMotorStr[Motor] + " start Forward", DBG_VERBOSE, true);
   }
 
   if (Direction == MOTION_MOTOR_REVERSE)
   {
+    DebugPrintln("Motion Motors " + g_MotionMotorStr[Motor] + " start Reverse @ " + String(Speed) + "%", DBG_VERBOSE, true);
+
     IOExtendProtectedWrite(g_MotionMotorIn1Pin[Motor], HIGH);
     IOExtendProtectedWrite(g_MotionMotorIn2Pin[Motor], LOW);
 
     MotionMotorSetSpeed(Motor, Speed);
     g_MotionMotorOn[Motor] = true;
     g_MotionMotorDirection[Motor] = MOTION_MOTOR_REVERSE;
-    DebugPrintln("Motion Motor " + g_MotionMotorStr[Motor] + " start Reverse", DBG_VERBOSE, true);
   }
 }
 

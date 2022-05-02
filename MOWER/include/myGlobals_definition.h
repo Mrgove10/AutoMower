@@ -595,7 +595,7 @@ extern noteStruct g_longBeep[1];
 #define MOTION_MOTOR_OVERCURRENT_PITCH_CORRECTION_MAXIMUM MOTION_MOTOR_OVERCURRENT_THRESHOLD*20/100   // 20% of base overcurrent protection
 
 #define MOTION_MOTOR_POINTS 4096  // depending on MOTION_MOTOR_PWM_RESOLUTION
-#define MOTION_MOTOR_MIN_SPEED 35 // in %
+#define MOTION_MOTOR_MIN_SPEED 30 // in %
 #define MOTION_MOTOR_TEST_STEP_DURATION 2000
 
 extern const int g_MotionMotorIn1Pin[MOTION_MOTOR_COUNT];

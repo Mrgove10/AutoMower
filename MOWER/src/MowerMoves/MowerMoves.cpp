@@ -55,7 +55,7 @@ void MowerForward(const int Speed, const bool Soft)
     // Apply speed increment progressively
     if (stepIncrement != 0) 
     {
-      for (int i = MOTION_MOTOR_MIN_SPEED - 10; i <= Steps; i = i + 1)
+      for (int i = MOTION_MOTOR_MIN_SPEED - 1; i <= Steps; i = i + 1)
       {
         MotionMotorSetSpeed(MOTION_MOTOR_RIGHT, CurrentSpeed + (i * stepIncrement));
         MotionMotorSetSpeed(MOTION_MOTOR_LEFT, CurrentSpeed + (i * stepIncrement));
@@ -101,40 +101,24 @@ void MowerReverse(const int Speed, const int Duration, const bool Soft)
   if (Soft)
   {
     // Determine speed difference and number of steps
-    int CurrentSpeed = (g_MotionMotorSpeed[MOTION_MOTOR_RIGHT] + g_MotionMotorSpeed[MOTION_MOTOR_LEFT]) / 2;    // In case 2 motors not at same speed, use average.
+    int CurrentSpeed = 0;
     int Steps = abs(Speed - CurrentSpeed);   // 1% per step
     // Determine increment for each step
-    int stepIncrement;
-    if (Speed > CurrentSpeed)
-    {
-      stepIncrement = 1;      // Speed increase
-    }
-    else if (Speed < CurrentSpeed)
-    {
-      stepIncrement = -1;     // Speed reduction
-    }
-    else
-    {
-      stepIncrement = 0;    // No speed change
-    }
+    int stepIncrement = 1;      // Speed increase
 
     // Apply current speed and direction
-    MotionMotorStart(MOTION_MOTOR_RIGHT, MOTION_MOTOR_REVERSE, g_MotionMotorSpeed[MOTION_MOTOR_RIGHT]);
-    MotionMotorStart(MOTION_MOTOR_LEFT, MOTION_MOTOR_REVERSE, g_MotionMotorSpeed[MOTION_MOTOR_LEFT]);
+    MotionMotorStart(MOTION_MOTOR_RIGHT, MOTION_MOTOR_REVERSE, MOTION_MOTOR_MIN_SPEED - 1);
+    MotionMotorStart(MOTION_MOTOR_LEFT, MOTION_MOTOR_REVERSE, MOTION_MOTOR_MIN_SPEED - 1);
 
     // Apply speed increment progressively
-    if (stepIncrement != 0) 
+    for (int i = MOTION_MOTOR_MIN_SPEED; i <= Steps; i = i + 1)
     {
-      for (int i = MOTION_MOTOR_MIN_SPEED - 10; i <= Steps; i = i + 1)
-      {
-        MotionMotorSetSpeed(MOTION_MOTOR_RIGHT, CurrentSpeed + (i * stepIncrement));
-        MotionMotorSetSpeed(MOTION_MOTOR_LEFT, CurrentSpeed + (i * stepIncrement));
-        delayMicroseconds(500);
-      }
+      MotionMotorSetSpeed(MOTION_MOTOR_RIGHT, CurrentSpeed + (i * stepIncrement));
+      MotionMotorSetSpeed(MOTION_MOTOR_LEFT, CurrentSpeed + (i * stepIncrement));
+      delayMicroseconds(500);
     }
-    // Set final speed (in case initial speed was different between motors)
-    MotionMotorSetSpeed(MOTION_MOTOR_RIGHT, Speed);
-    MotionMotorSetSpeed(MOTION_MOTOR_LEFT, Speed);
+
+    SerialAndTelnet.handle(); // Refresh Telnet Session
 
     delay(Duration);
 
@@ -143,7 +127,7 @@ void MowerReverse(const int Speed, const int Duration, const bool Soft)
     Steps = CurrentSpeed;   // 1% per step
     // Determine increment for each step
     stepIncrement = -1;     // Speed reduction
-    for (int i = 1; i <= Steps - MOTION_MOTOR_MIN_SPEED + 10; i = i + 1)
+    for (int i = 1; i <= Steps - MOTION_MOTOR_MIN_SPEED + 1; i = i + 1)
     {
       MotionMotorSetSpeed(MOTION_MOTOR_RIGHT, CurrentSpeed + (i * stepIncrement));
       MotionMotorSetSpeed(MOTION_MOTOR_LEFT, CurrentSpeed + (i * stepIncrement));
