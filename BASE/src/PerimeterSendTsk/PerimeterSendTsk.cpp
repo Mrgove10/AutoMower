@@ -240,7 +240,7 @@ void PerimeterSendLoopTaskResume(void)
  */
 void PerimeterSignalStop(void)
 {
-  DebugPrintln("Perimeter signal stopped", DBG_VERBOSE, true);
+  DebugPrintln("Perimeter signal stopped", DBG_DEBUG, true);
 
   g_enableSender = false;
   PerimeterSignalStatusSend(true);
@@ -253,7 +253,7 @@ void PerimeterSignalStop(void)
  */
 void PerimeterSignalStart(void)
 {
-  DebugPrintln("Perimeter signal start", DBG_VERBOSE, true);
+  DebugPrintln("Perimeter signal start", DBG_DEBUG, true);
 
   g_enableSender = true;
   PerimeterSignalStatusSend(true);

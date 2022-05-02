@@ -82,7 +82,7 @@ void loop()
 
   if ((millis() - LastTaskRefreshed > 60000))
   {
-   DisplayTaskStatus("*");
+    DisplayTaskStatus("*");
     LastTaskRefreshed = millis();
   }
 

@@ -39,6 +39,9 @@ void BaseIdle(const bool StateChange, const BaseState PreviousState)
     //change Telemetry frequency
     g_MQTTSendInterval = MQTT_TELEMETRY_SEND_INTERVAL;
 
+    // Reset last mower Telemetry receive time
+    g_LastMowerTelemetryReceived = millis();
+
     // Force a Telemetry send
     MQTTSendTelemetry(true);
 
@@ -155,6 +158,9 @@ void BaseSending(const bool StateChange, const BaseState PreviousState)
 
     //change Telemetry frequency
     g_MQTTSendInterval = MQTT_TELEMETRY_SEND_INTERVAL_FAST;
+
+    // Reset last mower Telemetry receive time
+    g_LastMowerTelemetryReceived = millis();
 
     // Reset mower error code (not needed after error acknowledgement implemented)
     g_CurrentErrorCode = ERROR_NO_ERROR;
@@ -359,7 +365,7 @@ bool PerimeterCurrentTooHighCheck(const float Threshold)
 
 /**
  * Mower status received monitoring : Base is set in error mode if no data is received before timeout and base is set into Sleeping mode if mower is in Docked Mode
- * @param Timeout in ms duing which mower data is expected
+ * @param Timeout in ms during which mower data is expected
  * @return boolean indicating if timeout has been reached (true) or not (false)
  */
 bool MowerStatusCheck(const unsigned long Timeout)
