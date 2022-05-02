@@ -624,6 +624,7 @@ extern bool g_MotionMotorTurnInProgress;    // Boolean indicating that the mower
 #define MOWER_MOVES_TURN_SPEED 80
 #define MOWER_MOVES_TURN_ANGLE_RATIO 360.0f / 6000.0f // in Angle degrees per ms
 #define MOWER_MOVES_REVERSE_FOR_TURN_DURATION 3500    // in ms
+#define MOWER_MOVES_REVERSE_FOR_TURN_DURATION_LONG 5000    // in ms, for cases where a longer reverse time is needed
 
 #define SONAR_MIN_DISTANCE_FOR_SLOWING 25      // in cm
 #define SONAR_MIN_DISTANCE_FOR_TURN 40         // in cm

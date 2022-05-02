@@ -1736,7 +1736,7 @@ int CheckObstacleAndAct(const bool Bumper, const int Front, const int Left, cons
         else
         {
           DebugPrintln("Reversing and going back", DBG_VERBOSE, true);
-          MowerReserseAndTurn(random(135, 225), MOWER_MOVES_REVERSE_FOR_TURN_DURATION * 2, true); // reverse and turn right 135 degrees....and hope for the best !
+          MowerReserseAndTurn(random(135, 225), MOWER_MOVES_REVERSE_FOR_TURN_DURATION_LONG, true); // reverse and turn right 135 degrees....and hope for the best !
         }
       }
     }
@@ -1780,7 +1780,7 @@ int CheckObstacleAndAct(const bool Bumper, const int Front, const int Left, cons
         else
         {
           DebugPrintln("Reversing and going back", DBG_VERBOSE, true);
-          MowerReserseAndTurn(random(135, 225), MOWER_MOVES_REVERSE_FOR_TURN_DURATION * 2, true, true, true); // reverse and turn right 135 degrees....and hope for the best !
+          MowerReserseAndTurn(random(135, 225), MOWER_MOVES_REVERSE_FOR_TURN_DURATION_LONG, true, true, true); // reverse and turn right 135 degrees....and hope for the best !
         }
       }
     }
@@ -1820,7 +1820,7 @@ int CheckObstacleAndAct(const bool Bumper, const int Front, const int Left, cons
         else
         {
           DebugPrintln("Reversing and going back", DBG_VERBOSE, true);
-          MowerReserseAndTurn(random(135, 225), MOWER_MOVES_REVERSE_FOR_TURN_DURATION * 2, true); // reverse and turn right 135 degrees....and hope for the best !
+          MowerReserseAndTurn(random(135, 225), MOWER_MOVES_REVERSE_FOR_TURN_DURATION_LONG, true); // reverse and turn right 135 degrees....and hope for the best !
         }
       }
     }
@@ -1856,7 +1856,7 @@ int CheckObstacleAndAct(const bool Bumper, const int Front, const int Left, cons
       else
       {
         DebugPrintln("Reversing and going back", DBG_VERBOSE, true);
-        MowerReserseAndTurn(random(135, 225), MOWER_MOVES_REVERSE_FOR_TURN_DURATION * 2, true); // reverse and turn right 135 degrees....and hope for the best !
+        MowerReserseAndTurn(random(135, 225), MOWER_MOVES_REVERSE_FOR_TURN_DURATION_LONG, true); // reverse and turn right 135 degrees....and hope for the best !
       }
     }
 
@@ -1890,7 +1890,7 @@ int CheckObstacleAndAct(const bool Bumper, const int Front, const int Left, cons
       else
       {
         DebugPrintln("Reversing and going back", DBG_VERBOSE, true);
-        MowerReserseAndTurn(random(-225, -135), MOWER_MOVES_REVERSE_FOR_TURN_DURATION * 2, true); // reverse and turn left 135 degrees....and hope for the best !
+        MowerReserseAndTurn(random(-225, -135), MOWER_MOVES_REVERSE_FOR_TURN_DURATION_LONG, true); // reverse and turn left 135 degrees....and hope for the best !
       }
     }
 
@@ -1956,7 +1956,7 @@ int CheckObstacleAndAct(const bool Bumper, const int Front, const int Left, cons
             else
             {
               DebugPrintln("Reversing and going back", DBG_VERBOSE, true);
-              MowerReserseAndTurn(random(135, 225), MOWER_MOVES_REVERSE_FOR_TURN_DURATION * 2, true); // reverse and turn right 135 degrees....and hope for the best !
+              MowerReserseAndTurn(random(135, 225), MOWER_MOVES_REVERSE_FOR_TURN_DURATION_LONG, true); // reverse and turn right 135 degrees....and hope for the best !
             }
           }
         }
@@ -2006,7 +2006,7 @@ int CheckObstacleAndAct(const bool Bumper, const int Front, const int Left, cons
         else
         {
           DebugPrintln("Reversing and going back", DBG_VERBOSE, true);
-          MowerReserseAndTurn(random(135, 225), MOWER_MOVES_REVERSE_FOR_TURN_DURATION * 2, true); // reverse and turn right 135 degrees....and hope for the best !
+          MowerReserseAndTurn(random(135, 225), MOWER_MOVES_REVERSE_FOR_TURN_DURATION_LONG, true); // reverse and turn right 135 degrees....and hope for the best !
         }
       }
     }
