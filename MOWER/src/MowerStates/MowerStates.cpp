@@ -119,7 +119,7 @@ void MowerDocked(const bool StateChange, const MowerState PreviousState)
     dockedStartTime = millis();
 
     // Suspend Sonar readings
-    g_SonarReadEnabled = true;
+    g_SonarReadEnabled = false;
 
     // Suspend Motion Motor roll compensation 
     g_MotionMotorRollCompensation = false;
@@ -157,14 +157,15 @@ void MowerDocked(const bool StateChange, const MowerState PreviousState)
   //--------------------------------
   // Check for Sonar Task good operation
   //--------------------------------
-  if (!SonarReadLoopTaskMonitor(true, false))
-  {
-    LogPrintln("Sonar Task Stopped", TAG_MOWING, DBG_ERROR);
-    SonarReadLoopTaskDelete();
-    delay(1000);
-    LogPrintln("Sonar Task Restarted", TAG_MOWING, DBG_ERROR);
-    SonarReadLoopTaskCreate();
-  }
+  // if (!SonarReadLoopTaskMonitor(true, false))
+  // {
+  //   LogPrintln("Sonar Task Stopped", TAG_MOWING, DBG_ERROR);
+  //   SonarReadLoopTaskDelete();
+  //   delay(1000);
+  //   LogPrintln("Sonar Task Restarted", TAG_MOWING, DBG_ERROR);
+  //   SonarReadLoopTaskCreate();
+  // }
+
   // if (!SonarReadLoopTaskMonitor())
   // {
   //   g_CurrentState = MowerState::error;
@@ -753,7 +754,7 @@ void MowerGoingToBase(const bool StateChange, const MowerState PreviousState)
       {
         if (!BaseInSightLogged)
         {
-          LogPrintln("Mower approaching base (L:" + String(g_SonarDistance[SONAR_LEFT]) + ", F:" + String(g_SonarDistance[SONAR_FRONT]) + ", R: " + String(g_SonarDistance[SONAR_RIGHT]) + ")", TAG_TO_BASE, DBG_INFO);
+          LogPrintln("Mower approaching base (L:" + String(g_SonarDistance[SONAR_LEFT]) + ", F:" + String(g_SonarDistance[SONAR_FRONT]) + ", R:" + String(g_SonarDistance[SONAR_RIGHT]) + ")", TAG_TO_BASE, DBG_INFO);
           CutMotorStop(true);
           BaseInSightLogged = true;
         }

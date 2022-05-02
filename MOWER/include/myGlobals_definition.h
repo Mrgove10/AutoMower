@@ -469,7 +469,7 @@ extern unsigned int g_SonarTskLoopCnt; // Global variable to count number of tas
 
 #define SONAR_COUNT 3           // Number of sensors.
 #define SONAR_MAX_DISTANCE 100  // Maximum distance (in cm) to ping.
-#define SONAR_READ_INTERVAL 300 // in ms
+#define SONAR_READ_INTERVAL 150 // in ms
 #define SONAR_READ_ITERATIONS 5  // Started with 9
 
 #define SONAR_FRONT 0
@@ -482,6 +482,7 @@ extern String g_sensorStr[SONAR_COUNT];
 
 extern int g_SonarDistance[SONAR_COUNT]; // in cm
 extern int g_MaxSonarDistanceCount[SONAR_COUNT]; // number of times sonar send max distance
+extern int g_SonarPings[SONAR_COUNT]; // number of times sonar ping was made
 extern int g_LastSonarReadNum; // Id of last sonar read
 
 /************************* Bumper variables *********************************/

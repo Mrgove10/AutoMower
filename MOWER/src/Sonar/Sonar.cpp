@@ -23,7 +23,7 @@ void SonarSensorSetup(void)
 bool SonarSensorCheck(int sensor)
 {
   bool sensorCheck = false;
-  unsigned int Distance = UNKNOWN_INT;
+  // unsigned int Distance = UNKNOWN_INT;
 
   g_SonarReadEnabled = true; // Start sonar readings
 
@@ -75,11 +75,14 @@ int SonarRead(const int sensor, const bool Now)
   {
     unsigned int Distance = UNKNOWN_INT;
     //    Distance = sonar[sensor].ping_cm(SONAR_MAX_DISTANCE);
-    Distance = sonar[sensor].convert_cm(sonar[sensor].ping_median(SONAR_READ_ITERATIONS));
+//    Distance = sonar[sensor].convert_cm(sonar[sensor].ping_median(SONAR_READ_ITERATIONS));
+    unsigned long Echotime = sonar[sensor].ping_median(SONAR_READ_ITERATIONS);
+    Distance = sonar[sensor].convert_cm(Echotime);
 
     // DebugPrintln("Sonar " + g_sensorStr[sensor] + " value: " + String(Distance) + " cm", DBG_VERBOSE, true);
 
-    LastSonarRead[sensor] = millis();
+    g_SonarPings[sensor] = g_SonarPings[sensor] + 1;
+
     if (Distance == 0 || Distance >= SONAR_MAX_DISTANCE)
     {
       // g_SonarDistance[sensor] = SONAR_MAX_DISTANCE;
@@ -87,6 +90,7 @@ int SonarRead(const int sensor, const bool Now)
     }
     else
     {
+      LastSonarRead[sensor] = millis();
       g_SonarDistance[sensor] = Distance;
     }
   }
@@ -129,9 +133,9 @@ void SonarReadLoopTask(void *dummyParameter)
       for (int sonar = 0; sonar < SONAR_COUNT; sonar++)
       {
         g_LastSonarReadNum = sonar;
-        SonarRead(sonar, true); // Read sonar value with no wait
+        SonarRead(sonar, false); // Read sonar value with no wait
       }
-      delay(SONAR_READ_TASK_LOOP_TIME);
+      delay(SONAR_READ_TASK_LOOP_TIME / SONAR_COUNT);
     }
     else
     {

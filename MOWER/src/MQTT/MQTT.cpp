@@ -623,9 +623,18 @@ void MQTTSendTelemetry(const bool now)
     JSONDataPayload.add("FSnrDist", String(g_SonarDistance[SONAR_FRONT]));
     JSONDataPayload.add("RSnrDist", String(g_SonarDistance[SONAR_RIGHT]));
     JSONDataPayload.add("LSnrDist", String(g_SonarDistance[SONAR_LEFT]));
-    JSONDataPayload.add("FSnrErr", String(g_MaxSonarDistanceCount[SONAR_FRONT]));
-    JSONDataPayload.add("RSnrErr", String(g_MaxSonarDistanceCount[SONAR_RIGHT]));
-    JSONDataPayload.add("LSnrErr", String(g_MaxSonarDistanceCount[SONAR_LEFT]));
+    if (g_SonarPings[SONAR_FRONT] == 0 || g_SonarPings[SONAR_RIGHT] == 0 || g_SonarPings[SONAR_LEFT] == 0 )
+    {
+      JSONDataPayload.add("FSnrErr", String(0));
+      JSONDataPayload.add("RSnrErr", String(0));
+      JSONDataPayload.add("LSnrErr", String(0));
+    }
+    else
+    {
+      JSONDataPayload.add("FSnrErr", String(float(g_MaxSonarDistanceCount[SONAR_FRONT]) / float(g_SonarPings[SONAR_FRONT]) * 100.0f, 2));
+      JSONDataPayload.add("RSnrErr", String(float(g_MaxSonarDistanceCount[SONAR_RIGHT]) / float(g_SonarPings[SONAR_RIGHT]) * 100.0f, 2));
+      JSONDataPayload.add("LSnrErr", String(float(g_MaxSonarDistanceCount[SONAR_LEFT]) / float(g_SonarPings[SONAR_LEFT]) * 100.0f, 2));
+    }
     JSONDataPayload.add("SnrLoop", String(float(g_SonarTskLoopCnt-LastSonarLoopCountSent)/float(g_MQTTSendInterval)*1000.0f, 2)); // converted to loop counts per second
     JSONDataPayload.add("LstSnr", String(g_LastSonarReadNum));
 
@@ -677,7 +686,6 @@ void MQTTSendTelemetry(const bool now)
     JSONDataPayload.add("CPU1IdleCnt", String(float(g_TotalIdleCycleCount[1]) / float(millis() - LastTelemetryDataSent), 3));
     JSONDataPayload.add("LongLoopCnt", String(float(g_PrimProcTskLongLoopCnt) * 1000.0 / float(millis() - LastTelemetryDataSent), 3));  // in counts per second
 
-
     JSONDataPayload.toString(JSONDataPayloadStr, false);
     JSONDataPayloadStr.toCharArray(MQTTpayload, JSONDataPayloadStr.length() + 1);
 
@@ -692,6 +700,9 @@ void MQTTSendTelemetry(const bool now)
         g_MaxSonarDistanceCount[SONAR_FRONT] = 0;
         g_MaxSonarDistanceCount[SONAR_LEFT] = 0;
         g_MaxSonarDistanceCount[SONAR_RIGHT] = 0;
+        g_SonarPings[SONAR_FRONT] = 0;
+        g_SonarPings[SONAR_LEFT] = 0;
+        g_SonarPings[SONAR_RIGHT] = 0;
         LastSonarLoopCountSent = g_SonarTskLoopCnt;
         g_TempErrorCount[TEMPERATURE_1_RED] = 0;
         g_TempErrorCount[TEMPERATURE_2_BLUE] = 0;
