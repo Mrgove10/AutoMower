@@ -295,6 +295,7 @@ extern int g_PwrSupplyStatus;
 #define FAN_UPDATE_INTERVAL 15000                       // in ms
 #define FAN_1_START_THRESHOLD 35.0f                     // in deg C
 #define FAN_1_STOP_THRESHOLD FAN_1_START_THRESHOLD - 4.0f // in deg C
+#define FAN_1_INACTIVE_BASE_THRESHOLD_INCREASE 4.0f      // in °C
 #define FAN_TEST_DURATION 3000                          // in ms
 
 extern const int g_FanPin[FAN_COUNT];
@@ -355,6 +356,7 @@ extern BaseState g_BasePreviousState;
 extern MowerState g_MowerCurrentState;
 extern float g_MowerChargeCurrent;
 extern float g_MowerBatterySOC;
+extern bool g_MowerBatteryCharging;
 
 extern unsigned long g_RainStartTime;
 

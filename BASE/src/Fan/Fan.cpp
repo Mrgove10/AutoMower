@@ -78,21 +78,27 @@ void FanCheck(const int Fan, const bool Now)
 {
   static unsigned long LastFanCheck[FAN_COUNT] = {0};
 
-  const float fanStartThreshold[FAN_COUNT] = {FAN_1_START_THRESHOLD};
-  const float fanStopThreshold[FAN_COUNT] = {FAN_1_STOP_THRESHOLD};
+  float fanStartThreshold[FAN_COUNT] = {FAN_1_START_THRESHOLD};
+  float fanStopThreshold[FAN_COUNT] = {FAN_1_STOP_THRESHOLD};
+
+  if (!g_MowerBatteryCharging && !g_enableSender)
+  {
+    fanStartThreshold[Fan] = fanStartThreshold[Fan] + FAN_1_INACTIVE_BASE_THRESHOLD_INCREASE;
+    fanStopThreshold[Fan] = fanStopThreshold[Fan] + FAN_1_INACTIVE_BASE_THRESHOLD_INCREASE;
+  }
 
   if ((millis() - LastFanCheck[Fan] > FAN_UPDATE_INTERVAL) || Now)
   {
     float temperature = TemperatureRead(Fan, true);
     if (!g_FanOn[Fan] && (temperature != UNKNOWN_FLOAT) && (temperature > fanStartThreshold[Fan]))
     {
-      DebugPrintln("Fan " + String(Fan + 1) + " Started", DBG_INFO, true);
+      DebugPrintln("Fan " + String(Fan + 1) + " Started (Threshold " + String(fanStartThreshold[Fan],1) + " C)", DBG_INFO, true);
       g_FanOn[Fan] = true;
       FanStart(Fan);
     }
     if (g_FanOn[Fan] && (temperature != UNKNOWN_FLOAT) && (temperature < fanStopThreshold[Fan]))
     {
-      DebugPrintln("Fan " + String(Fan + 1) + " Stopped", DBG_INFO, true);
+      DebugPrintln("Fan " + String(Fan + 1) + " Stopped (Threshold " + String(fanStopThreshold[Fan],1) + " C)", DBG_INFO, true);
       g_FanOn[Fan] = false;
       FanStop(Fan);
     }

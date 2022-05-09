@@ -225,6 +225,7 @@ BaseState g_BasePreviousState = BaseState::sleeping;
 MowerState g_MowerCurrentState = MowerState::idle;
 float g_MowerChargeCurrent = 0;
 float g_MowerBatterySOC = UNKNOWN_FLOAT;
+bool g_MowerBatteryCharging = false;
 
 unsigned long g_RainStartTime = 0;
 

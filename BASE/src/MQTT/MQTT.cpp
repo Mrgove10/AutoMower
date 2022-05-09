@@ -348,6 +348,19 @@ void MQTTCallback(char *topic, byte *message, unsigned int length)
       g_MowerBatterySOC = UNKNOWN_INT;
     }
 
+    // Extract Battery charging status from JSON structure
+    JSONDataPayload.get(JSONData, "BatCharging");
+    if (JSONData.success)
+    {
+      String BatteryCharging = JSONData.stringValue;
+      g_MowerBatteryCharging = (BatteryCharging.toInt() == 1);
+      DebugPrintln ("Saved Mower Battery Charging status: " + String(g_MowerBatteryCharging), DBG_VERBOSE, true);
+    }
+    else
+    {
+      g_MowerBatteryCharging = false;
+    }
+
   }
 
   /* other channel */
