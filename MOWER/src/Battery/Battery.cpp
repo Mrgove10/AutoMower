@@ -288,7 +288,8 @@ void BatteryChargeCheck(const bool Now)
     BatteryChargeCurrentRead(Now);
 
     // Check if battery Charge current and voltage levels correspond to a fully charged battery
-    if (g_BatteryChargeCurrent < BATTERY_CHARGE_CURRENT_TO_STOP_CHARGE && g_BatteryVoltage > BATTERY_VOLTAGE_TO_STOP_CHARGE && g_BatteryIsCharging)
+    if (((g_BatteryChargeCurrent < BATTERY_CHARGE_CURRENT_TO_STOP_CHARGE && g_BatteryVoltage > BATTERY_VOLTAGE_TO_STOP_CHARGE) ||
+        (g_BatteryVoltage > BATTERY_VOLTAGE_MAXIMUM_CHARGE)) && g_BatteryIsCharging)
     {
       // Open relay to stop charge
       BatteryChargeRelayOpen();
@@ -329,18 +330,18 @@ void BatteryChargeCheck(const bool Now)
 
     // Determine State of Charge
 
-    g_BatterySOC = (map(int(g_BatteryVoltage), int(BATTERY_0_PERCENT_VOLTAGE), int(BATTERY_VOLTAGE_FULL_THRESHOLD), 0, 1000))/10;
-    
     if (g_BatteryVoltage <= BATTERY_0_PERCENT_VOLTAGE)
     { 
       g_BatterySOC = 0;
     }
-
-    if (g_BatteryVoltage >= BATTERY_VOLTAGE_FULL_THRESHOLD)
+    else if (g_BatteryVoltage >= BATTERY_VOLTAGE_FULL_THRESHOLD)
     { 
       g_BatterySOC = 100;
     }
-
+    else
+    {
+      g_BatterySOC = float(map(int(g_BatteryVoltage), int(BATTERY_0_PERCENT_VOLTAGE), int(BATTERY_VOLTAGE_FULL_THRESHOLD), 0, 1000))/10.0f;
+    }
     LastBatteryCheck = millis();
   }
 }
