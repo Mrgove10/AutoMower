@@ -197,10 +197,15 @@ void mowZoneStepsInit(void)
     g_mowZoneSteps[MOW_ZONE_3][5].action = ACT_STARTMOWING; g_mowZoneSteps[MOW_ZONE_3][5].param1 = MOWER_MOWING_MODE_RANDOM;    g_mowZoneSteps[MOW_ZONE_3][5].param2 = 120;
 
     // ZONE 4 step definition -- Back of House
-    g_mowZoneSteps[MOW_ZONE_4][0].action = ACT_REVERSE;     g_mowZoneSteps[MOW_ZONE_4][0].param1 = 10;   g_mowZoneSteps[MOW_ZONE_4][0].param2 = LEAVING_BASE_REVERSE_SPEED;
+    g_mowZoneSteps[MOW_ZONE_4][0].action = ACT_REVERSE;     g_mowZoneSteps[MOW_ZONE_4][0].param1 = 7;    g_mowZoneSteps[MOW_ZONE_4][0].param2 = LEAVING_BASE_REVERSE_SPEED;
     g_mowZoneSteps[MOW_ZONE_4][1].action = ACT_SPOTTURN;    g_mowZoneSteps[MOW_ZONE_4][1].param1 = 25;   g_mowZoneSteps[MOW_ZONE_4][1].param2 = ACT_CCW;
     g_mowZoneSteps[MOW_ZONE_4][2].action = ACT_FINDWIRE;    g_mowZoneSteps[MOW_ZONE_4][2].param1 = 120;  g_mowZoneSteps[MOW_ZONE_4][2].param2 = ACT_CCW;
     g_mowZoneSteps[MOW_ZONE_4][3].action = ACT_FOLLOWWIRE;  g_mowZoneSteps[MOW_ZONE_4][3].param1 = 140;  g_mowZoneSteps[MOW_ZONE_4][3].param2 = ACT_CCW;
     g_mowZoneSteps[MOW_ZONE_4][4].action = ACT_SPOTTURN;    g_mowZoneSteps[MOW_ZONE_4][4].param1 = 45;   g_mowZoneSteps[MOW_ZONE_4][4].param2 = ACT_CCW;
     g_mowZoneSteps[MOW_ZONE_4][5].action = ACT_STARTMOWING; g_mowZoneSteps[MOW_ZONE_4][5].param1 = MOWER_MOWING_MODE_RANDOM;    g_mowZoneSteps[MOW_ZONE_4][5].param2 = 120;
+
+    // ZONE 5 step definition -- Perimeter Mow
+    g_mowZoneSteps[MOW_ZONE_5][0].action = ACT_REVERSE;     g_mowZoneSteps[MOW_ZONE_5][0].param1 = 7;    g_mowZoneSteps[MOW_ZONE_5][0].param2 = LEAVING_BASE_REVERSE_SPEED;
+    g_mowZoneSteps[MOW_ZONE_5][1].action = ACT_SPOTTURN;    g_mowZoneSteps[MOW_ZONE_5][1].param1 = 25;   g_mowZoneSteps[MOW_ZONE_5][1].param2 = ACT_CCW;
+    g_mowZoneSteps[MOW_ZONE_5][2].action = ACT_STARTMOWING;    g_mowZoneSteps[MOW_ZONE_5][2].param1 = MOWER_MOWING_MODE_PERIMETER_COUNTER_CLOCKWISE;  g_mowZoneSteps[MOW_ZONE_5][2].param2 = 30;
 }

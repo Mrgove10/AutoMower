@@ -646,6 +646,8 @@ extern bool g_MotionMotorTurnInProgress;    // Boolean indicating that the mower
 #define MOWER_MOWING_MODE_RANDOM 0                      // Ramdomised mowing
 #define MOWER_MOWING_MODE_SPIRAL_CLOCKWISE 1            // Mowing is done in a right spiral (clockwise)
 #define MOWER_MOWING_MODE_SPIRAL_COUNTER_CLOCKWISE 2    // Mowing is done in a left spiral (counter clockwise)
+#define MOWER_MOWING_MODE_PERIMETER_CLOCKWISE 3         // Mowing is done following the perimeter wire clockwise
+#define MOWER_MOWING_MODE_PERIMETER_COUNTER_CLOCKWISE 4 // Mowing is done following the perimeter wire counter-clockwise
 
 #define MOWER_MOWING_SPIRAL_MIN_SPEED (MOTION_MOTOR_MIN_SPEED + 5)  // Minimum speed for inner-circle wheel for spiral mowing mode
 #define MOWER_MOWING_SPIRAL_MAX_SPEED MOWER_MOWING_TRAVEL_SPEED     // Maximum speed for inner-circle wheel for spiral mowing mode
@@ -694,7 +696,7 @@ extern int g_mowingMode;
 #define LEAVING_BASE_REVERSE_DURATION 10 * 1000       // in ms
 //#define LEAVING_BASE_FORWARD_SPEED 100                 // in %
 
-#define MAXMOWERZONES 5     // Maximum number of zones
+#define MAXMOWERZONES 7     // Maximum number of zones
 #define MAXZONESTEPS 6      // Maximum number of steps per zone
 
 typedef struct

@@ -196,13 +196,21 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
   static int bladeDirection = CUT_MOTOR_FORWARD;
   static int outsideCount = 0;
 
-  // Varibales to manage spiral mowing
+  // Variables to manage spiral mowing
   static unsigned long stepDuration = MOWER_MOWING_SPIRAL_START_CIRCLE_DURATION * MOWER_MOWING_SPIRAL_CIRCLES_PER_STEP;
   static int spiralStep = 0;      // curren step;
   static int rightSpeed = 0;      // right motor speed
   static int leftSpeed = 0;       // left motor speed
   static bool isSpiral = false;   // indicates if mowing mode si of spiral type
   static unsigned long lastSpiralSpeedAdjustment = 0;  // time of last spiral speed change
+
+  // Variables to manage perimeter mowing
+  bool PIDReset = false;
+  bool FindWireReset = false;
+  static bool FindWire = false;
+  static bool FollowWire = false;
+  static int FindWirePhase = 0;
+  static bool BaseInSightLogged = false;
 
   //--------------------------------
   // Actions to take when entering the mowing state
@@ -211,7 +219,7 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
   if (StateChange)
   {
     DebugPrintln("");
-    LogPrintln("Mowing Started", TAG_MOWING, DBG_INFO);
+    LogPrintln("Mowing Started. Mode " + String(g_mowingMode), TAG_MOWING, DBG_INFO);
 
     // Change display with refresh
     mowingDisplay(true);
@@ -290,7 +298,11 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
         isSpiral = false;
         // Ativate Motion Motor roll compensation 
         g_MotionMotorRollCompensation = true;
+
+        // Start mower forward
+        MowerArc(MOTION_MOTOR_FORWARD, leftSpeed, rightSpeed);
         break;
+
       case MOWER_MOWING_MODE_SPIRAL_CLOCKWISE:
         rightSpeed = MOTION_MOTOR_MIN_SPEED;
         leftSpeed = MOWER_MOWING_TRAVEL_SPEED;
@@ -300,7 +312,11 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
         lastSpiralSpeedAdjustment = millis();
         // Suspend Motion Motor roll compensation 
         g_MotionMotorRollCompensation = false;
+
+        // Start mower forward
+        MowerArc(MOTION_MOTOR_FORWARD, leftSpeed, rightSpeed);
         break;
+
       case MOWER_MOWING_MODE_SPIRAL_COUNTER_CLOCKWISE:
         rightSpeed = MOWER_MOWING_TRAVEL_SPEED;
         leftSpeed = MOTION_MOTOR_MIN_SPEED;
@@ -310,14 +326,48 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
         lastSpiralSpeedAdjustment = millis();
         // Suspend Motion Motor roll compensation 
         g_MotionMotorRollCompensation = false;
+
+        // Start mower forward
+        MowerArc(MOTION_MOTOR_FORWARD, leftSpeed, rightSpeed);
+        break;
+
+      case MOWER_MOWING_MODE_PERIMETER_CLOCKWISE:
+        // Close Battery charge relay to be able to detect arrival on base station
+        BatteryChargeRelayClose();
+
+        BaseInSightLogged = false;
+
+        // Ensure wire finding function is called on first call
+        FindWire = true;
+        FindWireReset = true;
+        FindWirePhase = PERIMETER_SEARCH_PHASE_1;
+
+        // Ensure wire tracking PID is reset on first call
+        FollowWire = false;
+        PIDReset = true;
+        break;
+
+      case MOWER_MOWING_MODE_PERIMETER_COUNTER_CLOCKWISE:
+        // Close Battery charge relay to be able to detect arrival on base station
+        BatteryChargeRelayClose();
+
+        BaseInSightLogged = false;
+
+        // Ensure wire finding function is called on first call
+        FindWire = true;
+        FindWireReset = true;
+        FindWirePhase = PERIMETER_SEARCH_PHASE_1;
+
+        // Ensure wire tracking PID is reset on first call
+        FollowWire = false;
+        PIDReset = true;
         break;
       default:
         break;
     }
 
-    // Start mower forward
-    MowerArc(MOTION_MOTOR_FORWARD, leftSpeed, rightSpeed);
-//    MowerForward(MOWER_MOVES_SPEED_NORMAL);
+    // // Start mower forward
+    // MowerArc(MOTION_MOTOR_FORWARD, leftSpeed, rightSpeed);
 
     g_MowingLoopCnt = 0;
     outsideCount = 0;
@@ -327,12 +377,17 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
   // Mowing loop starts here
   //--------------------------------
 
-  // Ongoing Mowing routine is as follows:
+  // Ongoing Mowing routine is as follows for all mowing modes :
   //    Check for Sonar Task good operation,
   //    Check for tilt,
+  //    Check for cut motor over-current,
   //    Check for lost or stopped perimeter signal,
   //    Check for battery level,
   //    Check for rain,
+  // if mode is perimeter mowing (both clockwise and counter-clockise) :
+  //    find wire
+  //    follow wire
+  // if other mowing mode (random and spiral) :
   //    Check enviroment to slow down for approaching obstacles,
   //    Check for obstacle detection and react (trigger error if too many),
   //    Stop when zone mowing time completed
@@ -384,29 +439,6 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
   }
 
   //--------------------------------
-  // Is mower outside for too long ?
-  //--------------------------------
-  if (!g_isInsidePerimeter)
-  {
-    outsideCount = outsideCount + 1;
-  }
-  else
-  {
-    outsideCount = max(0, outsideCount - 2);
-  }
-  if (outsideCount > MOWER_MOWING_MAX_CONSECUTVE_OUTSIDE)
-  {
-    MowerStop();
-    CutMotorStop();
-    DebugPrintln("Mower outside Perimeter for too long (" + String(outsideCount) + ")", DBG_ERROR, true);
-    g_totalMowingTime = g_totalMowingTime + (millis() - mowingStartTime);   // in minutes
-    g_partialMowingTime = g_partialMowingTime + (millis() - mowingStartTime);   // in minutes
-    g_CurrentState = MowerState::error;
-    g_CurrentErrorCode = ERROR_MOWING_OUTSIDE_TOO_LONG;
-    return;
-  }
-
-  //--------------------------------
   // Is Cut motor in overcurrent situation ?
   //--------------------------------
 
@@ -449,158 +481,260 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
   }
 
   //--------------------------------
-  // Is it time for a cut direction change?
+  // Perimeter mowing - Find wire
   //--------------------------------
-  if (millis() - lastCutDirectionChange > MOWER_MOWING_CUT_DIRECTION_CHANGE_INTERVAL)
+  if (g_mowingMode == MOWER_MOWING_MODE_PERIMETER_CLOCKWISE ||
+      g_mowingMode == MOWER_MOWING_MODE_PERIMETER_COUNTER_CLOCKWISE)
   {
-    // determine new cut motor rotation direction
-    if (g_CutMotorDirection == CUT_MOTOR_FORWARD)
+    //--------------------------------
+    // Find wire
+    //--------------------------------
+
+    if (g_mowingMode == MOWER_MOWING_MODE_PERIMETER_CLOCKWISE && FindWire)
     {
-      bladeDirection = CUT_MOTOR_REVERSE;
+      if (MowerFindWire(FindWireReset, &FindWirePhase, BACK_TO_BASE_HEADING, true))
+      {
+        // Stop wire finding
+        FindWire = false;
+        FollowWire = true;
+        PIDReset = true;
+        // Suspend Motion Motor roll compensation 
+        g_MotionMotorRollCompensation = false;
+      }
     }
-    if (g_CutMotorDirection == CUT_MOTOR_REVERSE)
+
+    if (g_mowingMode == MOWER_MOWING_MODE_PERIMETER_COUNTER_CLOCKWISE && FindWire)
     {
-      bladeDirection = CUT_MOTOR_FORWARD;
+      if (MowerFindWire(FindWireReset, &FindWirePhase, BACK_TO_BASE_HEADING, false))
+      {
+        // Stop wire finding
+        FindWire = false;
+        FollowWire = true;
+        PIDReset = true;
+        // Suspend Motion Motor roll compensation 
+        g_MotionMotorRollCompensation = false;
+      }
+    }
+    //--------------------------------
+    // Follow wire
+    //--------------------------------
+
+    if (g_mowingMode == MOWER_MOWING_MODE_PERIMETER_CLOCKWISE && FollowWire)
+    {
+      if (!g_CutMotorOn)
+      {
+        CutMotorStart(bladeDirection, MOWER_MOWING_CUTTING_SPEED);
+        // Give time for cut motor to start
+        delay(MOWER_MOWING_CUT_START_WAIT);
+      }
+
+      if (!MowerFollowWire(&PIDReset, BACK_TO_BASE_HEADING, true))
+      {
+        FollowWire = false;
+        CutMotorStop();
+        MowerStop();
+        LogPrintln("Perimeter mowing stopped", TAG_TO_BASE, DBG_INFO);
+        g_CurrentState = MowerState::idle;
+      }
     }
 
-    LogPrintln("Changing cut motor rotation direction to " + String(bladeDirection), TAG_MOWING, DBG_INFO);
-    DisplayPrint(0,2, F("Cut direct. change"));
+    if (g_mowingMode == MOWER_MOWING_MODE_PERIMETER_COUNTER_CLOCKWISE && FollowWire)
+    {
+      if (!g_CutMotorOn)
+      {
+        CutMotorStart(bladeDirection, MOWER_MOWING_CUTTING_SPEED);
+        // Give time for cut motor to start
+        delay(MOWER_MOWING_CUT_START_WAIT);
+      }
 
-    // Stop blades and mower
-    MowerStop();
-    CutMotorStop();
-
-    // Wait for blade to stop
-    delay(MOWER_MOWING_CUTTING_DIRECTION_WAIT_TIME);
-
-    // Start cut motor with new direction
-    CutMotorStart(bladeDirection, MOWER_MOWING_CUTTING_SPEED);
-
-    // Give time for cut motor to start
-    delay(MOWER_MOWING_CUT_START_WAIT);
-
-    MowerArc(MOTION_MOTOR_FORWARD, leftSpeed, rightSpeed);
-
-//    MowerForward(MOWER_MOWING_TRAVEL_SPEED);
-
-    // Memorise time of direction change
-    lastCutDirectionChange = millis();
-    DisplayPrint(0,2, F("                  "));
+      if (!MowerFollowWire(&PIDReset, BACK_TO_BASE_HEADING, false))
+      {
+        FollowWire = false;
+        CutMotorStop();
+        MowerStop();
+        LogPrintln("Perimeter mowing stopped", TAG_TO_BASE, DBG_INFO);
+        g_CurrentState = MowerState::idle;
+      }
+    }
   }
-
-  //--------------------------------
-  // Environment sensing for approaching objects
-  //--------------------------------
-  if (!MowerSlowDownApproachingObstables(MOWER_MOWING_OBJECT_CLOSE_SPEED_REDUCTION,
-                                         SONAR_MIN_DISTANCE_FOR_SLOWING,
-                                         SONAR_MIN_DISTANCE_FOR_SLOWING,
-                                         SONAR_MIN_DISTANCE_FOR_SLOWING,
-                                         PERIMETER_APPROACHING_THRESHOLD))
+  else 
   {
-    if (!g_CutMotorOn)
+    //--------------------------------
+    // Is mower outside for too long ?
+    //--------------------------------
+    if (!g_isInsidePerimeter)
     {
-      CutMotorStart(bladeDirection, MOWER_MOWING_CUTTING_SPEED);
-      // Give time for cut motor to start
-      delay(MOWER_MOWING_CUT_START_WAIT);
+      outsideCount = outsideCount + 1;
     }
-    MowerArc(MOTION_MOTOR_FORWARD, leftSpeed, rightSpeed);
-    // MowerSpeed(MOWER_MOWING_TRAVEL_SPEED);
-  }
-
-  //--------------------------------
-  // Obstacle Collision detection
-  //--------------------------------
-
-  // TO DO : if outside, mower gets "locked-out"!!
-
-  if (OBSTACLE_DETECTED_NONE != CheckObstacleAndAct(true,
-                                                    SONAR_MIN_DISTANCE_FOR_STOP,
-                                                    SONAR_MIN_DISTANCE_FOR_STOP,
-                                                    SONAR_MIN_DISTANCE_FOR_STOP,
-                                                    true,
-                                                    MOTION_MOTOR_OVERCURRENT_THRESHOLD,
-                                                    true))
-  {
-    // Check if number of consecutive obstacle detection is above threshold and put mower in Error mode
-    if (g_successiveObstacleDectections > MOWER_MOWING_MAX_CONSECUTVE_OBSTACLES)
+    else
     {
+      outsideCount = max(0, outsideCount - 2);
+    }
+    if (outsideCount > MOWER_MOWING_MAX_CONSECUTVE_OUTSIDE)
+    {
+      MowerStop();
+      CutMotorStop();
+      DebugPrintln("Mower outside Perimeter for too long (" + String(outsideCount) + ")", DBG_ERROR, true);
       g_totalMowingTime = g_totalMowingTime + (millis() - mowingStartTime);   // in minutes
       g_partialMowingTime = g_partialMowingTime + (millis() - mowingStartTime);   // in minutes
       g_CurrentState = MowerState::error;
-      g_CurrentErrorCode = ERROR_MOWING_CONSECUTIVE_OBSTACLES;
+      g_CurrentErrorCode = ERROR_MOWING_OUTSIDE_TOO_LONG;
       return;
     }
-    else
+
+    //--------------------------------
+    // Is it time for a cut direction change?
+    //--------------------------------
+    if (millis() - lastCutDirectionChange > MOWER_MOWING_CUT_DIRECTION_CHANGE_INTERVAL)
     {
-      // In case of obstacle or perimeter reached, spiral mowing mode ends
+      // determine new cut motor rotation direction
+      if (g_CutMotorDirection == CUT_MOTOR_FORWARD)
+      {
+        bladeDirection = CUT_MOTOR_REVERSE;
+      }
+      if (g_CutMotorDirection == CUT_MOTOR_REVERSE)
+      {
+        bladeDirection = CUT_MOTOR_FORWARD;
+      }
+
+      LogPrintln("Changing cut motor rotation direction to " + String(bladeDirection), TAG_MOWING, DBG_INFO);
+      DisplayPrint(0,2, F("Cut direct. change"));
+
+      // Stop blades and mower
+      MowerStop();
+      CutMotorStop();
+
+      // Wait for blade to stop
+      delay(MOWER_MOWING_CUTTING_DIRECTION_WAIT_TIME);
+
+      // Start cut motor with new direction
+      CutMotorStart(bladeDirection, MOWER_MOWING_CUTTING_SPEED);
+
+      // Give time for cut motor to start
+      delay(MOWER_MOWING_CUT_START_WAIT);
+
+      MowerArc(MOTION_MOTOR_FORWARD, leftSpeed, rightSpeed);
+
+  //    MowerForward(MOWER_MOWING_TRAVEL_SPEED);
+
+      // Memorise time of direction change
+      lastCutDirectionChange = millis();
+      DisplayPrint(0,2, F("                  "));
+    }
+
+    //--------------------------------
+    // Environment sensing for approaching objects
+    //--------------------------------
+    if (!MowerSlowDownApproachingObstables(MOWER_MOWING_OBJECT_CLOSE_SPEED_REDUCTION,
+                                          SONAR_MIN_DISTANCE_FOR_SLOWING,
+                                          SONAR_MIN_DISTANCE_FOR_SLOWING,
+                                          SONAR_MIN_DISTANCE_FOR_SLOWING,
+                                          PERIMETER_APPROACHING_THRESHOLD))
+    {
+      if (!g_CutMotorOn)
+      {
+        CutMotorStart(bladeDirection, MOWER_MOWING_CUTTING_SPEED);
+        // Give time for cut motor to start
+        delay(MOWER_MOWING_CUT_START_WAIT);
+      }
+      MowerArc(MOTION_MOTOR_FORWARD, leftSpeed, rightSpeed);
+      // MowerSpeed(MOWER_MOWING_TRAVEL_SPEED);
+    }
+
+    //--------------------------------
+    // Obstacle Collision detection
+    //--------------------------------
+
+    // TO DO : if outside, mower gets "locked-out"!!
+
+    if (OBSTACLE_DETECTED_NONE != CheckObstacleAndAct(true,
+                                                      SONAR_MIN_DISTANCE_FOR_STOP,
+                                                      SONAR_MIN_DISTANCE_FOR_STOP,
+                                                      SONAR_MIN_DISTANCE_FOR_STOP,
+                                                      true,
+                                                      MOTION_MOTOR_OVERCURRENT_THRESHOLD,
+                                                      true))
+    {
+      // Check if number of consecutive obstacle detection is above threshold and put mower in Error mode
+      if (g_successiveObstacleDectections > MOWER_MOWING_MAX_CONSECUTVE_OBSTACLES)
+      {
+        g_totalMowingTime = g_totalMowingTime + (millis() - mowingStartTime);   // in minutes
+        g_partialMowingTime = g_partialMowingTime + (millis() - mowingStartTime);   // in minutes
+        g_CurrentState = MowerState::error;
+        g_CurrentErrorCode = ERROR_MOWING_CONSECUTIVE_OBSTACLES;
+        return;
+      }
+      else
+      {
+        // In case of obstacle or perimeter reached, spiral mowing mode ends
+        if (isSpiral)
+        {
+          rightSpeed = MOWER_MOWING_TRAVEL_SPEED;
+          leftSpeed = MOWER_MOWING_TRAVEL_SPEED;
+          isSpiral = false;
+          g_mowingMode = MOWER_MOWING_MODE_RANDOM;
+        }
+
+        // Start mowing again if inside perimeter
+        if (g_isInsidePerimeter)
+        { 
+          if (!g_CutMotorOn)
+          {
+            CutMotorStart(bladeDirection, MOWER_MOWING_CUTTING_SPEED);
+            // Give time for cut motor to start
+            delay(MOWER_MOWING_CUT_START_WAIT);
+          }
+          MowerForward(MOWER_MOWING_TRAVEL_SPEED, true);
+        }
+      }
+    }
+
+  // If spiral mowing mode and circle time is elapsed, update speeds
+    if (isSpiral && (millis() - lastSpiralSpeedAdjustment > stepDuration))
+    {
+      switch (g_mowingMode)
+      {
+        case MOWER_MOWING_MODE_SPIRAL_CLOCKWISE:
+          rightSpeed = rightSpeed + MOWER_MOWING_SPIRAL_SPEED_INCREMENT;
+          break;
+        case MOWER_MOWING_MODE_SPIRAL_COUNTER_CLOCKWISE:
+          leftSpeed = leftSpeed + MOWER_MOWING_SPIRAL_SPEED_INCREMENT;
+          break;
+        default:
+          break;
+      }
+      stepDuration = stepDuration + (g_spiralStepTimeIncrement[spiralStep] * MOWER_MOWING_SPIRAL_CIRCLES_PER_STEP);
+      spiralStep = spiralStep + 1;
+
+      // If last step is reached, stop spiral mow
+      if (spiralStep == MOWER_MOWING_SPIRAL_MAX_STEP) 
+      { 
+        isSpiral = false;
+
+        // Ativate Motion Motor roll compensation 
+        g_MotionMotorRollCompensation = true;
+
+        g_mowingMode = MOWER_MOWING_MODE_RANDOM;
+        rightSpeed = MOWER_MOWING_SPIRAL_MAX_SPEED;
+        leftSpeed = MOWER_MOWING_SPIRAL_MAX_SPEED;
+      }
+      
+      DebugPrintln("Spiral mowing: step " + String(spiralStep) + ", changing motor speeds to Left:" + String(leftSpeed) + "%, Right:" + String(rightSpeed) + "%", DBG_INFO, true);
+
+      //Memorise last change
+      lastSpiralSpeedAdjustment = millis();
+
+      // Update motor speeds
       if (isSpiral)
       {
-        rightSpeed = MOWER_MOWING_TRAVEL_SPEED;
-        leftSpeed = MOWER_MOWING_TRAVEL_SPEED;
-        isSpiral = false;
-        g_mowingMode = MOWER_MOWING_MODE_RANDOM;
+        MowerArc(MOTION_MOTOR_FORWARD, leftSpeed, rightSpeed);
       }
-
-      // Start mowing again if inside perimeter
-      if (g_isInsidePerimeter)
-      { 
-        if (!g_CutMotorOn)
-        {
-          CutMotorStart(bladeDirection, MOWER_MOWING_CUTTING_SPEED);
-          // Give time for cut motor to start
-          delay(MOWER_MOWING_CUT_START_WAIT);
-        }
-        MowerForward(MOWER_MOWING_TRAVEL_SPEED, true);
+      else
+      {
+        MowerForward(MOWER_MOWING_SPIRAL_MAX_SPEED, true);    // To allow for soft mode
       }
     }
   }
-
-// If spiral mowing mode and circle time is elapsed, update speeds
-  if (isSpiral && (millis() - lastSpiralSpeedAdjustment > stepDuration))
-  {
-    switch (g_mowingMode)
-    {
-      case MOWER_MOWING_MODE_SPIRAL_CLOCKWISE:
-        rightSpeed = rightSpeed + MOWER_MOWING_SPIRAL_SPEED_INCREMENT;
-        break;
-      case MOWER_MOWING_MODE_SPIRAL_COUNTER_CLOCKWISE:
-        leftSpeed = leftSpeed + MOWER_MOWING_SPIRAL_SPEED_INCREMENT;
-        break;
-      default:
-        break;
-    }
-    stepDuration = stepDuration + (g_spiralStepTimeIncrement[spiralStep] * MOWER_MOWING_SPIRAL_CIRCLES_PER_STEP);
-    spiralStep = spiralStep + 1;
-
-    // If last step is reached, stop spiral mow
-    if (spiralStep == MOWER_MOWING_SPIRAL_MAX_STEP) 
-    { 
-      isSpiral = false;
-
-      // Ativate Motion Motor roll compensation 
-      g_MotionMotorRollCompensation = true;
-
-      g_mowingMode = MOWER_MOWING_MODE_RANDOM;
-      rightSpeed = MOWER_MOWING_SPIRAL_MAX_SPEED;
-      leftSpeed = MOWER_MOWING_SPIRAL_MAX_SPEED;
-    }
-    
-    DebugPrintln("Spiral mowing: step " + String(spiralStep) + ", changing motor speeds to Left:" + String(leftSpeed) + "%, Right:" + String(rightSpeed) + "%", DBG_INFO, true);
-
-    //Memorise last change
-    lastSpiralSpeedAdjustment = millis();
-
-    // Update motor speeds
-    if (isSpiral)
-    {
-      MowerArc(MOTION_MOTOR_FORWARD, leftSpeed, rightSpeed);
-    }
-    else
-    {
-      MowerForward(MOWER_MOWING_SPIRAL_MAX_SPEED, true);    // To allow for soft mode
-    }
-  }
-
   //--------------------------------
   // Zone Mowing duration is reached
   //--------------------------------

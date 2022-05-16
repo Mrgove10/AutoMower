@@ -17,6 +17,7 @@
 #define MOW_ZONE_2 2        // At back of SPA
 #define MOW_ZONE_3 3        // In front of Terrace
 #define MOW_ZONE_4 4        // Back of House
+#define MOW_ZONE_5 5        // Perimeter mow counter-clockwise
 
 /**
  * @brief Mower zone definition intialisation
