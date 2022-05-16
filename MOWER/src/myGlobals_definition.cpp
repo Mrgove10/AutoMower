@@ -395,10 +395,15 @@ bool g_MotionMotorTurnInProgress = false;    // Boolean indicating that the mowe
 //   600,  600,  600, 3000, 3000, 3000, 3000, 3000, 3000, 6500,
 //  6500, 6500, 6500, 6500, 6500};
 
+// unsigned long g_spiralStepTimeIncrement[MOWER_MOWING_SPIRAL_MAX_STEP] = {
+//    75,   75,   75,   75,   75,   75,  100,  100,  100,  200,
+//   200,  200,  200,  200,  400,  400,  500,  500,  500,  500,
+//   500, 2500, 2500, 2500, 4000, 4400, 4800, 5300, 5800, 6500};
+
 unsigned long g_spiralStepTimeIncrement[MOWER_MOWING_SPIRAL_MAX_STEP] = {
-   75,   75,   75,   75,   75,   75,  100,  100,  100,  200,
-  200,  200,  200,  200,  400,  400,  500,  500,  500,  500,
-  500, 2500, 2500, 2500, 4000, 4400, 4800, 5300, 5800, 6500};
+   55,   60,   65,   70,   75,   80,   85,   90,  100,  120,
+  140,  160,  180,  200,  300,  400,  500,  500,  500,  500,
+  500, 2500, 2500, 2500, 4000, 4400, 4800, 5300, 5800, 6500, 7000, 7500};
 
 int g_mowingMode = MOWER_MOWING_MODE_RANDOM;  // Random by default
 

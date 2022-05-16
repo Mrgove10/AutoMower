@@ -663,7 +663,7 @@ extern bool g_MotionMotorTurnInProgress;    // Boolean indicating that the mower
 #define MOWER_MOWING_SPIRAL_SPEED_INCREMENT 2                       // Speed increment on each step for spiral mowing mode
 #define MOWER_MOWING_SPIRAL_CIRCLES_PER_STEP 2                      // Number of circles per step for spiral mowing mode
 #define MOWER_MOWING_SPIRAL_MAX_STEP (MOWER_MOWING_SPIRAL_MAX_SPEED - MOWER_MOWING_SPIRAL_MIN_SPEED) / MOWER_MOWING_SPIRAL_SPEED_INCREMENT  // Maximum number of steps
-#define MOWER_MOWING_SPIRAL_START_CIRCLE_DURATION 10 * 1000         // in ms, for 1 circle
+#define MOWER_MOWING_SPIRAL_START_CIRCLE_DURATION 9 * 1000         // in ms, for 1 circle
 
 extern unsigned long g_spiralStepTimeIncrement[MOWER_MOWING_SPIRAL_MAX_STEP]; // in ms, time to add to 
 
