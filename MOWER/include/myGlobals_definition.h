@@ -693,13 +693,19 @@ extern int g_mowingMode;
 #define PERIMETER_TRACKING_MAX_CONSECUTVE_OUTSIDE 200
 #define PERIMETER_TRACKING_OBJECT_CLOSE_SPEED_REDUCTION 2 // % points of speed redusction when objects are close
 
-#define MOWER_AT_BASE_CURRENT 25    // in mA
+#define MOWER_AT_BASE_CURRENT 50    // in mA
 
 // Back to base function
 #define BACK_TO_BASE_HEADING 0                 // in deg 0=North
 #define BACK_TO_BASE_CLOCKWISE false           // in which direction to follow wire
 #define BACK_TO_BASE_SPEED 100                 // in %
 #define FOLLOW_WIRE_MAX_CONSECUTVE_OBSTACLES 0 // Setting to 0 will stop the wire tracking function on first obstacle
+
+// Docked function
+#define MOWER_DOCK_REPOSITION_REVERSE_DURATION 1000  // in ms
+#define MOWER_DOCK_REPOSITION_FORWARD_MAX_DURATION 2000  // in ms
+#define MOWER_DOCK_REPOSITION_CURRENT_DEADBAND 50 // in mA
+#define MOWER_DOCK_REPOSITION_MAX_ATTEMPTS 5 // loops
 
 // Leaving Base base function
 #define LEAVING_BASE_REVERSE_SPEED 85                 // in %
@@ -822,6 +828,8 @@ extern bool g_CutMotorAlarm;
 #define ERROR_FOLLOW_WIRE_OUTSIDE_TOO_LONG 215
 
 #define ERROR_LEAVING_NO_START_NO_PERIMETER_SIGNAL 303
+
+#define ERROR_DOCKED_REPOSITION_FAILED 400
 
 #define ERROR_UNDEFINED 999
 

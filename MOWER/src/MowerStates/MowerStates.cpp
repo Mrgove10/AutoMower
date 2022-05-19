@@ -155,6 +155,16 @@ void MowerDocked(const bool StateChange, const MowerState PreviousState)
   }
 
   //--------------------------------
+  // Check for correct positionning on dock
+  //--------------------------------
+
+  if (!RepositionOnDock(MOWER_AT_BASE_CURRENT, MOWER_DOCK_REPOSITION_MAX_ATTEMPTS))
+  {
+    g_CurrentState = MowerState::error;
+    g_CurrentErrorCode = ERROR_DOCKED_REPOSITION_FAILED;
+  }
+
+  //--------------------------------
   // Check for Sonar Task good operation
   //--------------------------------
   // if (!SonarReadLoopTaskMonitor(true, false))
@@ -2156,3 +2166,79 @@ int CheckObstacleAndAct(const bool Bumper, const int Front, const int Left, cons
   g_successiveObstacleDectections = 0;
   return OBSTACLE_DETECTED_NONE;
 }
+
+/**
+ * @brief Function to reposition mower on docking station to ensure that chargin point are well aligned and that charging current is normal.
+ * This is performed by performing a small reverse and forward movement if the measured charging current is too low.
+ * Caller to take necessary action if procedure failled (e.g. enter error state).
+ * 
+ * @param MinCurrent int with minimum charging current threshold under which the repositionning is performed
+ * @param MaxAttempts int with maximum number of attempts to be performed
+ *
+ * @return bollean indicating if respositionning succeded (true) or not (false).
+ */
+
+bool RepositionOnDock(const int MinCurrent, int MaxAttempts)
+{
+  int Attempt = 1;
+  bool success = false;
+
+  if (g_BatteryRelayIsClosed && g_BatteryChargeCurrent < float(MinCurrent))
+  {
+    LogPrintln("Mower repositioning on dock (" + String(g_BatteryChargeCurrent) + " mA)", TAG_STATES, DBG_DEBUG);
+
+    while (Attempt <= MaxAttempts && !success)
+    {
+      // Fixed mower reverse
+      MowerReverse(MOWER_MOVES_SPEED_CRAWL, MOWER_DOCK_REPOSITION_REVERSE_DURATION, true);
+
+      // Forward mower move until current is above threshold
+
+      // Start forward move
+      MowerForward(BACK_TO_BASE_SPEED, true);
+
+      unsigned long ForwardStartTime = millis();
+
+      // Check charging current is normal
+
+      while (millis() - ForwardStartTime < MOWER_DOCK_REPOSITION_FORWARD_MAX_DURATION && g_BatteryChargeCurrent < float(MinCurrent + MOWER_DOCK_REPOSITION_CURRENT_DEADBAND))
+      {
+        delay(50);
+        BatteryChargeCurrentRead(true);
+      }
+
+      // Wait a short period to ensure good contact
+      delay(200);
+
+      // Mower stop
+      MowerStop();
+
+      // Check to see if re-docking was successfull
+
+      if (g_BatteryChargeCurrent < float(MinCurrent))
+      {
+        Attempt = Attempt + 1;
+      }
+      else
+      {
+        success = true;
+      }
+    }
+
+    if (success)
+    {
+      LogPrintln("Mower repositioning on dock success (" + String(g_BatteryChargeCurrent) + " mA after " + String(Attempt) + " tries)", TAG_STATES, DBG_DEBUG);
+      return true;
+    }
+    else
+    {
+      LogPrintln("Mower repositioning on dock failed (" + String(g_BatteryChargeCurrent) + " mA)", TAG_STATES, DBG_DEBUG);
+      return false;
+    }
+  }
+  else
+  {
+    return true;
+  }
+}
+

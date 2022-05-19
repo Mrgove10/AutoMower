@@ -103,4 +103,16 @@ bool CheckPreConditions(const int Tilt = ERROR_NO_ERROR, const int Bumper = ERRO
  */
 int CheckObstacleAndAct(const bool Bumper = false, const int Front = 0, const int Left = 0, const int Right = 0, const bool Perimeter = false, const int MotorOverCurrent = 0, const bool ActionMode = false);
 
+/**
+ * @brief Function to reposition mower on docking station to ensure that chargin point are well aligned and that charging current is normal.
+ * This is performed by performing a small reverse and forward movement if the measured charging current is too low.
+ * Caller to take necessary action if procedure failled (e.g. enter error state).
+ * 
+ * @param MinCurrent int with minimum charging current threshold under which the repositionning is performed
+ * @param MaxAttempts int with maximum number of attempts to be performed
+ *
+ * @return bollean indicating if respositionning succeded (true) or not (false).
+ */
+bool RepositionOnDock(const int MinCurrent, int MaxAttempts);
+
 #endif

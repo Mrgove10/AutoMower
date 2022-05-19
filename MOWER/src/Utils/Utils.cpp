@@ -224,6 +224,8 @@ String ErrorString(const int errorCode)
       return String(F("Wire tracking Stopped: outside perimeter for too long"));
     case ERROR_LEAVING_NO_START_NO_PERIMETER_SIGNAL:
       return String(F("Leaving Base cannot start: no perimeter signal"));
+    case ERROR_DOCKED_REPOSITION_FAILED:
+      return String(F("Repositioning on Base failed"));
 
       // Undefined errors
     case ERROR_UNDEFINED:
