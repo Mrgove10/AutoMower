@@ -951,6 +951,7 @@ The telemetry data sent by the mower is in JSON format and contains the followin
     "ChargeCur":"0.00",
     "BatSOC":"86.8",
     "BatCharging":"0",
+    "BatVoltVarRate":"5.2",
     "DrvMotTemp":"24.7",
     "DrvMotTempEr":"0",
     "RMotCur":"9.60",

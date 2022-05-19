@@ -127,7 +127,7 @@ void MQTTCallback(char *topic, byte *message, unsigned int length)
       DebugPrintln(" Val1: <" + Val1Str + "> [" + String(Val1, 5) + "]", 0, false, true);
     }
 
-    // Extract Val2 valu from JSON structure
+    // Extract Val2 value from JSON structure
 
     JSONDataPayload.get(JSONData, "Val2");
     if (JSONData.success) 
@@ -546,7 +546,7 @@ void PerimeterSignalStatusSend(const bool now = false)
 
 /**
  * Send rain status on MQTT channel
- * @param now boolean indicating the sending is to be performed immediatly
+ * @param now boolean indicating the sending is to be performed immediately
  */
 void BaseRainStatusSend(const bool now = false)
 {

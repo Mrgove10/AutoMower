@@ -56,6 +56,16 @@
 			"streambuf": "cpp",
 			"cmath": "cpp",
 			"algorithm": "cpp"
-		}
+		},
+		"cSpell.words": [
+			"Arduino",
+			"Ardumower",
+			"Automower",
+			"Expressif",
+			"Grafana",
+			"mosfet",
+			"setpoint",
+			"Wifi"
+		]
 	}
 }

@@ -582,6 +582,9 @@ void MQTTSendTelemetry(const bool now)
 {
   static unsigned long LastTelemetryDataSent = 0;
   static unsigned int LastSonarLoopCountSent = 0;
+  static float LastBatteryVoltage = UNKNOWN_FLOAT;
+  static float BatteryVoltageChangeRate = 0;
+
   char MQTTpayload[MQTT_MAX_PAYLOAD];
 
   if ((millis() - LastTelemetryDataSent > g_MQTTSendInterval) || now)
@@ -601,7 +604,15 @@ void MQTTSendTelemetry(const bool now)
     JSONDataPayload.add("ChargeCur", String(g_BatteryChargeCurrent, 2));
     JSONDataPayload.add("BatSOC", String(g_BatterySOC,1));
     JSONDataPayload.add("BatCharging", String(g_BatteryIsCharging));
-    
+
+    if (LastBatteryVoltage == UNKNOWN_FLOAT)
+    {
+      LastBatteryVoltage = g_BatteryVoltage;
+    }
+
+    BatteryVoltageChangeRate = BatteryVoltageChangeRate * 0.8f + 0.2f * ((g_BatteryVoltage - LastBatteryVoltage) / (BATTERY_VOLTAGE_FULL_THRESHOLD - BATTERY_0_PERCENT_VOLTAGE) * 100.0f / float((millis() - LastTelemetryDataSent)) * 1000.0f * 3600.0f);   // in %/hour
+    JSONDataPayload.add("BatVoltVarRate", String(BatteryVoltageChangeRate,2));
+
     // MotionMotor Data
     JSONDataPayload.add("DrvMotTemp", String(g_Temperature[TEMPERATURE_2_BLUE], 1));
     JSONDataPayload.add("DrvMotTempEr", String(g_TempErrorCount[TEMPERATURE_2_BLUE]));
@@ -697,6 +708,7 @@ void MQTTSendTelemetry(const bool now)
       LastTelemetryDataSent = millis();
       if (publ == 1)
       {
+        LastBatteryVoltage = g_BatteryVoltage;
         g_MaxSonarDistanceCount[SONAR_FRONT] = 0;
         g_MaxSonarDistanceCount[SONAR_LEFT] = 0;
         g_MaxSonarDistanceCount[SONAR_RIGHT] = 0;
