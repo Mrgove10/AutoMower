@@ -102,7 +102,7 @@ void EEPROMSetup(void)
     g_PerimeterSignalLowTrackThreshold = g_EEPROMLoad.Load.Data.PerimeterSignalLowTrackThreshold;
 
     // Stored Statistics
-    g_totalObstacleDectections = g_EEPROMLoad.Load.Data.totalObstacleDectections;
+    g_totalObstacleDetections = g_EEPROMLoad.Load.Data.totalObstacleDectections;
     g_totalMowingTime = g_EEPROMLoad.Load.Data.totalMowingTime;
     g_partialMowingTime = g_EEPROMLoad.Load.Data.partialMowingTime;
     g_operationTime = g_EEPROMLoad.Load.Data.operationTime;
@@ -111,7 +111,7 @@ void EEPROMSetup(void)
     // OTA request
     g_otaFlag = g_EEPROMLoad.Load.Data.OTARequested;
 
-    DebugPrintln("EEPROM value for g_totalObstacleDectections: " + String(g_totalObstacleDectections), DBG_INFO);
+    DebugPrintln("EEPROM value for g_totalObstacleDetections: " + String(g_totalObstacleDetections), DBG_INFO);
     DebugPrintln("EEPROM value for g_totalMowingTime: " + String(g_totalMowingTime), DBG_INFO);
     DebugPrintln("EEPROM value for g_partialMowingTime: " + String(g_partialMowingTime), DBG_INFO);
     DebugPrintln("EEPROM value for g_operationTime: " + String(g_operationTime), DBG_INFO);
@@ -200,7 +200,7 @@ void EEPROMSave(boolean immediatly)
     g_EEPROMLoad.Load.Data.PerimeterSignalLowTrackThreshold = g_PerimeterSignalLowTrackThreshold;
 
     // Stored Statistics
-    g_EEPROMLoad.Load.Data.totalObstacleDectections = g_totalObstacleDectections;
+    g_EEPROMLoad.Load.Data.totalObstacleDectections = g_totalObstacleDetections;
     g_EEPROMLoad.Load.Data.totalMowingTime = g_totalMowingTime;
     g_EEPROMLoad.Load.Data.partialMowingTime = g_partialMowingTime;
     g_EEPROMLoad.Load.Data.operationTime = g_operationTime;

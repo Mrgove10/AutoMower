@@ -198,7 +198,7 @@ extern SSD1306Wire oled;
 #define OLED_BRIGHTNESS_LOW 0
 #endif
 
-#define DISPLAY_COLUMS 20
+#define DISPLAY_COLUMNS 20
 #define DISPLAY_ROWS 4
 
 #define DISPLAY_BACKLIGHT_OFF_DELAY 2 * 60 * 1000   // Used to trigger screen backlight switch off, in ms

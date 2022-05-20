@@ -268,7 +268,7 @@ void MQTTCallback(char *topic, byte *message, unsigned int length)
         else
         {
           g_CurrentState = MowerState::leaving_base;
-          g_TargetNowingZone = int(Val2);
+          g_TargetMowingZone = int(Val2);
         }
       }
       else if (Val1Str == "ERROR") // only for testing purposes
@@ -427,11 +427,11 @@ void MQTTCallback(char *topic, byte *message, unsigned int length)
 #ifdef MQTT_PITCH_ROLL_DEBUG
     else if (Command == "START_MQTT_PITCH_ROLL_DEBUG")
     {
-      g_MQTTPitcRollDebug = true;
+      g_MQTTPitchRollDebug = true;
     }
     else if (Command == "STOP_MQTT_PITCH_ROLL_DEBUG")
     {
-      g_MQTTPitcRollDebug = false;
+      g_MQTTPitchRollDebug = false;
     }
 #endif
 
@@ -497,8 +497,8 @@ void MQTTCallback(char *topic, byte *message, unsigned int length)
     {
       String State = JSONData.stringValue;
       DebugPrintln ("Received Base Rain State: " + State, DBG_DEBUG, true);
-      g_isRainningAtBase = (State.toInt() == 1);
-      DebugPrintln ("Saved Rain State: " + String(g_isRainningAtBase), DBG_VERBOSE, true);
+      g_isRainingAtBase = (State.toInt() == 1);
+      DebugPrintln ("Saved Rain State: " + String(g_isRainingAtBase), DBG_VERBOSE, true);
     }
   }
 
@@ -672,7 +672,7 @@ void MQTTSendTelemetry(const bool now)
     }
 
     // Mowing Statistics data
-    JSONDataPayload.add("Obstcl", String(g_totalObstacleDectections));
+    JSONDataPayload.add("Obstcl", String(g_totalObstacleDetections));
     JSONDataPayload.add("MowTim", String(int(g_totalMowingTime/60000)));
     JSONDataPayload.add("PartMowTim", String(int(g_partialMowingTime/60000)));
     JSONDataPayload.add("ChargTim", String(int(g_totalChargingTime/60000)));

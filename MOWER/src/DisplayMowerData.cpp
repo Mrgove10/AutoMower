@@ -73,7 +73,7 @@ void DisplayMowerData()
                    " |Timouts:" + String(g_FastAnaReadTimeout) +
                    " |MaxQ:" + String(g_inQueueMax) +
                    " |MowCnt:" + String(g_MowingLoopCnt) +
-                   " |Obtcl:" + String(g_totalObstacleDectections),
+                   " |Obtcl:" + String(g_totalObstacleDetections),
                DBG_VERBOSE, true);
 
     g_FastAnaReadTimeout = 0;

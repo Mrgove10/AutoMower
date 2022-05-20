@@ -202,13 +202,13 @@ String ErrorString(const int errorCode)
       return String(F("Wire search cannot start: tilt sensor activated"));
     case ERROR_WIRE_SEARCH_NO_START_NO_PERIMETER_SIGNAL:
       return String(F("Wire search cannot start: no perimeter signal"));
-    case ERROR_WIRE_SEARCH_PHASE_1_FAILLED:
+    case ERROR_WIRE_SEARCH_PHASE_1_FAILED:
       return String(F("Wire search PH1 (bckwd) failled to get inside perimeter"));
-    case ERROR_WIRE_SEARCH_PHASE_2_FAILLED:
+    case ERROR_WIRE_SEARCH_PHASE_2_FAILED:
       return String(F("Wire search PH2 (fwd) failled to get outside perimeter"));
     case ERROR_WIRE_SEARCH_CONSECUTIVE_OBSTACLES:
       return String(F("Wire search PH2 (fwd) failled: too many successive obstacles"));
-    case ERROR_WIRE_SEARCH_PHASE_3_FAILLED:
+    case ERROR_WIRE_SEARCH_PHASE_3_FAILED:
       return String(F("Wire search PH3 (turn) failled to get inside perimeter"));
     case ERROR_FOLLOW_WIRE_NO_START_BUMPER_ACTIVE:
       return String(F("Wire tracking cannot start: bumper activated"));

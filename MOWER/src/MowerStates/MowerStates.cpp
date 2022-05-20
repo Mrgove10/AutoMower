@@ -70,7 +70,7 @@ void MowerIdle(const bool StateChange, const MowerState PreviousState)
     g_TiltTriggered[TILT_VERTICAL] = false;
 
     // Reset successive collition counter
-    g_successiveObstacleDectections = 0;
+    g_successiveObstacleDetections = 0;
   }
 
   //--------------------------------
@@ -479,7 +479,7 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
   // Is it raining ?
   //--------------------------------
 
-   if (isRaining() || g_isRainningAtBase)
+   if (isRaining() || g_isRainingAtBase)
   {
     LogPrintln("Raining : returning to base", TAG_TO_BASE, DBG_INFO);
     MowerStop();
@@ -580,7 +580,7 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
     {
       outsideCount = max(0, outsideCount - 2);
     }
-    if (outsideCount > MOWER_MOWING_MAX_CONSECUTVE_OUTSIDE)
+    if (outsideCount > MOWER_MOWING_MAX_CONSECUTIVE_OUTSIDE)
     {
       MowerStop();
       CutMotorStop();
@@ -666,7 +666,7 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
                                                       true))
     {
       // Check if number of consecutive obstacle detection is above threshold and put mower in Error mode
-      if (g_successiveObstacleDectections > MOWER_MOWING_MAX_CONSECUTVE_OBSTACLES)
+      if (g_successiveObstacleDetections > MOWER_MOWING_MAX_CONSECUTIVE_OBSTACLES)
       {
         g_totalMowingTime = g_totalMowingTime + (millis() - mowingStartTime);   // in minutes
         g_partialMowingTime = g_partialMowingTime + (millis() - mowingStartTime);   // in minutes
@@ -751,7 +751,7 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
 
   if (millis() - zoneMowingStartTime > g_ZoneMowDuration * 60)
   {
-    DebugPrintln("Zone " + String(g_TargetNowingZone) + ": mowing duration reached (" + String(g_ZoneMowDuration/1000) + ") : returning to base", DBG_INFO, true);
+    DebugPrintln("Zone " + String(g_TargetMowingZone) + ": mowing duration reached (" + String(g_ZoneMowDuration/1000) + ") : returning to base", DBG_INFO, true);
     MowerStop();
     CutMotorStop();
     g_totalMowingTime = g_totalMowingTime + (millis() - mowingStartTime);   // in minutes
@@ -941,7 +941,7 @@ void MowerLeavingBase(const bool StateChange, const MowerState PreviousState)
     // setCPUFreq(ESP_NORMAL_FREQUENCY);
     // WiFi.setSleep(WIFI_PS_NONE);
 
-    LogPrintln("Mower leaving Base to zone " + String(g_TargetNowingZone), TAG_STATES, DBG_INFO);
+    LogPrintln("Mower leaving Base to zone " + String(g_TargetMowingZone), TAG_STATES, DBG_INFO);
 
     // Initialise variables
     stepNum = 0;
@@ -1017,12 +1017,12 @@ void MowerLeavingBase(const bool StateChange, const MowerState PreviousState)
   }
 
   // Perform next step action
-  ZoneStepAction(g_mowZoneSteps[g_TargetNowingZone][stepNum].action, g_mowZoneSteps[g_TargetNowingZone][stepNum].param1, g_mowZoneSteps[g_TargetNowingZone][stepNum].param2);
+  ZoneStepAction(g_mowZoneSteps[g_TargetMowingZone][stepNum].action, g_mowZoneSteps[g_TargetMowingZone][stepNum].param1, g_mowZoneSteps[g_TargetMowingZone][stepNum].param2);
 
   // Check if step is completed
   if (millis() - stepStartTime > g_ZoneStepDuration)
   {
-    if (g_mowZoneSteps[g_TargetNowingZone][stepNum].action == ACT_FORWARD)
+    if (g_mowZoneSteps[g_TargetMowingZone][stepNum].action == ACT_FORWARD)
     {
       MowerStop();
     }
@@ -1178,7 +1178,7 @@ bool MowerFindWire(const bool reset, int *phase, const int heading, const bool c
     {
       DebugPrintln("Phase 1 failled: not inside perimeter", DBG_DEBUG, true);
       g_CurrentState = MowerState::error;
-      g_CurrentErrorCode = ERROR_WIRE_SEARCH_PHASE_1_FAILLED;
+      g_CurrentErrorCode = ERROR_WIRE_SEARCH_PHASE_1_FAILED;
       return false;
     }
 
@@ -1230,7 +1230,7 @@ bool MowerFindWire(const bool reset, int *phase, const int heading, const bool c
                                                         true))
       {
         // Check if number of consecutive obstacle detection is above threshold and put mower in Error mode
-        if (g_successiveObstacleDectections > PERIMETER_SEARCH_MAX_CONSECUTVE_OBSTACLES)
+        if (g_successiveObstacleDetections > PERIMETER_SEARCH_MAX_CONSECUTIVE_OBSTACLES)
         {
           g_CurrentState = MowerState::error;
           g_CurrentErrorCode = ERROR_WIRE_SEARCH_CONSECUTIVE_OBSTACLES;
@@ -1278,7 +1278,7 @@ bool MowerFindWire(const bool reset, int *phase, const int heading, const bool c
       MowerStop();
       DebugPrintln("Phase 2 failled: not outside perimeter", DBG_DEBUG, true);
       g_CurrentState = MowerState::error;
-      g_CurrentErrorCode = ERROR_WIRE_SEARCH_PHASE_2_FAILLED;
+      g_CurrentErrorCode = ERROR_WIRE_SEARCH_PHASE_2_FAILED;
       return false;
     }
 
@@ -1342,7 +1342,7 @@ bool MowerFindWire(const bool reset, int *phase, const int heading, const bool c
     {
       DebugPrintln("Phase 3 failled: not inside perimeter", DBG_DEBUG, true);
       g_CurrentState = MowerState::error;
-      g_CurrentErrorCode = ERROR_WIRE_SEARCH_PHASE_3_FAILLED;
+      g_CurrentErrorCode = ERROR_WIRE_SEARCH_PHASE_3_FAILED;
       return false;
     }
     // Should never come Here !
@@ -1424,7 +1424,7 @@ bool MowerFollowWire(bool *reset, const int heading, const bool clockwise)
     // Move forward
     MowerForward(BACK_TO_BASE_SPEED, true);
 
-    g_successiveObstacleDectections = 0;
+    g_successiveObstacleDetections = 0;
     outsideCount = 0;
   }
 
@@ -1501,13 +1501,13 @@ bool MowerFollowWire(bool *reset, const int heading, const bool clockwise)
   }
 
   // For the moment, to keep things simple, we will consider that there should be no object on the wire path (time will tell if this is a reasonable assumption).
-  // To achieve this, we simply set the FOLLOW_WIRE_MAX_CONSECUTVE_OBSTACLES definition to 0.
+  // To achieve this, we simply set the FOLLOW_WIRE_MAX_CONSECUTIVE_OBSTACLES definition to 0.
   // So if an obstacle is detected, we declare an error and stop the wire following function.
 
   if (colisionDetected != OBSTACLE_DETECTED_NONE)
   {
     // Check if number of consecutive obstacle detection is above threshold and put mower in Error mode
-    if (g_successiveObstacleDectections > FOLLOW_WIRE_MAX_CONSECUTVE_OBSTACLES)
+    if (g_successiveObstacleDetections > FOLLOW_WIRE_MAX_CONSECUTIVE_OBSTACLES)
     {
       MowerStop();
       CutMotorStop(true);
@@ -1560,7 +1560,7 @@ bool MowerFollowWire(bool *reset, const int heading, const bool clockwise)
     // outsideCount = max(0, outsideCount - 2);
     outsideCount = 0;
   }
-  if (outsideCount > PERIMETER_TRACKING_MAX_CONSECUTVE_OUTSIDE)
+  if (outsideCount > PERIMETER_TRACKING_MAX_CONSECUTIVE_OUTSIDE)
   {
     MowerStop();
     CutMotorStop();
@@ -1886,8 +1886,8 @@ int CheckObstacleAndAct(const bool Bumper, const int Front, const int Left, cons
     }
 
     // count as an obstable detection
-    g_totalObstacleDectections = g_totalObstacleDectections + 1;
-    g_successiveObstacleDectections = g_successiveObstacleDectections + 1;
+    g_totalObstacleDetections = g_totalObstacleDetections + 1;
+    g_successiveObstacleDetections = g_successiveObstacleDetections + 1;
 
     return OBSTACLE_DETECTED_BUMPER;
   }
@@ -1970,8 +1970,8 @@ int CheckObstacleAndAct(const bool Bumper, const int Front, const int Left, cons
     }
 
     // count as an obstable detection
-    g_totalObstacleDectections = g_totalObstacleDectections + 1;
-    g_successiveObstacleDectections = g_successiveObstacleDectections + 1;
+    g_totalObstacleDetections = g_totalObstacleDetections + 1;
+    g_successiveObstacleDetections = g_successiveObstacleDetections + 1;
 
     return OBSTACLE_DETECTED_FRONT;
   }
@@ -2005,8 +2005,8 @@ int CheckObstacleAndAct(const bool Bumper, const int Front, const int Left, cons
     }
 
     // count as an obstable detection
-    g_totalObstacleDectections = g_totalObstacleDectections + 1;
-    g_successiveObstacleDectections = g_successiveObstacleDectections + 1;
+    g_totalObstacleDetections = g_totalObstacleDetections + 1;
+    g_successiveObstacleDetections = g_successiveObstacleDetections + 1;
     return OBSTACLE_DETECTED_LEFT;
   }
 
@@ -2039,8 +2039,8 @@ int CheckObstacleAndAct(const bool Bumper, const int Front, const int Left, cons
     }
 
     // count as an obstable detection
-    g_totalObstacleDectections = g_totalObstacleDectections + 1;
-    g_successiveObstacleDectections = g_successiveObstacleDectections + 1;
+    g_totalObstacleDetections = g_totalObstacleDetections + 1;
+    g_successiveObstacleDetections = g_successiveObstacleDetections + 1;
     return OBSTACLE_DETECTED_RIGHT;
   }
 
@@ -2106,8 +2106,8 @@ int CheckObstacleAndAct(const bool Bumper, const int Front, const int Left, cons
         }
 
         // count as an obstable detection
-        g_totalObstacleDectections = g_totalObstacleDectections + 1;
-        g_successiveObstacleDectections = g_successiveObstacleDectections + 1;
+        g_totalObstacleDetections = g_totalObstacleDetections + 1;
+        g_successiveObstacleDetections = g_successiveObstacleDetections + 1;
 
         return OBSTACLE_DETECTED_OVERCURRENT;
       }
@@ -2156,14 +2156,14 @@ int CheckObstacleAndAct(const bool Bumper, const int Front, const int Left, cons
     }
 
     // count as an obstable detection
-    g_totalObstacleDectections = g_totalObstacleDectections + 1;
-    g_successiveObstacleDectections = g_successiveObstacleDectections + 1;
+    g_totalObstacleDetections = g_totalObstacleDetections + 1;
+    g_successiveObstacleDetections = g_successiveObstacleDetections + 1;
 
     return OBSTACLE_DETECTED_OVERCURRENT;
   }
 
   // reset successive detections counter (we only get to here if no obstacle has been detected)
-  g_successiveObstacleDectections = 0;
+  g_successiveObstacleDetections = 0;
   return OBSTACLE_DETECTED_NONE;
 }
 

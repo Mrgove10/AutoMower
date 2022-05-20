@@ -85,13 +85,13 @@ extern int8_t g_sigcode_diff[PERIMETER_SIGNAL_CODE_LENGTH];
 #define I2S_ADC_CHANNEL ADC1_CHANNEL_3 /*!< ADC1 channel 3 is GPIO39 */
 
 // The principle is to capture in one buffer at least 2 Perimeter cable codes
-// Additionnaly, the code is over-sampled 4 times as it is read 4 times faster than the sender sends the code.
-// This oversamplin is needed as the coil detects the change of magnetic field cause by the chnage of direction(because the change of field)
+// Additionally, the code is over-sampled 4 times as it is read 4 times faster than the sender sends the code.
+// This oversampling is needed as the coil detects the change of magnetic field cause by the change of direction(because the change of field)
 // of the current in the perimeter wire and this field does not last very long.
 // In practice, the sender sends a 1 or 0 or -1 at 9 kHz (the pulse is therefore 104 microseconds long) and the mower sensing function read the
-// signal at ~38 kHz (4 times faster) and aims to capture 4 values for each "pulse" emited by the sender.
+// signal at ~38 kHz (4 times faster) and aims to capture 4 values for each "pulse" emmitted by the sender.
 // For example, if the pulse sequence is 24 values long, the DMA buffer is 24 * 4 * 2 = 1 samples long.
-// To avoid having to read the buffer too often (and effectively impacting cpu use) the DMA buffer is dimentioned to hold 2 complete sequences
+// To avoid having to read the buffer too often (and effectively impacting cpu use) the DMA buffer is dimensioned to hold 2 complete sequences
 // Therefore, the DMA buffer read frequency is reduced. For example, for a 24 pulse sequence, a complete sequence takes 24*104=2496 us to send and the read
 // frequency for 2 sequences is 24*104*2=4992 us or approximately 200 times (1,000,000/4992) per second.
 // To limit any loss of data dues to temporary slow DMA buffer read, 4 buffers are allocated.
@@ -107,7 +107,7 @@ extern int8_t g_sigcode_diff[PERIMETER_SIGNAL_CODE_LENGTH];
 #define FAST_ANA_READ_TASK_NAME "FastAnaReadTsk" // Task name
 
 extern SemaphoreHandle_t g_ADCinUse;           // to protect access to ADC between I2S driver and other analogRead calls
-extern SemaphoreHandle_t g_RawValuesSemaphore; // to protect access to shared global variables used in Perimter data Processing task
+extern SemaphoreHandle_t g_RawValuesSemaphore; // to protect access to shared global variables used in Perimeter data Processing task
 
 extern QueueHandle_t g_I2SQueueHandle; // Queue used by I2S driver to notify for availability of new samples in a full DMA buffer
 
@@ -192,7 +192,7 @@ extern bool g_PerimeterSignalStopped;          // This boolean indicates that th
 extern bool g_PerimeterSignalLost;             // This boolean indicates that the perimeter signal is either too weak (meaning that the perimeter wire is probably cut or the sender is stopped)
 extern int16_t g_PerimeterSignalLostThreshold; // Threshold under which g_PerimeterSignalLost is true (Dynamic parameter Saved to EEPROM)
 
-extern bool g_PerimeterSignalLowForTracking;       // This boolean indicates that the perimeter signal is too weak while wire tracking meaning that the mower is no longuer "over" the wire
+extern bool g_PerimeterSignalLowForTracking;       // This boolean indicates that the perimeter signal is too weak while wire tracking meaning that the mower is no longer "over" the wire
 extern int16_t g_PerimeterSignalLowTrackThreshold; // Threshold under which g_PerimeterSignalLowForTracking is true (Dynamic parameter Saved to EEPROM)
 
 extern uint16_t g_RawCopy[PERIMETER_RAW_SAMPLES]; //  Copy of circular Buffer containing last samples read from I2S DMA buffers
@@ -248,7 +248,7 @@ extern SSD1306Wire oled;
 #define OLED_BRIGHTNESS_LOW 2
 #endif
 
-#define DISPLAY_COLUMS 20
+#define DISPLAY_COLUMNS 20
 #define DISPLAY_ROWS 4
 
 #define DISPLAY_BACKLIGHT_OFF_DELAY 2 * 60 * 1000   // Used to trigger screen backlight switch off, in ms
@@ -280,9 +280,9 @@ extern Adafruit_MCP23017 IOExtend;
 #define RAIN_SENSOR_RAINING_THRESHOLD 100 // this may have to be placed in a parameter
 #define RAIN_READ_INTERVAL 30000         // in ms
 
-extern bool g_isRainningAtBase;   // updated with base rain status received by MQTT
+extern bool g_isRainingAtBase;   // updated with base rain status received by MQTT
 
-/************************* I2C HMC5883L Compasss Sensor variables *********************************/
+/************************* I2C HMC5883L Compass Sensor variables *********************************/
 
 #include <Adafruit_HMC5883_U.h>
 
@@ -407,7 +407,7 @@ extern float g_BatteryChargeCurrent;
 extern float g_BatterySOC;              // Indicates the battery state of charge in %
 extern bool g_BatteryRelayIsClosed;     // Indicates whether the battery relay is closed (true) or not (false)
 extern bool g_BatteryIsCharging;        // Indicates whether the battery is charging (true) or not (false)
-extern unsigned long g_BatteryChargingStartTime; // Memorises when battery charging started (for chrging duration calculation)
+extern unsigned long g_BatteryChargingStartTime; // Memorises when battery charging started (for charging duration calculation)
 
 /************************* Voltage variables *********************************/
 
@@ -584,7 +584,7 @@ extern noteStruct g_longBeep[1];
 #define MOTION_MOTOR_FORWARD 1
 #define MOTION_MOTOR_REVERSE -1
 
-// The following are used to compensate for pitch and roll when mower is revesing and turning when changing direction on obstacle detection
+// The following are used to compensate for pitch and roll when mower is reversing and turning when changing direction on obstacle detection
 #define PITCH_TURN_COMPENSATION_THRESHOLD -10 // in degrees
 #define PITCH_TURN_COMPENSATION_FACTOR 1.5f // multiplying factor
 #define PITCH_REVERSE_COMPENSATION_FACTOR 0.25f // multiplying factor
@@ -594,7 +594,7 @@ extern noteStruct g_longBeep[1];
 // The following are used to compensate for roll when mower is moving forward to try to follow a straight line. Without compensation, mower
 // tends to "follow" the slope it's travelling on
 #define MOTION_MOTOR_ROLL_COMPENSATION_THRESHOLD 2  // in degrees
-#define MOTION_MOTOR_ROLL_COMPENSATION_FACTOR 0.5   // Proportional compensation coeficient : motor speed compensation (in %) = roll angle (in degrees) * MOTION_MOTOR_ROLL_COMPENSATION_FACTOR
+#define MOTION_MOTOR_ROLL_COMPENSATION_FACTOR 0.5   // Proportional compensation coefficient : motor speed compensation (in %) = roll angle (in degrees) * MOTION_MOTOR_ROLL_COMPENSATION_FACTOR
 #define MOTION_MOTOR_ROLL_COMPENSATION_MAXIMUM 10   // Maximum roll motor compensation speed (in %)
 
 #define MOTION_MOTOR_OVERCURRENT_THRESHOLD 800 // in mA
@@ -646,14 +646,14 @@ extern bool g_MotionMotorTurnInProgress;    // Boolean indicating that the mower
 // Mowing
 #define MOWER_MOWING_MOWING_SESSION_DURATION 120   // in seconds, default duration of mowing session
 #define MOWER_MOWING_TRAVEL_SPEED 100
-#define MOWER_MOWING_OBJECT_CLOSE_SPEED_REDUCTION 7 // % points of speed redusction when objects are close
-#define MOWER_MOWING_MAX_CONSECUTVE_OBSTACLES 5
-#define MOWER_MOWING_MAX_CONSECUTVE_OUTSIDE 30
+#define MOWER_MOWING_OBJECT_CLOSE_SPEED_REDUCTION 7 // % points of speed reduction when objects are close
+#define MOWER_MOWING_MAX_CONSECUTIVE_OBSTACLES 5
+#define MOWER_MOWING_MAX_CONSECUTIVE_OUTSIDE 30
 #define MOWER_MOWING_CUT_DIRECTION_CHANGE_INTERVAL 20 * 60 * 1000  // in ms, how often the mower stops to change cut motor rotation direction
 #define MOWER_MOWING_CUTTING_DIRECTION_WAIT_TIME 15 * 1000      // in ms, time to wait cut motor has stopped
-#define MOWER_MOWING_CUT_START_WAIT 2000  // in ms, time to wait after starting cut motor before starting motion motors. Especailly susefull when battery in not @ 100%
+#define MOWER_MOWING_CUT_START_WAIT 2000  // in ms, time to wait after starting cut motor before starting motion motors. Especially successful when battery in not @ 100%
 
-#define MOWER_MOWING_MODE_RANDOM 0                      // Ramdomised mowing
+#define MOWER_MOWING_MODE_RANDOM 0                      // Randomised mowing
 #define MOWER_MOWING_MODE_SPIRAL_CLOCKWISE 1            // Mowing is done in a right spiral (clockwise)
 #define MOWER_MOWING_MODE_SPIRAL_COUNTER_CLOCKWISE 2    // Mowing is done in a left spiral (counter clockwise)
 #define MOWER_MOWING_MODE_PERIMETER_CLOCKWISE 3         // Mowing is done following the perimeter wire clockwise
@@ -689,9 +689,9 @@ extern int g_mowingMode;
 #define PERIMETER_SEARCH_ANGLE_INCREMENT 15 // in deg
 // #define PERIMETER_SEARCH_TURN_MAX_TIME 10000 // in ms
 #define PERIMETER_SEARCH_TURN_MAX_ITERATIONS 180 / PERIMETER_SEARCH_ANGLE_INCREMENT // in loop counts. It should not be necessary to turn more than 150 deg depending on wire approach angle
-#define PERIMETER_SEARCH_MAX_CONSECUTVE_OBSTACLES 3
-#define PERIMETER_TRACKING_MAX_CONSECUTVE_OUTSIDE 200
-#define PERIMETER_TRACKING_OBJECT_CLOSE_SPEED_REDUCTION 2 // % points of speed redusction when objects are close
+#define PERIMETER_SEARCH_MAX_CONSECUTIVE_OBSTACLES 3
+#define PERIMETER_TRACKING_MAX_CONSECUTIVE_OUTSIDE 200
+#define PERIMETER_TRACKING_OBJECT_CLOSE_SPEED_REDUCTION 2 // % points of speed reduction when objects are close
 
 #define MOWER_AT_BASE_CURRENT 50    // in mA
 
@@ -699,7 +699,7 @@ extern int g_mowingMode;
 #define BACK_TO_BASE_HEADING 0                 // in deg 0=North
 #define BACK_TO_BASE_CLOCKWISE false           // in which direction to follow wire
 #define BACK_TO_BASE_SPEED 100                 // in %
-#define FOLLOW_WIRE_MAX_CONSECUTVE_OBSTACLES 0 // Setting to 0 will stop the wire tracking function on first obstacle
+#define FOLLOW_WIRE_MAX_CONSECUTIVE_OBSTACLES 0 // Setting to 0 will stop the wire tracking function on first obstacle
 
 // Docked function
 #define MOWER_DOCK_REPOSITION_REVERSE_DURATION 1000  // in ms
@@ -724,7 +724,7 @@ typedef struct
 
 extern ZoneStepStruct g_mowZoneSteps[MAXMOWERZONES][MAXZONESTEPS];       // Array containing list of steps per zone
 
-extern int g_TargetNowingZone;    // Target mowing zone after leaving base 
+extern int g_TargetMowingZone;    // Target mowing zone after leaving base 
 extern unsigned long g_ZoneStepDuration;    // Duration (in ms) until end of step to go to zone
 extern int g_ZoneMowDuration; // Zone mowing duration (in minutes) 
 
@@ -740,7 +740,7 @@ extern int g_ZoneMowDuration; // Zone mowing duration (in minutes)
 #define OBSTACLE_APPROACH_LOW_SPEED_MIN_DURATION 5000 // in ms
 
 // Move count variables
-extern int g_successiveObstacleDectections; // successive obstacle detections (to trigger appropriate reaction)
+extern int g_successiveObstacleDetections; // successive obstacle detections (to trigger appropriate reaction)
 
 // Perimeter tracking function
 
@@ -815,10 +815,10 @@ extern bool g_CutMotorAlarm;
 #define ERROR_WIRE_SEARCH_NO_START_OBJECT_TOO_CLOSE 201
 #define ERROR_WIRE_SEARCH_NO_START_TILT_ACTIVE 202
 #define ERROR_WIRE_SEARCH_NO_START_NO_PERIMETER_SIGNAL 203
-#define ERROR_WIRE_SEARCH_PHASE_1_FAILLED 204
-#define ERROR_WIRE_SEARCH_PHASE_2_FAILLED 205
+#define ERROR_WIRE_SEARCH_PHASE_1_FAILED 204
+#define ERROR_WIRE_SEARCH_PHASE_2_FAILED 205
 #define ERROR_WIRE_SEARCH_CONSECUTIVE_OBSTACLES 206
-#define ERROR_WIRE_SEARCH_PHASE_3_FAILLED 207
+#define ERROR_WIRE_SEARCH_PHASE_3_FAILED 207
 
 #define ERROR_FOLLOW_WIRE_NO_START_BUMPER_ACTIVE 210
 #define ERROR_FOLLOW_WIRE_NO_START_OBJECT_TOO_CLOSE 211
@@ -851,7 +851,7 @@ extern int g_CurrentErrorCode; // Current Error code
 #define DISPLAY_DOCKED_REFRESH_INTERVAL 1000            // in ms
 #define DISPLAY_LEAVING_BASE_REFRESH_INTERVAL 1000      // in ms
 
-#define STATES_COUNT 7      // number of states in States enum (messy but did not find how to easly derive automatically number of elements from enum)
+#define STATES_COUNT 7      // number of states in States enum (messy but did not find how to easily derive automatically number of elements from enum)
 
 extern String g_menuString[STATES_COUNT];  // contains the text to display @ bottom of screen to act as a menu
 extern String g_StatesString[STATES_COUNT]; // contains the text description of a state
@@ -859,7 +859,7 @@ extern String g_StatesString[STATES_COUNT]; // contains the text description of 
 /************************* Mower operation statistics *********************************/
 
 extern unsigned long g_totalMowingTime; // Total time spent mowing, in minutes (Saved to EEPROM)
-extern long g_totalObstacleDectections; // Total number of obstacle detections   (Save to EEPROM)
+extern long g_totalObstacleDetections; // Total number of obstacle detections   (Save to EEPROM)
 
 extern unsigned long g_partialMowingTime; // Partial time spent mowing, in minutes (Saved to EEPROM)
 extern unsigned long g_operationTime;     // Total time spent in operation (not docked) (Saved to EEPROM)
@@ -887,15 +887,15 @@ extern int g_MowingLoopCnt; // number of loops since mowing started
 
 /************************* Program debugging *********************************/
 
-// For testing ONLY, if reset is not following a power-on, delay indefinately to be able to "catch" reset cause on the serial monitor.
-// NOT TO BE USED IN NORMAL OPERATION AS MOWER WILL NOT RESET OUTPUTS AND MOTORS WILL KEEP RUNNING UNTILL 
-// THE MOWER IS POWERED OFF OR A RESET IS PERFORMED MANUALY ON ESP32 BOARD
-// Folowing line needs to be commented out for function to be active
+// For testing ONLY, if reset is not following a power-on, delay indefinitely to be able to "catch" reset cause on the serial monitor.
+// NOT TO BE USED IN NORMAL OPERATION AS MOWER WILL NOT RESET OUTPUTS AND MOTORS WILL KEEP RUNNING UNTIL 
+// THE MOWER IS POWERED OFF OR A RESET IS PERFORMED MANUALLY ON ESP32 BOARD
+// Following line needs to be commented out for function to be active
 
 // #define STOP_RESTART_TO_CAPTURE_CRASH_DUMP true
 
 // Perimeter wire signal debugging
-// Folowing line needs to be commented out for function to be active
+// Following line needs to be commented out for function to be active
 
 #define MQTT_GRAPH_DEBUG true
 
@@ -908,7 +908,7 @@ extern bool g_MQTTGraphRawDebug; // to start/stop the transmission of MQTT raw d
 #endif
 
 // Perimeter tracking PID debugging
-// Folowing line needs to be commented out for function to be active
+// Following line needs to be commented out for function to be active
 
 #define MQTT_PID_GRAPH_DEBUG true       // to enable sending by MQTT of PID related data
 
@@ -918,21 +918,21 @@ extern bool g_MQTTPIDGraphDebug; // to start/stop the transmission of MQTT debug
 #endif
 
 // Perimeter wire signal task performance monitoring
-// Folowing line needs to be commented out for function to be active
-#define PERIMETER_TASK_PERFORMANCE_MONITORING true       // to enable task performance monitorinh
+// Following line needs to be commented out for function to be active
+#define PERIMETER_TASK_PERFORMANCE_MONITORING true       // to enable task performance monitoring
 
 
 extern uint32_t g_IdleCycleCount[2];
 extern uint32_t g_TotalIdleCycleCount[2];
 extern int g_PrimProcTskLongLoopCnt;
 
-// Debug function to send pitch & roll detailled information through MQTT
+// Debug function to send pitch & roll detailed information through MQTT
 // Uncomment following line to activate sending
 
 #define MQTT_PITCH_ROLL_DEBUG true
 
 #ifdef MQTT_PITCH_ROLL_DEBUG
-extern bool g_MQTTPitcRollDebug;
+extern bool g_MQTTPitchRollDebug;
 #define MQTT_PITCH_ROLL_DEBUG_CHANNEL "AutoMower/P_RTest"
 #define MQTT_PITCH_ROLL_DEBUG_CHANNEL_INTERVAL 1000  // in ms
 #endif

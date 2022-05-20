@@ -376,7 +376,7 @@ void PitchRollCalc(const bool Now, const bool reset)
 
   #ifdef MQTT_PITCH_ROLL_DEBUG
     //  send debug information through MQTT
-    if (g_MQTTPitcRollDebug && millis() - LastPitchRollSendTime > MQTT_PITCH_ROLL_DEBUG_CHANNEL_INTERVAL)
+    if (g_MQTTPitchRollDebug && millis() - LastPitchRollSendTime > MQTT_PITCH_ROLL_DEBUG_CHANNEL_INTERVAL)
     {
       String JsonPayload = "";
       FirebaseJson JSONDBGPayload;

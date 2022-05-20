@@ -58,12 +58,15 @@
 			"algorithm": "cpp"
 		},
 		"cSpell.words": [
+			"Adafruit",
 			"Arduino",
 			"Ardumower",
 			"Automower",
 			"Expressif",
+			"GPIO",
 			"Grafana",
 			"mosfet",
+			"MQTT",
 			"setpoint",
 			"Wifi"
 		]

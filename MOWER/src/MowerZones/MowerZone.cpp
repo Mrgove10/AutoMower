@@ -42,7 +42,7 @@ void ZoneStepAction(const int Action, const int Param1, const int Param2)
                                                           true))
         {
           // Check if number of consecutive obstacle detection is above threshold and put mower in Error mode
-          if (g_successiveObstacleDectections > MOWER_MOWING_MAX_CONSECUTVE_OBSTACLES)
+          if (g_successiveObstacleDetections > MOWER_MOWING_MAX_CONSECUTIVE_OBSTACLES)
           {
             g_CurrentState = MowerState::error;
             g_CurrentErrorCode = ERROR_MOWING_CONSECUTIVE_OBSTACLES;

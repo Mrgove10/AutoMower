@@ -180,7 +180,7 @@ Adafruit_MCP23017 IOExtend;
 
 /************************* Rain variables *********************************/
 
-bool g_isRainningAtBase = false;   // updated with base rain status received by MQTT
+bool g_isRainingAtBase = false;   // updated with base rain status received by MQTT
 
 /************************* I2C HMC5883L Compasss Sensor variables *********************************/
 
@@ -409,12 +409,12 @@ int g_mowingMode = MOWER_MOWING_MODE_RANDOM;  // Random by default
 
 ZoneStepStruct g_mowZoneSteps[MAXMOWERZONES][MAXZONESTEPS];       // Array containing list of steps per zone
 
-int g_TargetNowingZone = 0;    // Target mowing zone after leaving base 
+int g_TargetMowingZone = 0;    // Target mowing zone after leaving base 
 unsigned long g_ZoneStepDuration = 0;    // Duration (in ms) until end of step to go to zone
 int g_ZoneMowDuration = MOWER_MOWING_MOWING_SESSION_DURATION * 1000; // Zone mowing duration (in minutes) 
 
 // Move count variables
-int g_successiveObstacleDectections = 0; // successive obstacle detections (to trigger appropriate reaction)
+int g_successiveObstacleDetections = 0; // successive obstacle detections (to trigger appropriate reaction)
 
 // Perimeter tracking function
 
@@ -464,7 +464,7 @@ String g_StatesString[STATES_COUNT] = {"   IDLE   ",   // Idle
 /************************* Mower operation statistics *********************************/
 
 unsigned long g_totalMowingTime = 0; // Total time spent mowing, in minutes (Saved to EEPROM)
-long g_totalObstacleDectections = 0; // Total number of obstacle detections   (Saved to EEPROM)
+long g_totalObstacleDetections = 0; // Total number of obstacle detections   (Saved to EEPROM)
 
 unsigned long g_partialMowingTime; // Partial time spent mowing, in minutes (Saved to EEPROM)
 unsigned long g_operationTime;     // Total time spent in operation (not docked) (Saved to EEPROM)
@@ -496,5 +496,5 @@ uint32_t g_TotalIdleCycleCount[2] = {0, 0};
 int g_PrimProcTskLongLoopCnt = 0;
 
 #ifdef MQTT_PITCH_ROLL_DEBUG
-bool g_MQTTPitcRollDebug = false;
+bool g_MQTTPitchRollDebug = false;
 #endif
