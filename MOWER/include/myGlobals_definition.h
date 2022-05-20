@@ -422,7 +422,7 @@ extern unsigned long g_BatteryChargingStartTime; // Memorises when battery charg
 #define BATTERY_VOLTAGE_TO_START_CHARGE 11800          // in mv
 #define BATTERY_VOLTAGE_FULL_THRESHOLD 12000           // in mV
 #define BATTERY_VOLTAGE_TO_STOP_CHARGE BATTERY_VOLTAGE_FULL_THRESHOLD  // in mv
-#define BATTERY_VOLTAGE_MAXIMUM_CHARGE 12150           // in mV
+#define BATTERY_VOLTAGE_MAXIMUM_CHARGE 12100           // in mV
 
 // #define BATTERY_0_PERCENT_VOLTAGE 10900                // in mV
 // #define BATTERY_VOLTAGE_LOW_THRESHOLD 11150            // in mV
@@ -706,6 +706,7 @@ extern int g_mowingMode;
 #define MOWER_DOCK_REPOSITION_FORWARD_MAX_DURATION 2000  // in ms
 #define MOWER_DOCK_REPOSITION_CURRENT_DEADBAND 50 // in mA
 #define MOWER_DOCK_REPOSITION_MAX_ATTEMPTS 5 // loops
+#define MOWER_DOCKED_REPOSITION_CHECK_INTERVAL 60 * 1000  // in ms
 
 // Leaving Base base function
 #define LEAVING_BASE_REVERSE_SPEED 85                 // in %

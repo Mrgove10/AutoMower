@@ -2182,63 +2182,76 @@ bool RepositionOnDock(const int MinCurrent, int MaxAttempts)
 {
   int Attempt = 1;
   bool success = false;
+  static unsigned long LastRepositioncheck = 0;
 
-  if (g_BatteryRelayIsClosed && g_BatteryChargeCurrent < float(MinCurrent))
+  if ((millis() - LastRepositioncheck > MOWER_DOCKED_REPOSITION_CHECK_INTERVAL))
   {
-    LogPrintln("Mower repositioning on dock (" + String(g_BatteryChargeCurrent) + " mA)", TAG_STATES, DBG_DEBUG);
 
-    while (Attempt <= MaxAttempts && !success)
+    LastRepositioncheck = millis();
+    BatteryChargeCurrentRead(true);
+
+    if (g_BatteryRelayIsClosed && g_BatteryChargeCurrent < float(MinCurrent))
     {
-      // Fixed mower reverse
-      MowerReverse(MOWER_MOVES_SPEED_CRAWL, MOWER_DOCK_REPOSITION_REVERSE_DURATION, true);
+      LogPrintln("Mower repositioning on dock (" + String(g_BatteryChargeCurrent) + " mA)", TAG_STATES, DBG_DEBUG);
 
-      // Forward mower move until current is above threshold
-
-      // Start forward move
-      MowerForward(BACK_TO_BASE_SPEED, true);
-
-      unsigned long ForwardStartTime = millis();
-
-      // Check charging current is normal
-
-      while (millis() - ForwardStartTime < MOWER_DOCK_REPOSITION_FORWARD_MAX_DURATION && g_BatteryChargeCurrent < float(MinCurrent + MOWER_DOCK_REPOSITION_CURRENT_DEADBAND))
+      while (Attempt <= MaxAttempts && !success)
       {
-        delay(50);
-        BatteryChargeCurrentRead(true);
+        // Fixed mower reverse
+        MowerReverse(MOWER_MOVES_SPEED_CRAWL, MOWER_DOCK_REPOSITION_REVERSE_DURATION, true);
+
+        // Forward mower move until current is above threshold
+
+        // Start forward move
+        MowerForward(BACK_TO_BASE_SPEED, true);
+
+        unsigned long ForwardStartTime = millis();
+
+        // Check charging current is normal
+
+        while (millis() - ForwardStartTime < MOWER_DOCK_REPOSITION_FORWARD_MAX_DURATION && g_BatteryChargeCurrent < float(MinCurrent + MOWER_DOCK_REPOSITION_CURRENT_DEADBAND))
+        {
+          delay(50);
+          BatteryChargeCurrentRead(true);
+        }
+
+        // Wait a short period to ensure good contact
+        delay(200);
+
+        // Mower stop
+        MowerStop();
+
+        // Check to see if re-docking was successfull
+
+        if (g_BatteryChargeCurrent < float(MinCurrent))
+        {
+          Attempt = Attempt + 1;
+        }
+        else
+        {
+          success = true;
+        }
       }
 
-      // Wait a short period to ensure good contact
-      delay(200);
-
-      // Mower stop
-      MowerStop();
-
-      // Check to see if re-docking was successfull
-
-      if (g_BatteryChargeCurrent < float(MinCurrent))
+      if (success)
       {
-        Attempt = Attempt + 1;
+        LogPrintln("Mower repositioning on dock success (" + String(g_BatteryChargeCurrent) + " mA after " + String(Attempt) + " tries)", TAG_STATES, DBG_DEBUG);
+        return true;
       }
       else
       {
-        success = true;
+        LogPrintln("Mower repositioning on dock failed (" + String(g_BatteryChargeCurrent) + " mA)", TAG_STATES, DBG_DEBUG);
+        return false;
       }
-    }
-
-    if (success)
-    {
-      LogPrintln("Mower repositioning on dock success (" + String(g_BatteryChargeCurrent) + " mA after " + String(Attempt) + " tries)", TAG_STATES, DBG_DEBUG);
-      return true;
     }
     else
     {
-      LogPrintln("Mower repositioning on dock failed (" + String(g_BatteryChargeCurrent) + " mA)", TAG_STATES, DBG_DEBUG);
-      return false;
+      return true;
     }
   }
   else
   {
     return true;
   }
+
 }
 
