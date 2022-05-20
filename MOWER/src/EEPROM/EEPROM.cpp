@@ -86,12 +86,25 @@ void EEPROMSetup(void)
     g_AccelErrorX = g_EEPROMLoad.Load.Data.AccelErrorX;
     g_AccelErrorY = g_EEPROMLoad.Load.Data.AccelErrorY;
     g_MPUCalibrationTemperature = g_EEPROMLoad.Load.Data.MPUCalibrationTemp;
+    g_CompassMagXOffset = g_EEPROMLoad.Load.Data.CompassMagXOffset;
+    g_CompassMagYOffset = g_EEPROMLoad.Load.Data.CompassMagYOffset;
+    g_CompassMagZOffset = g_EEPROMLoad.Load.Data.CompassMagZOffset;
+    g_CompassMagXScale = g_EEPROMLoad.Load.Data.CompassMagXScale;
+    g_CompassMagYScale = g_EEPROMLoad.Load.Data.CompassMagYScale;
+    g_CompassMagZScale = g_EEPROMLoad.Load.Data.CompassMagZScale;
+
     DebugPrintln("EEPROM value for g_GyroErrorX: " + String(g_GyroErrorX, 5), DBG_INFO);
     DebugPrintln("EEPROM value for g_GyroErrorY: " + String(g_GyroErrorY, 5), DBG_INFO);
     DebugPrintln("EEPROM value for g_GyroErrorZ: " + String(g_GyroErrorZ, 5), DBG_INFO);
     DebugPrintln("EEPROM value for g_AccelErrorX: " + String(g_AccelErrorX, 5), DBG_INFO);
     DebugPrintln("EEPROM value for g_AccelErrorY: " + String(g_AccelErrorY, 5), DBG_INFO);
     DebugPrintln("EEPROM value for g_MPUCalibrationTemperature: " + String(g_MPUCalibrationTemperature, 2), DBG_INFO);
+    DebugPrintln("EEPROM value for g_CompassMagXOffset: " + String(g_CompassMagXOffset), DBG_INFO);
+    DebugPrintln("EEPROM value for g_CompassMagYOffset: " + String(g_CompassMagYOffset), DBG_INFO);
+    DebugPrintln("EEPROM value for g_CompassMagZOffset: " + String(g_CompassMagZOffset), DBG_INFO);
+    DebugPrintln("EEPROM value for g_CompassMagXScale: " + String(g_CompassMagXScale, 2), DBG_INFO);
+    DebugPrintln("EEPROM value for g_CompassMagYScale: " + String(g_CompassMagYScale, 2), DBG_INFO);
+    DebugPrintln("EEPROM value for g_CompassMagZScale: " + String(g_CompassMagZScale, 2), DBG_INFO);
 
     // Stored parameters
     g_ParamPerimeterTrackPIDKp = g_EEPROMLoad.Load.Data.ParamPerimeterTrackPIDKp;
@@ -190,6 +203,12 @@ void EEPROMSave(boolean immediatly)
     g_EEPROMLoad.Load.Data.AccelErrorX = g_AccelErrorX;
     g_EEPROMLoad.Load.Data.AccelErrorY = g_AccelErrorY;
     g_EEPROMLoad.Load.Data.MPUCalibrationTemp = g_MPUCalibrationTemperature;
+    g_EEPROMLoad.Load.Data.CompassMagXOffset = g_CompassMagXOffset;
+    g_EEPROMLoad.Load.Data.CompassMagYOffset = g_CompassMagYOffset;
+    g_EEPROMLoad.Load.Data.CompassMagZOffset = g_CompassMagZOffset;
+    g_EEPROMLoad.Load.Data.CompassMagXScale = g_CompassMagXScale;
+    g_EEPROMLoad.Load.Data.CompassMagYScale = g_CompassMagYScale;
+    g_EEPROMLoad.Load.Data.CompassMagZScale = g_CompassMagZScale;
 
     // Stored parameters
     g_EEPROMLoad.Load.Data.ParamPerimeterTrackPIDKp = g_ParamPerimeterTrackPIDKp;
@@ -234,6 +253,12 @@ void EEPROMInitialise(void)
   g_EEPROMLoad.Load.Data.AccelErrorX = 0;
   g_EEPROMLoad.Load.Data.AccelErrorY = 0;
   g_EEPROMLoad.Load.Data.MPUCalibrationTemp = 0;
+  g_EEPROMLoad.Load.Data.CompassMagXOffset = 0;
+  g_EEPROMLoad.Load.Data.CompassMagYOffset = 0;
+  g_EEPROMLoad.Load.Data.CompassMagZOffset = 0;
+  g_EEPROMLoad.Load.Data.CompassMagXScale = 0;
+  g_EEPROMLoad.Load.Data.CompassMagYScale = 0;
+  g_EEPROMLoad.Load.Data.CompassMagZScale = 0;
 
   // Stored parameters
   g_EEPROMLoad.Load.Data.ParamPerimeterTrackPIDKp = 0;

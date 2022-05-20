@@ -44,6 +44,14 @@ typedef struct
     float MPUCalibrationTemp;
 
     bool OTARequested;
+
+    float CompassMagXOffset;
+    float CompassMagYOffset;
+    float CompassMagZOffset;
+    float CompassMagXScale;
+    float CompassMagYScale;
+    float CompassMagZScale;
+
 } DataStruct;
 
 #define EEPROM_SPARE_SIZE EEPROM_SIZE - sizeof(DataStruct) - EEPROM_CRC_SIZE

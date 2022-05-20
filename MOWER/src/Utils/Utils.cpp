@@ -384,3 +384,24 @@ bool MyIdleHook_1( void )
  return true;
 }
 
+/**
+ * Potected I2C write to I2C device with address 
+ * 
+ * @param i2cAddr I2C address
+ * @param i2cAddr I2C address
+ * @param d byte value to write
+ * 
+ */
+void I2C_write_AddrDev_AddrReg_Byte(byte i2cAddr, byte regaddr, byte d)
+{
+  // Ensure exlusive access to I2C
+  xSemaphoreTake(g_I2CSemaphore, portMAX_DELAY);
+
+   Wire.beginTransmission(i2cAddr);
+   Wire.write(regaddr);
+   Wire.write(d);
+   Wire.endTransmission();
+
+  // Free access to I2C for other tasks
+  xSemaphoreGive(g_I2CSemaphore);
+}

@@ -188,6 +188,13 @@ bool g_isRainingAtBase = false;   // updated with base rain status received by M
 
 Adafruit_HMC5883_Unified Compass = Adafruit_HMC5883_Unified(COMPASS_ID);
 
+float g_CompassMagXOffset;   // Hard-iron offset X
+float g_CompassMagYOffset;   // Hard-iron offset Y
+float g_CompassMagZOffset;   // Hard-iron offset Z
+float g_CompassMagXScale;      // Soft-iron scale factor X
+float g_CompassMagYScale;      // Soft-iron scale factor Y
+float g_CompassMagZScale;      // Soft-iron scale factor Z
+
 bool g_CompassPresent = false;
 
 float g_CompassHeading = 0;

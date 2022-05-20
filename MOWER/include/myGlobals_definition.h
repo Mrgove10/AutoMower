@@ -294,6 +294,18 @@ extern Adafruit_HMC5883_Unified Compass;
 #define COMPASS_Y_HEADING_CORRECTION -6.5f
 #define COMPASS_READ_INTERVAL 4000
 
+#define COMPASS_CALIBRATION_SAMPLES 5000
+#define COMPASS_CALIBRATION_TURNS 5   // number of complete turns to perform calibration
+#define COMPASS_CALIBRATION_ROTATION_SPEED 40   // in %
+#define COMPASS_CALIBRATION_CLEARANCE 50 // minimum distance, in cm, to enable a compass calibration
+
+extern float g_CompassMagXOffset;   // Hard-iron offset X (Saved in EEPROM)
+extern float g_CompassMagYOffset;   // Hard-iron offset Y (Saved in EEPROM)
+extern float g_CompassMagZOffset;   // Hard-iron offset Z (Saved in EEPROM)
+extern float g_CompassMagXScale;      // Soft-iron scale factor X (Saved in EEPROM)
+extern float g_CompassMagYScale;      // Soft-iron scale factor Y (Saved in EEPROM)
+extern float g_CompassMagZScale;      // Soft-iron scale factor Z (Saved in EEPROM)
+
 extern bool g_CompassPresent;
 
 extern float g_CompassHeading;          // in Degrees

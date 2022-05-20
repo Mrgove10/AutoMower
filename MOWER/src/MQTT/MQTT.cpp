@@ -13,6 +13,7 @@
 #include "Display/Display.h"
 #include "PerimeterTsk/PerimeterTsk.h"
 #include "GyroAccel/GyroAccel.h"
+#include "Compass/Compass.h"
 
 void MQTTSubscribe()
 {
@@ -299,10 +300,21 @@ void MQTTCallback(char *topic, byte *message, unsigned int length)
           DebugPrintln("Gyro calibration can only be done in Idle or docked states", DBG_ERROR, true);
         }
       }
-      // else if (Val1Str == "ACCEL")
-      // {
-      //   AccelErrorCalibration(ACCEL_CALIBRATION_SAMPLES);
-      // }
+      else if (Val1Str == "COMPASS")
+      {
+        if (g_CurrentState == MowerState::idle &&
+            g_SonarDistance[SONAR_FRONT] > COMPASS_CALIBRATION_CLEARANCE &&
+            g_SonarDistance[SONAR_LEFT] > COMPASS_CALIBRATION_CLEARANCE &&
+            g_SonarDistance[SONAR_RIGHT] > COMPASS_CALIBRATION_CLEARANCE)
+        {
+          MowerStop();
+          CompassCalibrate(COMPASS_CALIBRATION_SAMPLES);
+        }
+        else
+        {
+          DebugPrintln("Compass calibration can only be done in Idle state with no obstacles", DBG_ERROR, true);
+        }
+      }
       else
       {
         DebugPrintln("Calibration value unspecified", DBG_ERROR, true);
