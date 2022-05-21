@@ -10,27 +10,67 @@
 
 - [Automower](#automower)
   - [Table of contents](#table-of-contents)
-  - [Sending Commands and values to the Mower](#sending-commands-and-values-to-the-mower)
-    - [Automower/Command](#automowercommand)
-      - [Mower State changes](#mower-state-changes)
-      - [Calibration](#calibration)
-      - [Over The Air program update (OTA)](#over-the-air-program-update-ota)
-      - [ESP restart](#esp-restart)
-      - [Change Trace Level](#change-trace-level)
-      - [Parameter value change](#parameter-value-change)
-      - [Test & Debug commands](#test--debug-commands)
-        - [Stop/activate sending of raw perimeter signal read task](#stopactivate-sending-of-raw-perimeter-signal-read-task)
-        - [Stop/activate sending of processed perimeter code detection task](#stopactivate-sending-of-processed-perimeter-code-detection-task)
-        - [Stop/activate sending of perimeter wire tracking control](#stopactivate-sending-of-perimeter-wire-tracking-control)
-        - [Forward mower test move](#forward-mower-test-move)
-        - [Reverse mower test move](#reverse-mower-test-move)
-        - [Turn mower test move](#turn-mower-test-move)
-        - [Motion motor Test](#motion-motor-test)
-        - [Cutting motor Test](#cutting-motor-test)
-        - [TEST_STOP](#test_stop)
-        - [Test](#test)
-  - [Receiving information from the Mower](#receiving-information-from-the-mower)
-  - [Tasks](#tasks)
+  - [The AutoMower project](#the-automower-project)
+    - [Background](#background)
+    - [Mower and docking base](#mower-and-docking-base)
+    - [Perimeter signal sending box](#perimeter-signal-sending-box)
+    - [Hardware components](#hardware-components)
+    - [Hardware architecture](#hardware-architecture)
+    - [Communications architecture](#communications-architecture)
+    - [Software Environment](#software-environment)
+    - [Mower and perimeter signal sender program architecture](#mower-and-perimeter-signal-sender-program-architecture)
+    - [Mower tasks](#mower-tasks)
+      - [FastAnaReadTsk](#fastanareadtsk)
+      - [PerimProsTsk](#perimprostsk)
+      - [AnaReadTsk](#anareadtsk)
+      - [SonarReadTsk](#sonarreadtsk)
+      - [Main task](#main-task)
+    - [Base Station tasks](#base-station-tasks)
+      - [PerimSendTsk](#perimsendtsk)
+      - [Main task](#main-task-1)
+  - [Mower communications](#mower-communications)
+    - [Sending Commands and values to the Mower](#sending-commands-and-values-to-the-mower)
+      - [AutoMower/Command topic](#automowercommand-topic)
+        - [Mower State changes](#mower-state-changes)
+        - [Calibration](#calibration)
+        - [Reset charge duration](#reset-charge-duration)
+        - [Reset partial mowing time](#reset-partial-mowing-time)
+        - [Over The Air program update (OTA)](#over-the-air-program-update-ota)
+        - [ESP restart](#esp-restart)
+        - [Change Trace Level](#change-trace-level)
+        - [Parameter value change](#parameter-value-change)
+        - [Test & Debug commands](#test--debug-commands)
+          - [Stop/activate sending of raw perimeter signal read task](#stopactivate-sending-of-raw-perimeter-signal-read-task)
+          - [Stop/activate sending of processed perimeter code detection task](#stopactivate-sending-of-processed-perimeter-code-detection-task)
+          - [Stop/activate sending of perimeter wire tracking control](#stopactivate-sending-of-perimeter-wire-tracking-control)
+          - [detailed](#detailed)
+          - [Forward mower test move](#forward-mower-test-move)
+          - [Reverse mower test move](#reverse-mower-test-move)
+          - [Turn mower test move](#turn-mower-test-move)
+          - [Motion motor Test](#motion-motor-test)
+          - [Cutting motor Test](#cutting-motor-test)
+          - [TEST_STOP](#test_stop)
+          - [Test](#test)
+    - [Receiving information from the Mower](#receiving-information-from-the-mower)
+      - [AutoMower/Telemetry topic](#automowertelemetry-topic)
+      - [AutoMower/Log topic](#automowerlog-topic)
+  - [Base station communications](#base-station-communications)
+    - [Sending Commands and values to the Base station](#sending-commands-and-values-to-the-base-station)
+      - [Automower/Base/Command](#automowerbasecommand)
+        - [Base station State changes](#base-station-state-changes)
+        - [Reset rain duration](#reset-rain-duration)
+        - [Over The Air program update (OTA)](#over-the-air-program-update-ota-1)
+        - [ESP restart](#esp-restart-1)
+        - [Change Trace Level](#change-trace-level-1)
+        - [Parameter value change](#parameter-value-change-1)
+        - [Test & Debug commands](#test--debug-commands-1)
+          - [Stop/activate sending of perimeter signal (without changing base station state)](#stopactivate-sending-of-perimeter-signal-without-changing-base-station-state)
+          - [Run startup Tests](#run-startup-tests)
+    - [Receiving information from the base station](#receiving-information-from-the-base-station)
+      - [AutoMower/Base/Telemetry topic](#automowerbasetelemetry-topic)
+      - [AutoMower/Log topic](#automowerlog-topic-1)
+      - [AutoMower/Base/Perimeter topic](#automowerbaseperimeter-topic)
+      - [AutoMower/Base/Rain topic](#automowerbaserain-topic)
   - [Website](#website)
   - [License](#license)
   - [Contribution](#contribution)
@@ -179,64 +219,63 @@ We considered that the end-result to appear rather complicated and decided that 
 Considering the number of I/O needed and the GPIO effectively available (and useable) on ESP32 development boards, we added an I2C GPIO expansion module, which was included to the custom-build PCB design.
 
 In summary, the PCB hosts:
-  - the ESP32
-  - a 12V to 5V step-down converter
-  - the I2C GPIO extension module (MCP23017)
-  - a set of 3.3v, 5V and 12V connection points (through screw terminal blocs)
-  - all the connection points for the wires connecting the different components. The connection are realised using JST type connectors. The connection points are:
 
-    - Direct GPIO connections to ESP32:
+- the ESP32
+- a 12V to 5V step-down converter
+- the I2C GPIO extension module (MCP23017)
+- a set of 3.3v, 5V and 12V connection points (through screw terminal blocs)
+- all the connection points for the wires connecting the different components. The connection are realised using JST type connectors. The connection points are:
 
-      - the LM386 operational amplifier, used to sense the perimeter wire signal (mower)
-      - the traction and cut motor PWM speed control signals (mower) or the perimeter wire power control (base station)
-      - the front bumper switches (mower)
-      - the fans (mower & base station)
-      - the ultra-sonic sonar sensors (mower)
-      - the tilt sensors (mower)
-      - the temperature sensors (mower & base station)
-      - the rain sensor (mower & base station)
-      - the buzzer (mower)
-      
-    - GPIO connections to I2C GPIO extension module:
+  - Direct GPIO connections to ESP32:
+    - the LM386 operational amplifier, used to sense the perimeter wire signal (mower)
+    - the traction and cut motor PWM speed control signals (mower) or the perimeter wire power control (base station)
+    - the front bumper switches (mower)
+    - the fans (mower & base station)
+    - the ultra-sonic sonar sensors (mower)
+    - the tilt sensors (mower)
+    - the temperature sensors (mower & base station)
+    - the rain sensor (mower & base station)
+    - the buzzer (mower)
 
-      - the traction motor direction and enable signals (mower)
-      - the cutting motor direction and enable signals (mower)
-      - the perimeter signal motor direction and enable signals (base station)
-      - the fans (mower & base station)
-      - the keypad (mower & base station)
-      - the battery relay (mower)
+  - GPIO connections to I2C GPIO extension module:
+    - the traction motor direction and enable signals (mower)
+    - the cutting motor direction and enable signals (mower)
+    - the perimeter signal motor direction and enable signals (base station)
+    - the fans (mower & base station)
+    - the keypad (mower & base station)
+    - the battery relay (mower)
 
-    - I2C connections:
+  - I2C connections:
+    - the display (mower & base station)
+    - the Gyroscope/accelerometer (mower)
+    - the magnetometer/compass (mower)
+    - the INA219 current sensor modules (mower & base station)
 
-      - the display (mower & base station)
-      - the Gyroscope/accelerometer (mower)
-      - the magnetometer/compass (mower)
-      - the INA219 current sensor modules (mower & base station)
-
-    - UART connections:
-
-      - the GPS module (mower)
+  - UART connections:
+    - the GPS module (mower)
 
 ### Communications architecture
 
 Considering my lawn's environment (position of base station and house relative to the garden), the decision was made to handle all communications to/from the mower and the base station through WiFi. This is very fortunate and enables to take full benefit of the possibilities of such connexion, namely:
-  - use of MQTT protocol to send commands, receive feedback and telemetry from the mower and base station, enable mower <=> base station communications
-  - use of wireless Telnet to send trace and debug messages, instead of having to connect a serial cable. For obvious reasons, this is an **absolute MUST HAVE**
-  - enable the use of OTA program downloads to the mower and the base station controllers. Considering the number of updates needed during the development and testing phase, this turned out to be an **absolute MUST HAVE**.
+
+- use of MQTT protocol to send commands, receive feedback and telemetry from the mower and base station, enable mower <=> base station communications
+- use of wireless Telnet to send trace and debug messages, instead of having to connect a serial cable. For obvious reasons, this is an **absolute MUST HAVE**
+- enable the use of OTA program downloads to the mower and the base station controllers. Considering the number of updates needed during the development and testing phase, this turned out to be an **absolute MUST HAVE**.
 
 No Bluetooth, GSM or radio communications are used.
 
 ### Software Environment
 
 In terms of software environment, the overall system is based on the following components:
-  - The ESP32 programs (one for the mower and one for the base station) are implemented in C++ using the Platform.IO development environment
-  - A number of C++ libraries
-  - A Mosquito MQTT broker/server to provide MQTT messaging capabilities (hosted on a Raspberry Pi 4)
-  - A Node-Red server (hosted on a Raspberry Pi 4). Node-Red is used to:
-    - provide a mower control dashboard, which can be used with a standard internet browser
-    - data management, mainly the formatting and storing of the telemetry data in the database server
-  - A MySQL Database server (hosted on a Raspberry Pi 4), used to store the telemetry and logs
-  - the Grafana extraction and visualisation tool (hosted on a Raspberry Pi 4), access through a standard internet browser.
+
+- The ESP32 programs (one for the mower and one for the base station) are implemented in C++ using the Platform.IO development environment
+- A number of C++ libraries
+- A Mosquito MQTT broker/server to provide MQTT messaging capabilities (hosted on a Raspberry Pi 4)
+- A Node-Red server (hosted on a Raspberry Pi 4). Node-Red is used to:
+  - provide a mower control dashboard, which can be used with a standard internet browser
+  - data management, mainly the formatting and storing of the telemetry data in the database server
+- A MySQL Database server (hosted on a Raspberry Pi 4), used to store the telemetry and logs
+- the Grafana extraction and visualisation tool (hosted on a Raspberry Pi 4), access through a standard internet browser.
 
 As a direct result of the different options taken (ESP32 and Wifi, mainly) the mower and base station programs had to entirely re-written. The perimeter signal coding and decoding (digital matched filter) have been adapted from the REP_AL code as well from the original Ardumower code. All the other functions have been defined and developed "from scratch".
 
@@ -248,15 +287,15 @@ As per "out of the box" standard practice when programming an ESP32, one of the 
 
 The breakdown of the mower and perimeter sending applications into different RTOS tasks has been driven by the following considerations and requirements:
 
-  - the need to perform very high-frequency tasks, independently of other applications tasks. This is specifically required to send the perimeter signal/code (by base station at ~ 9 kHz) or to sense and decode the perimeter signal/code (by mower at ~ 40 kHz).
-  - the coding simplifications enabled by separating out into distinct tasks on-going functions
-  - the benefits (re-usability, maintainability) of structuring the mower and base-station programs in a consistent manner.
+- the need to perform very high-frequency tasks, independently of other applications tasks. This is specifically required to send the perimeter signal/code (by base station at ~ 9 kHz) or to sense and decode the perimeter signal/code (by mower at ~ 40 kHz).
+- the coding simplifications enabled by separating out into distinct tasks on-going functions
+- the benefits (re-usability, maintainability) of structuring the mower and base-station programs in a consistent manner.
 
 To exchange data between the different tasks, the following mechanisms are used:
 
-  - Global variables - Yes, I know, using global variables is considered as a *POOR* programming practice: to mitigate some of the risks of using global variables, they are prefixed in the code using **'g_'**
-  - Queues
-  - Semaphores
+- Global variables - Yes, I know, using global variables is considered as a *POOR* programming practice: to mitigate some of the risks of using global variables, they are prefixed in the code using **'g_'**
+- Queues
+- Semaphores
 
 All tasks run at the same (default) priority level of 1.
 
@@ -264,11 +303,11 @@ All tasks run at the same (default) priority level of 1.
 
 The mower application is broken down into the following RTOS tasks:
 
-  - Perimeter signal acquisition task (FastAnaReadTsk)
-  - Perimeter signal processing task (PerimProwTsk)
-  - Ultra-sonic acquisition task (SonarReadTsk)
-  - Analog value read task (AnaReadTsk)
-  - Main task (default task)
+- Perimeter signal acquisition task (FastAnaReadTsk)
+- Perimeter signal processing task (PerimProwTsk)
+- Ultra-sonic acquisition task (SonarReadTsk)
+- Analog value read task (AnaReadTsk)
+- Main task (default task)
 
 #### FastAnaReadTsk
 
@@ -286,16 +325,14 @@ The ESP32 environment enables to map the I2S driver to the controllers ADC (Anal
 
 In summary, the FastAnaReadTsk task:
 
-  - on task's launch:
+- on task's launch:
+  - Initialises the I2S driver and set the sampling rate (38 400 kHz) and notification queue
+  - Initialises the ADC for use by the I2S driver
+  - Initialises the dma buffers (4 buffers used for safety, just in case the task is slowed down)
 
-    - Initialises the I2S driver and set the sampling rate (38 400 kHz) and notification queue
-    - Initialises the ADC for use by the I2S driver
-    - Initialises the dma buffers (4 buffers used for safety, just in case the task is slowed down)
-
-  - as an endless loop:
-
-    - waits for a message on the notification queue
-    - when a message is received (data is ready to be read), reads the DMA buffer and stores the raw acquired values into a shared (global variable) circular buffer (array)
+- as an endless loop:
+  - waits for a message on the notification queue
+  - when a message is received (data is ready to be read), reads the DMA buffer and stores the raw acquired values into a shared (global variable) circular buffer (array)
 
 To reduce the risk of being too slow and of loosing data, this is all this task does. The processing of the signal is performed by another task (PerimProcTsk)
 
@@ -305,21 +342,19 @@ This task processes the raw perimeter signal analog values and determines if the
 
 In summary, the PerimProcTsk task:
 
-  - on task's launch:
+- on task's launch:
+  - Initialises one of the ESP32 hardware timer used to trigger an ISR (Interrupt Software Routine) that will notify the task to process raw perimeter data. The timer is set to 100 milliseconds
+  - enables the timer
 
-    - Initialises one of the ESP32 hardware timer used to trigger an ISR (Interrupt Software Routine) that will notify the task to process raw perimeter data. The timer is set to 100 milliseconds
-    - enables the timer
+- as an endless loop:
+  - waits for a notification from the timer ISR through an RTOS notification mechanism (less resource intensive than using a semaphore or a queue)
+  - when a notification is received (time to process data):
 
-  - as an endless loop:
-
-    - waits for a notification from the timer ISR through an RTOS notification mechanism (less resource intensive than using a semaphore or a queue)
-    - when a notification is received (time to process data):
-
-      - reads the raw perimeter signal data from the circular buffer written by the FastAnaReadTsk task
-      - corrects the raw data using calibration data
-      - converts the calibrated values into a fixed [-127,+127] range (pas per original Ardumower/REP_AL code)
-      - applies the digital match filter onto the converted values
-      - makes summary data (typically mower in or out of perimeter) available to other mower functions, through global variables
+    - reads the raw perimeter signal data from the circular buffer written by the FastAnaReadTsk task
+    - corrects the raw data using calibration data
+    - converts the calibrated values into a fixed [-127,+127] range (pas per original Ardumower/REP_AL code)
+    - applies the digital match filter onto the converted values
+    - makes summary data (typically mower in or out of perimeter) available to other mower functions, through global variables
 
 #### AnaReadTsk
 
@@ -329,25 +364,23 @@ For this reason, most of analog value acquisitions have been grouped into a "slo
 
 In summary, the AnaReadTsk task:
 
-  - on task's launch:
+- on task's launch:
+  - Initialises the necessary sensors
 
-    - Initialises the necessary sensors
-
-  - as an endless loop:
-
-    - Calls the battery voltage read function
-    - Calls the battery charge check function
-    - Calls the motion motors current read function
-    - Calls the cutting motor current read function
-    - Calls the GPS position read function
-    - Calls the gyroscope/accelerometer read function that determines the mower's pitch and roll
-    - Calls the compass read function
+- as an endless loop:
+  - Calls the battery voltage read function
+  - Calls the battery charge check function
+  - Calls the motion motors current read function
+  - Calls the cutting motor current read function
+  - Calls the GPS position read function
+  - Calls the gyroscope/accelerometer read function that determines the mower's pitch and roll
+  - Calls the compass read function
 
 Each of the called functions above determine whether a read should actually be performed or not base on the last acquisition time and the acquisition interval set for each value.
 
 The values are made available to other mower functions, through global variables.
 
-Some of the analog value acquired by this task are by using "standard" analogRead function and the underlying ADC. 
+Some of the analog value acquired by this task are by using "standard" analogRead function and the underlying ADC.
 
 In practice, if no precautions are taken, the use of the ADC by the I2S Driver (see FastAnaReadTsk task), interferes with the standard analogRead function. To solve this problem, a MUTEX semaphore is implemented to ensure that the ADC is not used while the I2S driver is using it (and vice-versa).
 
@@ -359,8 +392,8 @@ Although the ultra-sonic sonar readings could have been handled through the AnaR
 
 In summary, the SonarReadTsk task:
 
-  - on task's launch, initialises the sonar I/O
-  - as an endless loop, calls the sonar distance measurement calculation function
+- on task's launch, initialises the sonar I/O
+- as an endless loop, calls the sonar distance measurement calculation function
 
 The sonar distances are made available to other mower functions, through global variables.
 
@@ -368,49 +401,49 @@ The sonar distances are made available to other mower functions, through global 
 
 The main, default, task performs all the other mower functions, which are, in summary:
 
-  - Mower setup sequence, consisting of:
+- Mower setup sequence, consisting of:
 
-    - Initialisation of RTOS semaphores
-    - The setup of a idle CPU counting hook (to have level of visibility on the free time each CPU has and of the actual load of the ESP32)
-    - Initialisation of the display
-    - Initialisation of I2C I/O extension module
-    - Initialisation of motion and cutting motors
-    - Initialisation of buzzer
-    - Initialisation of motor current sensors
-    - Initialisation of compass
-    - Initialisation of battery charge relay
-    - Initialisation of keypad
-    - Initialisation of telnet interface (used to send "serial.print" commands to a terminal connected over telnet)
-    - Initialisation of values stored in EEPROM
-    - Initialisation of Wifi and connection to house access point
-    - If an OTA update has been requested, enter OTA update mode
-    - Initialisation of date and time through NTP protocol
-    - Initialisation of MQTT stack and subscription to relevant MQTT channels
-    - Initialisation of battery charging current sensor
-    - Initialisation of temperature sensors
-    - Initialisation of fans
-    - Initialisation of motion and cutting motors **(Second time ???? TO BO CHECKED)**
-    - Initialisation of compass **(Second time ???? TO BO CHECKED)**
-    - Initialisation of bumpers (bumper I/O are monitored using hardware interrupts)
-    - Initialisation of tilt sensors (Tilt sensors I/O are monitored using hardware interrupts)
-    - Initialisation of GPS
-    - Initialisation of Gyroscope/accelerometer
-    - Initialisation of SonarReadTsk task
-    - Initialisation of FastAnaReadTsk task
-    - Initialisation of AnaReadTsk task
-    - Initialisation of PerimProcTsk task
-    - Initialisation of mowing zone definitions
-    - The execution of startup checks
+  - Initialisation of RTOS semaphores
+  - The setup of a idle CPU counting hook (to have level of visibility on the free time each CPU has and of the actual load of the ESP32)
+  - Initialisation of the display
+  - Initialisation of I2C I/O extension module
+  - Initialisation of motion and cutting motors
+  - Initialisation of buzzer
+  - Initialisation of motor current sensors
+  - Initialisation of compass
+  - Initialisation of battery charge relay
+  - Initialisation of keypad
+  - Initialisation of telnet interface (used to send "serial.print" commands to a terminal connected over telnet)
+  - Initialisation of values stored in EEPROM
+  - Initialisation of Wifi and connection to house access point
+  - If an OTA update has been requested, enter OTA update mode
+  - Initialisation of date and time through NTP protocol
+  - Initialisation of MQTT stack and subscription to relevant MQTT channels
+  - Initialisation of battery charging current sensor
+  - Initialisation of temperature sensors
+  - Initialisation of fans
+  - Initialisation of motion and cutting motors **(Second time ???? TO BO CHECKED)**
+  - Initialisation of compass **(Second time ???? TO BO CHECKED)**
+  - Initialisation of bumpers (bumper I/O are monitored using hardware interrupts)
+  - Initialisation of tilt sensors (Tilt sensors I/O are monitored using hardware interrupts)
+  - Initialisation of GPS
+  - Initialisation of Gyroscope/accelerometer
+  - Initialisation of SonarReadTsk task
+  - Initialisation of FastAnaReadTsk task
+  - Initialisation of AnaReadTsk task
+  - Initialisation of PerimProcTsk task
+  - Initialisation of mowing zone definitions
+  - The execution of startup checks
 
-  - Mower endless loop, consisting of:
+- Mower endless loop, consisting of:
 
-    - Temperature reading and fan start/stop
-    - Management of the mower states, in a state machine mode
-    - Calling the EEPROM update function
-    - Calling the MQTT status check and reconnection function
-    - Calling the MQTT telemetry send function
-    - Calling the display dimming function (to reduce energy consumption and limit screen burn-out)
-    - Call all library refresh functions (MQTT, Telnet, NTP time update ...)
+  - Temperature reading and fan start/stop
+  - Management of the mower states, in a state machine mode
+  - Calling the EEPROM update function
+  - Calling the MQTT status check and reconnection function
+  - Calling the MQTT telemetry send function
+  - Calling the display dimming function (to reduce energy consumption and limit screen burn-out)
+  - Call all library refresh functions (MQTT, Telnet, NTP time update ...)
 
 The different mower states and main transitions are summarized as follows:
 
@@ -422,8 +455,8 @@ The different mower states and main transitions are summarized as follows:
 
 The base station application is broken down into the following RTOS tasks:
 
-  - Perimeter signal sending task (PerimSendTsk)
-  - Main task (default task)
+- Perimeter signal sending task (PerimSendTsk)
+- Main task (default task)
 
 #### PerimSendTsk
 
@@ -433,19 +466,17 @@ In practice, the sender sends a 1 or 0 or -1 at 9 kHz : the pulse is therefore 1
 
 In order to achieve a precise and controlled regularity, the task is "woken-up" through a hardware timer triggered ISR that writes a notification message into an RTOS queue on which the task is waiting.
 
-***NOTE:** This could also have been achieved by using an RTOS notification mechanism, in the same way it has been done for the mower PerimProcTsk task. Originally, the two tasks used the same queue-based mechanism, but on the mower side, the processor having much more work to do than in the sender application, the queue created some problems (some orders where missed) and lead to using the RTOS notification method.* 
+***NOTE:** This could also have been achieved by using an RTOS notification mechanism, in the same way it has been done for the mower PerimProcTsk task. Originally, the two tasks used the same queue-based mechanism, but on the mower side, the processor having much more work to do than in the sender application, the queue created some problems (some orders where missed) and lead to using the RTOS notification method.*
 
 In summary, the PerimSendTsk task:
 
-  - on task's launch:
+- on task's launch:
+  - Initialises one of the ESP32 hardware timer used to trigger an ISR (Interrupt Software Routine) that will notify the task to send the next bit in the digital code sequence. The timer is set to 104 microseconds
+  - enables the timer
 
-    - Initialises one of the ESP32 hardware timer used to trigger an ISR (Interrupt Software Routine) that will notify the task to send the next bit in the digital code sequence. The timer is set to 104 microseconds
-    - enables the timer
-
-  - as an endless loop:
-
-    - waits for a notification from the timer ISR through the RTOS queue
-    - when a notification is received (time to send next code bit), sets the digital outputs driving the L298N motor driver to either send a "Forward" or "Reverse" or "Stop" on the perimeter line.
+- as an endless loop:
+  - waits for a notification from the timer ISR through the RTOS queue
+  - when a notification is received (time to send next code bit), sets the digital outputs driving the L298N motor driver to either send a "Forward" or "Reverse" or "Stop" on the perimeter line.
 
 As the perimeter wire is fed through a motor driver, the power (amplitude) of the signal can the adjusted using the PWM input to the motor driver.
 
@@ -453,36 +484,33 @@ As the perimeter wire is fed through a motor driver, the power (amplitude) of th
 
 The main, default, task performs all the other base station functions, which are, in summary:
 
-  - base station setup sequence, consisting of:
+- base station setup sequence, consisting of:
+  - Initialisation of RTOS semaphores
+  - The setup of a idle CPU counting hook (to have level of visibility on the free time each CPU has and of the actual load of the ESP32)
+  - Initialisation of the display
+  - Initialisation of I2C I/O extension module
+  - Initialisation of keypad
+  - Initialisation of telnet interface (used to send "serial.print" commands to a terminal connected through telnet)
+  - Initialisation of values stored in EEPROM
+  - Initialisation of Wifi and connection to house access point
+  - Initialisation of OTA update related functions
+  - Initialisation of date and time through NTP protocol
+  - Initialisation of MQTT stack and subscription to relevant MQTT channels
+  - Initialisation of perimeter wire load current sensor
+  - Initialisation of temperature sensors
+  - Initialisation of fans
+  - Initialisation of PerimSendTsk task
+  - The execution of startup checks
 
-    - Initialisation of RTOS semaphores
-    - The setup of a idle CPU counting hook (to have level of visibility on the free time each CPU has and of the actual load of the ESP32)
-    - Initialisation of the display
-    - Initialisation of I2C I/O extension module
-    - Initialisation of keypad
-    - Initialisation of telnet interface (used to send "serial.print" commands to a terminal connected through telnet)
-    - Initialisation of values stored in EEPROM
-    - Initialisation of Wifi and connection to house access point
-    - Initialisation of OTA update related functions
-    - Initialisation of date and time through NTP protocol
-    - Initialisation of MQTT stack and subscription to relevant MQTT channels
-    - Initialisation of perimeter wire load current sensor
-    - Initialisation of temperature sensors
-    - Initialisation of fans
-    - Initialisation of PerimSendTsk task
-    - The execution of startup checks
-
-  - base station endless loop, consisting of:
-
-    - Management of the base station states, in a state machine mode
-    - Temperature reading and fan start/stop
-    - Calling the EEPROM update function
-    - Calling the MQTT status check and reconnection function
-    - Calling the MQTT telemetry send function
-    - Calling the mower status check function
-    - Calling the display dimming function (to reduce energy consumption and limit screen burn-out)
-    - Call all library refresh functions (MQTT, Telnet, NTP time update ...)
-
+- base station endless loop, consisting of:
+  - Management of the base station states, in a state machine mode
+  - Temperature reading and fan start/stop
+  - Calling the EEPROM update function
+  - Calling the MQTT status check and reconnection function
+  - Calling the MQTT telemetry send function
+  - Calling the mower status check function
+  - Calling the display dimming function (to reduce energy consumption and limit screen burn-out)
+  - Call all library refresh functions (MQTT, Telnet, NTP time update ...)
 
 Similarly to the mower application, the use of the I2C bus is protected by the use of a MUTEX semaphore (probably not strictly needed in the base station application, but this enabled to re-use the same code as the mower). A telnet library protection MUTEX semaphore is also used.
 
@@ -504,7 +532,7 @@ Communication is done through MQTT, and the following topics are used:
 
  The messages in this topic are in JSON format and should follow this structure:
 
- ```json
+```json
 {
   "Command":"<Command>",
   "Val1":"<Command_Dependant_String_1>",
@@ -540,7 +568,7 @@ In this state the mower is doing nothing and waits for the next command.
 
 - `TEST` : This is the command to trigger the mower's startup test sequence. At the end, the mower will return to `IDLE` state.
 
-**Val2** : 
+**Val2** :
 
 - For `MOWING` state, possible values for Val2 are:
   - `0` for Random mowing.
@@ -563,6 +591,7 @@ Set mower to idle state:
   "Val1":"IDLE"
 }
 ```
+
 Set mower to clockwise spiral mowing:
 
 ```json
@@ -613,6 +642,7 @@ Set mower to clockwise spiral mowing:
   "Command":"RESET_CHARGE_DURATION"
 }
 ```
+
 ##### Reset partial mowing time
 
 **Description** : This command triggers the reset of the partial mowing time counter
@@ -783,6 +813,7 @@ Set mower to clockwise spiral mowing:
   "Command":"STOP_MQTT_PID_GRAPH_DEBUG"
 }
 ```
+
 ###### detailed
 
 **Description** : This command enables to start and stop the sending over MQTT of pitch and roll detailed values used for plotting //**ONLY FOR TEST PURPOSES**//
@@ -1017,6 +1048,7 @@ The log data sent by the mower station is in JSON format and contains the follow
   "Level":3
 }
 ```
+
 **NOTE:** Log data is not to be confused with the trace and debug messages sent over Telnet. Log data is a limited set of log messages that are intended to be saved in the database, along with telemetry data for later use.
 
 ---
@@ -1071,6 +1103,7 @@ Set base station to idle state:
   "Val1":"IDLE"
 }
 ```
+
 Set base station to perimeter signal sending mode:
 
 ```json
@@ -1273,6 +1306,7 @@ The log data sent by the base station is in JSON format and contains the followi
   "Level":3
 }
 ```
+
 **NOTE:** Log data is not to be confused with the trace and debug messages sent over Telnet. Log data is a limited set of log messages that are intended to be saved in the database, along with telemetry data for later use.
 
 #### AutoMower/Base/Perimeter topic
@@ -1289,8 +1323,8 @@ The perimeter signal status data send by the base station is in JSON format and 
 
 **Values** :
 
-  - 0 stands for no perimeter signal sent,
-  - 1 stands for perimeter signal being sent
+- 0 stands for no perimeter signal sent,
+- 1 stands for perimeter signal being sent
 
 #### AutoMower/Base/Rain topic
 
@@ -1306,8 +1340,8 @@ The rain status data send by the base station is in JSON format and contains the
 
 **Values** :
 
-  - 0 stands for not currently raining,
-  - 1 stands for currently raining
+- 0 stands for not currently raining,
+- 1 stands for currently raining
 
 ---
 
