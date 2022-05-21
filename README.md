@@ -1,85 +1,12 @@
-# Automower
-
 [![PlatformIO CI](https://github.com/Mrgove10/AutoMower/actions/workflows/mower.yml/badge.svg)](https://github.com/Mrgove10/AutoMower/actions/workflows/mower.yml)
 [![WebApp CI](https://github.com/Mrgove10/AutoMower/actions/workflows/webapp.yml/badge.svg)](https://github.com/Mrgove10/AutoMower/actions/workflows/webapp.yml)
 [![CodeFactor](https://www.codefactor.io/repository/github/mrgove10/automower/badge)](https://www.codefactor.io/repository/github/mrgove10/automower)
 
 **Note: This project is a work in progress !!**
 
-## Table of contents
+# The AutoMower project
 
-- [Automower](#automower)
-  - [Table of contents](#table-of-contents)
-  - [The AutoMower project](#the-automower-project)
-    - [Background](#background)
-    - [Mower and docking base](#mower-and-docking-base)
-    - [Perimeter signal sending box](#perimeter-signal-sending-box)
-    - [Hardware components](#hardware-components)
-    - [Hardware architecture](#hardware-architecture)
-    - [Communications architecture](#communications-architecture)
-    - [Software Environment](#software-environment)
-    - [Mower and perimeter signal sender program architecture](#mower-and-perimeter-signal-sender-program-architecture)
-    - [Mower tasks](#mower-tasks)
-      - [FastAnaReadTsk](#fastanareadtsk)
-      - [PerimProsTsk](#perimprostsk)
-      - [AnaReadTsk](#anareadtsk)
-      - [SonarReadTsk](#sonarreadtsk)
-      - [Main task](#main-task)
-    - [Base Station tasks](#base-station-tasks)
-      - [PerimSendTsk](#perimsendtsk)
-      - [Main task](#main-task-1)
-  - [Mower communications](#mower-communications)
-    - [Sending Commands and values to the Mower](#sending-commands-and-values-to-the-mower)
-      - [AutoMower/Command topic](#automowercommand-topic)
-        - [Mower State changes](#mower-state-changes)
-        - [Calibration](#calibration)
-        - [Reset charge duration](#reset-charge-duration)
-        - [Reset partial mowing time](#reset-partial-mowing-time)
-        - [Over The Air program update (OTA)](#over-the-air-program-update-ota)
-        - [ESP restart](#esp-restart)
-        - [Change Trace Level](#change-trace-level)
-        - [Parameter value change](#parameter-value-change)
-        - [Test & Debug commands](#test--debug-commands)
-          - [Stop/activate sending of raw perimeter signal read task](#stopactivate-sending-of-raw-perimeter-signal-read-task)
-          - [Stop/activate sending of processed perimeter code detection task](#stopactivate-sending-of-processed-perimeter-code-detection-task)
-          - [Stop/activate sending of perimeter wire tracking control](#stopactivate-sending-of-perimeter-wire-tracking-control)
-          - [detailed](#detailed)
-          - [Forward mower test move](#forward-mower-test-move)
-          - [Reverse mower test move](#reverse-mower-test-move)
-          - [Turn mower test move](#turn-mower-test-move)
-          - [Motion motor Test](#motion-motor-test)
-          - [Cutting motor Test](#cutting-motor-test)
-          - [TEST_STOP](#test_stop)
-          - [Test](#test)
-    - [Receiving information from the Mower](#receiving-information-from-the-mower)
-      - [AutoMower/Telemetry topic](#automowertelemetry-topic)
-      - [AutoMower/Log topic](#automowerlog-topic)
-  - [Base station communications](#base-station-communications)
-    - [Sending Commands and values to the Base station](#sending-commands-and-values-to-the-base-station)
-      - [Automower/Base/Command](#automowerbasecommand)
-        - [Base station State changes](#base-station-state-changes)
-        - [Reset rain duration](#reset-rain-duration)
-        - [Over The Air program update (OTA)](#over-the-air-program-update-ota-1)
-        - [ESP restart](#esp-restart-1)
-        - [Change Trace Level](#change-trace-level-1)
-        - [Parameter value change](#parameter-value-change-1)
-        - [Test & Debug commands](#test--debug-commands-1)
-          - [Stop/activate sending of perimeter signal (without changing base station state)](#stopactivate-sending-of-perimeter-signal-without-changing-base-station-state)
-          - [Run startup Tests](#run-startup-tests)
-    - [Receiving information from the base station](#receiving-information-from-the-base-station)
-      - [AutoMower/Base/Telemetry topic](#automowerbasetelemetry-topic)
-      - [AutoMower/Log topic](#automowerlog-topic-1)
-      - [AutoMower/Base/Perimeter topic](#automowerbaseperimeter-topic)
-      - [AutoMower/Base/Rain topic](#automowerbaserain-topic)
-  - [Website](#website)
-  - [License](#license)
-  - [Contribution](#contribution)
-
----
-
-## The AutoMower project
-
-### Background
+## Background
 
 After looking around for an autonomous mower and being put off by the cost of commercial brands and models, I was suggested to consider the DIY option.
 
@@ -89,7 +16,75 @@ The REP_AL project is a mix between an open-source approach (the software and th
 
 I opted for an "hybrid" approach as I decided to purchase the CAD file pack, so I could perform some modifications more easily, and I would print my own parts and purchase the other components directly from AliExpress. In hind site, buying the CAD files was the right thing to do as it enabled me to perform quite a few changes to the design, such as integrating a different control hardware architecture (see below).
 
-### Mower and docking base
+# Table of contents
+
+- [The AutoMower project](#the-automower-project)
+  - [Background](#background)
+- [Table of contents](#table-of-contents)
+  - [Mower and docking base](#mower-and-docking-base)
+  - [Perimeter signal sending box](#perimeter-signal-sending-box)
+  - [Hardware components](#hardware-components)
+  - [Hardware architecture](#hardware-architecture)
+  - [Communications architecture](#communications-architecture)
+  - [Software Environment](#software-environment)
+  - [Mower and perimeter signal sender program architecture](#mower-and-perimeter-signal-sender-program-architecture)
+  - [Mower tasks](#mower-tasks)
+    - [FastAnaReadTsk](#fastanareadtsk)
+    - [PerimProsTsk](#perimprostsk)
+    - [AnaReadTsk](#anareadtsk)
+    - [SonarReadTsk](#sonarreadtsk)
+    - [Main task](#main-task)
+  - [Base Station tasks](#base-station-tasks)
+    - [PerimSendTsk](#perimsendtsk)
+    - [Main task](#main-task-1)
+- [Mower communications](#mower-communications)
+  - [Sending Commands and values to the Mower](#sending-commands-and-values-to-the-mower)
+    - [AutoMower/Command topic](#automowercommand-topic)
+      - [Mower State changes](#mower-state-changes)
+      - [Calibration](#calibration)
+      - [Reset charge duration](#reset-charge-duration)
+      - [Reset partial mowing time](#reset-partial-mowing-time)
+      - [Over The Air program update (OTA)](#over-the-air-program-update-ota)
+      - [ESP restart](#esp-restart)
+      - [Change Trace Level](#change-trace-level)
+      - [Parameter value change](#parameter-value-change)
+      - [Test & Debug commands](#test--debug-commands)
+        - [Stop/activate sending of raw perimeter signal read task](#stopactivate-sending-of-raw-perimeter-signal-read-task)
+        - [Stop/activate sending of processed perimeter code detection task](#stopactivate-sending-of-processed-perimeter-code-detection-task)
+        - [Stop/activate sending of perimeter wire tracking control](#stopactivate-sending-of-perimeter-wire-tracking-control)
+        - [detailed](#detailed)
+        - [Forward mower test move](#forward-mower-test-move)
+        - [Reverse mower test move](#reverse-mower-test-move)
+        - [Turn mower test move](#turn-mower-test-move)
+        - [Motion motor Test](#motion-motor-test)
+        - [Cutting motor Test](#cutting-motor-test)
+        - [TEST_STOP](#test_stop)
+        - [Test](#test)
+  - [Receiving information from the Mower](#receiving-information-from-the-mower)
+    - [AutoMower/Telemetry topic](#automowertelemetry-topic)
+    - [AutoMower/Log topic](#automowerlog-topic)
+- [Base station communications](#base-station-communications)
+  - [Sending Commands and values to the Base station](#sending-commands-and-values-to-the-base-station)
+    - [Automower/Base/Command](#automowerbasecommand)
+      - [Base station State changes](#base-station-state-changes)
+      - [Reset rain duration](#reset-rain-duration)
+      - [Over The Air program update (OTA)](#over-the-air-program-update-ota-1)
+      - [ESP restart](#esp-restart-1)
+      - [Change Trace Level](#change-trace-level-1)
+      - [Parameter value change](#parameter-value-change-1)
+      - [Test & Debug commands](#test--debug-commands-1)
+        - [Stop/activate sending of perimeter signal (without changing base station state)](#stopactivate-sending-of-perimeter-signal-without-changing-base-station-state)
+        - [Run startup Tests](#run-startup-tests)
+  - [Receiving information from the base station](#receiving-information-from-the-base-station)
+    - [AutoMower/Base/Telemetry topic](#automowerbasetelemetry-topic)
+    - [AutoMower/Log topic](#automowerlog-topic-1)
+    - [AutoMower/Base/Perimeter topic](#automowerbaseperimeter-topic)
+    - [AutoMower/Base/Rain topic](#automowerbaserain-topic)
+- [Website](#website)
+- [License](#license)
+- [Contribution](#contribution)
+
+## Mower and docking base
 
 Considering the size of my lawn (~ 400 m2) and the size of the 3D printer needed, I decided to build the Monster 220 model (<https://repalmakershop.com/pages/220-monster-project-overview>).
 
@@ -101,7 +96,7 @@ The REP_AL design also comes with a 3D printer docking base which is used to rec
 
 Overall, including the docking station and perimeter signal sending box, the number of individual printed pieces is around 100, using a total of 5.5 kg of PLA (including approximately 5% of material loss due to printed fails). Approximately 325 printing hours where required (including failed parts).
 
-### Perimeter signal sending box
+## Perimeter signal sending box
 
 The mowing zone is delimited using a perimeter wire through which a perimeter signal is send by a fixed sending box which includes a dedicated set of components to generate the perimeter signal.
 
@@ -109,7 +104,7 @@ The perimeter sender outputs a digital code sequence (a 'pseudo-noise' code), an
 
 The perimeter signal design used in the REP_AL project is a fork of the one used in the Ardumower project (<https://www.ardumower.de/en/home.html>). Details can be found here: <https://wiki.ardumower.de/index.php?title=Perimeter_sender_(English)>
 
-### Hardware components
+## Hardware components
 
 In addition to the 3D printed parts used to build the structure of the mower, the following components are used:
 
@@ -206,7 +201,7 @@ In addition to the 3D printed parts used to build the structure of the mower, th
   - Wifi network
   - Server (hosted on a Raspberry Pi 4 or equivalent) - See Software architecture section below
 
-### Hardware architecture
+## Hardware architecture
 
 The hardware architecture and most of the hardware components used are based on, or inspired from, the original REP_AL design.
 
@@ -254,7 +249,7 @@ In summary, the PCB hosts:
   - UART connections:
     - the GPS module (mower)
 
-### Communications architecture
+## Communications architecture
 
 Considering my lawn's environment (position of base station and house relative to the garden), the decision was made to handle all communications to/from the mower and the base station through WiFi. This is very fortunate and enables to take full benefit of the possibilities of such connexion, namely:
 
@@ -264,7 +259,7 @@ Considering my lawn's environment (position of base station and house relative t
 
 No Bluetooth, GSM or radio communications are used.
 
-### Software Environment
+## Software Environment
 
 In terms of software environment, the overall system is based on the following components:
 
@@ -279,7 +274,7 @@ In terms of software environment, the overall system is based on the following c
 
 As a direct result of the different options taken (ESP32 and Wifi, mainly) the mower and base station programs had to entirely re-written. The perimeter signal coding and decoding (digital matched filter) have been adapted from the REP_AL code as well from the original Ardumower code. All the other functions have been defined and developed "from scratch".
 
-### Mower and perimeter signal sender program architecture
+## Mower and perimeter signal sender program architecture
 
 As a reminder, the ESP32 is based on a dual core processor and offers a Free RTOS multi-tasking operating system.
 
@@ -299,7 +294,7 @@ To exchange data between the different tasks, the following mechanisms are used:
 
 All tasks run at the same (default) priority level of 1.
 
-### Mower tasks
+## Mower tasks
 
 The mower application is broken down into the following RTOS tasks:
 
@@ -309,7 +304,7 @@ The mower application is broken down into the following RTOS tasks:
 - Analog value read task (AnaReadTsk)
 - Main task (default task)
 
-#### FastAnaReadTsk
+### FastAnaReadTsk
 
 This is probably the most complex part of the whole project.
 
@@ -336,7 +331,7 @@ In summary, the FastAnaReadTsk task:
 
 To reduce the risk of being too slow and of loosing data, this is all this task does. The processing of the signal is performed by another task (PerimProcTsk)
 
-#### PerimProsTsk
+### PerimProsTsk
 
 This task processes the raw perimeter signal analog values and determines if the mower is inside or outside the perimeter. It also determines the strength of the signal to establish if the mower signal is received or not.
 
@@ -356,7 +351,7 @@ In summary, the PerimProcTsk task:
     - applies the digital match filter onto the converted values
     - makes summary data (typically mower in or out of perimeter) available to other mower functions, through global variables
 
-#### AnaReadTsk
+### AnaReadTsk
 
 For the main program, having *"permanently"* up to date sensor values make the program easier to read (and to code !).
 
@@ -386,7 +381,7 @@ In practice, if no precautions are taken, the use of the ADC by the I2S Driver (
 
 Similarly, some readings come from I2C devices typically the current measurements comming from the INA219 modules. As this task runs independently and asynchronously from other functions also using the I2C bus (e.g. the sending of data to the displays), the use of the I2C bus is protected by the use of another MUTEX semaphore.
 
-#### SonarReadTsk
+### SonarReadTsk
 
 Although the ultra-sonic sonar readings could have been handled through the AnaReadTsk task, a dedicated task is implemented for these readings. In hind site, I'm not quite sure why it is done in this way, this was a good option as it turns out that, for unknown reasons, this task hangs, from time to time. To limit the effects of such spurious hangs, the tasks increments a loop counter that is monitored by the main task and if the counter stops incrementing, the main task restarts the SonarReadTsk task.
 
@@ -397,7 +392,7 @@ In summary, the SonarReadTsk task:
 
 The sonar distances are made available to other mower functions, through global variables.
 
-#### Main task
+### Main task
 
 The main, default, task performs all the other mower functions, which are, in summary:
 
@@ -451,14 +446,14 @@ The different mower states and main transitions are summarized as follows:
 
 **NOTE:** The library used to send over telnet the trace and debugging messages was not designed to be used in a multi-task environment. As done for the I2C bus, the use of this telnet library is protected using an RTOS MUTEX semaphore.
 
-### Base Station tasks
+## Base Station tasks
 
 The base station application is broken down into the following RTOS tasks:
 
 - Perimeter signal sending task (PerimSendTsk)
 - Main task (default task)
 
-#### PerimSendTsk
+### PerimSendTsk
 
 As mentioned before, the perimeter signal is based on a digital code sequence (a 'pseudo-noise' code).
 
@@ -480,7 +475,7 @@ In summary, the PerimSendTsk task:
 
 As the perimeter wire is fed through a motor driver, the power (amplitude) of the signal can the adjusted using the PWM input to the motor driver.
 
-#### Main task
+### Main task
 
 The main, default, task performs all the other base station functions, which are, in summary:
 
@@ -522,13 +517,13 @@ State changes are mainly done through the reception of commands from the Mower t
 
 ---
 
-## Mower communications
+# Mower communications
 
-### Sending Commands and values to the Mower
+## Sending Commands and values to the Mower
 
 Communication is done through MQTT, and the following topics are used:
 
-#### AutoMower/Command topic
+### AutoMower/Command topic
 
  The messages in this topic are in JSON format and should follow this structure:
 
@@ -542,7 +537,7 @@ Communication is done through MQTT, and the following topics are used:
 
 The list of Commands and their expected associated values are as describes below:
 
-##### Mower State changes
+#### Mower State changes
 
 **Description** : This command is used to put the mower in a given state.
 
@@ -602,7 +597,7 @@ Set mower to clockwise spiral mowing:
 }
 ```
 
-##### Calibration
+#### Calibration
 
 **Description** : This command triggers the calibration of the specified sensor
 
@@ -625,7 +620,7 @@ Set mower to clockwise spiral mowing:
 }
 ```
 
-##### Reset charge duration
+#### Reset charge duration
 
 **Description** : This command triggers the reset of the charing duration counter
 
@@ -643,7 +638,7 @@ Set mower to clockwise spiral mowing:
 }
 ```
 
-##### Reset partial mowing time
+#### Reset partial mowing time
 
 **Description** : This command triggers the reset of the partial mowing time counter
 
@@ -661,7 +656,7 @@ Set mower to clockwise spiral mowing:
 }
 ```
 
-##### Over The Air program update (OTA)
+#### Over The Air program update (OTA)
 
 **Description** : This command places the mower in a condition ready to receive an OTA update. This stops the mower (motor stops) and triggers a mower cpu reset. The mower then enters into a mode during which it waits for the OTA update. At end of successful OTA, the mower resets and runs on the new program version. If OTA is not performed within a preconfigure duration (¬ 3 minutes), the mower resets and runs on same program version and the mower is placed in `IDLE` state.
 
@@ -679,7 +674,7 @@ Set mower to clockwise spiral mowing:
 }
 ```
 
-##### ESP restart
+#### ESP restart
 
 **Description** : This command causes the ESP to reset itself. This stops the mower (motor stops), saves values to EEPROM and triggers a system reboot.
 
@@ -697,7 +692,7 @@ Set mower to clockwise spiral mowing:
 }
 ```
 
-##### Change Trace Level
+#### Change Trace Level
 
 **Description** : This command enables to change the current trace visualisation level to the specified level. Any message "below" the specified level are no longer displayed on the console (USB serial port) or the Telnet console.
 
@@ -724,7 +719,7 @@ Set mower to clockwise spiral mowing:
 }
 ```
 
-##### Parameter value change
+#### Parameter value change
 
 **Description** : This command enables to send a new parameter value to the mower. If the value is stored in EEPROM (most of them are), the EEPROM is updated/saved.
 
@@ -758,9 +753,9 @@ Set mower to clockwise spiral mowing:
 }
 ```
 
-##### Test & Debug commands
+#### Test & Debug commands
 
-###### Stop/activate sending of raw perimeter signal read task
+##### Stop/activate sending of raw perimeter signal read task
 
 **Description** : This command enables to start and stop the sending over MQTT of the raw perimeter signal read task detailed values used for plotting //**ONLY FOR TEST PURPOSES**//
 
@@ -778,7 +773,7 @@ Set mower to clockwise spiral mowing:
 }
 ```
 
-###### Stop/activate sending of processed perimeter code detection task
+##### Stop/activate sending of processed perimeter code detection task
 
 **Description** : This command enables to start and stop the sending over MQTT of the processed perimeter code detection task values used for plotting //**ONLY FOR TEST PURPOSES**//
 
@@ -796,7 +791,7 @@ Set mower to clockwise spiral mowing:
 }
 ```
 
-###### Stop/activate sending of perimeter wire tracking control
+##### Stop/activate sending of perimeter wire tracking control
 
 **Description** : This command enables to start and stop the sending over MQTT of the perimeter wire tracking PID control values used for plotting //**ONLY FOR TEST PURPOSES**//
 
@@ -814,7 +809,7 @@ Set mower to clockwise spiral mowing:
 }
 ```
 
-###### detailed
+##### detailed
 
 **Description** : This command enables to start and stop the sending over MQTT of pitch and roll detailed values used for plotting //**ONLY FOR TEST PURPOSES**//
 
@@ -832,7 +827,7 @@ Set mower to clockwise spiral mowing:
 }
 ```
 
-###### Forward mower test move
+##### Forward mower test move
 
 **Description** : This command enables to request for a forward move as specified in the associated values. //**ONLY FOR TEST PURPOSES - NO COLLISION DETECTION PERFORMED**//
 
@@ -852,7 +847,7 @@ Set mower to clockwise spiral mowing:
 }
 ```
 
-###### Reverse mower test move
+##### Reverse mower test move
 
 **Description** : This command enables to request for a reverse move as specified in the associated values. //**ONLY FOR TEST PURPOSES - NO COLLISION DETECTION PERFORMED**//
 
@@ -872,7 +867,7 @@ Set mower to clockwise spiral mowing:
 }
 ```
 
-###### Turn mower test move
+##### Turn mower test move
 
 **Description** : This command enables to request for a turn as specified in the associated values. //**ONLY FOR TEST PURPOSES - NO COLLISION DETECTION PERFORMED**//
 
@@ -892,7 +887,7 @@ Set mower to clockwise spiral mowing:
 }
 ```
 
-###### Motion motor Test
+##### Motion motor Test
 
 **Description** : not sure... to be checked //**ONLY FOR TEST PURPOSES**//
 
@@ -910,7 +905,7 @@ Set mower to clockwise spiral mowing:
 }
 ```
 
-###### Cutting motor Test
+##### Cutting motor Test
 
 **Description** : not sure... to be checked //**ONLY FOR TEST PURPOSES**//
 
@@ -928,7 +923,7 @@ Set mower to clockwise spiral mowing:
 }
 ```
 
-###### TEST_STOP
+##### TEST_STOP
 
 **Description** : This command stops the mower during tests //**ONLY FOR TEST PURPOSES**//
 
@@ -946,7 +941,7 @@ Set mower to clockwise spiral mowing:
 }
 ```
 
-###### Test
+##### Test
 
 **Description** : not sure... to be checked
 
@@ -966,9 +961,9 @@ Set mower to clockwise spiral mowing:
 
 ---
 
-### Receiving information from the Mower
+## Receiving information from the Mower
 
-#### AutoMower/Telemetry topic
+### AutoMower/Telemetry topic
 
 On a regular basis, depending on its state, the mower sends, over MQTT, telemetry data.
 
@@ -1034,7 +1029,7 @@ The telemetry data sent by the mower is in JSON format and contains the followin
   }
 ```
 
-#### AutoMower/Log topic
+### AutoMower/Log topic
 
 When a log message is generated by the application, the mower sends, over MQTT, log data.
 
@@ -1053,13 +1048,13 @@ The log data sent by the mower station is in JSON format and contains the follow
 
 ---
 
-## Base station communications
+# Base station communications
 
-### Sending Commands and values to the Base station
+## Sending Commands and values to the Base station
 
 Communication is done through MQTT, and the following topics are used:
 
-#### Automower/Base/Command
+### Automower/Base/Command
 
  The messages in this topic are in JSON format and should follow this structure:
 
@@ -1073,7 +1068,7 @@ Communication is done through MQTT, and the following topics are used:
 
 The list of Commands and their expected associated values are as describes below:
 
-##### Base station State changes
+#### Base station State changes
 
 **Description** : This command is used to put the base station in a given state.
 
@@ -1113,7 +1108,7 @@ Set base station to perimeter signal sending mode:
 }
 ```
 
-##### Reset rain duration
+#### Reset rain duration
 
 **Description** : This command triggers the reset of the rain duration counter
 
@@ -1131,7 +1126,7 @@ Set base station to perimeter signal sending mode:
 }
 ```
 
-##### Over The Air program update (OTA)
+#### Over The Air program update (OTA)
 
 **Description** : This command places the base station in a condition ready to receive an OTA update. This stops the base station perimeter signal sending. The base station then enters into a mode during which it waits for the OTA update. At end of successful OTA, the base station resets and runs on the new program version. If OTA is not performed within a preconfigure duration (¬ 3 minutes), the base station resets and runs on same program version and the mower is placed in `IDLE` state.
 
@@ -1149,7 +1144,7 @@ Set base station to perimeter signal sending mode:
 }
 ```
 
-##### ESP restart
+#### ESP restart
 
 **Description** : This command causes the ESP to reset itself. This stops the base station perimeter signal sending, saves values to EEPROM and triggers a system reboot.
 
@@ -1167,7 +1162,7 @@ Set base station to perimeter signal sending mode:
 }
 ```
 
-##### Change Trace Level
+#### Change Trace Level
 
 **Description** : This command enables to change the current trace visualisation level to the specified level. Any message "below" the specified level are no longer displayed on the console (USB serial port) or the Telnet console.
 
@@ -1194,7 +1189,7 @@ Set base station to perimeter signal sending mode:
 }
 ```
 
-##### Parameter value change
+#### Parameter value change
 
 **Description** : This command enables to send a new parameter value to the base station. If the value is stored in EEPROM (most of them are), the EEPROM is updated/saved.
 
@@ -1218,9 +1213,9 @@ Set base station to perimeter signal sending mode:
 }
 ```
 
-##### Test & Debug commands
+#### Test & Debug commands
 
-###### Stop/activate sending of perimeter signal (without changing base station state)
+##### Stop/activate sending of perimeter signal (without changing base station state)
 
 **Description** : This command enables to start and stop the sending of the perimeter signal //**ONLY FOR TEST PURPOSES**//
 
@@ -1238,7 +1233,7 @@ Set base station to perimeter signal sending mode:
 }
 ```
 
-###### Run startup Tests
+##### Run startup Tests
 
 **Description** : This command enables to run the base station startup tests
 
@@ -1258,9 +1253,9 @@ Set base station to perimeter signal sending mode:
 
 ---
 
-### Receiving information from the base station
+## Receiving information from the base station
 
-#### AutoMower/Base/Telemetry topic
+### AutoMower/Base/Telemetry topic
 
 On a regular basis, depending on its state, the base station sends, over MQTT, telemetry data.
 
@@ -1292,7 +1287,7 @@ The telemetry data send by the base station is in JSON format and contains the f
 }
 ```
 
-#### AutoMower/Log topic
+### AutoMower/Log topic
 
 When a log message is generated by the application, the base station sends, over MQTT, log data.
 
@@ -1309,7 +1304,7 @@ The log data sent by the base station is in JSON format and contains the followi
 
 **NOTE:** Log data is not to be confused with the trace and debug messages sent over Telnet. Log data is a limited set of log messages that are intended to be saved in the database, along with telemetry data for later use.
 
-#### AutoMower/Base/Perimeter topic
+### AutoMower/Base/Perimeter topic
 
 On a regular basis, the base station send over MQTT the status of the perimeter wire sending function.
 
@@ -1326,7 +1321,7 @@ The perimeter signal status data send by the base station is in JSON format and 
 - 0 stands for no perimeter signal sent,
 - 1 stands for perimeter signal being sent
 
-#### AutoMower/Base/Rain topic
+### AutoMower/Base/Rain topic
 
 On a regular basis, the base station send over MQTT the rain status.
 
@@ -1345,7 +1340,7 @@ The rain status data send by the base station is in JSON format and contains the
 
 ---
 
-## Website
+# Website
 
 For developing the website you need node.js installed (version 16+ recommended)
 
@@ -1361,12 +1356,12 @@ You can now go to <http://locahost:8080>
 
 ---
 
-## License
+# License
 
 This project is under the MIT License, see [here](LICENSE.md)
 
 ---
 
-## Contribution
+# Contribution
 
 You can contribute by submitting a Pull Request
