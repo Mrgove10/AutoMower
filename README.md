@@ -6,7 +6,7 @@
 
 # The AutoMower project
 
-## Background
+# Background
 
 After looking around for an autonomous mower and being put off by the cost of commercial brands and models, I was suggested to consider the DIY option.
 
@@ -19,7 +19,7 @@ I opted for an "hybrid" approach as I decided to purchase the CAD file pack, so 
 # Table of contents
 
 - [The AutoMower project](#the-automower-project)
-  - [Background](#background)
+- [Background](#background)
 - [Table of contents](#table-of-contents)
   - [Mower and docking base](#mower-and-docking-base)
   - [Perimeter signal sending box](#perimeter-signal-sending-box)
@@ -515,7 +515,7 @@ The different base station states and main transitions are summarized as follows
 
 State changes are mainly done through the reception of commands from the Mower through MQTT messages or through user inputs on the keypad.
 
----
+\
 
 # Mower communications
 
@@ -567,7 +567,7 @@ In this state the mower is doing nothing and waits for the next command.
 
 - For `MOWING` state, possible values for Val2 are:
   - `0` for Random mowing.
-  - `1` for spiral mowing clockwise 
+  - `1` for spiral mowing clockwise
   - `2` for spiral mowing counter clockwise
   - `3` for perimeter mowing clockwise
   - `4` for perimeter mowing counter clockwise
@@ -959,8 +959,6 @@ Set mower to clockwise spiral mowing:
 }
 ```
 
----
-
 ## Receiving information from the Mower
 
 ### AutoMower/Telemetry topic
@@ -1045,8 +1043,6 @@ The log data sent by the mower station is in JSON format and contains the follow
 ```
 
 **NOTE:** Log data is not to be confused with the trace and debug messages sent over Telnet. Log data is a limited set of log messages that are intended to be saved in the database, along with telemetry data for later use.
-
----
 
 # Base station communications
 
@@ -1251,8 +1247,6 @@ Set base station to perimeter signal sending mode:
 }
 ```
 
----
-
 ## Receiving information from the base station
 
 ### AutoMower/Base/Telemetry topic
@@ -1338,8 +1332,6 @@ The rain status data send by the base station is in JSON format and contains the
 - 0 stands for not currently raining,
 - 1 stands for currently raining
 
----
-
 # Website
 
 For developing the website you need node.js installed (version 16+ recommended)
@@ -1354,13 +1346,9 @@ npm run serve
 
 You can now go to <http://locahost:8080>
 
----
-
 # License
 
 This project is under the MIT License, see [here](LICENSE.md)
-
----
 
 # Contribution
 
