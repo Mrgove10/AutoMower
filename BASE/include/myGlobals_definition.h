@@ -244,7 +244,7 @@ extern DeviceAddress temp_2_BlueSensor;
 #define TEMPERATURE_COUNT 1 // Number of temperature sensors
 #define TEMPERATURE_1_RED 0
 #define TEMPERATURE_READ_INTERVAL 5000 // in ms
-#define BASE_TEMPERATURE_TOO_HIGH_THRESHOLD 40.0f // in celcius
+#define BASE_TEMPERATURE_TOO_HIGH_THRESHOLD 40.0f // in celsius
 
 extern int g_TempErrorCount[TEMPERATURE_COUNT];
 extern float g_Temperature[TEMPERATURE_COUNT];
@@ -257,7 +257,7 @@ extern float g_Temperature[TEMPERATURE_COUNT];
 #define PERIMETER_CHECK_INTERVAL 15000                    // in ms
 #define PERIMETER_CURRENT_CURRENT_MIN 1                    // in mA, used to filter out very low sensor readings
 
-#define BASE_PERIMETER_CURRENT_TOO_LOW_THRESHOLD 300 // in mA, at 100% Powerlevel
+#define BASE_PERIMETER_CURRENT_TOO_LOW_THRESHOLD 300 // in mA, at 100% Power level
 #define BASE_PERIMETER_CURRENT_TOO_HIGH_THRESHOLD 800 // in mA,
 
 extern Adafruit_INA219 PerimeterCurrentSensor;
@@ -330,7 +330,7 @@ extern int g_CurrentErrorCode; // Current Error code
 #define DISPLAY_ERROR_REFRESH_INTERVAL 5000             // in ms
 #define DISPLAY_SLEEPING_REFRESH_INTERVAL 60 * 1000            // in ms
 
-#define STATES_COUNT 4      // number of states in States enum (messy but did not find how to easly derive automatically number of elements from enum)
+#define STATES_COUNT 4      // number of states in States enum (messy but did not find how to easily derive automatically number of elements from enum)
 
 extern String g_menuString[STATES_COUNT];  // contains the text to display @ bottom of screen to act as a menu
 extern String g_StatesString[STATES_COUNT]; // contains the text description of a state
@@ -338,7 +338,7 @@ extern String g_StatesString[STATES_COUNT]; // contains the text description of 
 /************************* Base operation statistics *********************************/
 
 extern unsigned long g_totalBaseOnTime; // Total time spent with perimeter On, in minutes (Saved to EEPROM)
-extern unsigned long g_totalBaseRainDuration; // Total time spent with Rainning On, in minutes (Saved to EEPROM)
+extern unsigned long g_totalBaseRainDuration; // Total time spent with Raining On, in minutes (Saved to EEPROM)
 
 /************************* Test sequence variables *********************************/
 
@@ -364,10 +364,10 @@ extern unsigned long g_RainStartTime;
 
 /************************* Program debugging *********************************/
 
-// For testing ONLY, if reset is not following a power-on, delay indefinately to be able to "catch" reset cause on the serial monitor.
-// NOT TO BE USED IN NORMAL OPERATION AS MOWER WILL NOT RESET OUTPUTS AND MOTORS WILL KEEP RUNNING UNTILL 
-// THE MOWER IS POWERED OFF OR A RESET IS PERFORMED MANUALY ON ESP32 BOARD
-// Folowing line needs to be commented out for function to be active
+// For testing ONLY, if reset is not following a power-on, delay indefinitely to be able to "catch" reset cause on the serial monitor.
+// NOT TO BE USED IN NORMAL OPERATION AS MOWER WILL NOT RESET OUTPUTS AND MOTORS WILL KEEP RUNNING UNTIL 
+// THE MOWER IS POWERED OFF OR A RESET IS PERFORMED MANUALLY ON ESP32 BOARD
+// Following line needs to be commented out for function to be active
 
 // #define STOP_RESTART_TO_CAPTURE_CRASH_DUMP true
 

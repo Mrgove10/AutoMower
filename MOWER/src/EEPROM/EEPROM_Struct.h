@@ -30,7 +30,7 @@ typedef struct
     int16_t PerimeterSignalLostThreshold;
     int16_t PerimeterSignalLowTrackThreshold;
 
-    long totalObstacleDectections;
+    long totalObstacleDetections;
     unsigned long totalMowingTime;
     unsigned long partialMowingTime;
     unsigned long operationTime;

@@ -29,7 +29,7 @@ void BatteryCurrentSensorSetup()
 }
 
 /**
- * Checks to see if Battery ACS712 current sensor is connected (and hopefully functionning)
+ * Checks to see if Battery ACS712 current sensor is connected (and hopefully functioning)
  * 
  * @return true if Battery ACS712 current sensor is ok
  */
@@ -64,13 +64,14 @@ bool BatteryChargeCurrentRead(const bool Now)
 {
   static unsigned long LastBatteryChargeCurrentRead = 0;
   static float smoothedCurrent = UNKNOWN_FLOAT;
+
   float busvoltage = 0;
 
   if ((millis() - LastBatteryChargeCurrentRead > BATTERY_CHARGE_READ_INTERVAL) || Now)
   {
     float current_mA = 0;
 
-    // Ensure exlusive access to I2C
+    // Ensure exclusive access to I2C
     xSemaphoreTake(g_I2CSemaphore, portMAX_DELAY);
 
     current_mA = BatteryChargeSensor.getCurrent_mA();
@@ -162,7 +163,7 @@ int BatteryVoltageRead(const bool Now)
 
   if ((millis() - LastVoltageRead > BATTERY_VOLTAGE_READ_INTERVAL) || Now)
   {
-    // Ensure exlusive access to I2C
+    // Ensure exclusive access to I2C
     xSemaphoreTake(g_I2CSemaphore, portMAX_DELAY);
 
     busvoltage = BatteryChargeSensor.getBusVoltage_V();
@@ -221,7 +222,7 @@ void BatteryChargeRelaySetup(void)
 {
   DebugPrintln("Battery charge Relay setup", DBG_VERBOSE, true);
 
-  // Ensure exlusive access to I2C
+  // Ensure exclusive access to I2C
   xSemaphoreTake(g_I2CSemaphore, portMAX_DELAY);
 
   // Set pin mode
@@ -231,7 +232,7 @@ void BatteryChargeRelaySetup(void)
   // Free access to I2C for other tasks
   xSemaphoreGive(g_I2CSemaphore);
 
-  // On start, close relay (relay is Normaly Open)
+  // On start, close relay (relay is Normally Open)
   BatteryChargeRelayClose();
   // delay(5000);
   // BatteryChargeRelayOpen();
@@ -251,7 +252,7 @@ void BatteryChargeRelayOpen(void)
 {
   if (g_BatteryRelayIsClosed)
   {
-    // Open relay (relay is Normaly Open)
+    // Open relay (relay is Normally Open)
     IOExtendProtectedWrite(PIN_MCP_BATTERY_CHARGE_RELAY, HIGH);
 
     g_BatteryRelayIsClosed = false;
@@ -268,7 +269,7 @@ void BatteryChargeRelayClose(void)
 {
   if (!g_BatteryRelayIsClosed)
   {
-    // Close relay (relay is Normaly Open)
+    // Close relay (relay is Normally Open)
     IOExtendProtectedWrite(PIN_MCP_BATTERY_CHARGE_RELAY, LOW);
 
     g_BatteryRelayIsClosed = true;

@@ -21,10 +21,10 @@ void EEPROMWrite(void);
 
 /**
  * Updates EEPROM RAM image before saving to EEPROM (triggers EPPROMWrite)
- * @param immediatly   Boolean     triggers imediate save
+ * @param immediately   Boolean     triggers immediate save
  * 
  */
-void EEPROMSave(boolean immediatly);
+void EEPROMSave(boolean immediately);
 
 /**
  * Initialises and RESETs the EEPROM to default initial values (ALL DATA LOST)

@@ -115,7 +115,7 @@ void EEPROMSetup(void)
     g_PerimeterSignalLowTrackThreshold = g_EEPROMLoad.Load.Data.PerimeterSignalLowTrackThreshold;
 
     // Stored Statistics
-    g_totalObstacleDetections = g_EEPROMLoad.Load.Data.totalObstacleDectections;
+    g_totalObstacleDetections = g_EEPROMLoad.Load.Data.totalObstacleDetections;
     g_totalMowingTime = g_EEPROMLoad.Load.Data.totalMowingTime;
     g_partialMowingTime = g_EEPROMLoad.Load.Data.partialMowingTime;
     g_operationTime = g_EEPROMLoad.Load.Data.operationTime;
@@ -186,9 +186,9 @@ void EEPROMWrite(void)
  * Updates EEPROM RAM image before saving to EEPROM (triggers EPPROMWrite)
  * 
  */
-void EEPROMSave(boolean immediatly)
+void EEPROMSave(boolean immediately)
 {
-  if (immediatly || millis() - g_LastEepromWriteTime > EEPROM_WRITE_FREQUENCY)
+  if (immediately || millis() - g_LastEepromWriteTime > EEPROM_WRITE_FREQUENCY)
   {
     g_EEPROMLoad.Load.Data.LastEepromSaveTime.year = myTime.year();
     g_EEPROMLoad.Load.Data.LastEepromSaveTime.month = myTime.month();
@@ -221,7 +221,7 @@ void EEPROMSave(boolean immediatly)
     g_EEPROMLoad.Load.Data.PerimeterSignalLowTrackThreshold = g_PerimeterSignalLowTrackThreshold;
 
     // Stored Statistics
-    g_EEPROMLoad.Load.Data.totalObstacleDectections = g_totalObstacleDetections;
+    g_EEPROMLoad.Load.Data.totalObstacleDetections = g_totalObstacleDetections;
     g_EEPROMLoad.Load.Data.totalMowingTime = g_totalMowingTime;
     g_EEPROMLoad.Load.Data.partialMowingTime = g_partialMowingTime;
     g_EEPROMLoad.Load.Data.operationTime = g_operationTime;
@@ -272,13 +272,13 @@ void EEPROMInitialise(void)
   g_EEPROMLoad.Load.Data.PerimeterSignalLowTrackThreshold = 0;
 
   // Stored Statistics
-  g_EEPROMLoad.Load.Data.totalObstacleDectections = 0;
+  g_EEPROMLoad.Load.Data.totalObstacleDetections = 0;
   g_EEPROMLoad.Load.Data.totalMowingTime = 0;
   g_EEPROMLoad.Load.Data.partialMowingTime = 0;
   g_EEPROMLoad.Load.Data.operationTime = 0;
   g_EEPROMLoad.Load.Data.chargingTime = 0;
   g_EEPROMLoad.Load.Data.totalCurrentUsed = 0;
-
+  
   // OTA request
   g_EEPROMLoad.Load.Data.OTARequested = false;
 
