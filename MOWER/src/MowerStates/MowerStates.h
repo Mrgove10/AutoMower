@@ -55,7 +55,7 @@ bool MowerFindWire(const bool reset, int *phase, const int heading, const bool c
 
 /**
  * @brief Mower follows perimeter wire back to charging station
- * @param reset boolean indicating the wire trakcing function and PID needs to be reset
+ * @param reset boolean indicating the wire tracking function and PID needs to be reset
  * @param heading integer indicating the heading to follow to get to charging station
  * @param clockwise boolean indicating the direction in which the mower is following the wire
  * @return Success boolean depending on whether it found the wire (true) or not (false)
@@ -64,10 +64,10 @@ bool MowerFollowWire(bool *reset, const int heading, const bool clockwise);
 
 /**
  * Enables the perimeter tracking adjustment of the speed for both motors
- * @param leftMotorAjustment adjustment to apply to left Motor (in %)
- * @param rightMotorAjustment adjustment to apply to right Motor (in %)
+ * @param leftMotorAdjustment adjustment to apply to left Motor (in %)
+ * @param rightMotorAdjustment adjustment to apply to right Motor (in %)
  */
-void MotionMotorsTrackingAdjustSpeed(const int leftMotorAjustment, const int rightMotorAjustment);
+void MotionMotorsTrackingAdjustSpeed(const int leftMotorAdjustment, const int rightMotorAdjustment);
 
 /**
  * @brief Function to check pre-conditions before performing tasks. Pre-condition checks can be performed on Tilt sensors (both), bumpers (both), Sonar sensors (Front, left or right) and perimeter wire active
@@ -88,30 +88,30 @@ bool CheckPreConditions(const int Tilt = ERROR_NO_ERROR, const int Bumper = ERRO
 
 /**
  * @brief Function to check if an obstacle is detected and performs a pre-defined action (if activated). Obstacle detection can any combination of bumper (both), Sonars (Front, Left or right) and perimeter wire
- * If the action enable parameter is not set, the function only returns if detection occured or not and action to take if left to caller to decide.
- * At the end of the funtion, if the action enable is set, the mower is stopped and the cutting motor is stopped. Caller to restart the motors as required.
+ * If the action enable parameter is not set, the function only returns if detection occurred or not and action to take if left to caller to decide.
+ * At the end of the function, if the action enable is set, the mower is stopped and the cutting motor is stopped. Caller to restart the motors as required.
  * 
- * @param Bumper as optional boolean : bumper active triggers detection/action. 0 disbales the check. Default is 0
- * @param Front as optional int: sonar measured front distance to trigger detection/action. 0 disbales the check. Default is 0
- * @param Left as optional int: sonar measured left distance to trigger detection/action. 0 disbales the check. Default is 0
- * @param Right as optional int: sonar measured right distance to trigger detection/action. 0 disbales the check. Default is 0
+ * @param Bumper as optional boolean : bumper active triggers detection/action. 0 disables the check. Default is 0
+ * @param Front as optional int: sonar measured front distance to trigger detection/action. 0 disables the check. Default is 0
+ * @param Left as optional int: sonar measured left distance to trigger detection/action. 0 disables the check. Default is 0
+ * @param Right as optional int: sonar measured right distance to trigger detection/action. 0 disables the check. Default is 0
  * @param Perimeter as optional boolean: outside perimeter wire to trigger detection/action. 0 disables the check. Absolute value is used to perform the check (applies to both inside and outside perimeter wire).  Default is 0.
  * @param ActionMode (optional) , if true, changes action is performed if condition is detected (default is false).
- * @param MotorOverCurrent as optional int: over current on any of the motion motors to trigger detection/action. 0 disbales the check. Default is 0
+ * @param MotorOverCurrent as optional int: over current on any of the motion motors to trigger detection/action. 0 disables the check. Default is 0
  * 
  * @return integer indicating which detection was detected.
  */
 int CheckObstacleAndAct(const bool Bumper = false, const int Front = 0, const int Left = 0, const int Right = 0, const bool Perimeter = false, const int MotorOverCurrent = 0, const bool ActionMode = false);
 
 /**
- * @brief Function to reposition mower on docking station to ensure that chargin point are well aligned and that charging current is normal.
+ * @brief Function to reposition mower on docking station to ensure that charging point are well aligned and that charging current is normal.
  * This is performed by performing a small reverse and forward movement if the measured charging current is too low.
- * Caller to take necessary action if procedure failled (e.g. enter error state).
+ * Caller to take necessary action if procedure failed (e.g. enter error state).
  * 
- * @param MinCurrent int with minimum charging current threshold under which the repositionning is performed
+ * @param MinCurrent int with minimum charging current threshold under which the repositioning is performed
  * @param MaxAttempts int with maximum number of attempts to be performed
  *
- * @return bollean indicating if respositionning succeded (true) or not (false).
+ * @return boolean indicating if repositioning succeded (true) or not (false).
  */
 bool RepositionOnDock(const int MinCurrent, int MaxAttempts);
 

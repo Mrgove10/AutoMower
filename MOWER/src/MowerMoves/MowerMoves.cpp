@@ -199,7 +199,7 @@ void MowerTurn(const int Angle, const bool OnSpot)
  * @param RollComp compensate for roll angle (increased angle), default is false
  * 
  */
-void MowerReserseAndTurn(const int Angle, const int Duration, const bool OnSpot, const bool PitchComp, const bool RollComp)
+void MowerReverseAndTurn(const int Angle, const int Duration, const bool OnSpot, const bool PitchComp, const bool RollComp)
 {
   int correctedAngle = Angle;
   int correctedDuration = Duration;
@@ -253,7 +253,7 @@ void MowerReserseAndTurn(const int Angle, const int Duration, const bool OnSpot,
  * @param Perimeter as optional int: perimeter wire signal magnitude under which  mower needs to slow down. 0 disables the check. Absolute value is used to perform the check (applies to both inside and outside perimeter wire).  Default is 0.
  * @return boolean indicating if the function triggered a speed reduction
  */
-bool MowerSlowDownApproachingObstables(const int SpeedDelta, const int Front, const int Left, const int Right, const int Perimeter)
+bool MowerSlowDownApproachingObstacles(const int SpeedDelta, const int Front, const int Left, const int Right, const int Perimeter)
 {
   static unsigned long lastSpeedReduction = 0;
   bool SpeedReductiontiggered = false;

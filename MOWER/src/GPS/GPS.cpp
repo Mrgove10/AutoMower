@@ -74,7 +74,7 @@ void GPSRead(const bool Now)
 }
 
 /**
- * Checks to see if GPS is connected (and hopefully functionning)
+ * Checks to see if GPS is connected (and hopefully functioning)
  * @return true if is ok
  */
 bool GPSCheck(void)
@@ -88,7 +88,7 @@ bool GPSCheck(void)
   {
     DebugPrintln("GPS ok", DBG_INFO, true);
     DisplayPrint(2, 2, "GPS Ok");
-    DisplayPrint(2, 3, "Statelites: " + String(GPS.satellites.value()));
+    DisplayPrint(2, 3, "Satelites: " + String(GPS.satellites.value()));
     delay(TEST_SEQ_STEP_WAIT);
     return true;
   }

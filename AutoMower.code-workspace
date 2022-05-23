@@ -69,7 +69,9 @@
 			"mosfet",
 			"MQTT",
 			"OLEDSSD",
+			"respositioning",
 			"setpoint",
+			"succeded",
 			"Wifi"
 		]
 	}

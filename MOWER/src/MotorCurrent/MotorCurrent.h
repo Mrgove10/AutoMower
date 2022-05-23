@@ -17,7 +17,7 @@ void MotorCurrentSensorSetup();
 bool MotorCurrentRead(const int sensor, const bool Now = false);
 
 /**
- * Checks to see if Motor I2C INA219 Current Sensor is connected (and hopefully functionning)
+ * Checks to see if Motor I2C INA219 Current Sensor is connected (and hopefully functioning)
  * @param sensor int sensor to check
  * @return true if current sensor is ok
  */

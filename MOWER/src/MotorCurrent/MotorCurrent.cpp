@@ -36,7 +36,7 @@ void MotorCurrentSensorSetup()
 }
 
 /**
- * Checks to see if Motor I2C INA219 Current Sensor is connected (and hopefully functionning)
+ * Checks to see if Motor I2C INA219 Current Sensor is connected (and hopefully functioning)
  * @param sensor int sensor to check
  * @return true if current sensor is ok
  */
@@ -89,7 +89,7 @@ bool MotorCurrentRead(const int sensor, const bool Now)
     //    float loadvoltage = 0;
     //    float power_mW = 0;
 
-    // Ensure exlusive access to I2C
+    // Ensure exclusive access to I2C
     xSemaphoreTake(g_I2CSemaphore, portMAX_DELAY);
 
     //    shuntvoltage = MotorCurrentSensor[sensor].getShuntVoltage_mV();

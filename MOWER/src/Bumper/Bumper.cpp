@@ -13,7 +13,7 @@
 ICACHE_RAM_ATTR void LeftBumperISR(void)
 {
   static unsigned long LastLeftBumperChange = 0;
-  static bool LastLeftBumperStatus = false; // assumption is that bumper is functionning on start and in not "bumped" (normally closed contact)
+  static bool LastLeftBumperStatus = false; // assumption is that bumper is functioning on start and in not "bumped" (normally closed contact)
 
   LastLeftBumperStatus = !LastLeftBumperStatus; // Capture every status change
 
@@ -33,7 +33,7 @@ ICACHE_RAM_ATTR void LeftBumperISR(void)
 ICACHE_RAM_ATTR void RightBumperISR(void)
 {
   static unsigned long LastRightBumperChange = 0;
-  static bool LastRightBumperStatus = false; // assumption is that bumper is functionning on start and in not "bumped" (normally closed contact)
+  static bool LastRightBumperStatus = false; // assumption is that bumper is functioning on start and in not "bumped" (normally closed contact)
 
   LastRightBumperStatus = !LastRightBumperStatus; // Capture every status change
 
@@ -62,7 +62,7 @@ void BumperSetup(void)
 }
 
 /**
- * Checks to see if bumper sensor is connected (and hopefully functionning)
+ * Checks to see if bumper sensor is connected (and hopefully functioning)
  * @param bumper int    bumper number
  * @return boolean true if rain sensor check is ok
  */

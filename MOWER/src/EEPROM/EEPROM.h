@@ -8,7 +8,7 @@
 #define EEPROM_WRITE_FREQUENCY 15 * 60 * 1000 // Eeprom update frequency, in ms
 
 /**
- * Sets up EEPROM environement : reads EEPROM into EEPROM RAM image if checksum is valid or initialises EEPROM if checksum invalid
+ * Sets up EEPROM environment : reads EEPROM into EEPROM RAM image if checksum is valid or initialises EEPROM if checksum invalid
  * 
  */
 void EEPROMSetup(void);

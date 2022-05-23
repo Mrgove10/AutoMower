@@ -20,7 +20,7 @@ ICACHE_RAM_ATTR void RightBumperISR(void);
 void BumperSetup(void);
 
 /**
- * Checks to see if bumper sensor is connected (and hopefully functionning)
+ * Checks to see if bumper sensor is connected (and hopefully functioning)
  * @param bumper int    bumper number
  * @return boolean true if sensor check is ok
  */

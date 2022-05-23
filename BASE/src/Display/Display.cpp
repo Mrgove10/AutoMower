@@ -39,7 +39,7 @@ void DisplaySetup(void)
  */
 void DisplayClear(void)
 {
-  // Ensure exlusive access to I2C
+  // Ensure exclusive access to I2C
   xSemaphoreTake(g_I2CSemaphore, portMAX_DELAY);
 
 #ifdef DISPLAY_LCD2004
@@ -67,7 +67,7 @@ void DisplayClear(void)
  *  */
 void DisplayPrint(int X, int Y, String Text, const bool OverWrite)
 {
-  // Ensure exlusive access to I2C
+  // Ensure exclusive access to I2C
   xSemaphoreTake(g_I2CSemaphore, portMAX_DELAY);
 
 #ifdef DISPLAY_LCD2004
@@ -105,7 +105,7 @@ void DisplayDimming(const unsigned long timeout)
 {
   if (millis() - g_LastDisplayUpdate > timeout && g_LastDisplayUpdate != 0)
   {
-    // Ensure exlusive access to I2C
+    // Ensure exclusive access to I2C
     xSemaphoreTake(g_I2CSemaphore, portMAX_DELAY);
 
 #ifdef DISPLAY_LCD2004

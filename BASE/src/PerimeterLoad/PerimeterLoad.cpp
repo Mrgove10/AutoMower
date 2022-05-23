@@ -71,7 +71,7 @@ bool PerimeterLoadCurrentRead(const bool Now, const bool Reset)
   {
     float current_mA = 0;
 
-    // Ensure exlusive access to I2C
+    // Ensure exclusive access to I2C
     xSemaphoreTake(g_I2CSemaphore, portMAX_DELAY);
 
     current_mA = PerimeterCurrentSensor.getCurrent_mA();

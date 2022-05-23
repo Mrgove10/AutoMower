@@ -14,12 +14,12 @@
 #include "Display/Display.h"
 
 /**
- * I2C HMC5883L Compasss Sensor Setup function
+ * I2C HMC5883L Compass Sensor Setup function
  *
  */
 void CompassSensorSetup()
 {
-  // Ensure exlusive access to I2C
+  // Ensure exclusive access to I2C
   xSemaphoreTake(g_I2CSemaphore, portMAX_DELAY);
 
   // Check if Compass is accessible on I2C bus
@@ -43,8 +43,8 @@ void CompassSensorSetup()
     DebugPrintln("Compass Sensor found !", DBG_VERBOSE, false);
 
     I2C_write_AddrDev_AddrReg_Byte(COMPASS_HMC5883L_I2C_ADDRESS,0x00,0x70);      // CRA register @ (8-average, 15 Hz default, normal measurement)
-    I2C_write_AddrDev_AddrReg_Byte(COMPASS_HMC5883L_I2C_ADDRESS,0x02,0x00);      // MR registery @ 0 for continuous mode
-    I2C_write_AddrDev_AddrReg_Byte(COMPASS_HMC5883L_I2C_ADDRESS,0x01,B100000);   // CRB registery @ 32 for 1.3Ga gain
+    I2C_write_AddrDev_AddrReg_Byte(COMPASS_HMC5883L_I2C_ADDRESS,0x02,0x00);      // MR register @ 0 for continuous mode
+    I2C_write_AddrDev_AddrReg_Byte(COMPASS_HMC5883L_I2C_ADDRESS,0x01,B100000);   // CRB register @ 32 for 1.3Ga gain
   }
   //  mag.setMagGain(HMC5883_MAGGAIN_4_0);
 
@@ -66,7 +66,7 @@ void getCompassValues(float *magX, float *magY, float *magZ, const bool Calibrat
 
   if (g_CompassPresent)
   {
-    // Ensure exlusive access to I2C
+    // Ensure exclusive access to I2C
     xSemaphoreTake(g_I2CSemaphore, portMAX_DELAY);
 
     // Check if Compass is accessible on I2C bus
@@ -225,7 +225,7 @@ void CompassCalibrate(int samples)
 
   MQTTclient.loop();
 
-  // Save Calibration parmeters in EEPROM
+  // Save Calibration parameters in EEPROM
   EEPROMSave(true);
 }
 
@@ -244,12 +244,12 @@ void CompassRead(const bool Now)
     {
       sensors_event_t event;
       
-      // Ensure exlusive access to I2C
+      // Ensure exclusive access to I2C
       xSemaphoreTake(g_I2CSemaphore, portMAX_DELAY);
     
       //    Serial.println("Before getEvent");
       bool status = Compass.getEvent(&event);
-      //    Serial.println("getEvent Satus:" + String(status));
+      //    Serial.println("getEvent Status:" + String(status));
 
       // Free access to I2C for other tasks
       xSemaphoreGive(g_I2CSemaphore);
@@ -302,7 +302,7 @@ void CompassRead(const bool Now)
 }
 
 /**
- * Checks to see if I2C HMC5883L Compasss Sensor is connected (and hopefully functionning)
+ * Checks to see if I2C HMC5883L Compass Sensor is connected (and hopefully functioning)
  * @return true if current sensor is ok
  */
 bool CompassSensorCheck(void)
@@ -337,7 +337,7 @@ bool CompassSensorCheck(void)
 }
 
 /**
- * Displays I2C HMC5883L Compasss Sensor details
+ * Displays I2C HMC5883L Compass Sensor details
  */
 void DisplayCompassDetails(void)
 {

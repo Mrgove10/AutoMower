@@ -14,7 +14,7 @@ void GyroAccelSetup();
 
 /**
  * GY-521 MPU6050 gyroscope and Acceleration raw values read function
-* @return true if read successfull, false if sensor not found
+* @return true if read successful, false if sensor not found
  */
 bool GyroAccelDataRead(void);
 
@@ -60,7 +60,7 @@ void PitchRollCalc(const bool Now = false, const bool reset = false);
 // void GyroAccelAngleRead(const bool Now = false);
 
 /**
- * Checks to see if Gyro/Accel is connected (and hopefully functionning)
+ * Checks to see if Gyro/Accel is connected (and hopefully functioning)
  * @return true if is ok
  */
 bool GyroAccelCheck(void);

@@ -62,7 +62,7 @@ void MowerTurn(const int Angle, const bool OnSpot = false);
  * @param RollComp compensate for roll angle (increased angle), default is false
  * 
  */
-void MowerReserseAndTurn(const int Angle, const int Duration, const bool OnSpot = false, const bool PitchComp = false, const bool RollComp = false);
+void MowerReverseAndTurn(const int Angle, const int Duration, const bool OnSpot = false, const bool PitchComp = false, const bool RollComp = false);
 
 /**
  * Mower checks selected obstacle types and reduces speed if conditions are met
@@ -73,7 +73,7 @@ void MowerReserseAndTurn(const int Angle, const int Duration, const bool OnSpot 
  * @param Perimeter as optional int: perimeter wire signal magnitude under which  mower needs to slow down. 0 disables the check. Absolute value is used to perform the check (applies to both inside and outside perimeter wire).  Default is 0.
  * @return boolean indicating if the function triggered a speed reduction
  */
-bool MowerSlowDownApproachingObstables(const int SpeedDelta, const int Front = 0, const int Left = 0, const int Right = 0, const int Perimeter = 0);
+bool MowerSlowDownApproachingObstacles(const int SpeedDelta, const int Front = 0, const int Left = 0, const int Right = 0, const int Perimeter = 0);
 
 /**
  * Mower arc function : mower moves in given direction with motors running at a different speed, thus turning forming an arc : used for spiral mowing

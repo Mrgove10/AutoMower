@@ -1,5 +1,5 @@
 /*
-    This file contains the decalration of all global variables or Macros
+    This file contains the declaration of all global variables or Macros
 */
 // -------------------- MQTT ------------------------
 #define MQTT_MOWER_COMMAND_CHANNEL "AutoMower/Command"
@@ -17,14 +17,14 @@
 #define DISPLAY_LCD2004 // for I2C 2004 4*20 type LCD
 //#define DISPLAY_OLEDSSD1306         // for I2C SSD1306 64*128 Oled display
 
-/************************* I2C HMC5883L Compasss Sensor variables *********************************/
+/************************* I2C HMC5883L Compass Sensor variables *********************************/
 
 #define COMPASS_DECLINATION_ANGLE 0.03961897f
 
 // -------------------- Network  ------------------------
 #define ESPHOSTNAME "MyMower"
 
-// -------------------- Tags diplayed in Grafana ------------------------
+// -------------------- Tags displayed in Grafana ------------------------
 #define TAG_RESET "RESET"
 #define TAG_MOWING "MOWING"
 #define TAG_OTA "OTA"

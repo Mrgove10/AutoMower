@@ -179,7 +179,7 @@ void AnaReadLoopTaskCreate(void)
   }
   else
   {
-    DebugPrintln("Analog read Task creation failled (" + String(xReturned) + ")", DBG_ERROR, true);
+    DebugPrintln("Analog read Task creation failed (" + String(xReturned) + ")", DBG_ERROR, true);
     //errCOULD_NOT_ALLOCATE_REQUIRED_MEMORY	( -1 )
     //errQUEUE_BLOCKED						( -4 )
     //errQUEUE_YIELD						( -5 )

@@ -19,7 +19,7 @@ void MotionMotorSetup(void)
 
   //  adcAttachPin(PIN_ESP_SPARE_1);                    // TEMPORARY FOR TESTS
 
-  // configure LED PWM functionalitites
+  // configure LED PWM functionalities
   ledcSetup(MOTION_MOTOR_PWM_CHANNEL_RIGHT, MOTION_MOTOR_PWM_FREQUENCY, MOTION_MOTOR_PWM_RESOLUTION);
   ledcSetup(MOTION_MOTOR_PWM_CHANNEL_LEFT, MOTION_MOTOR_PWM_FREQUENCY, MOTION_MOTOR_PWM_RESOLUTION);
 

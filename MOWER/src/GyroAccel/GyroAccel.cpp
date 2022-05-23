@@ -20,18 +20,18 @@ void GyroAccelSetup()
 {
   uint8_t I2CError;
 
-  // Ensure exlusive access to I2C
+  // Ensure exclusive access to I2C
   xSemaphoreTake(g_I2CSemaphore, portMAX_DELAY);
 
-  Wire.begin();                                      // begin the wire comunication
+  Wire.begin();                                      // begin the wire communication
   
-  Wire.beginTransmission(GYRO_MPU6050_I2C_ADDRESS);  // begin, Send the sensor adress
+  Wire.beginTransmission(GYRO_MPU6050_I2C_ADDRESS);  // begin, Send the sensor address
   Wire.write(0x6B);                                  // make the reset (place a 0 into the 6B register)
   Wire.write(0x00);
   Wire.endTransmission(true);                        // end the transmission
 
   //Gyro config
-  Wire.beginTransmission(GYRO_MPU6050_I2C_ADDRESS);  // begin, Send the sensor adress
+  Wire.beginTransmission(GYRO_MPU6050_I2C_ADDRESS);  // begin, Send the sensor address
   Wire.write(0x1B);                                  // We want to write to the GYRO_CONFIG register (1B hex)
   Wire.write(0x08);                                  // Set the register bits as 00001000 (500dps full scale)
   Wire.endTransmission(true);                        // End the transmission with the gyro
@@ -79,7 +79,7 @@ void GyroAccelSetup()
 
 //   DebugPrintln("Start of accel calibration on " + String(samples) + " samples", DBG_VERBOSE, true);
 
-//   // Ensure exlusive access to I2C
+//   // Ensure exclusive access to I2C
 //   xSemaphoreTake(g_I2CSemaphore, portMAX_DELAY);
 
 //   for(int i = 0; i < samples; i ++)
@@ -89,7 +89,7 @@ void GyroAccelSetup()
 //     Wire.endTransmission(false);
 //     Wire.requestFrom(GYRO_MPU6050_I2C_ADDRESS, 6, 1); 
     
-//     AccelRawX=(Wire.read() << 8 | Wire.read()) / 4096.0 ; //each value needs two registres
+//     AccelRawX=(Wire.read() << 8 | Wire.read()) / 4096.0 ; //each value needs two registers
 //     AccelRawY=(Wire.read() << 8 | Wire.read()) / 4096.0 ;
 //     AccelRawZ=(Wire.read() << 8 | Wire.read()) / 4096.0 ;
 
@@ -155,7 +155,7 @@ void GyroErrorCalibration(const int samples)
       int16_t GyroRawZ;
 
       // Read the data from the sensor
-      // Ensure exlusive access to I2C
+      // Ensure exclusive access to I2C
       xSemaphoreTake(g_I2CSemaphore, portMAX_DELAY);
 
       Wire.beginTransmission(GYRO_MPU6050_I2C_ADDRESS);     //begin, Send the slave address
@@ -227,7 +227,7 @@ void GyroErrorCalibration(const int samples)
 
 /**
  * GY-521 MPU6050 gyroscope and Acceleration raw values read function
- * @return true if read successfull, false if sensor not found
+ * @return true if read successful, false if sensor not found
  *
  */
 bool GyroAccelDataRead(void)
@@ -244,7 +244,7 @@ bool GyroAccelDataRead(void)
 
   if (g_GyroPresent)                         // Check that device is present
   {
-    // Ensure exlusive access to I2C
+    // Ensure exclusive access to I2C
     xSemaphoreTake(g_I2CSemaphore, portMAX_DELAY);
 
     Wire.beginTransmission(GYRO_MPU6050_I2C_ADDRESS);     //begin, Send the slave address
@@ -414,17 +414,17 @@ void PitchRollCalc(const bool Now, const bool reset)
 //   float GyroRawX = 0;
 //   float GyroRawY = 0;
 
-//   // Ensure exlusive access to I2C
+//   // Ensure exclusive access to I2C
 //   xSemaphoreTake(g_I2CSemaphore, portMAX_DELAY);
 
-//   Wire.beginTransmission(GYRO_MPU6050_I2C_ADDRESS);            //begin, Send the slave adrress
-//   Wire.write(0x43);                                            //First adress of the Gyro data
+//   Wire.beginTransmission(GYRO_MPU6050_I2C_ADDRESS);            //begin, Send the slave addrress
+//   Wire.write(0x43);                                            //First address of the Gyro data
 //   Wire.endTransmission(false);
 //   Wire.requestFrom(GYRO_MPU6050_I2C_ADDRESS, 4, 1);           //We ask for just 4 registers
 
 //   unsigned long readTime = millis();
 
-//   GyroRawX = Wire.read() << 8 | Wire.read();     //Once again we shif and sum
+//   GyroRawX = Wire.read() << 8 | Wire.read();     //Once again we shift and sum
 //   GyroRawY = Wire.read() << 8 | Wire.read();
 
 //   // Free access to I2C for other tasks
@@ -470,7 +470,7 @@ void PitchRollCalc(const bool Now, const bool reset)
 // }
 
 /**
- * Checks to see if Gyro/Accel is connected (and hopefully functionning)
+ * Checks to see if Gyro/Accel is connected (and hopefully functioning)
  * @return true if is ok
  */
 bool GyroAccelCheck(void)

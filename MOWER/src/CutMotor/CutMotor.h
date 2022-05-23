@@ -28,7 +28,7 @@ void CutMotorTest(void);
  * Cut Motor Stop function
  * @param Immediate optional bool to force a fast motor stop
  */
-void CutMotorStop(const bool Immedate = false);
+void CutMotorStop(const bool Immediate = false);
 
 /**
  * Cut Motor Check function

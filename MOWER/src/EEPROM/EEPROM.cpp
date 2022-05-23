@@ -3,7 +3,7 @@
 #include "Utils/Utils.h"
 
 /**
- * Sets up EEPROM environement : reads EEPROM into EEPROM RAM image if checksum is valid or initialises EEPROM if checksum invalid
+ * Sets up EEPROM environment : reads EEPROM into EEPROM RAM image if checksum is valid or initialises EEPROM if checksum invalid
  * 
  */
 void EEPROMSetup(void)

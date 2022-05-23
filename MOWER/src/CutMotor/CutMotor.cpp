@@ -16,7 +16,7 @@ void CutMotorSetup()
   IOExtend.pinMode(PIN_MCP_MOTOR_CUT_LN2, OUTPUT);
   IOExtend.pinMode(PIN_MCP_MOTOR_CUT_HIGH_AMP, INPUT_PULLUP);
 
-  // configure LED PWM functionalitites
+  // configure LED PWM functionalities
   ledcSetup(CUT_MOTOR_PWM_CHANNEL_FORWARD, CUT_MOTOR_PWM_FREQUENCY, CUT_MOTOR_PWM_RESOLUTION);
   ledcSetup(CUT_MOTOR_PWM_CHANNEL_REVERSE, CUT_MOTOR_PWM_FREQUENCY, CUT_MOTOR_PWM_RESOLUTION);
 
@@ -66,15 +66,15 @@ void CutMotorStart(const int Direction, const int Speed)
  * Cut Motor Stop function
  * @param Immediate optional bool to force a fast motor stop
  */
-void CutMotorStop(const bool Immedate)
+void CutMotorStop(const bool Immediate)
 {
   int CutSpeed = g_CutMotorSpeed;
 
   CutMotorSetSpeed(0);
 
-  if (Immedate && g_CutMotorOn)
+  if (Immediate && g_CutMotorOn)
   {
-    // A fast stop is acheived by injecting a brief opposite direction rotation order
+    // A fast stop is achieved by injecting a brief opposite direction rotation order
 
     if (g_CutMotorDirection == CUT_MOTOR_FORWARD)
     {

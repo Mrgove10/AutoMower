@@ -15,11 +15,11 @@
 void I2SAnalogRead(int Samples)
 {
   size_t bytesNeeded = Samples * sizeof(uint16_t); // Size of DMA buffer read: each sample is 2 bytes long
-  uint16_t i2sData[Samples];                       // Array to recevive content of DM buffer
+  uint16_t i2sData[Samples];                       // Array to receive content of DM buffer
   size_t bytesRead = 0;                            // number of bytes red returned by I2S buffer read function
   size_t total_timeout = 0;
 
-  // Ensure exlusive access to ADC
+  // Ensure exclusive access to ADC
   xSemaphoreTake(g_ADCinUse, portMAX_DELAY);
 
   // Read I2S buffer with very short timeout (1 RTOS tick) as buffer should be full as we are reading after
@@ -29,7 +29,7 @@ void I2SAnalogRead(int Samples)
   // Free access to ADC for other tasks
   xSemaphoreGive(g_ADCinUse);
 
-  // To monitor normal task behaviour, we check that the number of bytes transfered from the I2S
+  // To monitor normal task behaviour, we check that the number of bytes transferred from the I2S
   // DMA buffer is consistent with the expected number of bytes.
   // If not, this is the sign of a timeout while reading teh buffer, which is not normal.
   if (bytesRead != bytesNeeded)
@@ -37,7 +37,7 @@ void I2SAnalogRead(int Samples)
     total_timeout = total_timeout + 1;
   }
 
-  // Ensure exlusive access to shared global variables to ensure data integrity
+  // Ensure exclusive access to shared global variables to ensure data integrity
   // within arrays and other data updated by task
   xSemaphoreTake(g_RawValuesSemaphore, portMAX_DELAY);
 
@@ -54,7 +54,7 @@ void I2SAnalogRead(int Samples)
   }
   //  Serial.println();
 
-  // Free access to shared global variables with Perimter data processing task
+  // Free access to shared global variables with Perimeter data processing task
   xSemaphoreGive(g_RawValuesSemaphore);
 
   // Decided not to protect with a semaphore the access to timeout counter as this a non critical variable and this avoids unecessary system overload
@@ -144,7 +144,7 @@ void FastAnaReadLoopTask(void *dummyParameter)
     {
       // To monitor correct operation of the reading task, the number of unread events in the queue is monitored (should be zero)
       unsigned int inQueue = uxQueueMessagesWaiting(g_I2SQueueHandle);
-      // Decided not to protect with a semaphore the access to monotoring shared variables as they are non critical variable and this avoids unecessary system overload
+      // Decided not to protect with a semaphore the access to monitoring shared variables as they are non critical variable and this avoids unecessary system overload
       g_inQueue = g_inQueue + inQueue;
       g_inQueueMax = max(inQueue, g_inQueueMax);
 
@@ -183,7 +183,7 @@ void FastAnaReadLoopTaskCreate(void)
   }
   else
   {
-    DebugPrintln("Fast analog aquisition Task creation failled (" + String(xReturned) + ")", DBG_ERROR, true);
+    DebugPrintln("Fast analog aquisition Task creation failed (" + String(xReturned) + ")", DBG_ERROR, true);
     //errCOULD_NOT_ALLOCATE_REQUIRED_MEMORY	( -1 )
     //errQUEUE_BLOCKED						( -4 )
     //errQUEUE_YIELD							( -5 )
@@ -219,7 +219,7 @@ void FastAnaReadLoopTaskResume(void)
 //   // This function is to be used to perform "usual" (slow) analog reads whilst managing the conflict with the I2S driver through the use of an
 //   // application semaphore
 //   // IMPORTANT NOTES:
-//   // 1- This function may not be used before the semaphore has been initialised (initlisation is taken care of in the FastAnaReadLoopTaskCreate() function)
+//   // 1- This function may not be used before the semaphore has been initialised (initialisation is taken care of in the FastAnaReadLoopTaskCreate() function)
 //   // 2- This function only works for ADC1 connected pins (pins 32 to 39)
 
 //   // obtain exclusive access to ADC (or wait for it to be available)

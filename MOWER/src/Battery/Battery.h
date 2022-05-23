@@ -8,7 +8,7 @@
 void BatteryCurrentSensorSetup();
 
 /**
- * Checks to see if Battery I2C INA219 current sensor is connected (and hopefully functionning)
+ * Checks to see if Battery I2C INA219 current sensor is connected (and hopefully functioning)
  * 
  * @return true if current sensor is ok
  */

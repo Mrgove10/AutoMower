@@ -69,7 +69,7 @@ void MowerIdle(const bool StateChange, const MowerState PreviousState)
     g_TiltTriggered[TILT_HORIZONTAL] = false;
     g_TiltTriggered[TILT_VERTICAL] = false;
 
-    // Reset successive collition counter
+    // Reset successive collision counter
     g_successiveObstacleDetections = 0;
   }
 
@@ -124,7 +124,7 @@ void MowerDocked(const bool StateChange, const MowerState PreviousState)
     // Suspend Motion Motor roll compensation 
     g_MotionMotorRollCompensation = false;
     
-    // Trigger base to swith to sleeping mode
+    // Trigger base to switch to sleeping mode
     BaseSleepingStartSend();
 
     // Change Telemetry frequency
@@ -155,7 +155,7 @@ void MowerDocked(const bool StateChange, const MowerState PreviousState)
   }
 
   //--------------------------------
-  // Check for correct positionning on dock
+  // Check for correct positioning on dock
   //--------------------------------
 
   if (!RepositionOnDock(MOWER_AT_BASE_CURRENT, MOWER_DOCK_REPOSITION_MAX_ATTEMPTS))
@@ -234,7 +234,7 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
     // Change display with refresh
     mowingDisplay(true);
 
-    // Trigger base to swith to sending mode
+    // Trigger base to switch to sending mode
     BaseSendingStartSend();
 
     // Sound starting beep to notify environment
@@ -306,7 +306,7 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
         rightSpeed = MOWER_MOWING_TRAVEL_SPEED;
         leftSpeed = MOWER_MOWING_TRAVEL_SPEED;
         isSpiral = false;
-        // Ativate Motion Motor roll compensation 
+        // Activate Motion Motor roll compensation 
         g_MotionMotorRollCompensation = true;
 
         // Start mower forward
@@ -394,11 +394,11 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
   //    Check for lost or stopped perimeter signal,
   //    Check for battery level,
   //    Check for rain,
-  // if mode is perimeter mowing (both clockwise and counter-clockise) :
+  // if mode is perimeter mowing (both clockwise and counter-clockwise) :
   //    find wire
   //    follow wire
   // if other mowing mode (random and spiral) :
-  //    Check enviroment to slow down for approaching obstacles,
+  //    Check environment to slow down for approaching obstacles,
   //    Check for obstacle detection and react (trigger error if too many),
   //    Stop when zone mowing time completed
 
@@ -449,13 +449,13 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
   }
 
   //--------------------------------
-  // Is Cut motor in overcurrent situation ?
+  // Is Cut motor in over-current situation ?
   //--------------------------------
 
   if (!CutMotorCheck(CUT_MOTOR_OVERCURRENT_THRESHOLD, false))
   {
     CutMotorStop();
-    DebugPrintln("Cut motor in overcurrent situation", DBG_ERROR, true);
+    DebugPrintln("Cut motor in over-current situation", DBG_ERROR, true);
     g_CurrentState = MowerState::error;
     g_CurrentErrorCode = ERROR_MOWING_CUT_MOTOR_OVERCURRENT;
   }
@@ -635,7 +635,7 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
     //--------------------------------
     // Environment sensing for approaching objects
     //--------------------------------
-    if (!MowerSlowDownApproachingObstables(MOWER_MOWING_OBJECT_CLOSE_SPEED_REDUCTION,
+    if (!MowerSlowDownApproachingObstacles(MOWER_MOWING_OBJECT_CLOSE_SPEED_REDUCTION,
                                           SONAR_MIN_DISTANCE_FOR_SLOWING,
                                           SONAR_MIN_DISTANCE_FOR_SLOWING,
                                           SONAR_MIN_DISTANCE_FOR_SLOWING,
@@ -721,7 +721,7 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
       { 
         isSpiral = false;
 
-        // Ativate Motion Motor roll compensation 
+        // Acivate Motion Motor roll compensation 
         g_MotionMotorRollCompensation = true;
 
         g_mowingMode = MOWER_MOWING_MODE_RANDOM;
@@ -800,7 +800,7 @@ void MowerGoingToBase(const bool StateChange, const MowerState PreviousState)
     // Change display with refresh
     toBaseDisplay(true);
 
-    // Trigger base to swith to sending mode
+    // Trigger base to switch to sending mode
     BaseSendingStartSend();
 
     // Change Telemetry frequency
@@ -812,7 +812,7 @@ void MowerGoingToBase(const bool StateChange, const MowerState PreviousState)
     // Cancel any outstanding wheel speed corrections
     MotionMotorsTrackingAdjustSpeed(0, 0);
 
-    // Ativate Motion Motor roll compensation 
+    // Activate Motion Motor roll compensation 
     g_MotionMotorRollCompensation = true;
 
     // Activate Sonar reading
@@ -879,7 +879,7 @@ void MowerGoingToBase(const bool StateChange, const MowerState PreviousState)
   }
 
   //--------------------------------
-  // Follow perim to base
+  // Follow perimeter to base
   //--------------------------------
   if (FollowWire)
   {
@@ -956,7 +956,7 @@ void MowerLeavingBase(const bool StateChange, const MowerState PreviousState)
     // Force a Telemetry send
     MQTTSendTelemetry(true);
 
-    // Trigger base to swith to sending mode
+    // Trigger base to switch to sending mode
     BaseSendingStartSend();
 
     // Change display with refresh
@@ -1123,7 +1123,7 @@ bool MowerFindWire(const bool reset, int *phase, const int heading, const bool c
     LogPrintln("Mower started searching for wire", TAG_SEARCH, DBG_INFO);
 
     //--------------------------------
-    // Check if pre-requisistes conditions are met
+    // Check if pre-requisites conditions are met
     //--------------------------------
 
     if (!CheckPreConditions(ERROR_WIRE_SEARCH_NO_START_TILT_ACTIVE,
@@ -1176,7 +1176,7 @@ bool MowerFindWire(const bool reset, int *phase, const int heading, const bool c
     // Time is up ... raise error and stop search
     if (millis() - searchStartTime > PERIMETER_SEARCH_REVERSE_MAX_TIME)
     {
-      DebugPrintln("Phase 1 failled: not inside perimeter", DBG_DEBUG, true);
+      DebugPrintln("Phase 1 failed: not inside perimeter", DBG_DEBUG, true);
       g_CurrentState = MowerState::error;
       g_CurrentErrorCode = ERROR_WIRE_SEARCH_PHASE_1_FAILED;
       return false;
@@ -1210,7 +1210,7 @@ bool MowerFindWire(const bool reset, int *phase, const int heading, const bool c
     if (g_isInsidePerimeter && millis() - searchStartTime < PERIMETER_SEARCH_FORWARD_MAX_TIME_1)
     {
       // Environment sensing for approaching objects
-      if (!MowerSlowDownApproachingObstables(MOWER_MOWING_OBJECT_CLOSE_SPEED_REDUCTION,
+      if (!MowerSlowDownApproachingObstacles(MOWER_MOWING_OBJECT_CLOSE_SPEED_REDUCTION,
                                              SONAR_MIN_DISTANCE_FOR_SLOWING,
                                              SONAR_MIN_DISTANCE_FOR_SLOWING,
                                              SONAR_MIN_DISTANCE_FOR_SLOWING,
@@ -1442,7 +1442,7 @@ bool MowerFollowWire(bool *reset, const int heading, const bool clockwise)
   bool SlowedDown = false;
   if (clockwise)
   {
-    SlowedDown = MowerSlowDownApproachingObstables(PERIMETER_TRACKING_OBJECT_CLOSE_SPEED_REDUCTION,
+    SlowedDown = MowerSlowDownApproachingObstacles(PERIMETER_TRACKING_OBJECT_CLOSE_SPEED_REDUCTION,
                                                    SONAR_MIN_DISTANCE_FOR_SLOWING/2,
                                                    0, // no left detection
                                                    SONAR_MIN_DISTANCE_FOR_SLOWING/2,
@@ -1450,7 +1450,7 @@ bool MowerFollowWire(bool *reset, const int heading, const bool clockwise)
   }
   else
   {
-    SlowedDown = MowerSlowDownApproachingObstables(PERIMETER_TRACKING_OBJECT_CLOSE_SPEED_REDUCTION,
+    SlowedDown = MowerSlowDownApproachingObstacles(PERIMETER_TRACKING_OBJECT_CLOSE_SPEED_REDUCTION,
                                                    SONAR_MIN_DISTANCE_FOR_SLOWING/2,
                                                    SONAR_MIN_DISTANCE_FOR_SLOWING/2,
                                                    0,  // no right detection
@@ -1473,30 +1473,30 @@ bool MowerFollowWire(bool *reset, const int heading, const bool clockwise)
 
   // TO DO decide if this can remain depending on docking strategy
 
-  int colisionDetected = OBSTACLE_DETECTED_NONE;
+  int collisionDetected = OBSTACLE_DETECTED_NONE;
 
   if (clockwise)
   {
-    colisionDetected = OBSTACLE_DETECTED_NONE != CheckObstacleAndAct(true,
+    collisionDetected = OBSTACLE_DETECTED_NONE != CheckObstacleAndAct(true,
                                                                     //  SONAR_MIN_DISTANCE_FOR_STOP,
                                                                      0, // no Front detection
                                                                      0, // no left detection
                                                                     //  SONAR_MIN_DISTANCE_FOR_STOP,
                                                                     0,
                                                                      false,  // no perimeter detection
-                                                                     0, // no Overcurrent detection
+                                                                     0, // no Over-current detection
                                                                      false); // no action (for the moment ???????????????)
   }
   else
   {
-    colisionDetected = OBSTACLE_DETECTED_NONE != CheckObstacleAndAct(true,
+    collisionDetected = OBSTACLE_DETECTED_NONE != CheckObstacleAndAct(true,
                                                                     //  SONAR_MIN_DISTANCE_FOR_STOP,
                                                                      0, // no Front detection
                                                                     //  SONAR_MIN_DISTANCE_FOR_STOP,
                                                                      0,
                                                                      0,      // no right detection
                                                                      false,  // no perimeter detection
-                                                                     0, // no Overcurrent detection
+                                                                     0, // no Over-current detection
                                                                      false); // no action (for the moment ???????????????)
   }
 
@@ -1504,7 +1504,7 @@ bool MowerFollowWire(bool *reset, const int heading, const bool clockwise)
   // To achieve this, we simply set the FOLLOW_WIRE_MAX_CONSECUTIVE_OBSTACLES definition to 0.
   // So if an obstacle is detected, we declare an error and stop the wire following function.
 
-  if (colisionDetected != OBSTACLE_DETECTED_NONE)
+  if (collisionDetected != OBSTACLE_DETECTED_NONE)
   {
     // Check if number of consecutive obstacle detection is above threshold and put mower in Error mode
     if (g_successiveObstacleDetections > FOLLOW_WIRE_MAX_CONSECUTIVE_OBSTACLES)
@@ -1571,7 +1571,7 @@ bool MowerFollowWire(bool *reset, const int heading, const bool clockwise)
   }
 
   //--------------------------------
-  // Use PID to correct mower alignment over peimeter wire by adjusting orders to motors
+  // Use PID to correct mower alignment over perimeter wire by adjusting orders to motors
   //--------------------------------
 
   if (millis() - lastPIDUpdate > PERIMETER_TRACKING_PID_INTERVAL)
@@ -1599,11 +1599,11 @@ bool MowerFollowWire(bool *reset, const int heading, const bool clockwise)
     // If Mag value goes negative, we are going towards the inside and PID controller will give a positive output value
     //    If we aim to follow the wire in a clockwise direction, we should turn the mower to the left (by slowing down the left wheel)
     //    If we aim to follow the wire in a anticlockwise direction, we should turn the mower to the right (by slowing down the right wheel)
-    // If Mag value goes positive, we are going towards the ouside and PID controller will give a negative output value
+    // If Mag value goes positive, we are going towards the outside and PID controller will give a negative output value
     //    If we aim to follow the wire in a clockwise direction, we should turn the mower to the right (by slowing down the right wheel)
     //    If we aim to follow the wire in a anticlockwise direction, we should turn the mower to the left (by slowing down the left wheel)
     //
-    // Action on wheels to generate turn is by reducing the speed of the inner wheel because if motor is allready at full speed, it is not posible to increase speed of outter wheel
+    // Action on wheels to generate turn is by reducing the speed of the inner wheel because if motor is already at full speed, it is not possible to increase speed of outer wheel
 
     DebugPrintln("\t\t\tPID Returned ..." + String(g_PIDOutput), DBG_DEBUG, true);
 
@@ -1672,14 +1672,14 @@ bool MowerFollowWire(bool *reset, const int heading, const bool clockwise)
 
 /**
  * Enables the perimeter tracking adjustment of the speed for both motors
- * @param leftMotorAjustment adjustment to apply to left Motor (in %)
- * @param rightMotorAjustment adjustment to apply to right Motor (in %)
+ * @param leftMotorAdjustment adjustment to apply to left Motor (in %)
+ * @param rightMotorAdjustment adjustment to apply to right Motor (in %)
  */
-void MotionMotorsTrackingAdjustSpeed(const int leftMotorAjustment, const int rightMotorAjustment)
+void MotionMotorsTrackingAdjustSpeed(const int leftMotorAdjustment, const int rightMotorAdjustment)
 {
-  g_WheelPerimeterTrackingCorrection[MOTION_MOTOR_LEFT] = leftMotorAjustment;
+  g_WheelPerimeterTrackingCorrection[MOTION_MOTOR_LEFT] = leftMotorAdjustment;
   MotionMotorSetSpeed(MOTION_MOTOR_LEFT, BACK_TO_BASE_SPEED); // function will apply correction and set new speed
-  g_WheelPerimeterTrackingCorrection[MOTION_MOTOR_RIGHT] = rightMotorAjustment;
+  g_WheelPerimeterTrackingCorrection[MOTION_MOTOR_RIGHT] = rightMotorAdjustment;
   MotionMotorSetSpeed(MOTION_MOTOR_RIGHT, BACK_TO_BASE_SPEED); // function will apply correction and set new speed
 }
 
@@ -1781,15 +1781,15 @@ bool CheckPreConditions(const int Tilt, const int Bumper, const int Front, const
  * @brief Function to check if an obstacle is detected and performs a pre-defined action (if activated).
  * Obstacle detection can be any combination of bumper (both), Sonars (Front, Left or right) and perimeter wire, but function returns to caller at first detection.
  * Detections are performed in the following order: 1-Bumper, 2- Perimeter, 3-Front sonar, 4-Left sonar, 5-Right sonar.
- * If the action enable parameter is not set, the function only returns if a detection occured or not and action to take is left to caller to decide.
- * At the end of the funtion, if the action enable is set, the mower is stopped and the cutting motor is stopped. Caller to restart the motors as required.
+ * If the action enable parameter is not set, the function only returns if a detection occurred or not and action to take is left to caller to decide.
+ * At the end of the function, if the action enable is set, the mower is stopped and the cutting motor is stopped. Caller to restart the motors as required.
  * 
- * @param Bumper as optional boolean : bumper active triggers detection/action. 0 disbales the check. Default is 0
- * @param Front as optional int: sonar measured front distance to trigger detection/action. 0 disbales the check. Default is 0
- * @param Left as optional int: sonar measured left distance to trigger detection/action. 0 disbales the check. Default is 0
- * @param Right as optional int: sonar measured right distance to trigger detection/action. 0 disbales the check. Default is 0
+ * @param Bumper as optional boolean : bumper active triggers detection/action. 0 disables the check. Default is 0
+ * @param Front as optional int: sonar measured front distance to trigger detection/action. 0 disables the check. Default is 0
+ * @param Left as optional int: sonar measured left distance to trigger detection/action. 0 disables the check. Default is 0
+ * @param Right as optional int: sonar measured right distance to trigger detection/action. 0 disables the check. Default is 0
  * @param Perimeter as optional boolean: outside perimeter wire to trigger detection/action. 0 disables the check. Absolute value is used to perform the check (applies to both inside and outside perimeter wire).  Default is 0.
- * @param MotorOverCurrent as optional int: over current on any of the motion motors to trigger detection/action. 0 disbales the check. Default is 0
+ * @param MotorOverCurrent as optional int: over current on any of the motion motors to trigger detection/action. 0 disables the check. Default is 0
  * @param ActionMode as optional boolean: if true, changes action is performed if condition is detected (default is false).
  * @return integer indicating which detection was detected.
  */
@@ -1868,19 +1868,19 @@ int CheckObstacleAndAct(const bool Bumper, const int Front, const int Left, cons
       if (g_SonarDistance[firstSide] > SONAR_MIN_DISTANCE_FOR_TURN) // check if it's clear on first side
       {
         DebugPrintln("Turning " + SideStr[firstSide] , DBG_VERBOSE, true);
-        MowerReserseAndTurn(firstSideAngle, MOWER_MOVES_REVERSE_FOR_TURN_DURATION, true); // reverse and turn random angle
+        MowerReverseAndTurn(firstSideAngle, MOWER_MOVES_REVERSE_FOR_TURN_DURATION, true); // reverse and turn random angle
       }
       else
       {
         if (g_SonarDistance[secondSide] > SONAR_MIN_DISTANCE_FOR_TURN) // check if it's clear on second side
         {
           DebugPrintln("Reversing and turning " + SideStr[secondSide], DBG_VERBOSE, true);
-          MowerReserseAndTurn(secondSideAngle, MOWER_MOVES_REVERSE_FOR_TURN_DURATION, true); // reverse and turn random angle
+          MowerReverseAndTurn(secondSideAngle, MOWER_MOVES_REVERSE_FOR_TURN_DURATION, true); // reverse and turn random angle
         }
         else
         {
           DebugPrintln("Reversing and going back", DBG_VERBOSE, true);
-          MowerReserseAndTurn(random(135, 225), MOWER_MOVES_REVERSE_FOR_TURN_DURATION_LONG, true); // reverse and turn right 135 degrees....and hope for the best !
+          MowerReverseAndTurn(random(135, 225), MOWER_MOVES_REVERSE_FOR_TURN_DURATION_LONG, true); // reverse and turn right 135 degrees....and hope for the best !
         }
       }
     }
@@ -1912,19 +1912,19 @@ int CheckObstacleAndAct(const bool Bumper, const int Front, const int Left, cons
       if (g_SonarDistance[firstSide] > SONAR_MIN_DISTANCE_FOR_TURN) // check if it's clear on first side
       {
         DebugPrintln("Turning " + SideStr[firstSide] , DBG_VERBOSE, true);
-        MowerReserseAndTurn(firstSideAngle, MOWER_MOVES_REVERSE_FOR_TURN_DURATION, true, true, true); // reverse and turn random angle
+        MowerReverseAndTurn(firstSideAngle, MOWER_MOVES_REVERSE_FOR_TURN_DURATION, true, true, true); // reverse and turn random angle
       }
       else
       {
         if (g_SonarDistance[secondSide] > SONAR_MIN_DISTANCE_FOR_TURN) // check if it's clear on second side
         {
           DebugPrintln("Reversing and turning " + SideStr[secondSide], DBG_VERBOSE, true);
-          MowerReserseAndTurn(secondSideAngle, MOWER_MOVES_REVERSE_FOR_TURN_DURATION, true, true, true); // reverse and turn random angle
+          MowerReverseAndTurn(secondSideAngle, MOWER_MOVES_REVERSE_FOR_TURN_DURATION, true, true, true); // reverse and turn random angle
         }
         else
         {
           DebugPrintln("Reversing and going back", DBG_VERBOSE, true);
-          MowerReserseAndTurn(random(135, 225), MOWER_MOVES_REVERSE_FOR_TURN_DURATION_LONG, true, true, true); // reverse and turn right 135 degrees....and hope for the best !
+          MowerReverseAndTurn(random(135, 225), MOWER_MOVES_REVERSE_FOR_TURN_DURATION_LONG, true, true, true); // reverse and turn right 135 degrees....and hope for the best !
         }
       }
     }
@@ -1952,24 +1952,24 @@ int CheckObstacleAndAct(const bool Bumper, const int Front, const int Left, cons
       if (g_SonarDistance[firstSide] > SONAR_MIN_DISTANCE_FOR_TURN) // check if it's clear on first side
       {
         DebugPrintln("Turning " + SideStr[firstSide] , DBG_VERBOSE, true);
-        MowerReserseAndTurn(firstSideAngle, MOWER_MOVES_REVERSE_FOR_TURN_DURATION, true); // reverse and turn random angle
+        MowerReverseAndTurn(firstSideAngle, MOWER_MOVES_REVERSE_FOR_TURN_DURATION, true); // reverse and turn random angle
       }
       else
       {
         if (g_SonarDistance[secondSide] > SONAR_MIN_DISTANCE_FOR_TURN) // check if it's clear on second side
         {
           DebugPrintln("Reversing and turning " + SideStr[secondSide], DBG_VERBOSE, true);
-          MowerReserseAndTurn(secondSideAngle, MOWER_MOVES_REVERSE_FOR_TURN_DURATION, true); // reverse and turn random angle
+          MowerReverseAndTurn(secondSideAngle, MOWER_MOVES_REVERSE_FOR_TURN_DURATION, true); // reverse and turn random angle
         }
         else
         {
           DebugPrintln("Reversing and going back", DBG_VERBOSE, true);
-          MowerReserseAndTurn(random(135, 225), MOWER_MOVES_REVERSE_FOR_TURN_DURATION_LONG, true); // reverse and turn right 135 degrees....and hope for the best !
+          MowerReverseAndTurn(random(135, 225), MOWER_MOVES_REVERSE_FOR_TURN_DURATION_LONG, true); // reverse and turn right 135 degrees....and hope for the best !
         }
       }
     }
 
-    // count as an obstable detection
+    // count as an obstacle detection
     g_totalObstacleDetections = g_totalObstacleDetections + 1;
     g_successiveObstacleDetections = g_successiveObstacleDetections + 1;
 
@@ -2000,11 +2000,11 @@ int CheckObstacleAndAct(const bool Bumper, const int Front, const int Left, cons
       else
       {
         DebugPrintln("Reversing and going back", DBG_VERBOSE, true);
-        MowerReserseAndTurn(random(135, 225), MOWER_MOVES_REVERSE_FOR_TURN_DURATION_LONG, true); // reverse and turn right 135 degrees....and hope for the best !
+        MowerReverseAndTurn(random(135, 225), MOWER_MOVES_REVERSE_FOR_TURN_DURATION_LONG, true); // reverse and turn right 135 degrees....and hope for the best !
       }
     }
 
-    // count as an obstable detection
+    // count as an obstacle detection
     g_totalObstacleDetections = g_totalObstacleDetections + 1;
     g_successiveObstacleDetections = g_successiveObstacleDetections + 1;
     return OBSTACLE_DETECTED_LEFT;
@@ -2034,21 +2034,21 @@ int CheckObstacleAndAct(const bool Bumper, const int Front, const int Left, cons
       else
       {
         DebugPrintln("Reversing and going back", DBG_VERBOSE, true);
-        MowerReserseAndTurn(random(-225, -135), MOWER_MOVES_REVERSE_FOR_TURN_DURATION_LONG, true); // reverse and turn left 135 degrees....and hope for the best !
+        MowerReverseAndTurn(random(-225, -135), MOWER_MOVES_REVERSE_FOR_TURN_DURATION_LONG, true); // reverse and turn left 135 degrees....and hope for the best !
       }
     }
 
-    // count as an obstable detection
+    // count as an obstacle detection
     g_totalObstacleDetections = g_totalObstacleDetections + 1;
     g_successiveObstacleDetections = g_successiveObstacleDetections + 1;
     return OBSTACLE_DETECTED_RIGHT;
   }
 
   //--------------------------------
-  // Motion motor overcurrent detection
+  // Motion motor over-current detection
   //--------------------------------
-  // Overcurrent protection is modulated depending on pitch value: if positive pitch (going up), the overcurrent treshold is increased proportionally
-  // Reaction to motion motor overcurrent collision is as follows:
+  // Over-current protection is modulated depending on pitch value: if positive pitch (going up), the over-current threshold is increased proportionally
+  // Reaction to motion motor over-current collision is as follows:
   //    Stop motion and cutting,
   //    if possible to turn left, reverse and turn left by a "small" angle (~ less than 90 degrees)
   //    if not possible, if possible to turn right, reverse and turn right by a "small" angle (~ less than 90 degrees)
@@ -2062,7 +2062,7 @@ int CheckObstacleAndAct(const bool Bumper, const int Front, const int Left, cons
   }
 
 
-  // Overcurrent detection on instaneous values
+  // Over-current detection on instantaneous values
   // 
   if (MotorOverCurrent != 0 && (g_MotorCurrent[MOTOR_CURRENT_LEFT] > MotorOverCurrent + MotorOverCurrentCorrection || 
       g_MotorCurrent[MOTOR_CURRENT_RIGHT] > MotorOverCurrent + MotorOverCurrentCorrection))
@@ -2078,7 +2078,7 @@ int CheckObstacleAndAct(const bool Bumper, const int Front, const int Left, cons
       {
         lastMotionMotorOverCurrent = 0;
 
-        LogPrintln("Motion Motor Overcurent detected (Max:" + String(MotorOverCurrent + MotorOverCurrentCorrection) + " L:" + String(g_MotorCurrent[MOTOR_CURRENT_LEFT],0) + ", R:" + String(g_MotorCurrent[MOTOR_CURRENT_RIGHT],0) + " mA)", TAG_MOWING, DBG_DEBUG);
+        LogPrintln("Motion Motor Over-curent detected (Max:" + String(MotorOverCurrent + MotorOverCurrentCorrection) + " L:" + String(g_MotorCurrent[MOTOR_CURRENT_LEFT],0) + ", R:" + String(g_MotorCurrent[MOTOR_CURRENT_RIGHT],0) + " mA)", TAG_MOWING, DBG_DEBUG);
         if (ActionMode)
         {
           // Stop motion and stop cutting motor
@@ -2088,24 +2088,24 @@ int CheckObstacleAndAct(const bool Bumper, const int Front, const int Left, cons
           if (g_SonarDistance[firstSide] > SONAR_MIN_DISTANCE_FOR_TURN) // check if it's clear on first side
           {
             DebugPrintln("Turning " + SideStr[firstSide] , DBG_VERBOSE, true);
-            MowerReserseAndTurn(firstSideAngle, MOWER_MOVES_REVERSE_FOR_TURN_DURATION, true); // reverse and turn random angle
+            MowerReverseAndTurn(firstSideAngle, MOWER_MOVES_REVERSE_FOR_TURN_DURATION, true); // reverse and turn random angle
           }
           else
           {
             if (g_SonarDistance[secondSide] > SONAR_MIN_DISTANCE_FOR_TURN) // check if it's clear on second side
             {
               DebugPrintln("Reversing and turning " + SideStr[secondSide], DBG_VERBOSE, true);
-              MowerReserseAndTurn(secondSideAngle, MOWER_MOVES_REVERSE_FOR_TURN_DURATION, true); // reverse and turn random angle
+              MowerReverseAndTurn(secondSideAngle, MOWER_MOVES_REVERSE_FOR_TURN_DURATION, true); // reverse and turn random angle
             }
             else
             {
               DebugPrintln("Reversing and going back", DBG_VERBOSE, true);
-              MowerReserseAndTurn(random(135, 225), MOWER_MOVES_REVERSE_FOR_TURN_DURATION_LONG, true); // reverse and turn right 135 degrees....and hope for the best !
+              MowerReverseAndTurn(random(135, 225), MOWER_MOVES_REVERSE_FOR_TURN_DURATION_LONG, true); // reverse and turn right 135 degrees....and hope for the best !
             }
           }
         }
 
-        // count as an obstable detection
+        // count as an obstacle detection
         g_totalObstacleDetections = g_totalObstacleDetections + 1;
         g_successiveObstacleDetections = g_successiveObstacleDetections + 1;
 
@@ -2118,7 +2118,7 @@ int CheckObstacleAndAct(const bool Bumper, const int Front, const int Left, cons
     }
   }
 
-  // Overcurrent detection on average values
+  // Over-current detection on average values
   // 
 
   // Calculate Average Motion Motor current values
@@ -2128,7 +2128,7 @@ int CheckObstacleAndAct(const bool Bumper, const int Front, const int Left, cons
   if (MotorOverCurrent != 0 && (avgMotionMotorCurrent[MOTOR_CURRENT_LEFT] > float(MotorOverCurrent + MotorOverCurrentCorrection) * 1.0f || 
       avgMotionMotorCurrent[MOTOR_CURRENT_RIGHT] > float(MotorOverCurrent + MotorOverCurrentCorrection) * 1.0f))
   {
-    LogPrintln("Motion Motor Overcurent detected on Average (Max:" + String(MotorOverCurrent + MotorOverCurrentCorrection) + " L:" + String(avgMotionMotorCurrent[MOTOR_CURRENT_LEFT],0) + ", R:" + String(avgMotionMotorCurrent[MOTOR_CURRENT_RIGHT],0) + " mA)", TAG_MOWING, DBG_DEBUG);
+    LogPrintln("Motion Motor Over-current detected on Average (Max:" + String(MotorOverCurrent + MotorOverCurrentCorrection) + " L:" + String(avgMotionMotorCurrent[MOTOR_CURRENT_LEFT],0) + ", R:" + String(avgMotionMotorCurrent[MOTOR_CURRENT_RIGHT],0) + " mA)", TAG_MOWING, DBG_DEBUG);
     if (ActionMode)
     {
       // Stop motion and stop cutting motor
@@ -2138,24 +2138,24 @@ int CheckObstacleAndAct(const bool Bumper, const int Front, const int Left, cons
       if (g_SonarDistance[firstSide] > SONAR_MIN_DISTANCE_FOR_TURN) // check if it's clear on first side
       {
         DebugPrintln("Turning " + SideStr[firstSide] , DBG_VERBOSE, true);
-        MowerReserseAndTurn(firstSideAngle, MOWER_MOVES_REVERSE_FOR_TURN_DURATION, true); // reverse and turn random angle
+        MowerReverseAndTurn(firstSideAngle, MOWER_MOVES_REVERSE_FOR_TURN_DURATION, true); // reverse and turn random angle
       }
       else
       {
         if (g_SonarDistance[secondSide] > SONAR_MIN_DISTANCE_FOR_TURN) // check if it's clear on second side
         {
           DebugPrintln("Reversing and turning " + SideStr[secondSide], DBG_VERBOSE, true);
-          MowerReserseAndTurn(secondSideAngle, MOWER_MOVES_REVERSE_FOR_TURN_DURATION, true); // reverse and turn random angle
+          MowerReverseAndTurn(secondSideAngle, MOWER_MOVES_REVERSE_FOR_TURN_DURATION, true); // reverse and turn random angle
         }
         else
         {
           DebugPrintln("Reversing and going back", DBG_VERBOSE, true);
-          MowerReserseAndTurn(random(135, 225), MOWER_MOVES_REVERSE_FOR_TURN_DURATION_LONG, true); // reverse and turn right 135 degrees....and hope for the best !
+          MowerReverseAndTurn(random(135, 225), MOWER_MOVES_REVERSE_FOR_TURN_DURATION_LONG, true); // reverse and turn right 135 degrees....and hope for the best !
         }
       }
     }
 
-    // count as an obstable detection
+    // count as an obstacle detection
     g_totalObstacleDetections = g_totalObstacleDetections + 1;
     g_successiveObstacleDetections = g_successiveObstacleDetections + 1;
 
@@ -2168,14 +2168,14 @@ int CheckObstacleAndAct(const bool Bumper, const int Front, const int Left, cons
 }
 
 /**
- * @brief Function to reposition mower on docking station to ensure that chargin point are well aligned and that charging current is normal.
+ * @brief Function to reposition mower on docking station to ensure that charging point are well aligned and that charging current is normal.
  * This is performed by performing a small reverse and forward movement if the measured charging current is too low.
- * Caller to take necessary action if procedure failled (e.g. enter error state).
+ * Caller to take necessary action if procedure failed (e.g. enter error state).
  * 
- * @param MinCurrent int with minimum charging current threshold under which the repositionning is performed
+ * @param MinCurrent int with minimum charging current threshold under which the repositioning is performed
  * @param MaxAttempts int with maximum number of attempts to be performed
  *
- * @return bollean indicating if respositionning succeded (true) or not (false).
+ * @return boolean indicating if respositioning succeded (true) or not (false).
  */
 
 bool RepositionOnDock(const int MinCurrent, int MaxAttempts)
@@ -2220,7 +2220,7 @@ bool RepositionOnDock(const int MinCurrent, int MaxAttempts)
         // Mower stop
         MowerStop();
 
-        // Check to see if re-docking was successfull
+        // Check to see if re-docking was successful
 
         if (g_BatteryChargeCurrent < float(MinCurrent))
         {

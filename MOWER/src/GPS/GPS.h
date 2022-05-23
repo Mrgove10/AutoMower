@@ -15,7 +15,7 @@ void GPSSetup();
 void GPSRead(const bool Now = false);
 
 /**
- * Checks to see if GPS is connected (and hopefully functionning)
+ * Checks to see if GPS is connected (and hopefully functioning)
  * @return true if is ok
  */
 bool GPSCheck(void);
