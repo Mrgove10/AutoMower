@@ -52,6 +52,8 @@ typedef struct
     float CompassMagYScale;
     float CompassMagZScale;
 
+    unsigned long totalCurrentUsed;
+
 } DataStruct;
 
 #define EEPROM_SPARE_SIZE EEPROM_SIZE - sizeof(DataStruct) - EEPROM_CRC_SIZE

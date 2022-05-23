@@ -878,6 +878,8 @@ extern unsigned long g_partialMowingTime; // Partial time spent mowing, in minut
 extern unsigned long g_operationTime;     // Total time spent in operation (not docked) (Saved to EEPROM)
 extern unsigned long g_totalChargingTime;      // Total time spent charging
 
+extern double g_totalCurrentUsed;   // Total Charging current used in mAh (Saved to EEPROM)
+
 /************************* Test sequence variables *********************************/
 
 #define TEST_SEQ_STEP_WAIT 750

@@ -120,6 +120,7 @@ void EEPROMSetup(void)
     g_partialMowingTime = g_EEPROMLoad.Load.Data.partialMowingTime;
     g_operationTime = g_EEPROMLoad.Load.Data.operationTime;
     g_totalChargingTime = g_EEPROMLoad.Load.Data.chargingTime;
+    g_totalCurrentUsed = g_EEPROMLoad.Load.Data.totalCurrentUsed;
 
     // OTA request
     g_otaFlag = g_EEPROMLoad.Load.Data.OTARequested;
@@ -129,6 +130,7 @@ void EEPROMSetup(void)
     DebugPrintln("EEPROM value for g_partialMowingTime: " + String(g_partialMowingTime), DBG_INFO);
     DebugPrintln("EEPROM value for g_operationTime: " + String(g_operationTime), DBG_INFO);
     DebugPrintln("EEPROM value for g_totalChargingTime: " + String(g_totalChargingTime), DBG_INFO);
+    DebugPrintln("EEPROM value for g_totalCurrentUsed: " + String(g_totalCurrentUsed), DBG_INFO);
     DebugPrintln("EEPROM value for g_otaFlag: " + String(g_otaFlag), DBG_INFO);
   }
 }
@@ -224,6 +226,7 @@ void EEPROMSave(boolean immediatly)
     g_EEPROMLoad.Load.Data.partialMowingTime = g_partialMowingTime;
     g_EEPROMLoad.Load.Data.operationTime = g_operationTime;
     g_EEPROMLoad.Load.Data.chargingTime = g_totalChargingTime;
+    g_EEPROMLoad.Load.Data.totalCurrentUsed = g_totalCurrentUsed;
 
     // OTA request
     g_EEPROMLoad.Load.Data.OTARequested = g_otaFlag;
@@ -274,6 +277,7 @@ void EEPROMInitialise(void)
   g_EEPROMLoad.Load.Data.partialMowingTime = 0;
   g_EEPROMLoad.Load.Data.operationTime = 0;
   g_EEPROMLoad.Load.Data.chargingTime = 0;
+  g_EEPROMLoad.Load.Data.totalCurrentUsed = 0;
 
   // OTA request
   g_EEPROMLoad.Load.Data.OTARequested = false;

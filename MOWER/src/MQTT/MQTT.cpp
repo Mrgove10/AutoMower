@@ -685,10 +685,11 @@ void MQTTSendTelemetry(const bool now)
 
     // Mowing Statistics data
     JSONDataPayload.add("Obstcl", String(g_totalObstacleDetections));
-    JSONDataPayload.add("MowTim", String(int(g_totalMowingTime/60000)));
-    JSONDataPayload.add("PartMowTim", String(int(g_partialMowingTime/60000)));
-    JSONDataPayload.add("ChargTim", String(int(g_totalChargingTime/60000)));
-
+    JSONDataPayload.add("MowTim", String(long(g_totalMowingTime/60000)));
+    JSONDataPayload.add("PartMowTim", String(long(g_partialMowingTime/60000)));
+    JSONDataPayload.add("ChargTim", String(long(g_totalChargingTime/60000)));
+    JSONDataPayload.add("CurrentUsed", String(long(g_totalCurrentUsed)));
+    
     // Perimeter data
     JSONDataPayload.add("Mag", String(g_PerimeterMagnitude));
     JSONDataPayload.add("SMag", String(g_PerimeterSmoothMagnitude));

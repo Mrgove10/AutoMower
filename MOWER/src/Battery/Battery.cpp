@@ -98,9 +98,12 @@ bool BatteryChargeCurrentRead(const bool Now)
       }
 
       g_BatteryChargeCurrent = smoothedCurrent;
+
+      g_totalCurrentUsed = g_totalCurrentUsed + (current_mA * ((millis() - LastBatteryChargeCurrentRead) / 1000.0f / 3600.0f));
+      
       LastBatteryChargeCurrentRead = millis();
 
-      DebugPrintln("Battery charge current value:" + String(g_BatteryChargeCurrent) + " mA (INA bus voltage:" + String(busvoltage,3) + " V)", DBG_VERBOSE, true);
+      DebugPrintln("Battery charge current value:" + String(g_BatteryChargeCurrent) + " mA (INA bus voltage:" + String(busvoltage, 3) + " V)" + " Total charge:" + String(g_totalCurrentUsed, 3) + " mAh", DBG_VERBOSE, true);
       return true;
     }
     else
@@ -282,6 +285,7 @@ void BatteryChargeRelayClose(void)
 void BatteryChargeCheck(const bool Now)
 {
   static unsigned long LastBatteryCheck = 0;
+  static double TotalChargeAtChargeStart = g_totalCurrentUsed;
 
   if ((millis() - LastBatteryCheck > BATTERY_CHECK_INTERVAL) || Now)
   {
@@ -293,13 +297,14 @@ void BatteryChargeCheck(const bool Now)
     {
       // Open relay to stop charge
       BatteryChargeRelayOpen();
-      LogPrintln("Battery Full, charge stopped (" + String(g_BatteryChargeCurrent) + " mA, " + String(g_BatteryVoltage) + " mV)", TAG_STATES, DBG_INFO);
+      LogPrintln("Battery Full, charge stopped (" + String(g_BatteryChargeCurrent) + " mA, " + String(g_BatteryVoltage) + " mV, charging session "+ String(long(g_totalCurrentUsed - TotalChargeAtChargeStart)) + " mAh)", TAG_STATES, DBG_INFO);
       // DebugPrintln("Battery Full, charge stopped (" + String(g_BatteryChargeCurrent) + " mA, " + String(g_BatteryVoltage) + " mV)" , DBG_INFO, true);
 
       // Update charging time
       g_totalChargingTime = g_totalChargingTime + (millis() - g_BatteryChargingStartTime);   // in minutes
       EEPROMSave(true); // Update EEPROM
 
+      TotalChargeAtChargeStart = g_totalCurrentUsed;
     }
 
     // Check if battery voltage level is below charging threshold
@@ -312,6 +317,7 @@ void BatteryChargeCheck(const bool Now)
 
       // Memorise start of charging time
       g_BatteryChargingStartTime = millis();
+      TotalChargeAtChargeStart = g_totalCurrentUsed;
     }
 
     // Determine charging status

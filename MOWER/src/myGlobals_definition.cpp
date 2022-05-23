@@ -477,6 +477,8 @@ unsigned long g_partialMowingTime; // Partial time spent mowing, in minutes (Sav
 unsigned long g_operationTime;     // Total time spent in operation (not docked) (Saved to EEPROM)
 unsigned long g_totalChargingTime;      // Total time spent charging
 
+double g_totalCurrentUsed;   // Total Charging current used in mAh (Saved to EEPROM)
+
 /************************* Program variables *********************************/
 
 MowerState g_CurrentState = MowerState::idle;
