@@ -596,6 +596,7 @@ void MQTTSendTelemetry(const bool now)
   static unsigned int LastSonarLoopCountSent = 0;
   static float LastBatteryVoltage = UNKNOWN_FLOAT;
   static float BatteryVoltageChangeRate = 0;
+  float ChangeRateAvgSamples = 10.0;
 
   char MQTTpayload[MQTT_MAX_PAYLOAD];
 
@@ -622,7 +623,13 @@ void MQTTSendTelemetry(const bool now)
       LastBatteryVoltage = g_BatteryVoltage;
     }
 
-    BatteryVoltageChangeRate = BatteryVoltageChangeRate * 0.8f + 0.2f * ((g_BatteryVoltage - LastBatteryVoltage) / (BATTERY_VOLTAGE_FULL_THRESHOLD - BATTERY_0_PERCENT_VOLTAGE) * 100.0f / float((millis() - LastTelemetryDataSent)) * 1000.0f * 3600.0f);   // in %/hour
+    if (g_CurrentState == MowerState::idle || g_CurrentState == MowerState::docked)
+    {
+      ChangeRateAvgSamples = 5.0;
+    } 
+    BatteryVoltageChangeRate = (1.0 - (1.0 / ChangeRateAvgSamples)) * BatteryVoltageChangeRate + 
+                               (1.0 / ChangeRateAvgSamples) * ((g_BatteryVoltage - LastBatteryVoltage) / (BATTERY_VOLTAGE_FULL_THRESHOLD - BATTERY_0_PERCENT_VOLTAGE) * 100.0f / float((millis() - LastTelemetryDataSent)) * 1000.0f * 3600.0f);   // in %/hour
+
     JSONDataPayload.add("BatVoltVarRate", String(BatteryVoltageChangeRate,2));
 
     // MotionMotor Data
