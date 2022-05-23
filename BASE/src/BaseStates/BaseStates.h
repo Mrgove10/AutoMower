@@ -31,7 +31,7 @@ void BaseInError(const bool StateChange, const BaseState PreviousState);
 
 /**
  * Base temperature monitoring : Base is set in error mode and sending stopped if temperature above max threshold
- * @param Theshold temperature above which base station is stopped
+ * @param Threshold temperature above which base station is stopped
  * @return boolean indicating if temperature is too high (true) or not (false)
  */
 bool BaseTemperatureTooHighCheck(const float Threshold);
@@ -52,7 +52,7 @@ bool PerimeterCurrentTooHighCheck(const float Threshold);
 
 /**
  * Mower status received monitoring : Base is set in error mode if no data is received before timeout and base is set into Sleeping mode if mower is in Docked Mode
- * @param Timeout in ms duing which mower data is expected
+ * @param Timeout in ms during which mower data is expected
  * @return boolean indicating if timeout has been reached (true) or not (false)
  */
 bool MowerStatusCheck(const unsigned long Timeout);

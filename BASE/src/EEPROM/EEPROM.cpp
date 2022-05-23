@@ -3,7 +3,7 @@
 #include "Utils/Utils.h"
 
 /**
- * Sets up EEPROM environement : reads EEPROM into EEPROM RAM image if checksum is valid or initialises EEPROM if checksum invalid
+ * Sets up EEPROM environment : reads EEPROM into EEPROM RAM image if checksum is valid or initialises EEPROM if checksum invalid
  * 
  */
 void EEPROMSetup(void)
@@ -153,9 +153,9 @@ void EEPROMWrite(void)
  * Updates EEPROM RAM image before saving to EEPROM (triggers EPPROMWrite)
  * 
  */
-void EEPROMSave(boolean immediatly)
+void EEPROMSave(boolean immediately)
 {
-  if (immediatly || millis() - g_LastEepromWriteTime > EEPROM_WRITE_FREQUENCY)
+  if (immediately || millis() - g_LastEepromWriteTime > EEPROM_WRITE_FREQUENCY)
   {
     g_EEPROMLoad.Load.Data.LastEepromSaveTime.year = myTime.year();
     g_EEPROMLoad.Load.Data.LastEepromSaveTime.month = myTime.month();

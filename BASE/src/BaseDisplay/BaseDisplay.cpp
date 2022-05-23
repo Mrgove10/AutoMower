@@ -413,7 +413,7 @@ void sleepingDisplay(bool refresh)
         Line = Line + " | " + String(g_MowerChargeCurrent,0) + " mA";
       }
 
-      Line = Line + "                 ";   // add spaces to errase end of line
+      Line = Line + "                 ";   // add spaces to erase end of line
 
       DisplayPrint(0,2,Line.substring(0,20),true);
     }
@@ -488,7 +488,7 @@ void headerDisplay(String title, bool now)
     title.trim();   // Remove unnecessary spaces
 
     // Display Rain indicator
-    if (g_IsRainning)
+    if (g_IsRaining)
     {
       DisplayPrint(0,0,RainChar[RainIdx],true);
       RainIdx = RainIdx + 1;

@@ -2,7 +2,7 @@
 #define rain_h
 
 /**
- * Checks to see if rain sensor is connected (and hopefully functionning)
+ * Checks to see if rain sensor is connected (and hopefully functioning)
  * 
  * @return true if rain sensor check is ok
  */

@@ -38,7 +38,7 @@ String char_reset_reason(byte reason)
     break; /**<9,  RTC Watch dog Reset digital core*/
   case 10:
     return "INTRUSION_RESET";
-    break; /**<10, Instrusion tested to reset CPU*/
+    break; /**<10, Intrusion tested to reset CPU*/
   case 11:
     return "TGWDT_CPU_RESET";
     break; /**<11, Time Group reset CPU*/
@@ -167,7 +167,7 @@ String ErrorString(const int errorCode)
     case ERROR_PERIMETER_CURRENT_TOO_HIGH:
       return String(F("Perimeter current HIGH: abnormal"));
     case ERROR_TEMPERATURE_TOO_HIGH:
-      return String(F("Base temperature too HIGH: No sginal"));
+      return String(F("Base temperature too HIGH: No signal"));
     case ERROR_NO_MOWER_DATA:
       return String(F("Base received no mower communications"));
 

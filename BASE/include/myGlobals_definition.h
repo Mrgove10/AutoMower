@@ -231,7 +231,7 @@ extern Adafruit_MCP23017 IOExtend;
 #define RAIN_READ_INTERVAL 30000         // in ms
 
 extern float g_RainLevel;
-extern bool g_IsRainning;
+extern bool g_IsRaining;
 
 /************************* DS18D20 temperature sensor variables *********************************/
 

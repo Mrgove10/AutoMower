@@ -84,7 +84,7 @@ void InitPerimeterSendPins(void)
   pinMode(PIN_ESP_SENDER_PERIMETER_IN1, OUTPUT);
   pinMode(PIN_ESP_SENDER_PERIMETER_IN2, OUTPUT);
 
-  // configure LED PWM functionalitites
+  // configure LED PWM functionalities
   ledcSetup(PERIMETER_SEND_PWM_CHANNEL, PERIMETER_SEND_PWM_FREQUENCY, PERIMETER_SEND_PWM_RESOLUTION);
 
   // attach the channel to the GPIO to be controlled
@@ -210,7 +210,7 @@ void PerimeterSendLoopTaskCreate(void)
   }
   else
   {
-    DebugPrintln("Perimeter signal send Task creation failled (" + String(xReturned) + ")", DBG_ERROR, true);
+    DebugPrintln("Perimeter signal send Task creation failed (" + String(xReturned) + ")", DBG_ERROR, true);
     //errCOULD_NOT_ALLOCATE_REQUIRED_MEMORY	( -1 )
     //errQUEUE_BLOCKED						( -4 )
     //errQUEUE_YIELD							( -5 )

@@ -19,7 +19,7 @@
 // -------------------- Network  ------------------------
 #define ESPHOSTNAME "MyMowerBase"
 
-// -------------------- Tags diplayed in Grafana ------------------------
+// -------------------- Tags displayed in Grafana ------------------------
 #define TAG_RESET "RESET"
 #define TAG_BASE "BASE"
 #define TAG_OTA "OTA"

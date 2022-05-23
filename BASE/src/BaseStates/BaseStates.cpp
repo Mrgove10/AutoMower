@@ -191,7 +191,7 @@ void BaseSending(const bool StateChange, const BaseState PreviousState)
 
   // Ongoing Sending routine is as follows:
   //    Check for perimeter current,
-  //    Check for temperautre,
+  //    Check for temperature,
   //    Check for rain
 
   PwrSupplyVoltageRead();
@@ -308,7 +308,7 @@ void BaseInError(const bool StateChange, const BaseState PreviousState)
 
 /**
  * Base temperature monitoring : Base is set in error mode and sending stopped if temperature above max threshold
- * @param Theshold temperature above which base station is stopped
+ * @param Threshold temperature above which base station is stopped
  * @return boolean indicating if temperature is too high (true) or not (false)
  */
 bool BaseTemperatureTooHighCheck(const float Threshold)

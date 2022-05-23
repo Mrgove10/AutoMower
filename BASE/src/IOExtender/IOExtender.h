@@ -23,7 +23,7 @@ void IOExtendProtectedWrite(const uint8_t pin, const uint8_t value);
 uint8_t IOExtendProtectedRead(const uint8_t pin);
 
 /**
- * I2C MCP23017 IO Extender protected digital GIPO read function
+ * I2C MCP23017 IO Extender protected digital GPIO read function
  * @param gpio to read
  * @return read value
  */

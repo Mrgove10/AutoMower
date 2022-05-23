@@ -37,7 +37,7 @@ void KeypadRead(void)
 
   if ((millis() - LastKeypadRead > KEYPAD_READ_INTERVAL))
   {
-    IOregister = IOExtendProtectedGPIORead(KEYPAD_GPIO) & 0XF; // logical AND to remove heigher weight bits
+    IOregister = IOExtendProtectedGPIORead(KEYPAD_GPIO) & 0XF; // logical AND to remove higher weight bits
     for (uint8_t key = 0; key < KEYPAD_MAX_KEYS; key++)
     {
       g_KeyPressed[key] = ((IOregister & KeyMasks[key]) ^ KeyMasks[key]) == KeyMasks[key]; // logical AND to isolate bit of interest

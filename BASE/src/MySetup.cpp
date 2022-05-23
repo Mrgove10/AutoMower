@@ -39,9 +39,9 @@ void MySetup(void)
   }
 
 #ifdef STOP_RESTART_TO_CAPTURE_CRASH_DUMP
-// For testing ONLY, if reset is not a power-on, delay indefinately to be able to "catch" reset cause.
-// NOT TO BE USED IN NORMAL OPERATION AS MOWER WILL NOT RESET OUTPUTS AND MOTORS WILL KEEP RUNNING UNTILL 
-// THE MOWER IS POWERED OFF OR A RESET IS ERFORMED ON ESP32 BORAD
+// For testing ONLY, if reset is not a power-on, delay indefinitely to be able to "catch" reset cause.
+// NOT TO BE USED IN NORMAL OPERATION AS MOWER WILL NOT RESET OUTPUTS AND MOTORS WILL KEEP RUNNING UNTIL 
+// THE MOWER IS POWERED OFF OR A RESET IS PERFORMED ON ESP32 BOARD
 
   if (rtc_get_reset_reason(0) != 1)
   {
@@ -58,7 +58,7 @@ void MySetup(void)
 
   KeypadSetup();
 
-  // Delay to ensure all serial.prints have finished before Telnet intialisation
+  // Delay to ensure all serial.prints have finished before Telnet initialisation
   delay(500);
 
   // Setup Telnet Debug Management

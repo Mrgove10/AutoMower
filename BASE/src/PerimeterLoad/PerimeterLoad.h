@@ -8,7 +8,7 @@
 void PerimeterLoadCurrentSensorSetup();
 
 /**
- * Checks to see if perimeter INA219 I2C current sensor is connected (and hopefully functionning)
+ * Checks to see if perimeter INA219 I2C current sensor is connected (and hopefully functioning)
  * 
  * @return true if INA219 current sensor is ok
  */

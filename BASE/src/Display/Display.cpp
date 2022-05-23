@@ -12,7 +12,7 @@
 void DisplaySetup(void)
 {
 #ifdef DISPLAY_LCD2004
-  if (lcd.begin(DISPLAY_COLUMNS, DISPLAY_ROWS, LCD_5x8DOTS) != 1) //colums - 20, rows - 4, pixels - 5x8, SDA - D2, SCL - D1
+  if (lcd.begin(DISPLAY_COLUMNS, DISPLAY_ROWS, LCD_5x8DOTS) != 1) //columns - 20, rows - 4, pixels - 5x8, SDA - D2, SCL - D1
   {
     DebugPrintln(F("LCD is not connected or lcd pins declaration is wrong."), DBG_ERROR, true);
   }

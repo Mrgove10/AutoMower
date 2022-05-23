@@ -61,9 +61,9 @@ void TemperatureSensorSetup(void)
 }
 
 /**
- * Temperature sensor device address formating function
+ * Temperature sensor device address formatting function
  * @param device DeviceAddress to format
- * @return String displaying a formated device address
+ * @return String displaying a formatted device address
  */
 String TempSensorAddress(DeviceAddress device)
 {
@@ -80,7 +80,7 @@ String TempSensorAddress(DeviceAddress device)
   return returnStr;
 }
 /**
- * Checks to see if Temperature sensor is connected and functionning
+ * Checks to see if Temperature sensor is connected and functioning
  * @param sensor int functional sensor to check
  * @return true if Temperature sensor check is ok
  */

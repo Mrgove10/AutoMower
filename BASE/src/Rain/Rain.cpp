@@ -8,7 +8,7 @@
 //#include "AnaReadTsk/AnaReadTsk.h"
 
 /**
- * Checks to see if rain sensor is connected (and hopefully functionning)
+ * Checks to see if rain sensor is connected (and hopefully functioning)
  * 
  */
 bool RainSensorCheck(void)
@@ -86,7 +86,7 @@ bool isRaining(const bool Now)
 
   }
 
-  g_IsRainning = smoothValue > RAIN_SENSOR_RAINING_THRESHOLD;
+  g_IsRaining = smoothValue > RAIN_SENSOR_RAINING_THRESHOLD;
 
-  return g_IsRainning;
+  return g_IsRaining;
 }

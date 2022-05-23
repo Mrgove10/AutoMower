@@ -59,7 +59,7 @@ const int8_t g_sigcode[PERIMETER_SIGNAL_CODE_LENGTH] = {1, 1, -1, -1, 1, -1, 1, 
 
 // TaskHandle_t g_PerimeterProcTaskHandle; // Perimeter processing task RTOS task handle
 
-// unsigned int g_PerimeterQueuefull = 0;  // Assumulated count of full Perimeter queue events
+// unsigned int g_PerimeterQueuefull = 0;  // Accumulated count of full Perimeter queue events
 // unsigned int g_inPerimeterQueueMax = 0; // Max Perimeter queue waiting events (should be 0)
 // unsigned int g_inPerimeterQueue = 0;    // Accumulated Perimeter queue waiting events (should be 0)
 
@@ -85,7 +85,7 @@ const int8_t g_sigcode[PERIMETER_SIGNAL_CODE_LENGTH] = {1, 1, -1, -1, 1, -1, 1, 
 // bool g_PerimeterSignalLost = true;          // This boolean indicates that the perimeter signal is either too weak (meaning that the perimeter wire is probably cut or the sender is stopped)
 // int16_t g_PerimeterSignalLostThreshold = 0; // Threshold under which g_PerimeterSignalLost is true (Dynamic parameter Saved to EEPROM)
 
-// bool g_PerimeterSignalLowForTracking = true;    // This boolean indicates that the perimeter signal is too weak while wire tracking meaning that the mower is no longuer "over" the wire
+// bool g_PerimeterSignalLowForTracking = true;    // This boolean indicates that the perimeter signal is too weak while wire tracking meaning that the mower is no longer "over" the wire
 // int16_t g_PerimeterSignalLowTrackThreshold = 0; // Threshold under which g_PerimeterSignalLowForTracking is true (Dynamic parameter Saved to EEPROM)
 
 /************************* Perimeter signal send task *********************************/
@@ -126,7 +126,7 @@ Timezone myTime;
 /************************* Display variables *********************************/
 
 #ifdef DISPLAY_LCD2004
-LiquidCrystal_I2C lcd(PCF8574_ADDR_A21_A11_A01, 4, 5, 6, 16, 11, 12, 13, 14, POSITIVE); // Uses Defaut Address
+LiquidCrystal_I2C lcd(PCF8574_ADDR_A21_A11_A01, 4, 5, 6, 16, 11, 12, 13, 14, POSITIVE); // Uses Default Address
 #endif
 
 #ifdef DISPLAY_OLEDSSD1306
@@ -149,7 +149,7 @@ Adafruit_MCP23017 IOExtend;
 /************************* Rain Sensor variables *********************************/
 
 float g_RainLevel = 0;
-bool g_IsRainning = false;
+bool g_IsRaining = false;
 
 /************************* DS18D20 temperature sensor variables *********************************/
 
@@ -161,7 +161,7 @@ DallasTemperature TemperatureSensors(&TemperatureOneWire);
 
 // If you do not know your temperature sensor device addresses :
 // 1- Uncomment the TEMPERATURE_SENSOR_ADDRESS_UNKNOWN definition below
-// 2- Compile and run the programm
+// 2- Compile and run the program
 // 3- Get the device addresses shown in the startup log and replace the addresses below
 // 4- Re-comment the definition below
 
@@ -215,7 +215,7 @@ String g_StatesString[STATES_COUNT] = {"   IDLE   ",   // Idle
 /************************* Base operation statistics *********************************/
 
 unsigned long g_totalBaseOnTime = 0; // Total time spent with perimeter On, in minutes (Saved to EEPROM)
-unsigned long g_totalBaseRainDuration = 0; // Total time spent with Rainning On, in minutes (Saved to EEPROM)
+unsigned long g_totalBaseRainDuration = 0; // Total time spent with Raining On, in minutes (Saved to EEPROM)
 
 /************************* Program variables *********************************/
 

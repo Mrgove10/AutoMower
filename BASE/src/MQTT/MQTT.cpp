@@ -467,7 +467,7 @@ void MQTTSendTelemetry(const bool now)
     JSONDataPayload.add("BaseTempErr", String(g_TempErrorCount[TEMPERATURE_1_RED]));
     JSONDataPayload.add("BaseFan", String(g_FanOn[FAN_1_RED]));
     JSONDataPayload.add("RainLvl", String(g_RainLevel, 2));
-    JSONDataPayload.add("IsRainning", String(g_IsRainning));
+    JSONDataPayload.add("IsRaining", String(g_IsRaining));
     
     // Base Statistics data
     JSONDataPayload.add("OnTime", String(int(g_totalBaseOnTime/60000)));
@@ -514,7 +514,7 @@ void MQTTSendTelemetry(const bool now)
 
 /**
  * Send Perimeter signal status on MQTT channel
- * @param now boolean indicating the sending is to be performed immediatly
+ * @param now boolean indicating the sending is to be performed immediately
  */
 void PerimeterSignalStatusSend(const bool now = false)
 {
@@ -559,7 +559,7 @@ void BaseRainStatusSend(const bool now = false)
 
     JSONNotePayload.clear();
 
-    JSONNotePayload.add("RainStatus", int(g_IsRainning));
+    JSONNotePayload.add("RainStatus", int(g_IsRaining));
     JSONNotePayload.toString(JSONNotePayloadStr, false);
     JSONNotePayloadStr.toCharArray(MQTTpayload, JSONNotePayloadStr.length() + 1);
 
