@@ -163,7 +163,7 @@ void ZoneStepAction(const int Action, const int Param1, const int Param2)
 }
 
 /**
- * @brief Mower zone definition intialisation
+ * @brief Mower zone definition initialisation
  */
 void mowZoneStepsInit(void)
 {

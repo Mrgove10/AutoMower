@@ -20,7 +20,7 @@
 #define MOW_ZONE_5 5        // Perimeter mow counter-clockwise
 
 /**
- * @brief Mower zone definition intialisation
+ * @brief Mower zone definition initialisation
  */
 void mowZoneStepsInit(void);
 

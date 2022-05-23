@@ -193,7 +193,7 @@ String ErrorString(const int errorCode)
     case ERROR_MOWING_OUTSIDE_TOO_LONG:
       return String(F("Mowing Stopped: Out of perimeter for too long"));
     case ERROR_MOWING_CUT_MOTOR_OVERCURRENT:
-      return String(F("Mowing Stopped: Cut motor in overcurrent"));
+      return String(F("Mowing Stopped: Cut motor in over-current"));
     case ERROR_WIRE_SEARCH_NO_START_BUMPER_ACTIVE:
       return String(F("Wire search cannot start: bumper activated"));
     case ERROR_WIRE_SEARCH_NO_START_OBJECT_TOO_CLOSE:
@@ -203,13 +203,13 @@ String ErrorString(const int errorCode)
     case ERROR_WIRE_SEARCH_NO_START_NO_PERIMETER_SIGNAL:
       return String(F("Wire search cannot start: no perimeter signal"));
     case ERROR_WIRE_SEARCH_PHASE_1_FAILED:
-      return String(F("Wire search PH1 (bckwd) failled to get inside perimeter"));
+      return String(F("Wire search PH1 (bckwd) failed to get inside perimeter"));
     case ERROR_WIRE_SEARCH_PHASE_2_FAILED:
-      return String(F("Wire search PH2 (fwd) failled to get outside perimeter"));
+      return String(F("Wire search PH2 (fwd) failed to get outside perimeter"));
     case ERROR_WIRE_SEARCH_CONSECUTIVE_OBSTACLES:
-      return String(F("Wire search PH2 (fwd) failled: too many successive obstacles"));
+      return String(F("Wire search PH2 (fwd) failed: too many successive obstacles"));
     case ERROR_WIRE_SEARCH_PHASE_3_FAILED:
-      return String(F("Wire search PH3 (turn) failled to get inside perimeter"));
+      return String(F("Wire search PH3 (turn) failed to get inside perimeter"));
     case ERROR_FOLLOW_WIRE_NO_START_BUMPER_ACTIVE:
       return String(F("Wire tracking cannot start: bumper activated"));
     case ERROR_FOLLOW_WIRE_NO_START_OBJECT_TOO_CLOSE:
@@ -385,7 +385,7 @@ bool MyIdleHook_1( void )
 }
 
 /**
- * Potected I2C write to I2C device with address 
+ * Protected I2C write to I2C device with address 
  * 
  * @param i2cAddr I2C address
  * @param i2cAddr I2C address
@@ -394,7 +394,7 @@ bool MyIdleHook_1( void )
  */
 void I2C_write_AddrDev_AddrReg_Byte(byte i2cAddr, byte regaddr, byte d)
 {
-  // Ensure exlusive access to I2C
+  // Ensure exclusive access to I2C
   xSemaphoreTake(g_I2CSemaphore, portMAX_DELAY);
 
    Wire.beginTransmission(i2cAddr);

@@ -15,14 +15,14 @@
 ICACHE_RAM_ATTR void horizontalTiltISR(void)
 {
   static unsigned long LastHorizontalTiltChange = 0;
-  static bool LastHorizontalTitltStatus = false; // assumption is that tilt is functionning on start and in not triggered (normally opened contact)
+  static bool LastHorizontalTiltStatus = false; // assumption is that tilt is functioning on start and in not triggered (normally opened contact)
 
-  LastHorizontalTitltStatus = !LastHorizontalTitltStatus; // Capture every status change
+  LastHorizontalTiltStatus = !LastHorizontalTiltStatus; // Capture every status change
 
   if (millis() - LastHorizontalTiltChange > TILT_DEBOUNCE_TIMEOUT && TILT_HORIZONTAL_ACTIVATED)
   {
     portENTER_CRITICAL_ISR(&g_TiltMux[TILT_HORIZONTAL]);
-    g_TiltTriggered[TILT_HORIZONTAL] = (LastHorizontalTitltStatus == LOW);
+    g_TiltTriggered[TILT_HORIZONTAL] = (LastHorizontalTiltStatus == LOW);
     LastHorizontalTiltChange = millis();
     portEXIT_CRITICAL_ISR(&g_TiltMux[TILT_HORIZONTAL]);
   }
@@ -35,7 +35,7 @@ ICACHE_RAM_ATTR void horizontalTiltISR(void)
 ICACHE_RAM_ATTR void verticalTiltISR(void)
 {
   static unsigned long LastVerticalTiltChange = 0;
-  static bool LastVerticalTiltStatus = true; // assumption is that tilt is functionning on start and in not triggered (normally closed contact)
+  static bool LastVerticalTiltStatus = true; // assumption is that tilt is functioning on start and in not triggered (normally closed contact)
 
   LastVerticalTiltStatus = !LastVerticalTiltStatus; // Capture every status change
 

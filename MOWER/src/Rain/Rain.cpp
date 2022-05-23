@@ -8,7 +8,7 @@
 #include "AnaReadTsk/AnaReadTsk.h"
 
 /**
- * Checks to see if rain sensor is connected (and hopefully functionning)
+ * Checks to see if rain sensor is connected (and hopefully functioning)
  * 
  */
 bool RainSensorCheck(void)

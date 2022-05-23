@@ -67,7 +67,7 @@ int8_t g_sigcode_diff[PERIMETER_SIGNAL_CODE_LENGTH] = {1, 0, -1, 0, 1, -1, 1, -1
 /************************* High speed Analog Read task *********************************/
 
 SemaphoreHandle_t g_ADCinUse;           // to protect access to ADC between I2S driver and other analogRead calls
-SemaphoreHandle_t g_RawValuesSemaphore; // to protect access to shared global variables used in Perimter data Processing task
+SemaphoreHandle_t g_RawValuesSemaphore; // to protect access to shared global variables used in Perimeter data Processing task
 
 QueueHandle_t g_I2SQueueHandle;       // Queue used by I2S driver to notify for availability of new samples in a full DMA buffer
 TaskHandle_t g_FastAnaReadTaskHandle; // High speed analog read RTOS task handle
@@ -158,7 +158,7 @@ Timezone myTime;
 /************************* Display variables *********************************/
 
 #ifdef DISPLAY_LCD2004
-LiquidCrystal_I2C lcd(PCF8574_ADDR_A21_A11_A01, 4, 5, 6, 16, 11, 12, 13, 14, POSITIVE); // Uses Defaut Address
+LiquidCrystal_I2C lcd(PCF8574_ADDR_A21_A11_A01, 4, 5, 6, 16, 11, 12, 13, 14, POSITIVE); // Uses Default Address
 #endif
 
 #ifdef DISPLAY_OLEDSSD1306
@@ -182,7 +182,7 @@ Adafruit_MCP23017 IOExtend;
 
 bool g_isRainingAtBase = false;   // updated with base rain status received by MQTT
 
-/************************* I2C HMC5883L Compasss Sensor variables *********************************/
+/************************* I2C HMC5883L Compass Sensor variables *********************************/
 
 #include <Adafruit_HMC5883_U.h>
 
@@ -265,7 +265,7 @@ DallasTemperature TemperatureSensors(&TemperatureOneWire);
 
 // If you do not know your temperature sensor device addresses :
 // 1- Uncomment the TEMPERATURE_SENSOR_ADDRESS_UNKNOWN definition below
-// 2- Compile and run the programm
+// 2- Compile and run the program
 // 3- Get the device addresses shown in the startup log and replace the addresses below
 // 4- Re-comment the definition below
 
@@ -290,7 +290,7 @@ Adafruit_INA219 BatteryChargeSensor = Adafruit_INA219(BATTERY_INA219_I2C_ADDRESS
 float g_BatterySOC = 0;  // Indicates the battery state of charge in %
 bool g_BatteryRelayIsClosed;  // Indicates whether the battery relay is closed (true) or not (false)
 bool g_BatteryIsCharging = false;  // indicates whether the battery is charging or not
-unsigned long g_BatteryChargingStartTime = 0; // Memorises when battery charging started (for chrging duration calculation)
+unsigned long g_BatteryChargingStartTime = 0; // Memorises when battery charging started (for charging duration calculation)
 
 /************************* INA219 I2C Curent sensor variables *********************************/
 

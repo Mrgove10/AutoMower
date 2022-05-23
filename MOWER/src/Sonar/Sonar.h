@@ -10,7 +10,7 @@
 void SonarSensorSetup(void);
 
 /**
- * Checks to see if Sonar sensor is connected and functionning
+ * Checks to see if Sonar sensor is connected and functioning
  * @param sensor int Sonar to check
  * @return true if sensor check is ok
  */

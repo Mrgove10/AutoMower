@@ -13,7 +13,7 @@ void PerimeterQueueInit(void)
 {
   // Perimeter queue creation
 
-  /* Create a queue capable of containing bytes (used as commands to premieter processing task */
+  /* Create a queue capable of containing bytes (used as commands to perimeter processing task */
   g_PerimeterTimerQueue = xQueueCreate(PERIMETER_QUEUE_LEN, sizeof(byte));
   if (g_PerimeterTimerQueue == NULL)
   {
@@ -33,13 +33,13 @@ void PerimeterTimerInit(void)
 {
   // Perimeter timer setup
 
-  // Create timer handle and set prescaler value
+  // Create timer handle and set pre-scaler value
   g_PerimeterTimerhandle = timerBegin(PERIMETER_TIMER_NUMBER, TIMER_PRESCALER, true);
 
   // Attach Timer ISR function to Timer
   timerAttachInterrupt(g_PerimeterTimerhandle, &PerimeterTimerISR, true);
 
-  // Setup tigger alarm associated to timer set at chosen duration
+  // Setup trigger alarm associated to timer set at chosen duration
   timerAlarmWrite(g_PerimeterTimerhandle, PERIMETER_TIMER_PERIOD, true);
 
   // Activate the alarm
@@ -61,24 +61,24 @@ ICACHE_RAM_ATTR void PerimeterTimerISR(void)
   byte Message = PERIMETER_TASK_PROCESSING_TRIGGER; // for perimeter data processing
  
 #ifdef PERIMETER_SEMAPHORE_TRIGGER
-  // Tigger Perimeter processing task by freeing the semaphore
+  // Trigger Perimeter processing task by freeing the semaphore
   xSemaphoreGive(g_PerimeterProcTimerSemaphore);
 #endif
 
 #define PERIMETER_NOTIFICATION_TRIGGER true
 #ifdef PERIMETER_NOTIFICATION_TRIGGER
-  // Tigger Perimeter processing task by notification mechanism
+  // Trigger Perimeter processing task by notification mechanism
   xTaskNotifyFromISR(g_PerimeterProcTaskHandle, Message, eSetValueWithOverwrite, &xHigherPriorityTaskWoken);
 #endif
 
 #ifdef PERIMETER_QUEUE_TRIGGER
 
-  // Tigger Perimeter processing task by sending an event in the queue
+  // Trigger Perimeter processing task by sending an event in the queue
   QueueReturn = xQueueSendToBackFromISR(g_PerimeterTimerQueue, &Message, &xHigherPriorityTaskWoken);
   // QueueReturn = xQueueSendToFrontFromISR(g_PerimeterTimerQueue, &Message, &xHigherPriorityTaskWoken);
   // QueueReturn = xQueueOverwriteFromISR(g_PerimeterTimerQueue, &Message, &xHigherPriorityTaskWoken);
 
-  // To monitor normal task behaviour, we check that the queue is not full, indicating that the processing task is not runing or is running too slowly
+  // To monitor normal task behaviour, we check that the queue is not full, indicating that the processing task is not running or is running too slowly
   if (QueueReturn != pdPASS)
   {
     // Decided not to protect with a semaphore the access to full queue counter as this a non critical variable and this avoids unecessary system overload
@@ -129,8 +129,8 @@ void PerimeterProcessingSetup(void)
 
 /**
  * Perimeter data raw calibration function to determine calibration offset to "zero value"
- * @param Samples is the number of samples to use to estblish calibration offset (g_PerimeterOffset)
- * @returns the ofset in the g_PerimeterOffset global variable
+ * @param Samples is the number of samples to use to establish calibration offset (g_PerimeterOffset)
+ * @returns the offset in the g_PerimeterOffset global variable
  */
 void PerimeterRawValuesCalibration(int Samples)
 {
@@ -232,7 +232,7 @@ void GetPerimeterRawValues(int Samples)
   int16_t maxBuf = 0;
   for (int l = 0; l < Samples; l++)
   {
-    // Convert value by appliying calibration offset and shifting to appropriate range and store in buffer to be used by matched filter
+    // Convert value by applying calibration offset and shifting to appropriate range and store in buffer to be used by matched filter
 
     // Serial.print(String(g_RawCopy[i]) + " ");
 
@@ -267,7 +267,7 @@ void GetPerimeterRawValues(int Samples)
 /**
  * Cross correlation digital matched filter
  *
- * @param H[] holds the double sided filter coeffs,
+ * @param H[] holds the double sided filter coefficients,
  * @param subsample is the number of times for each filter coeff to repeat 
  * @param M = H.length (number of points in FIR)
  * @param ip[] holds input data (length > nPts + M )
@@ -283,9 +283,9 @@ int16_t corrFilter(int8_t *H, int8_t subsample, int16_t M, int8_t *ip, int16_t n
 {
   int16_t sumMax = 0;         // max correlation sum
   int16_t sumMin = 0;         // min correlation sum
-  int16_t Ms = M * subsample; // number of filter coeffs including subsampling
+  int16_t Ms = M * subsample; // number of filter coefficients including subsampling
 
-  // compute sum of absolute filter coeffs
+  // compute sum of absolute filter coefficients
   int16_t Hsum = 0;
   for (int16_t i = 0; i < M; i++)
     Hsum += abs(H[i]);
@@ -299,7 +299,7 @@ int16_t corrFilter(int8_t *H, int8_t subsample, int16_t M, int8_t *ip, int16_t n
     int8_t *Hi = H;
     int8_t ss = 0;
     int8_t *ipi = ip;
-    // for each filter coeffs
+    // for each filter coefficients
     for (int16_t i = 0; i < Ms; i++)
     {
       sum += ((int16_t)(*Hi)) * ((int16_t)(*ipi));
@@ -307,7 +307,7 @@ int16_t corrFilter(int8_t *H, int8_t subsample, int16_t M, int8_t *ip, int16_t n
       if (ss == subsample)
       {
         ss = 0;
-        Hi++; // next filter coeffs
+        Hi++; // next filter coefficients
       }
       ipi++;
     }
@@ -427,7 +427,7 @@ void MatchedFilter(int16_t Samples)
   // Decided not to protect with a semaphore the access to match filter values as these values are only written here and this avoids unecessary system overload
   //  xSemaphoreTake(g_MyglobalSemaphore, portMAX_DELAY);
 
-  // Perimeter wire signal strenght detection
+  // Perimeter wire signal strength detection
   // smoothed magnitude used for signal detection
 
   if (smoothMagLost == UNKNOWN_FLOAT)
@@ -518,12 +518,12 @@ void PerimeterProcessingLoopTask(void *dummyParameter)
 #endif
 
 #ifdef PERIMETER_SEMAPHORE_TRIGGER
-    // Wait on semaphone event
+    // Wait on semaphore event
     xSemaphoreTake(g_PerimeterProcTimerSemaphore, portMAX_DELAY);
 #endif
 
 #ifdef PERIMETER_NOTIFICATION_TRIGGER
-    // Tigger Perimeter processing task by notification mechanism
+    // Trigger Perimeter processing task by notification mechanism
 //    ulTaskNotifyTake(pdTRUE, portMAX_DELAY );  /* Reset the notification value to 0 on exit and Block indefinitely. */
     ulTaskNotifyTake(pdTRUE, pdMS_TO_TICKS(150) );  /* Reset the notification value to 0 on exit and Block for 150 ms max */
 
@@ -553,7 +553,7 @@ void PerimeterProcessingLoopTask(void *dummyParameter)
 
       // To monitor correct operation of the reading task, the number of unread events in the queue is monitored (should be zero)
       unsigned int inPerimterQueue = uxQueueMessagesWaiting(g_PerimeterTimerQueue);
-      // Decided not to protect with a semaphore the access to monotoring shared variables as they are non critical variable and this avoids unecessary system overload
+      // Decided not to protect with a semaphore the access to monitoring shared variables as they are non critical variable and this avoids unecessary system overload
       g_inPerimeterQueue = g_inPerimeterQueue + inPerimterQueue;
       g_inPerimeterQueueMax = max(inPerimterQueue, g_inPerimeterQueueMax);
 
@@ -751,7 +751,7 @@ void PerimeterProcessingLoopTaskCreate(void)
   }
   else
   {
-    DebugPrintln("Perimeter data processing Task creation failled (" + String(xReturned) + ")", DBG_ERROR, true);
+    DebugPrintln("Perimeter data processing Task creation failed (" + String(xReturned) + ")", DBG_ERROR, true);
     //errCOULD_NOT_ALLOCATE_REQUIRED_MEMORY	( -1 )
     //errQUEUE_BLOCKED						( -4 )
     //errQUEUE_YIELD							( -5 )

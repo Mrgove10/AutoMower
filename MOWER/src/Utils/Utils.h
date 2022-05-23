@@ -93,7 +93,7 @@ bool MyIdleHook_0( void );
 bool MyIdleHook_1( void );
 
 /**
- * Potected I2C write to I2C device with address 
+ * Protected I2C write to I2C device with address 
  * 
  * @param i2cAddr I2C address
  * @param i2cAddr I2C address

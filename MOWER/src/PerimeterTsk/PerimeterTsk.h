@@ -28,8 +28,8 @@ void PerimeterProcessingSetup(void);
 
 /**
  * Perimeter data raw calibration function to determine calibration offset to "zero value"
- * @param Samples is the number of samples to use to estblish calibration offset (g_PerimeterOffset)
- * @returns the ofset in the g_PerimeterOffset global variable
+ * @param Samples is the number of samples to use to establish calibration offset (g_PerimeterOffset)
+ * @returns the offset in the g_PerimeterOffset global variable
  */
 void PerimeterRawValuesCalibration(int Samples);
 
@@ -52,7 +52,7 @@ void GetPerimeterRawValues(int Samples);
 /**
  * Cross correlation digital matched filter
  *
- * @param H[] holds the double sided filter coeffs,
+ * @param H[] holds the double sided filter coefficients,
  * @param subsample is the number of times for each filter coeff to repeat 
  * @param M = H.length (number of points in FIR)
  * @param ip[] holds input data (length > nPts + M )

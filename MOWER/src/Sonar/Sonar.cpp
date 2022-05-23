@@ -16,7 +16,7 @@ void SonarSensorSetup(void)
 }
 
 /**
- * Checks to see if Sonar reading are available (sensor connected and functionning and reading task operational)
+ * Checks to see if Sonar reading are available (sensor connected and functioning and reading task operational)
  * @param sensor int Sonar to check
  * @return true if sensor check is ok
  */
@@ -169,7 +169,7 @@ void SonarReadLoopTaskCreate(void)
   }
   else
   {
-    DebugPrintln("Sonar read Task creation failled (" + String(xReturned) + ")", DBG_ERROR, true);
+    DebugPrintln("Sonar read Task creation failed (" + String(xReturned) + ")", DBG_ERROR, true);
     //errCOULD_NOT_ALLOCATE_REQUIRED_MEMORY	( -1 )
     //errQUEUE_BLOCKED						( -4 )
     //errQUEUE_YIELD							( -5 )
