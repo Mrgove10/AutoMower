@@ -336,9 +336,9 @@ void MQTTCallback(char *topic, byte *message, unsigned int length)
 
     else if (Command == "RESET_PARTIAL_MOWING")
     {
+      LogPrintln("Partial mowing time counter reset (value: " + String(float(g_partialMowingTime) / (3600.0f * 1000.0f), 2) + " hours)", TAG_VALUE, DBG_INFO);
       g_partialMowingTime = 0;
       EEPROMSave(true); // Update EEPROM
-      LogPrintln("Partial mowing time counter reset", TAG_VALUE, DBG_INFO);
     }
 
     else if (Command == "PARAMETER")
