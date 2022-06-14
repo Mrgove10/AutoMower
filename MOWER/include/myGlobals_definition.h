@@ -662,7 +662,7 @@ extern bool g_MotionMotorTurnInProgress;    // Boolean indicating that the mower
 #define MOWER_MOWING_MOWING_SESSION_DURATION 120   // in seconds, default duration of mowing session
 #define MOWER_MOWING_TRAVEL_SPEED 100
 #define MOWER_MOWING_OBJECT_CLOSE_SPEED_REDUCTION 7 // % points of speed reduction when objects are close
-#define MOWER_MOWING_MAX_CONSECUTIVE_OBSTACLES 5
+#define MOWER_MOWING_MAX_CONSECUTIVE_OBSTACLES 6
 #define MOWER_MOWING_MAX_CONSECUTIVE_OUTSIDE 30
 #define MOWER_MOWING_CUT_DIRECTION_CHANGE_INTERVAL 20 * 60 * 1000  // in ms, how often the mower stops to change cut motor rotation direction
 #define MOWER_MOWING_CUTTING_DIRECTION_WAIT_TIME 15 * 1000      // in ms, time to wait cut motor has stopped

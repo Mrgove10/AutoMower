@@ -1990,7 +1990,12 @@ int CheckObstacleAndAct(const bool Bumper, const int Front, const int Left, cons
     if (ActionMode)
     {
       MowerStop();
-      // CutMotorStop(false);
+
+      // Because of strange/spurious sonar readings, wait a bit before making move: this should leave time for sonar readings to sort themselves out.
+      if (g_successiveObstacleDetections > MOWER_MOWING_MAX_CONSECUTIVE_OBSTACLES - 2)
+      {
+        delay(2000);
+      }
 
       if (g_SonarDistance[SONAR_RIGHT] > SONAR_MIN_DISTANCE_FOR_TURN) // check if it's clear on right side
       {
@@ -2024,7 +2029,12 @@ int CheckObstacleAndAct(const bool Bumper, const int Front, const int Left, cons
     if (ActionMode)
     {
       MowerStop();
-      // CutMotorStop(false);
+
+      // Because of strange/spurious sonar readings, wait a bit before making move: this should leave time for sonar readings to sort themselves out.
+      if (g_successiveObstacleDetections > MOWER_MOWING_MAX_CONSECUTIVE_OBSTACLES - 2)
+      {
+        delay(2000);
+      }
 
       if (g_SonarDistance[SONAR_LEFT] > SONAR_MIN_DISTANCE_FOR_TURN) // check if it's clear on left side
       {
@@ -2060,7 +2070,6 @@ int CheckObstacleAndAct(const bool Bumper, const int Front, const int Left, cons
   {
     MotorOverCurrentCorrection = min(int(g_TCpitchAngle * MOTION_MOTOR_OVERCURRENT_PITCH_CORRECTION_FACTOR), MOTION_MOTOR_OVERCURRENT_PITCH_CORRECTION_MAXIMUM);
   }
-
 
   // Over-current detection on instantaneous values
   // 
