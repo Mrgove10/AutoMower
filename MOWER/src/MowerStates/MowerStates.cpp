@@ -158,7 +158,7 @@ void MowerDocked(const bool StateChange, const MowerState PreviousState)
   // Check for correct positioning on dock
   //--------------------------------
 
-  if (!RepositionOnDock(MOWER_AT_BASE_CURRENT, MOWER_DOCK_REPOSITION_MAX_ATTEMPTS))
+  if (!RepositionOnDock(MOWER_DOCK_REPOSITION_CURRENT_THRESHOLD, MOWER_DOCK_REPOSITION_MAX_ATTEMPTS))
   {
     g_CurrentState = MowerState::error;
     g_CurrentErrorCode = ERROR_DOCKED_REPOSITION_FAILED;
