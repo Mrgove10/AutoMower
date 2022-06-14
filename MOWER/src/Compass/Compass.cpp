@@ -27,7 +27,7 @@ void CompassSensorSetup()
   Wire.write(HMC5883_REGISTER_MAG_OUT_X_H_M);
   uint8_t I2CError = Wire.endTransmission();
 
-  g_CompassPresent = (I2CError == I2C_ERROR_OK);
+  g_CompassPresent = (I2CError == ESP_OK);
 
   // Free access to I2C for other tasks
   xSemaphoreGive(g_I2CSemaphore);

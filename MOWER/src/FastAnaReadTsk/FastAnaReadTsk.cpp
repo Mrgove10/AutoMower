@@ -75,7 +75,7 @@ void initI2S(void)
       .sample_rate = I2S_SAMPLE_RATE,
       .bits_per_sample = I2S_BITS_PER_SAMPLE_16BIT, // we use 16 bit depth sampling
       .channel_format = I2S_CHANNEL_FMT_ONLY_RIGHT, // avoids the sample rate being doubled vs RIGHT_LEFT
-      .communication_format = I2S_COMM_FORMAT_I2S_LSB,
+      .communication_format = I2S_COMM_FORMAT_I2S_LSB, // for latest platform.io upgrade : I2S_COMM_FORMAT_STAND_MSB
       .intr_alloc_flags = 0,
       .dma_buf_count = I2S_DMA_BUFFERS,     // must be between 2 and 128
       .dma_buf_len = I2S_DMA_BUFFER_LENGTH, // must between 8 and 1024

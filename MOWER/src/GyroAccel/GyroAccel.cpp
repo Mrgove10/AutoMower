@@ -45,7 +45,7 @@ void GyroAccelSetup()
   // Free access to I2C for other tasks
   xSemaphoreGive(g_I2CSemaphore);
 
-  if (I2CError == I2C_ERROR_OK)
+  if (I2CError == ESP_OK)
   {
     DebugPrintln("Gyro/Accel setup Done", DBG_VERBOSE, true);
     g_GyroPresent = true;
