@@ -145,7 +145,7 @@ void MotionMotorSetSpeed(const int Motor, const int Speed, const bool Relative)
     if (SpeedPoints != previousSpeed[Motor])
     {
       previousSpeed[Motor] = SpeedPoints;
-      DebugPrintln("\t\t\t\t\tMotion Motor " + g_MotionMotorStr[Motor] + "\t@ " + String(checkedspeed) + "% (" + String(SpeedPoints) + ")", DBG_DEBUG, true);
+      DebugPrintln("\t\t\t\t\tMotion Motor " + g_MotionMotorStr[Motor] + "\t@ " + String(checkedspeed) + "% (" + String(SpeedPoints) + ")", DBG_VERBOSE, true);
     }
   }
 }

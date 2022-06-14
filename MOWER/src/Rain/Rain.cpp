@@ -64,8 +64,9 @@ bool isRaining(const bool Now)
     else
     {
       smoothValue = 0.80 * smoothValue + 0.20 * ((float)raw);
+      g_RainValue = smoothValue;
     }
-    DebugPrintln("Raining check value: " + String(smoothValue), DBG_VERBOSE, true);
+    DebugPrintln("Raining check value: " + String(smoothValue), DBG_INFO, true);
     LastRainRead  = millis();
   }
 

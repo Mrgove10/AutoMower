@@ -181,6 +181,7 @@ Adafruit_MCP23017 IOExtend;
 /************************* Rain variables *********************************/
 
 bool g_isRainingAtBase = false;   // updated with base rain status received by MQTT
+float g_RainValue = 0;   // mower rain sensor smoothed value
 
 /************************* I2C HMC5883L Compass Sensor variables *********************************/
 
@@ -299,6 +300,8 @@ Adafruit_INA219 MotorCurrentSensor[MOTOR_CURRENT_COUNT] = {Adafruit_INA219(MOTOR
                                                            Adafruit_INA219(MOTOR_CUT_INA219_I2C_ADDRESS)};
 
 float g_MotorCurrent[MOTOR_CURRENT_COUNT] = {0, 0, 0};
+float g_MotorCurrentSum[MOTOR_CURRENT_COUNT] = {0, 0, 0};
+int g_MotorCurrentCnt[MOTOR_CURRENT_COUNT] = {0, 0, 0};
 
 /************************* Voltage variables *********************************/
 

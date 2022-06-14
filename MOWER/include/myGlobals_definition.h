@@ -10,7 +10,7 @@
 #define MQTT_TELEMETRY_SEND_INTERVAL_SLOW 2 * 60 * 1000 // in ms
 #define MQTT_TELEMETRY_SEND_INTERVAL 30 * 1000 // in ms
 #define MQTT_TELEMETRY_SEND_INTERVAL_FAST 10 * 1000 // in ms
-#define MQTT_MAX_PAYLOAD 1024
+#define MQTT_MAX_PAYLOAD 1280
 
 extern PubSubClient MQTTclient;
 extern int g_MQTTErrorCount;
@@ -277,10 +277,11 @@ extern Adafruit_MCP23017 IOExtend;
 /************************* Rain Sensor variables *********************************/
 
 #define RAIN_SENSOR_CHECK_THRESHOLD 0
-#define RAIN_SENSOR_RAINING_THRESHOLD 100 // this may have to be placed in a parameter
+#define RAIN_SENSOR_RAINING_THRESHOLD 1000 // this may have to be placed in a parameter
 #define RAIN_READ_INTERVAL 30000         // in ms
 
 extern bool g_isRainingAtBase;   // updated with base rain status received by MQTT
+extern float g_RainValue;   // mower rain sensor smoothed value
 
 /************************* I2C HMC5883L Compass Sensor variables *********************************/
 
@@ -464,6 +465,8 @@ extern Adafruit_INA219 MotorCurrentSensor[MOTOR_CURRENT_COUNT];
 #define MOTOR_CURRENT_CUT 2
 #define MOTOR_CURRENT_READ_INTERVAL 500 // in ms
 extern float g_MotorCurrent[MOTOR_CURRENT_COUNT];
+extern float g_MotorCurrentSum[MOTOR_CURRENT_COUNT];
+extern int g_MotorCurrentCnt[MOTOR_CURRENT_COUNT];
 
 /************************* Sonar Read task *********************************/
 

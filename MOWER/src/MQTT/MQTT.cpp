@@ -14,6 +14,8 @@
 #include "PerimeterTsk/PerimeterTsk.h"
 #include "GyroAccel/GyroAccel.h"
 #include "Compass/Compass.h"
+#include "Sonar/Sonar.h"
+#include "Rain/Rain.h"
 
 void MQTTSubscribe()
 {
@@ -635,16 +637,20 @@ void MQTTSendTelemetry(const bool now)
     // MotionMotor Data
     JSONDataPayload.add("DrvMotTemp", String(g_Temperature[TEMPERATURE_2_BLUE], 1));
     JSONDataPayload.add("DrvMotTempEr", String(g_TempErrorCount[TEMPERATURE_2_BLUE]));
-    JSONDataPayload.add("RMotCur", String(g_MotorCurrent[MOTOR_CURRENT_RIGHT]));
+    // JSONDataPayload.add("RMotCur", String(g_MotorCurrent[MOTOR_CURRENT_RIGHT]));
+    JSONDataPayload.add("RMotCur", String(g_MotorCurrentSum[MOTOR_CURRENT_RIGHT] / float(g_MotorCurrentCnt[MOTOR_CURRENT_RIGHT])));
     JSONDataPayload.add("RMotSpd", String(g_MotionMotorSpeed[MOTION_MOTOR_RIGHT] * g_MotionMotorDirection[MOTION_MOTOR_RIGHT]));
+    // JSONDataPayload.add("LMotCur", String(g_MotorCurrent[MOTOR_CURRENT_LEFT], 2));
     JSONDataPayload.add("LMotCur", String(g_MotorCurrent[MOTOR_CURRENT_LEFT], 2));
+    JSONDataPayload.add("LMotCur", String(g_MotorCurrentSum[MOTOR_CURRENT_LEFT] / float(g_MotorCurrentCnt[MOTOR_CURRENT_LEFT])));
     JSONDataPayload.add("LMotSpd", String(g_MotionMotorSpeed[MOTION_MOTOR_LEFT] * g_MotionMotorDirection[MOTION_MOTOR_LEFT]));
     JSONDataPayload.add("DrvMotFan", String(g_FanOn[FAN_2_BLUE]));
 
     // Cut motor data
     JSONDataPayload.add("CMotTemp", String(g_Temperature[TEMPERATURE_1_RED], 1));
     JSONDataPayload.add("CMotTempEr", String(g_TempErrorCount[TEMPERATURE_1_RED]));
-    JSONDataPayload.add("CMotCur", String(g_MotorCurrent[MOTOR_CURRENT_CUT], 2));
+    // JSONDataPayload.add("CMotCur", String(g_MotorCurrent[MOTOR_CURRENT_CUT], 2));
+    JSONDataPayload.add("CMotCur", String(g_MotorCurrentSum[MOTOR_CURRENT_CUT] / float(g_MotorCurrentCnt[MOTOR_CURRENT_CUT]), 2));
     JSONDataPayload.add("CMotSpd", String(float(g_CutMotorSpeed * g_CutMotorDirection), 2));
     JSONDataPayload.add("CMotAlm", String(g_CutMotorAlarm));
     JSONDataPayload.add("CMotFan", String(g_FanOn[FAN_1_RED]));
@@ -671,6 +677,10 @@ void MQTTSendTelemetry(const bool now)
     // Compass & Gyro data
     JSONDataPayload.add("CompHead", String(g_CompassHeading));
     JSONDataPayload.add("MPUTemp", String(g_MPUTemperature));
+
+    // Rain data
+    JSONDataPayload.add("IsRaining", String(isRaining()));
+    JSONDataPayload.add("RainVal", String(g_RainValue,1));
 
     // GPS Data
     JSONDataPayload.add("GPSHead", String(g_GPSHeading, 1));
@@ -729,6 +739,11 @@ void MQTTSendTelemetry(const bool now)
       if (publ == 1)
       {
         LastBatteryVoltage = g_BatteryVoltage;
+        for (int i = 0; i < MOTOR_CURRENT_COUNT; i++)
+        {
+            g_MotorCurrentSum[i] = 0;
+            g_MotorCurrentCnt[i] = 0;
+        }
         g_MaxSonarDistanceCount[SONAR_FRONT] = 0;
         g_MaxSonarDistanceCount[SONAR_LEFT] = 0;
         g_MaxSonarDistanceCount[SONAR_RIGHT] = 0;

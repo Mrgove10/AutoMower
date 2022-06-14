@@ -123,6 +123,9 @@ bool MotorCurrentRead(const int sensor, const bool Now)
               " Power: " + String(power_mW) + " mW" , DBG_VERBOSE, true);
   */
     g_MotorCurrent[sensor] = smoothedCurrent[sensor];
+    g_MotorCurrentSum[sensor] = g_MotorCurrentSum[sensor] + g_MotorCurrent[sensor];
+    g_MotorCurrentCnt[sensor] = g_MotorCurrentCnt[sensor] + 1;
+
     LastMotorCurrentRead[sensor] = millis();
   }
   return true;
