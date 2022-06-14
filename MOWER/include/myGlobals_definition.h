@@ -730,7 +730,7 @@ extern int g_mowingMode;
 //#define LEAVING_BASE_FORWARD_SPEED 100                 // in %
 
 #define MAXMOWERZONES 7     // Maximum number of zones
-#define MAXZONESTEPS 6      // Maximum number of steps per zone
+#define MAXZONESTEPS 7      // Maximum number of steps per zone
 
 typedef struct
 {
