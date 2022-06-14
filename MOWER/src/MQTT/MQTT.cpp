@@ -17,6 +17,9 @@
 #include "Sonar/Sonar.h"
 #include "Rain/Rain.h"
 
+#include <driver/adc.h>
+#include <driver/i2s.h>
+
 void MQTTSubscribe()
 {
   bool SubStatus;
@@ -348,6 +351,73 @@ void MQTTCallback(char *topic, byte *message, unsigned int length)
 // Test ONLY functions
 //
 //-------------------------------------------------------------------------
+
+    else if (Command == "SONAR_STOP")
+    {
+
+      DebugPrintln("Stopping Sonar read", DBG_INFO, true);
+
+      // Suspend Sonar readings
+      g_SonarReadEnabled = false;
+
+      // Suspend perimeter values processing task
+      SonarReadLoopTaskSuspend();
+
+      // Reset Sonar readings
+      for (int sonar = 0; sonar < SONAR_COUNT; sonar++)
+      {
+        g_SonarDistance[sonar] = UNKNOWN_INT; // set sonar value to unknown
+      }
+
+    }
+
+    else if (Command == "SONAR_START")
+    {
+
+      DebugPrintln("Starting Sonar read", DBG_INFO, true);
+
+      // Suspend Sonar readings
+      g_SonarReadEnabled = true;
+
+      // Resume perimeter values processing task
+      SonarReadLoopTaskResume();
+    }
+
+    else if (Command == "PERIM_STOP")
+    {
+
+      DebugPrintln("Stopping Perimeter read", DBG_INFO, true);
+
+      // Stop the I2S Driver that reads raw perimeter values and triggers perimeter value reads
+      i2s_stop(I2S_PORT);
+
+      // Stop the timer alarm that triggers perimeter value processing
+      timerAlarmDisable(g_PerimeterTimerhandle);
+
+      // Clear all perimeter values
+      g_PerimeterMagnitude = 0;
+      g_PerimeterMagnitudeAvg = 0;
+      g_PerimeterSmoothMagnitude = 0;
+      g_PerimeterSmoothMagnitudeTracking = 0;
+      g_PerimeterFilterQuality = 0;
+      
+      // Suspend perimeter values processing task
+      PerimeterProcessingLoopTaskSuspend();
+    }
+
+    else if (Command == "PERIM_START")
+    {
+      DebugPrintln("Starting Perimeter read", DBG_INFO, true);
+
+      // Start the I2S Driver that reads raw perimeter values and triggers perimeter value reads
+      i2s_start(I2S_PORT);
+
+      // Resume perimeter values processing task
+      PerimeterProcessingLoopTaskResume();
+
+      // Activate he timer alarm that triggers perimeter value processing
+      timerAlarmEnable(g_PerimeterTimerhandle);
+    }
 
     else if (Command == "TEST_MOTOR")
     {
