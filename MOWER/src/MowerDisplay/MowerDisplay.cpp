@@ -178,6 +178,7 @@ void idleDisplay(bool refresh)
   if (!inSubmenu && g_KeyPressed[KEYPAD_KEY_1])
   {
     g_CurrentState = MowerState::mowing;
+    g_mowingMode = MOWER_MOWING_MODE_RANDOM;
     g_ZoneMowDuration = MOWER_MOWING_MOWING_SESSION_DURATION * 1000;
     delay(400);  // to ensure key is released 
   }
