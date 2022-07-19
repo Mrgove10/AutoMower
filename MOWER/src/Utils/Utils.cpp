@@ -340,7 +340,9 @@ void DisplayTaskStatus(const String task)
     DebugPrint("Total Tasks: " + String(uxTaskGetNumberOfTasks()), DBG_VERBOSE, true);
   }
 
-  DebugPrintln(" (" + String(millis()-startMillis) + "ms, heap: " + String(esp_get_free_heap_size()) +", temp:" + String(temperatureRead(), 1) + " deg)", DBG_VERBOSE, true, true);
+  DebugPrintln(" (" + String(millis()-startMillis) + "ms, Heap: " + String(esp_get_free_heap_size()) 
+               + ", Temp:" + String(temperatureRead(), 1) + " deg"
+               + ", Freq:" + String(getCpuFrequencyMhz()) + " MHz)", DBG_VERBOSE, true, true);
 }
 
 /**
@@ -366,6 +368,17 @@ String taskStateStr(const eTaskState state)
     default:
       return "Unknown";
   }
+}
+
+/**
+ * Set ESP frequency. Possible values are 240, 160, 80 and 40 MHz 
+ * 
+ * @param frequency CPU frequency to set (in MHz)
+ */
+void setCPUFreq(const int frequency)
+{
+  setCpuFrequencyMhz(frequency);
+  DebugPrintln("CPU Frequency set to " + String(getCpuFrequencyMhz()) + "  MHz", DBG_INFO, true);
 }
 
 bool MyIdleHook_0( void )

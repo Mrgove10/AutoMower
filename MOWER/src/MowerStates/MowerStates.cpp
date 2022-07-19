@@ -35,7 +35,10 @@ void MowerIdle(const bool StateChange, const MowerState PreviousState)
 {
   if (StateChange)
   {
-    DebugPrintln("");
+    // Restore normal CPU frequency
+    // setCPUFreq(ESP_NORMAL_FREQUENCY);
+    // WiFi.setSleep(WIFI_PS_NONE);
+
     LogPrintln("Mower Idle", TAG_STATES, DBG_INFO);
 
     // Change display with refresh
@@ -138,6 +141,10 @@ void MowerDocked(const bool StateChange, const MowerState PreviousState)
 
     // Update charging start time
     g_BatteryChargingStartTime = millis();
+
+    // Reduce CPU frequency to save on battery consumption
+    // setCPUFreq(ESP_ECO_FREQUENCY);
+    // WiFi.setSleep(WIFI_PS_MIN_MODEM);
   }
 
   // Change Telemetry frequency : Wait a few minutes before reducing frequency
@@ -228,6 +235,10 @@ void MowerMowing(const bool StateChange, const MowerState PreviousState)
 
   if (StateChange)
   {
+    // Restore normal CPU frequency
+    // setCPUFreq(ESP_NORMAL_FREQUENCY);
+    // WiFi.setSleep(WIFI_PS_NONE);
+
     DebugPrintln("");
     LogPrintln("Mowing Started. Mode " + String(g_mowingMode), TAG_MOWING, DBG_INFO);
 
@@ -794,6 +805,10 @@ void MowerGoingToBase(const bool StateChange, const MowerState PreviousState)
 
   if (StateChange)
   {
+    // Restore normal CPU frequency
+    // setCPUFreq(ESP_NORMAL_FREQUENCY);
+    // WiFi.setSleep(WIFI_PS_NONE);
+
     DebugPrintln("");
     LogPrintln("Mower going back to base", TAG_TO_BASE, DBG_INFO);
 

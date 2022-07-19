@@ -88,6 +88,12 @@ void DisplayTaskStatus(const String task = "*");
  */
 String taskStateStr(const eTaskState state);
 
+/**
+ * Set ESP frequency. Possible values are 240, 160, 80 and 40 MHz 
+ * 
+ * @param frequency CPU frequency to set (in MHz)
+ */
+void setCPUFreq(const int frequency);
 
 bool MyIdleHook_0( void );
 bool MyIdleHook_1( void );

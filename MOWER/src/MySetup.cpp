@@ -103,6 +103,7 @@ void MySetup(void)
   DebugPrintln("Running on Core:" + String(xPortGetCoreID()));
   DebugPrintln("Chip temperature:" + String(temperatureRead(), 1));
   DebugPrintln("Free Heap:" + String(esp_get_free_heap_size()));
+  DebugPrintln("CPU Frequency:" + String(getCpuFrequencyMhz()));
 
   SerialAndTelnet.handle();
 
@@ -120,6 +121,11 @@ void MySetup(void)
   DebugPrint("SSID:" + String(WiFi.SSID()));
   DebugPrint(" IP:" + String(outBuf));
   DebugPrintln(" RSSI:" + String(WiFi.RSSI()) + " dBm");
+  if (WiFi.getSleep())
+  {
+    DebugPrintln("WiFi sleep enabled");
+  }
+  DebugPrintln("WiFi Tx Power" + String(WiFi.getTxPower()));
 
   Resetreason = Resetreason + " IP :" + String(outBuf) + " Wifi " + String(WiFi.SSID());
 

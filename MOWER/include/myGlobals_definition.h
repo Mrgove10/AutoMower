@@ -3,6 +3,11 @@
 #include "states.h"
 #include <esp_freertos_hooks.h>
 
+/************************* ESP32 *********************************/
+
+#define ESP_ECO_FREQUENCY 80  // in MHz
+#define ESP_NORMAL_FREQUENCY 240  // in MHz
+
 /************************* MQTT *********************************/
 
 #include <PubSubClient.h>
