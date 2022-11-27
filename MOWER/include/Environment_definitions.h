@@ -9,7 +9,8 @@
 #define MQTT_BASE_PERIMETER_STATUS_CHANNEL "AutoMower/Base/Perimeter"
 #define MQTT_BASE_RAIN_STATUS_CHANNEL "AutoMower/Base/Rain"
 
-#define MQTT_SERVER "192.168.1.3"
+// #define MQTT_SERVER "192.168.1.3"
+#define MQTT_SERVER "192.168.1.104"
 #define MQTT_PORT 1883
 
 // -------------------- Type of Display ------------------------
