@@ -113,6 +113,7 @@ void EEPROMSetup(void)
     g_PerimeterTrackSetpoint = g_EEPROMLoad.Load.Data.PerimeterTrackSetpoint;
     g_PerimeterSignalLostThreshold = g_EEPROMLoad.Load.Data.PerimeterSignalLostThreshold;
     g_PerimeterSignalLowTrackThreshold = g_EEPROMLoad.Load.Data.PerimeterSignalLowTrackThreshold;
+    g_DockRepositioningEnabled = g_EEPROMLoad.Load.Data.DockRepositioningEnabled;
 
     // Stored Statistics
     g_totalObstacleDetections = g_EEPROMLoad.Load.Data.totalObstacleDetections;
@@ -132,6 +133,7 @@ void EEPROMSetup(void)
     DebugPrintln("EEPROM value for g_totalChargingTime: " + String(g_totalChargingTime), DBG_INFO);
     DebugPrintln("EEPROM value for g_totalCurrentUsed: " + String(g_totalCurrentUsed), DBG_INFO);
     DebugPrintln("EEPROM value for g_otaFlag: " + String(g_otaFlag), DBG_INFO);
+    DebugPrintln("Repositioning enabled: " + String(g_DockRepositioningEnabled), DBG_INFO);
   }
 }
 
@@ -219,6 +221,7 @@ void EEPROMSave(boolean immediately)
     g_EEPROMLoad.Load.Data.PerimeterTrackSetpoint = g_PerimeterTrackSetpoint;
     g_EEPROMLoad.Load.Data.PerimeterSignalLostThreshold = g_PerimeterSignalLostThreshold;
     g_EEPROMLoad.Load.Data.PerimeterSignalLowTrackThreshold = g_PerimeterSignalLowTrackThreshold;
+    g_EEPROMLoad.Load.Data.DockRepositioningEnabled = g_DockRepositioningEnabled;
 
     // Stored Statistics
     g_EEPROMLoad.Load.Data.totalObstacleDetections = g_totalObstacleDetections;
@@ -270,6 +273,7 @@ void EEPROMInitialise(void)
   g_EEPROMLoad.Load.Data.PerimeterTrackSetpoint = 0;
   g_EEPROMLoad.Load.Data.PerimeterSignalLostThreshold = 0;
   g_EEPROMLoad.Load.Data.PerimeterSignalLowTrackThreshold = 0;
+  g_EEPROMLoad.Load.Data.DockRepositioningEnabled = false;
 
   // Stored Statistics
   g_EEPROMLoad.Load.Data.totalObstacleDetections = 0;

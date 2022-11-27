@@ -737,7 +737,9 @@ Set mower to clockwise spiral mowing:
 
 - `PerimLostThresld` : Perimeter wire signal lost threshold (perimeter wire cut or sender stopped),
 
-- `PerimTtrkLowThresld` : Perimeter wire signal too low for tracking threshold (mower no longer "over" perimeter wire).
+- `PerimTtrkLowThresld` : Perimeter wire signal too low for tracking threshold (mower no longer "over" perimeter wire),
+
+- `DockRepositioningEnabled` : Indicator enabling (Val2 = 1) or disabling (Val2 != 1) the automatic mower repositioning on the charging dock if the received current is too low
 
 **Note** : Incorrectly spelt or unknown parameter codes are rejected.
 

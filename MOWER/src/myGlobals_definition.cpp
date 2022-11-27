@@ -417,6 +417,8 @@ unsigned long g_spiralStepTimeIncrement[MOWER_MOWING_SPIRAL_MAX_STEP] = {
 
 int g_mowingMode = MOWER_MOWING_MODE_RANDOM;  // Random by default
 
+bool g_DockRepositioningEnabled;       // Indicator/switch to enable/disable Mower repositioning on dock if charge rate is too low (Saved to EEPROM)
+
 ZoneStepStruct g_mowZoneSteps[MAXMOWERZONES][MAXZONESTEPS];       // Array containing list of steps per zone
 
 int g_TargetMowingZone = 0;    // Target mowing zone after leaving base 

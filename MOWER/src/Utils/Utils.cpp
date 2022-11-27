@@ -270,6 +270,18 @@ bool ParameterChangeValue(const String parameterCode, const float parameterValue
   {
     g_PerimeterSignalLowTrackThreshold = parameterValue;
   }
+  else if (parameterCode == "DockRepositioningEnabled")
+  {
+    g_DockRepositioningEnabled = (parameterValue == 1);
+    if (g_DockRepositioningEnabled)
+    {
+      LogPrintln("Dock repositioning ENABLED", TAG_VALUE, DBG_INFO);
+    }
+    else
+    {
+      LogPrintln("Dock repositioning DISABLED", TAG_VALUE, DBG_INFO);
+    }
+  }
   else // Paramater Code not configured or found
   {
     found = false;

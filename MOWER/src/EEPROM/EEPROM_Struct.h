@@ -54,6 +54,8 @@ typedef struct
 
     unsigned long totalCurrentUsed;
 
+    bool DockRepositioningEnabled;
+
 } DataStruct;
 
 #define EEPROM_SPARE_SIZE EEPROM_SIZE - sizeof(DataStruct) - EEPROM_CRC_SIZE

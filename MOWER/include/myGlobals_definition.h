@@ -729,6 +729,8 @@ extern int g_mowingMode;
 #define MOWER_DOCK_REPOSITION_MAX_ATTEMPTS 5 // loops
 #define MOWER_DOCKED_REPOSITION_CHECK_INTERVAL 60 * 1000  // in ms
 
+extern bool g_DockRepositioningEnabled;       // Indicator/switch to enable/disable Mower repositioning on dock if charge rate is too low (Saved to EEPROM)
+
 // Leaving Base base function
 #define LEAVING_BASE_REVERSE_SPEED 85                 // in %
 #define LEAVING_BASE_REVERSE_DURATION 10 * 1000       // in ms
