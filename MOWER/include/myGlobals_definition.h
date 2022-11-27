@@ -561,7 +561,7 @@ extern volatile bool g_TiltTriggered[TILT_COUNT];
 #define FAN_1_STOP_THRESHOLD FAN_1_START_THRESHOLD - 1.5f // in deg C
 #define FAN_2_START_THRESHOLD 29.5f                       // in deg C
 #define FAN_2_STOP_THRESHOLD FAN_2_START_THRESHOLD - 1.5f // in deg C
-#define FAN_INACTIVE_MOWER_THRESHOLD_INCREASE 5.0f        //  in deg C
+#define FAN_INACTIVE_MOWER_THRESHOLD_INCREASE 8.0f        //  in deg C
 #define FAN_TEST_DURATION 3000                            // in ms
 
 extern const int g_FanPin[FAN_COUNT];
